@@ -91,7 +91,7 @@ export class NormalMapVerifier {
 				e.preventDefault();
 			};
 
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
 			// let rparam = new RendererParam(this.createDiv(0,0, 512, 512));

@@ -23,4 +23,4 @@
 
     #ifdef VOX_DEPTH_FOG
         v_fogParam = vec4(viewPos.xyz, length(viewPosition.xyz)/u_frustumParam.y);
-    #else
+    #endif
