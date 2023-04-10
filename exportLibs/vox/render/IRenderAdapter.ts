@@ -60,7 +60,10 @@ interface IRenderAdapter {
 	unlockViewport(): void;
 	renderEnd(): void;
 	update(): void;
-	updateRenderBufferSize(): void;
+	/**
+	 * @param sync the default value is true
+	 */
+	updateRenderBufferSize(sync?: boolean): void;
 	destroy(): void;
 	getDevicePixelRatio(): number;
 
@@ -79,7 +82,7 @@ interface IRenderAdapter {
 
 	synFBOSizeWithViewport(): void;
 	asynFBOSizeWithViewport(): void;
-	
+
 	/**
 	 * if synFBOSizeWithViewport is true, fbo size = factor * view port size;
 	 * @param factor exmple: the value of factor is 0.5

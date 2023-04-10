@@ -8,12 +8,25 @@
 import IVector3D from "../../vox/math/IVector3D";
 
 interface IRendererParam {
-    
+
     divW: number;
     divH: number;
-
-    // display 3d view buf size auto sync window size
+	/**
+	 * the default value is true
+	 */
+	autoAttachingHtmlDoc: boolean;
+    /**
+	 * display 3d view buf size auto sync window size
+	 * the default value is true
+	 */
     autoSyncRenderBufferAndWindowSize: boolean;
+	/**
+	 * the default value is false
+	 */
+	offscreenRenderEnabled: boolean;
+	/**
+	 * the default value is 2
+	 */
     maxWebGLVersion: number;
     cameraPerspectiveEnabled: boolean;
     // event flow control enable
@@ -24,11 +37,13 @@ interface IRendererParam {
     readonly camPosition: IVector3D;
     readonly camLookAtPos: IVector3D;
     readonly camUpDirect: IVector3D;
-
+	/**
+	 * the default value is true
+	 */
     syncBgColor: boolean;
     batchEnabled: boolean;
     processFixedState: boolean;
-    
+
     /**
      * @param   tickUpdateTime default value 50 ms delay
      */
@@ -36,6 +51,7 @@ interface IRendererParam {
     getTickUpdateTime(): number;
     setPolygonOffsetEanbled(polygonOffsetEnabled: boolean): void;
     getPolygonOffsetEanbled(): boolean;
+	getScissorTestEanbled(): boolean;
     setDitherEanbled(ditherEnabled: boolean): void;
     getDitherEanbled(): boolean;
     getDiv(): HTMLDivElement;

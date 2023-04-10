@@ -38,7 +38,7 @@ export default interface IDisplayEntity extends IRenderEntity {
 
     setMesh(m: IMeshBase): IDisplayEntity;
     getMesh(): IMeshBase;
-    setIvsParam(ivsIndex: number, ivsCount: number): void;
+    // setIvsParam(ivsIndex: number, ivsCount: number): void;
 
     /**
      * @return 返回true表示包含有mesh对象,反之则没有

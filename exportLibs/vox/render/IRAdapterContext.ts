@@ -29,13 +29,18 @@ interface IRAdapterContext {
      * @returns return system gpu context
      */
     getRC(): any;
-    
+
     setScissorEnabled(boo: boolean): void;
     setScissorRect(px: number, py: number, pw: number, ph: number): void;
 
     setResizeCallback(resizeCallbackTarget: any, resizeCallback: () => void): void;
     getDevicePixelRatio(): number;
-    resizeBufferSize(pw: number, ph: number): void;
+	/**
+	 * @param pw buffer div width
+	 * @param ph buffer div height
+	 * @param sync the default value is true
+	 */
+    resizeBufferSize(pw: number, ph: number, sync?: boolean): void;
     getStage(): IRenderStage3D;
     getStageWidth(): number;
     getStageHeight(): number;
@@ -54,6 +59,9 @@ interface IRAdapterContext {
     getFBOHeight(): number;
     getRCanvasWidth(): number;
     getRCanvasHeight(): number;
-    updateRenderBufferSize(): void;
+	/**
+	 * @param sync the default value is true
+	 */
+    updateRenderBufferSize(sync?: boolean): void;
 }
 export { IRAdapterContext };
