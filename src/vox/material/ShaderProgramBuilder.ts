@@ -11,12 +11,12 @@ import IShaderData from "../../vox/material/IShaderData";
 import IShdProgram from "../../vox/material/IShdProgram";
 import ShdProgram from "../../vox/material/ShdProgram";
 import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
+import IRenderProxy from "../render/IRenderProxy";
 
 class ShaderProgramBuilder {
 
     private m_shdDict: Map<string, ShdProgram> = new Map();
     private m_shdList: ShdProgram[] = [];
-    private m_shdListLen: number = 0;
     private m_sharedUniformList: IRenderShaderUniform[] = [];
     private m_rcuid: number = -1;
     constructor(rcuid: number) {
@@ -31,15 +31,15 @@ class ShaderProgramBuilder {
     /**
      * 这里的program生成过程已经能适配多GPU context的情况了
      */
-    create(shdData: IShaderData): IShdProgram {
-        // console.log("this.Create() begin...");
+    create(shdData: IShaderData, rc: IRenderProxy): IShdProgram {
+
         let uns: string = shdData.getUniqueShaderName();
         if (this.m_shdDict.has(uns)) { return this.m_shdDict.get(uns); }
-        let p: ShdProgram = new ShdProgram(this.m_shdListLen);
+        let p: ShdProgram = new ShdProgram(this.m_shdList.length);
         p.setShdData(shdData);
         this.m_shdList[p.getUid()] = p;
         this.m_sharedUniformList[p.getUid()] = null;
-        ++this.m_shdListLen;
+        ++this.m_shdList.length;
         this.m_shdDict.set(uns, p);
 
         if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
@@ -47,7 +47,7 @@ class ShaderProgramBuilder {
         }
         return p;
     }
-    
+
     findShdProgramByUid(uid: number): IShdProgram {
         return this.m_shdList[uid];
     }
@@ -67,10 +67,19 @@ class ShaderProgramBuilder {
         return this.m_shdList[resUid] != null;
     }
     getTotal(): number {
-        return this.m_shdListLen;
+        return this.m_shdList.length;
     }
     containsUid(uid: number): boolean {
-        return uid > -1 && uid < this.m_shdListLen;
+        return uid > -1 && uid < this.m_shdList.length;
     }
+	clear(): void {
+        console.log("ShaderProgramBuilder::clear() ...");
+		let map = this.m_shdDict;
+		this.m_shdList = [];
+		for (var [k, v] of map.entries()) {
+			v.destroy();
+		}
+		map.clear();
+	}
 }
 export { ShaderProgramBuilder }

@@ -42,14 +42,6 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
      * pipes type list for material pipeline
      */
     pipeTypes: MaterialPipeType[] = null;
-
-    // renderState = 0;
-    // colorMask = 0;
-    // /**
-    //  * the default value is null
-    //  */
-    // stencil: Stencil = null;
-    // multiPass = false;
     /**
      * 如果是同样的 vtxInfo 内容，则一个material 实例可以对应多个entity即便是mesh不一样也可以
      * 如果 vtxInfo 内容 和 mesh 已经匹配，则附带这个vtxInfo只能用到对一个mesh的entity
@@ -123,13 +115,13 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                 this.buildBuf();
 
                 let shdData: ShaderData;
-                let shdCode_uniqueName: string = this.m_uniqueShaderName;
+                let shdCode_uniqueName = this.m_uniqueShaderName;
                 if (shdCode_uniqueName != "") {
                     shdData = MaterialResource.FindData(shdCode_uniqueName);
                     this.m_shduns = shdCode_uniqueName;
                 }
                 if (shdData == null) {
-                    
+
                     texEnabled = texEnabled || this.getTextureTotal() > 0;
                     buf.initialize(texEnabled);
                     shdCode_uniqueName = buf.getUniqueShaderName() + buf.keysString + buf.getShaderCodeBuilder().getUniqueNSKeyString();
@@ -169,7 +161,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                         , ShaderCodeBuffer.GetPreCompileInfo()
                     );
                 }
-                
+
                 if (this.m_pipeLine != null) {
                     this.m_sharedUniforms = this.m_pipeLine.getSharedUniforms();
                 }
@@ -336,7 +328,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                 this.__$uniform.destroy();
                 this.__$uniform = null;
             }
-        
+
             this.vtxInfo.destroy();
             if(this.graph) {
                 this.graph.destroy();
@@ -345,6 +337,6 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
         }
     }
     update(): void {
-        
+
     }
 }

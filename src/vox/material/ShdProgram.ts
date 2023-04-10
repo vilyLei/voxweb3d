@@ -12,6 +12,7 @@ import UniformLine from "../../vox/material/code/UniformLine";
 import IShdProgram from "../../vox/material/IShdProgram";
 import IShaderData from "../../vox/material/IShaderData";
 import DivLog from "../utils/DivLog";
+import DebugFlag from "../debug/DebugFlag";
 export default class ShdProgram implements IShdProgram {
     private m_shdData: IShaderData = null;
     private m_uid: number = -1;
@@ -98,12 +99,12 @@ export default class ShdProgram implements IShdProgram {
                     }
                 }
                 if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
-                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attri aLocationTypes: " + this.m_aLocationTypes);
-                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attri m_aLocations: " + this.m_aLocations);
-                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attriNSList: " + attriNSList);
-                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attribLIndexList: " + this.m_attribLIndexList);
-                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attribTypeSizeList: " + this.m_attribTypeSizeList);
-                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attriSizeList: " + this.m_attriSizeList);
+                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attri aLocationTypes: ",this.m_aLocationTypes);
+                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attri m_aLocations: ",this.m_aLocations);
+                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attriNSList: ",attriNSList);
+                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attribLIndexList: ",this.m_attribLIndexList);
+                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attribTypeSizeList: ",this.m_attribTypeSizeList);
+                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attriSizeList: ",this.m_attriSizeList);
                 }
             }
         }
@@ -121,11 +122,12 @@ export default class ShdProgram implements IShdProgram {
                         ul = this.m_gl.getUniformLocation(this.m_program, uns);
 
                         if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
-                            console.log("ShdProgram::createLocations() uniform, ul " + ul + ", uninforms[" + i + "].name: " + uns);
+                            console.log("ShdProgram::createLocations() uniform, ul ", ul, ", uninforms[" + i + "].name: ",uns);
                         }
                         if (ul != null) {
                             ul.uniformName = uns;
                             ul.uniqueName = this.m_shdUniqueName;
+
                             uninforms[i].location = ul;
                             this.m_uniformDict.set(uns, uninforms[i]);
                             this.m_uLocationDict.set(uns, ul);
@@ -324,7 +326,7 @@ export default class ShdProgram implements IShdProgram {
         }
         let fragShader = this.loadShader(gl.FRAGMENT_SHADER, fshd_str);
 
-        // Create the shader program      
+        // Create the shader program
         let shdProgram = gl.createProgram();
         gl.attachShader(shdProgram, fragShader);
         gl.attachShader(shdProgram, vertShader);
@@ -344,6 +346,7 @@ export default class ShdProgram implements IShdProgram {
 
         gl.deleteShader(vertShader);
         gl.deleteShader(fragShader);
+		shdProgram.glVersion = gl.version;
         return shdProgram;
     }
 
@@ -371,9 +374,10 @@ export default class ShdProgram implements IShdProgram {
         if (this.m_program == null) {
             this.m_rcuid = rcuid;
             this.m_gl = gl;
+
             this.m_program = this.initShdProgram();
             this.m_program.uniqueName = this.m_shdUniqueName;
-            if (null != this.m_program) this.createLocations();
+            if (this.m_program) this.createLocations();
         }
     }
     /**
@@ -382,9 +386,6 @@ export default class ShdProgram implements IShdProgram {
     getRCUid(): number { return this.m_rcuid; };
     uniformBlockBinding(uniform_block_ns: string, bindingIndex: number): void {
         this.m_gl.uniformBlockBinding(this.m_program, this.m_gl.getUniformBlockIndex(this.m_program, uniform_block_ns), bindingIndex);
-    }
-    toString(): string {
-        return "[ShdProgram(uniqueName = " + this.m_shdUniqueName + ")]";
     }
     /**
      * @returns return current gpu shader  program
@@ -399,12 +400,14 @@ export default class ShdProgram implements IShdProgram {
             this.m_texLocations.fill(null);
             this.m_texTotal = 0;
         }
-        if (this.m_program != null) {
-            this.m_gl.deleteShader(this.m_vertShader);
-            this.m_gl.deleteShader(this.m_fragShader);
+        if (this.m_program) {
+			if(!this.m_gl.isContextLost()) {
+				this.m_gl.deleteShader(this.m_vertShader);
+				this.m_gl.deleteShader(this.m_fragShader);
+				this.m_gl.deleteProgram(this.m_program);
+			}
             this.m_vertShader = null;
             this.m_fragShader = null;
-            this.m_gl.deleteProgram(this.m_program);
             this.m_program = null;
         }
         this.m_gl = null;

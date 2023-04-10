@@ -35,7 +35,9 @@ export default class ShdUniformTool {
     private m_builders: IUniformBuilder[] = [];
     private m_buildersTot: number = 0;
     private m_emptyUniform: ShaderUniform = new ShaderUniform();
-
+	clear(): void {
+		this.m_uniformDict.clear();
+	}
     private appendUniformBuilder(builder: IUniformBuilder): void {
 
         if(!this.m_uniformDict.has(builder.getIDNS())) {
@@ -44,16 +46,17 @@ export default class ShdUniformTool {
             this.m_buildersTot = this.m_builders.length;
         }
     }
+
     initialize(): void {
         if (this.m_initFlag) {
             this.m_initFlag = false;
-            
+
             this.appendUniformBuilder( new CameraUniformBuilder() );
             this.appendUniformBuilder( new FrustumUniformBuilder() );
             this.appendUniformBuilder( new CameraPosUniformBuilder() );
 
             this.appendUniformBuilder( new StageParamUniformBuilder() );
-            this.appendUniformBuilder( new ViewParamUniformBuilder() );            
+            this.appendUniformBuilder( new ViewParamUniformBuilder() );
         }
     }
     addSharedUniformBuilder(builder: IUniformBuilder): void {
@@ -143,6 +146,8 @@ export default class ShdUniformTool {
                     for (i = 0; i < pdata.uniformSize; ++i) {
                         pdata.types.push(shdp.getUniformTypeByNS(pdata.uniformNameList[i]));
                         pdata.locations.push(shdp.getUniformLocationByNS(pdata.uniformNameList[i]));
+						// let ul = shdp.getUniformLocationByNS(pdata.uniformNameList[i]);
+                        // pdata.locations.push(ul);
                     }
                     //console.log("global uniform names: "+pdata.uniformNameList);
                     //console.log("global uniform types: "+pdata.types);

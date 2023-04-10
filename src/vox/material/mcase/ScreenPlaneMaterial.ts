@@ -17,6 +17,8 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
     private m_uniqueName: string = "";
     private m_hasTex: boolean = false;
     mapLodEnabled: boolean = false;
+	pns = "";
+	fragMainTailCode = "";
     initialize(texEnabled: boolean): void {
         this.m_uniqueName = "ScreenPlaneShd";
         this.m_hasTex = texEnabled;
@@ -24,6 +26,7 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
             this.m_uniqueName += "_tex";
             if(this.mapLodEnabled) this.m_uniqueName += "Lod";
         }
+		this.m_uniqueName += this.pns;
     }
 
     buildShader(): void {
@@ -32,10 +35,10 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
         if (this.m_hasTex) {
             coder.mapLodEnabled = this.mapLodEnabled;
             this.m_uniform.addDiffuseMap();
-        }        
+        }
         coder.addFragUniform("vec4", "u_param", 3);
         coder.useVertSpaceMats(true, false, false);
-        
+
         this.m_coder.addFragMainCode(
             `
 void main() {
@@ -51,6 +54,7 @@ void main() {
 #else
     FragColor0 = u_param[0] + u_param[1];
 #endif
+	${this.fragMainTailCode}
 }
 `
         );
@@ -65,7 +69,7 @@ void main() {
 `
         );
     }
-    
+
     getUniqueShaderName(): string {
         return this.m_uniqueName;
     }
@@ -83,13 +87,18 @@ void main() {
 }
 
 export default class ScreenPlaneMaterial extends MaterialBase {
-    mapLodEnabled: boolean = false;
+    mapLodEnabled = false;
+
+    name = "";
+	fragMainTailCode = "";
     constructor() {
         super();
     }
 
     protected buildBuf(): void {
-        let buf: ScreenPlaneShaderBuffer = ScreenPlaneShaderBuffer.GetInstance();
+        let buf = ScreenPlaneShaderBuffer.GetInstance();
+		buf.pns = this.name;
+		buf.fragMainTailCode = this.fragMainTailCode;
         buf.mapLodEnabled = this.mapLodEnabled;
     }
     getCodeBuf(): ShaderCodeBuffer {

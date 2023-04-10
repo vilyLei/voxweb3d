@@ -17,6 +17,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
     normalEnabled = false;
     vtxMatrixTransform = true;
     tns = "";
+	fragMainTailCode = "\n";
     constructor() {
         super();
     }
@@ -83,6 +84,7 @@ vec2 getUV(vec2 uv) {
 
         coder.addFragOutput("vec4", "FragColor0");
 
+		let fragMainTailCode = "\n";
         coder.addFragMainCode(
             `
     FragColor0 = vec4(1.0);
@@ -104,6 +106,7 @@ vec2 getUV(vec2 uv) {
         float nDotL = max(dot(v_worldNormal.xyz, direc), 0.0);
         FragColor0.xyz = FragColor0.xyz * 0.7 + 0.3 * FragColor0.xyz * vec3(nDotL);
     #endif
+	${this.fragMainTailCode}
 `
         );
 
@@ -138,7 +141,6 @@ vec2 getUV(vec2 uv) {
     getUniqueShaderName(): string {
         return this.m_uniqueName + "_" + this.tns;
     }
-
 }
 export default class Default3DMaterial extends MaterialBase implements IDefault3DMaterial {
 
@@ -146,7 +148,7 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     private m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     private m_uvTrans = new Float32Array([0.0, 0.0, 1.0, 1.0]);
     name = "";
-
+	fragMainTailCode = "";
     vertColorEnabled = false;
     premultiplyAlpha = false;
     normalEnabled = false;
@@ -159,8 +161,9 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
         }
     }
     protected buildBuf(): void {
-        let buf: Default3DShaderCodeBuffer = Default3DMaterial.s_shdCodeBuffer;
+        let buf = Default3DMaterial.s_shdCodeBuffer;
         buf.tns = this.name;
+        buf.fragMainTailCode = this.fragMainTailCode;
         buf.getShaderCodeBuilder().normalEnabled = this.normalEnabled;
         buf.vertColorEnabled = this.vertColorEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
