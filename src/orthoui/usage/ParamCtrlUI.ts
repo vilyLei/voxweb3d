@@ -85,6 +85,8 @@ export default class ParamCtrlUI {
     }
     private resize(evt: any): void {
         let stage = this.m_rscene.getStage3D();
+		// console.log("ParamCtrlUI(), stage.stageHalfWidth: ", stage.stageHalfWidth);
+		this.ruisc.setViewPort(0,0, stage.stageWidth, stage.stageHeight);
         this.ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         this.ruisc.getCamera().update();
     }

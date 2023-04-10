@@ -126,7 +126,7 @@ export class NormalMapBuilder {
 	}
 	private m_mapMaterial: NormalMapBuilderMaterial = null;
 	private m_mapPlane: Plane3DEntity = null;
-	private m_mapAreaFactor = 0.3;
+	private m_mapAreaFactor = 0.4;
 	private m_loadingTex: IRenderTexture = null;
 
 	private layoutMapPlane(): void {
@@ -473,14 +473,28 @@ export class NormalMapBuilder {
 	}
 	private setUIItemValue(ns: string, value: number, syncEnabled: boolean = true): void {
 		let item = this.m_ctrlui.getItemByUUID(ns);
-		item.param.value = value;
-		item.syncEnabled = syncEnabled;
-		item.updateParamToUI();
+		if(item) {
+			item.param.value = value;
+			item.syncEnabled = syncEnabled;
+			item.updateParamToUI();
+		}
+	}
+	
+	private setUIItemFlag(ns: string, flag: boolean, syncEnabled: boolean = true): void {
+		let item = this.m_ctrlui.getItemByUUID(ns);
+		if(item) {
+			item.param.flag = flag;
+			item.syncEnabled = syncEnabled;
+			item.updateParamToUI();
+		}
 	}
 
 	private resetMapBuildCtrlValue(): void {
-		this.setUIItemValue("intensity", 5.0);
+		this.setUIItemValue("strength", 5.0);
 		this.setUIItemValue("sharpness", 1.0);
+		this.setUIItemFlag("invert", false);
+		this.setUIItemFlag("invert-x", false);
+		this.setUIItemFlag("invert-y", false);
 	}
 	private initMapBuildCtrlUIItem(): void {
 		let ui = this.m_ctrlui;
