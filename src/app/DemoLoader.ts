@@ -4,14 +4,14 @@ export class DemoLoader {
 
     initialize(): void {
         console.log("DemoLoader::initialize()......");
-        let url: string = location.href + "";
+        let url = location.href + "";
         url = this.parseUrl( url );
         console.log("url: ",url);
         this.initUI();
         this.load( url );
     }
     private load(purl: string): void {
-        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+        let codeLoader = new XMLHttpRequest();
         codeLoader.open("GET", purl, true);
         codeLoader.onerror = function (err) {
             console.error("load error: ", err);
@@ -21,7 +21,7 @@ export class DemoLoader {
             this.showLoadInfo(e, codeLoader);
         };
         codeLoader.onload = () => {
-            let scriptEle: HTMLScriptElement = document.createElement("script");
+            let scriptEle = document.createElement("script");
             scriptEle.onerror = (e) => {
                 console.error("module script onerror, e: ", e);
             }
@@ -37,8 +37,8 @@ export class DemoLoader {
     private parseUrl(url: string): string {
 
         console.log("url: ",url);
-        
-        let params: string[] = url.split("?");
+
+        let params = url.split("?");
         if(params.length < 2 || params[0].indexOf("renderCase") < 1) {
             return "";
         }
@@ -73,12 +73,12 @@ export class DemoLoader {
 
         this.showInfo("init...");
     }
-    
+
     private showInfo(str: string): void {
 
         if (this.m_infoDiv == null) {
             this.m_infoDiv = document.createElement('div');
-            this.m_infoDiv.style.backgroundColor = "rgba(255,255,255,0.1)";            
+            this.m_infoDiv.style.backgroundColor = "rgba(255,255,255,0.1)";
             this.m_infoDiv.style.color = "#00ee00";
             this.elementCenter(this.m_infoDiv);
             this.m_bodyDiv.appendChild(this.m_infoDiv);
@@ -108,7 +108,7 @@ export class DemoLoader {
         let str: string = "loading " + Math.round(k * 100) +"% ";
         this.showInfo(str);
     }
-    
+
     showLoadStart(): void {
         this.showInfo("loading 0% ");
     }
@@ -121,8 +121,8 @@ export class DemoLoader {
             this.m_bodyDiv = null;
         }
     }
-    private elementCenter(ele: HTMLElement,top: string = "50%", left: string = "50%", position: string = "absolute"): void {        
-        
+    private elementCenter(ele: HTMLElement,top: string = "50%", left: string = "50%", position: string = "absolute"): void {
+
         ele.style.textAlign = "center";
         ele.style.display = "flex";
         ele.style.flexDirection = "column";
