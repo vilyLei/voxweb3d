@@ -5,15 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 class RViewElement {
-	private m_canvas: any = null;
-	private m_div: HTMLElement = null;
+	private m_canvas: HTMLCanvasElement = null;
+	private m_div: HTMLDivElement = null;
 	private m_divW: number = -1;
 	private m_divH: number = -1;
 
 	public resized: boolean = true;
 
 	constructor() {}
-	public setDiv(div: HTMLElement): void {
+	public setDiv(div: HTMLDivElement): void {
 		this.m_div = div;
 	}
 
@@ -43,13 +43,15 @@ class RViewElement {
 		}
 		return str;
 	}
-	public createViewEle(pdocument: any, autoResize: boolean, pw: number, ph: number): void {
+	public createViewEle(pdocument: any, autoResize: boolean, pw: number, ph: number, autoAttachingHtmlDoc: boolean, offscreenCanvas: boolean): void {
 		if (this.m_div == null) {
-			this.m_div = document.getElementById("voxEngineDiv");
+			this.m_div = document.getElementById("voxEngineDiv") as HTMLDivElement;
 		}
 		if (this.m_div == null) {
 			this.m_div = pdocument.createElement("div");
-			document.body.appendChild(this.m_div);
+			if(autoAttachingHtmlDoc) {
+				document.body.appendChild(this.m_div);
+			}
 		}
 		const style = this.m_div.style;
 		style.display = "bolck";
@@ -70,8 +72,13 @@ class RViewElement {
 		if (this.m_canvas == null) {
 			this.m_canvas = document.createElement("canvas");
 			this.m_div.appendChild(this.m_canvas);
-			this.m_canvas.width = 800;
-			this.m_canvas.height = 600;
+			if(offscreenCanvas) {
+				this.m_canvas.width = pw;
+				this.m_canvas.height = ph;
+			}else {
+				this.m_canvas.width = 800;
+				this.m_canvas.height = 600;
+			}
 			this.m_canvas.style.display = "bolck";
 			this.m_canvas.style.left = "0px";
 			this.m_canvas.style.top = "0px";
@@ -89,11 +96,19 @@ class RViewElement {
 			this.resized = true;
 		}
 	}
-	getDiv(): any {
+	getDiv(): HTMLDivElement {
 		return this.m_div;
 	}
-	getCanvas(): any {
+	getCanvas(): HTMLCanvasElement {
 		return this.m_canvas;
 	}
+	setCanvas(canvas: HTMLCanvasElement): void {
+		if( canvas && this.m_canvas != canvas ) {
+			this.m_div.removeChild(this.m_canvas);
+			this.m_canvas = canvas;
+			this.m_div.appendChild(this.m_canvas);
+		}
+	}
+
 }
 export default RViewElement;

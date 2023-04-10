@@ -67,6 +67,11 @@ class ROTextureResource implements IRenderTexResource {
         this.m_rcuid = rcuid;
         this.m_gl = gl;
     }
+	setGLCtx(gl: any): void {
+        this.m_gl = gl;
+		this.m_resMap.clear();
+		this.m_freeMap.clear();
+	}
     createBuf(): any {
         return this.m_gl.createTexture();
     }

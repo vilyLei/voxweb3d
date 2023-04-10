@@ -76,6 +76,10 @@ export default class RODataBuilder implements IRODataBuilder {
 
         }
     }
+	setGLCtx(gl: any): void {
+		ROTransPool.Clear();
+		TextureRenderObj.Clear();
+	}
     getRenderProxy(): RenderProxy {
         return this.m_rc;
     }
@@ -178,7 +182,7 @@ export default class RODataBuilder implements IRODataBuilder {
                 let texEnabled = ((texList != null && texList != null) && texList.length > 0);
                 material.initializeByCodeBuf(texEnabled);
             }
-            shdp = this.m_shdpBuilder.create(material.getShaderData());
+            shdp = this.m_shdpBuilder.create(material.getShaderData(), rc);
 
             shdp.upload(rc.RContext, rc.getUid());
             runit.shdUid = shdp.getUid();
@@ -474,7 +478,7 @@ export default class RODataBuilder implements IRODataBuilder {
                 texList = material.getTextureList();
             }
 
-            shdp = this.m_shdpBuilder.create(material.getShaderData());
+            shdp = this.m_shdpBuilder.create(material.getShaderData(), rc);
             shdp.upload(rc.RContext, rc.getUid());
             let texTotal = shdp.getTexTotal();
             if (texTotal > 0) {

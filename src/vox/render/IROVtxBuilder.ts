@@ -9,7 +9,6 @@
 import IVtxShdCtr from "../../vox/material/IVtxShdCtr";
 
 export default interface IROVtxBuilder {
-	RContext: any;
 	/**
 	 * @returns return system gpu context
 	 */

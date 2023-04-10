@@ -43,4 +43,7 @@ export default class ROTransPool {
 		}
 		// ROTransPool.s_transMap.delete(mat.getUid());
 	}
+	static Clear(): void {
+		ROTransPool.s_transMap.clear();
+	}
 }

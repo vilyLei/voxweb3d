@@ -170,13 +170,14 @@ class TextureRenderObj implements ITextureRenderObj {
                 tro = rtoMap.get(key);
             }
             else {
-                if (TextureRenderObj.s_freeTROList.length < 1) {
+				const fts = TextureRenderObj.s_freeTROList;
+                if (fts.length < 1) {
                     tro = new TextureRenderObj(texRes.getRCUid(), key);
-                    //console.log("TextureRenderObj::Create use a new tex mid: " + tro.getMid(),",total: "+shdTexTotal,",key: "+key);
+                    // console.log("TextureRenderObj::Create use a new tex mid: " + tro.getMid(),",total: "+shdTexTotal,",key: "+key);
                 }
                 else {
-                    tro = TextureRenderObj.s_freeTROList.pop();
-                    //console.log("TextureRenderObj::Create use an old tex mid: " + tro.getMid(),",total: "+shdTexTotal,",key: "+key);
+                    tro = fts.pop();
+                    // console.log("TextureRenderObj::Create use an old tex mid: " + tro.getMid(),",total: "+shdTexTotal,",key: "+key);
                 }
                 tro.collectTexList(texRes, texList, shdTexTotal);
                 rtoMap.set(key, tro);
@@ -200,6 +201,13 @@ class TextureRenderObj implements ITextureRenderObj {
     static GetByMid(rcuid: number, uid: number): TextureRenderObj {
         return TextureRenderObj.s_troMaps[rcuid].get(uid);
     }
+	static Clear(): void {
+		let ls = TextureRenderObj.s_troMaps;
+		for(let i = 0; i < ls.length; ++i) {
+			ls[i].clear();
+		}
+		TextureRenderObj.s_freeTROList = [];
+	}
 }
 
 class EmptyTexRenderObj implements ITextureRenderObj {

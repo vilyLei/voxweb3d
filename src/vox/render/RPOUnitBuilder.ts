@@ -11,12 +11,12 @@ import RPOUnit from "../../vox/render/RPOUnit";
 
 // 这个类的实例，和每一个RPOUnit或者RODisplay关联(通过唯一的uid)
 class RCRPObj {
-    public static readonly RenerProcessMaxTotal: number = 16;
+    public static readonly RenerProcessMaxTotal = 16;
     constructor() {
     }
     // 这里假定最多有 16 个 RenderProcess, 每一个数组元素存放的是 RPONode 的uid, 数组的序号对应的是RenerProcess 的uid
-    idsFlag: number = 0x0;
-    count: number = 0;
+    idsFlag = 0x0;
+    count = 0;
     // 如果只有加入一个process的时候则有效
     rprocessUid = -1;
     reset(): void {
@@ -49,8 +49,8 @@ class RPOUnitBuilder extends PoolNodeBuilder {
         return (this.m_rcpoList[dispRUid].idsFlag & (1 << rprocessUid)) < 1;
     }
     setRPNodeParam(dispRUid: number, rprocessUid: number, rponodeUid: number): number {
-        let po: RCRPObj = this.m_rcpoList[dispRUid];
-        let flag: number = (1 << rprocessUid);
+        let po = this.m_rcpoList[dispRUid];
+        let flag = (1 << rprocessUid);
         if (rponodeUid > -1) {
             if ((po.idsFlag & flag) < 1) {
                 ++po.count;

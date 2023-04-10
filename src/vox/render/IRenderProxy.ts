@@ -78,8 +78,8 @@ export default interface IRenderProxy {
 
     lockViewport(): void;
     unlockViewport(): void;
-    getDiv(): any;
-    getCanvas(): any;
+    getDiv(): HTMLDivElement;
+    getCanvas(): HTMLCanvasElement;
     cameraLock(): void;
     cameraUnlock(): void;
     getCamera(): IRenderCamera;

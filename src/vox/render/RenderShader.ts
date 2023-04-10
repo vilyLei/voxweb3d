@@ -13,6 +13,7 @@ import IRenderShader from "../../vox/render/IRenderShader";
 import IRenderResource from "../../vox/render/IRenderResource";
 import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
+import DebugFlag from "../debug/DebugFlag";
 // import DebugFlag from "../debug/DebugFlag";
 
 /**
@@ -36,7 +37,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     private m_uniform: IRenderShaderUniform = null;
     // 只有transform相关的信息uniform
     private m_trsu: IRenderShaderUniform = null;
-    private m_shdProgramBuilder: IShaderProgramBuilder = null;
+    private m_shdPB: IShaderProgramBuilder = null;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
     drawFlag: number = -1;
 
@@ -45,11 +46,16 @@ export default class RenderShader implements IRenderShader, IRenderResource {
         this.m_rcuid = rcuid;
         this.m_rc = gl;
         this.m_adapter = adapter;
-        this.m_shdProgramBuilder = shdProgramBuilder;
+        this.m_shdPB = shdProgramBuilder;
     }
     createResByParams3(resUid: number, param0: number, param1: number, param2: number): boolean {
         return false;
     }
+	setGLCtx(gl: any): void {
+		// console.log("RenderShader::setGLCtx(), gl: ", gl);
+		this.m_rc = gl;
+		this.m_sharedUniformList = [];
+	}
     /**
      * @returns return system gpu context
      */
@@ -126,7 +132,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
      */
     hasResUid(resUid: number): boolean {
         // return this.m_shdList[resUid] != null;
-        return this.m_shdProgramBuilder.hasUid( resUid );
+        return this.m_shdPB.hasUid( resUid );
     }
     /**
      * bind the renderer runtime resource(by renderer runtime resource unique id) to the current renderer context
@@ -134,12 +140,12 @@ export default class RenderShader implements IRenderShader, IRenderResource {
      */
     bindToGpu(resUid: number): void {
         //if (this.m_unlocked && resUid > -1 && resUid < this.m_shdListLen) {
-        if (this.m_unlocked && this.m_shdProgramBuilder.containsUid( resUid )) {
+        if (this.m_unlocked && this.m_shdPB.containsUid( resUid )) {
             if (this.m_preuid != resUid) {
                 this.m_preuid = resUid;
 
                 //let shd: IShdProgram = this.m_shdList[resUid];
-                let shd = this.m_shdProgramBuilder.findShdProgramByUid(resUid);
+                let shd = this.m_shdPB.findShdProgramByUid(resUid);
                 this.m_fragOutputTotal = shd.getFragOutputTotal();
                 if (this.m_fragOutputTotal != this.getActiveAttachmentTotal()) {
                     // if(RendererDevice.SHOWLOG_ENABLED) {
@@ -149,6 +155,9 @@ export default class RenderShader implements IRenderShader, IRenderResource {
                     // }
                 }
                 this.m_gpuProgram = shd.getGPUProgram();
+				// if(DebugFlag.Flag_0 > 0) {
+				// 	console.log("this.m_gpuProgram: ", this.m_gpuProgram);
+				// }
                 this.m_rc.useProgram(this.m_gpuProgram);
                 shd.useTexLocation();
                 // console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName());
@@ -257,6 +266,11 @@ export default class RenderShader implements IRenderShader, IRenderResource {
         // console.log("useUniformV2 A, type:",type,", dataSize: ",dataSize);
         switch (type) {
             case mc.SHADER_MAT4:
+				// if(DebugFlag.Flag_0 > 0) {
+				// 	console.log("useUniformV2 Mat4, ult:",ult);
+				// 	console.log("useUniformV2 Mat4, rc:",rc);
+				// 	console.log("useUniformV2 Mat4, f32Arr:",f32Arr,", dataSize: ",dataSize);
+				// }
                 rc.uniformMatrix4fv(ult, false, f32Arr, offset, dataSize * 16);
                 break;
             case mc.SHADER_MAT3:

@@ -147,8 +147,18 @@ class ContextMouseEvtDispatcher {
             this.initMobile(canvas, div, stage);
         }
     }
+	private m_canvas: HTMLCanvasElement = null;
     private initPC(canvas: any, div: any, stage: IRenderStage3D): void {
         var pdocument: any = null;
+		if(this.m_canvas != null) {
+			let pcanvas = this.m_canvas as any;
+			pcanvas.onmousewheel = null;
+			pcanvas.onmousedown = null;
+			pcanvas.onmouseup = null;
+			pcanvas.onmousemove = null;
+			pcanvas.onclick = null;
+			pcanvas.canvas = null;
+		}
         try {
             if (document != undefined) {
                 pdocument = document;
@@ -158,6 +168,7 @@ class ContextMouseEvtDispatcher {
             console.log("ContextMouseEvtDispatcher::initPC(), document is undefined.");
         }
         if (pdocument != null) {
+			this.m_canvas = canvas;
             if (canvas.onmousewheel == undefined && canvas.addEventListener != undefined) {
                 //use firefox browser mousewheel evt
                 let func: any = function (evt: any): void {

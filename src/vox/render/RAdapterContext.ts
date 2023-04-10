@@ -69,14 +69,14 @@ class RAdapterContext implements IRAdapterContext {
     getDiv(): HTMLDivElement {
         return this.m_div;
     }
+    getCanvas(): HTMLCanvasElement {
+		return this.m_offcanvas ? this.m_offcanvas : this.m_canvas;
+    }
     setDivStyleLeftAndTop(px: number, py: number): void {
         this.m_viewEle.setDivStyleLeftAndTop(px, py);
     }
     setDivStyleSize(pw: number, ph: number): void {
         this.m_viewEle.setDivStyleSize(pw, ph);
-    }
-    getCanvas(): HTMLCanvasElement {
-        return this.m_canvas;
     }
     isDepthTestEnabled(): boolean {
         return this.m_depthTestEnabled;
@@ -84,6 +84,57 @@ class RAdapterContext implements IRAdapterContext {
     isStencilTestEnabled(): boolean {
         return this.m_stencilTestEnabled;
     }
+	private m_ctxAttri: any = null;
+	private m_glVersion = 0;
+	private buildGLCtx(canvas: any, attr: any): void {
+
+		this.m_gl = null;
+		let offscreen: any = null;
+		if (this.offscreenRenderEnabled) {
+			if(!(canvas instanceof OffscreenCanvas)) {
+				offscreen = canvas.transferControlToOffscreen();
+				canvas = offscreen;
+			}
+		}
+		this.m_offcanvas = offscreen = canvas;
+		if (this.m_maxWebGLVersion == 2) {
+			this.m_gl = offscreen == null ? canvas.getContext('webgl2', attr) : offscreen.getContext('webgl2', attr);
+			if (this.m_gl) {
+				console.log("Use WebGL2 success!");
+				this.m_webGLVersion = 2;
+			}
+			else {
+				console.log("WebGL2 can not support!");
+			}
+		}
+		if (this.m_gl == null) {
+			if (offscreen == null) {
+				this.m_gl = canvas.getContext('webgl', attr) || canvas.getContext("experimental-webgl", attr);
+			}
+			else {
+				this.m_gl = offscreen.getContext('webgl', attr) || offscreen.getContext("experimental-webgl", attr);
+			}
+			if (this.m_gl != null) {
+				console.log("Use WebGL1 success!");
+				this.m_webGLVersion = 1;
+			}
+			else {
+				console.log("WebGL1 can not support!");
+			}
+		}
+		if (!this.m_gl) {
+			this.m_webGLVersion = -1;
+			alert('Unable to initialize WebGL. Your browser or machine may not support it.');
+			throw Error("WebGL initialization failure.");
+		}
+		(this.m_gl as any).version = this.m_glVersion;
+		canvas.version = this.m_glVersion;
+		this.m_glVersion ++;
+		canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
+		canvas.addEventListener('webglcontextlost', this.contextlostHandler, false);
+
+		RCExtension.Initialize(this.m_webGLVersion, this.m_gl);
+	}
     initialize(rcuid: number, stage: IRenderStage3D, param: IRendererParam): void {
         this.m_stage = stage;
         var pdocument: any = null;
@@ -98,19 +149,19 @@ class RAdapterContext implements IRAdapterContext {
             console.log("RAdapterContext::initialize(), document is undefined.");
         }
         if (pdocument != null) {
-            let div = param.getDiv();
-            const rattr = param.getRenderContextAttri();
             this.m_dpr = window.devicePixelRatio;
+            let div = param.getDiv();
             RendererDevice.SetDevicePixelRatio(this.m_dpr);
             this.m_viewEle.setDiv(div);
-            this.m_viewEle.createViewEle(pdocument, this.autoSyncRenderBufferAndWindowSize, param.divW, param.divH);
+            this.m_viewEle.createViewEle(pdocument, this.autoSyncRenderBufferAndWindowSize, param.divW, param.divH, param.autoAttachingHtmlDoc, this.offscreenRenderEnabled);
             this.m_div = div = this.m_viewEle.getDiv();
-            let canvas: any = this.m_canvas = this.m_viewEle.getCanvas();
+            let canvas = this.m_canvas = this.m_viewEle.getCanvas();
 
             this.m_dpr = window.devicePixelRatio;
             this.m_mouseEvtDisplather.dpr = this.m_dpr;
 
-            let attr: any = rattr;
+            const rattr = param.getRenderContextAttri();
+            let attr = rattr;
             if (rattr == null) {
                 attr = { depth: this.m_depthTestEnabled, premultipliedAlpha: false, alpha: true, antialias: false, stencil: this.m_stencilTestEnabled, preserveDrawingBuffer: true, powerPreference: "default" };
                 // attr = { depth: this.m_depthTestEnabled, premultipliedAlpha: false, alpha: true, antialias: false, stencil: this.m_stencilTestEnabled, preserveDrawingBuffer: true, powerPreference: "high-performance" };
@@ -119,20 +170,27 @@ class RAdapterContext implements IRAdapterContext {
                 this.m_depthTestEnabled = attr.depth;
                 this.m_stencilTestEnabled = attr.stencil;
             }
+			this.m_ctxAttri = attr;
+
+            console.log("offscreenRenderEnabled: ", this.offscreenRenderEnabled);
             console.log("this.m_dpr: ", this.m_dpr, ",rattr == null: ", (rattr == null));
             console.log("depthTestEnabled: ", attr.depth);
             console.log("stencilTestEnabled: ", attr.stencil);
             console.log("antialiasEnabled: ", attr.antialias);
             console.log("alphaEnabled: ", attr.alpha);
 
+			this.buildGLCtx(canvas, attr);
+			/*
             let offscreen: any = null;
             if (this.offscreenRenderEnabled) {
-                offscreen = canvas.transferControlToOffscreen();
+				if(!(canvas instanceof OffscreenCanvas)) {
+					offscreen = canvas.transferControlToOffscreen();
+				}
             }
             this.m_offcanvas = offscreen;
             if (this.m_maxWebGLVersion == 2) {
                 this.m_gl = offscreen == null ? canvas.getContext('webgl2', attr) : offscreen.getContext('webgl2', attr);
-                if (this.m_gl != null) {
+                if (this.m_gl) {
                     console.log("Use WebGL2 success!");
                     this.m_webGLVersion = 2;
                 }
@@ -161,6 +219,10 @@ class RAdapterContext implements IRAdapterContext {
                 throw Error("WebGL initialization failure.");
                 return;
             }
+            canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
+            canvas.addEventListener('webglcontextlost', this.contextlostHandler, false);
+			//*/
+
             let gl: any = this.m_gl;
             gl.rcuid = rcuid;
 
@@ -214,7 +276,6 @@ class RAdapterContext implements IRAdapterContext {
             let viewPortIMS: any = this.m_gl.getParameter(this.m_gl.MAX_VIEWPORT_DIMS);
             device.MAX_VIEWPORT_WIDTH = viewPortIMS[0];
             device.MAX_VIEWPORT_HEIGHT = viewPortIMS[1];
-            RCExtension.Initialize(this.m_webGLVersion, this.m_gl);
             RendererDevice.Initialize([this.m_webGLVersion]);
 
             console.log("RadapterContext stage: ", stage);
@@ -238,8 +299,8 @@ class RAdapterContext implements IRAdapterContext {
             //  console.log("rc_renderer: ",rc_renderer);
             let debugInfo: any = RCExtension.WEBGL_debug_renderer_info;
             if (debugInfo != null) {
-                let webgl_vendor: any = this.m_gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-                let webgl_renderer: any = this.m_gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                let webgl_vendor = this.m_gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+                let webgl_renderer = this.m_gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
                 device.GPU_VENDOR = webgl_vendor;
                 device.GPU_RENDERER = webgl_renderer;
                 console.log("webgl_vendor: ", webgl_vendor);
@@ -256,8 +317,6 @@ class RAdapterContext implements IRAdapterContext {
                     this.updateRenderBufferSize();
                 }
             }
-            canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
-            canvas.addEventListener('webglcontextlost', this.contextlostHandler, false);
             this.updateRenderBufferSize();
         }
         else {
@@ -265,15 +324,26 @@ class RAdapterContext implements IRAdapterContext {
         }
     }
     private m_resizeFlag = true;
-    private m_WEBGL_lose_context: any = null;
+    private m_glLoseCtx: any = null;
 
+	setCanvas(canvas: HTMLCanvasElement): boolean {
+		let c0 = this.m_canvas;
+		this.m_viewEle.setCanvas(canvas);
+		let c1 = this.m_viewEle.getCanvas();
+		if(c0 != c1) {
+			this.m_offcanvas = null;
+			this.m_canvas = c1;
+			this.buildGLCtx(c1, this.m_ctxAttri);
+			this.m_glLoseCtx = null;
+            this.m_mouseEvtDisplather.initialize(c1, this.m_div, this.m_stage);
+		}
+		return c0 != c1;
+	}
     loseContext(): void {
 
-        if (this.m_WEBGL_lose_context == null) {
-            this.m_WEBGL_lose_context = this.m_gl.getExtension('WEBGL_lose_context');
-        }
-        if (this.m_WEBGL_lose_context == null) {
-            this.m_WEBGL_lose_context.loseContext();
+        if (!this.m_glLoseCtx) {
+            this.m_glLoseCtx = this.m_gl.getExtension('WEBGL_lose_context');
+            this.m_glLoseCtx.loseContext();
         }
     }
     /**
@@ -429,12 +499,18 @@ class RAdapterContext implements IRAdapterContext {
 	 * @param sync the default value is true
 	 */
     updateRenderBufferSize(sync: boolean = true): void {
-        let rect = this.m_div.getBoundingClientRect();
-        console.log("updateRenderBufferSize() rect.width, rect.height: ", rect.width, rect.height);
-        this.m_canvas.style.width = Math.floor(rect.width) + 'px';
-        this.m_canvas.style.height = Math.floor(rect.height) + 'px';
-        rect = this.m_div.getBoundingClientRect();
-        this.resizeBufferSize(rect.width, rect.height, sync);
+		const div = this.m_div;
+		if(div.parentElement) {
+			let rect = div.getBoundingClientRect();
+			// console.log("updateRenderBufferSize() rect.width, rect.height: ", rect.width, rect.height);
+			this.m_canvas.style.width = Math.floor(rect.width) + 'px';
+			this.m_canvas.style.height = Math.floor(rect.height) + 'px';
+			rect = div.getBoundingClientRect();
+			this.resizeBufferSize(rect.width, rect.height);
+		}else {
+			const canvas = this.m_offcanvas ? this.m_offcanvas : this.m_canvas;
+			this.resizeBufferSize(canvas.width, canvas.height, false);
+		}
     }
 }
 export default RAdapterContext;

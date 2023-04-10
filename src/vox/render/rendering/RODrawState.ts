@@ -30,9 +30,12 @@ export class RODrawState implements IRODrawState {
     reset(): void {
         this.roColorMask = -11;
     }
+	updateGLCtx(): void {
+        this.m_gl = this.m_context.getRC();
+	}
     setRenderContext(context: IRAdapterContext): void {
         this.m_context = context;
-        this.m_gl = context.getRC();
+        this.m_gl = this.m_context.getRC();
         let rcui = this.m_gl.rcuid as number;
         this.m_unit = this.m_units[rcui];
         if(this.m_unit == null) {

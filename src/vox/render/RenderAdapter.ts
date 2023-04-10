@@ -33,32 +33,32 @@ import DebugFlag from "../debug/DebugFlag";
 class RenderAdapter implements IRenderAdapter {
 
 	// renderer context uid
-	private m_rcuid: number = 0;
+	private m_rcuid = 0;
 	private m_texResource: ROTextureResource = null;
 	private m_gl: any = null;
-	private m_fontFaceFlipped: boolean = false;// default ccw
+	private m_fontFaceFlipped = false;// default ccw
 	private m_colorMask: any = { mr: true, mg: true, mb: true, ma: true };
 	private m_rtx: RAdapterContext = null;
-	private m_clearMask: number = 0x0;
+	private m_clearMask = 0x0;
 	private m_fboBuf: FrameBufferObject = null;
-	private m_fboIndex: number = 0;
-	private m_fboType: number = FrameBufferType.FRAMEBUFFER;
+	private m_fboIndex = 0;
+	private m_fboType = FrameBufferType.FRAMEBUFFER;
 	private m_fboBufList: FrameBufferObject[] = [null, null, null, null, null, null, null, null];
-	private m_fboClearBoo: boolean = true;
-	private m_fboViewportRectBoo: boolean = false;
-	private m_polygonOffsetFlag: boolean = false;
-	private m_polygonOffset: boolean = false;
+	private m_fboClearBoo = true;
+	private m_fboViewportRectBoo = false;
+	private m_polygonOffsetFlag = false;
+	private m_polygonOffset = false;
 
-	private m_clearDepth: number = 1.0;
-	private m_preDepth: number = 0.0;
-	private m_viewPortRect: AABB2D = new AABB2D(0, 0, 800, 600);
-	private m_fboViewportRect: AABB2D = new AABB2D(0, 0, 800, 600);
-	private m_fboSizeFactor: number = 1.0;
-	private m_clearStencil: number = 0x0;
+	private m_clearDepth = 1.0;
+	private m_preDepth = 0.0;
+	private m_viewPortRect = new AABB2D(0, 0, 800, 600);
+	private m_fboViewportRect = new AABB2D(0, 0, 800, 600);
+	private m_fboSizeFactor = 1.0;
+	private m_clearStencil = 0x0;
 	private m_fboBiltRectData: Uint16Array = new Uint16Array(8);
 	private m_fboViewportRectData: Uint16Array = new Uint16Array(4);
-	private m_activeAttachmentTotal: number = 1;
-	private m_scissorEnabled: boolean = false;
+	private m_activeAttachmentTotal = 1;
+	private m_scissorEnabled = false;
 	private m_rState: RODrawState = null;
 	private m_webglVer = 2;
 	private m_syncBgColor = true;
@@ -78,36 +78,50 @@ class RenderAdapter implements IRenderAdapter {
 			this.m_rtx.syncHtmlBodyColor(c[0], c[1], c[2]);
 		}
 	}
+	private initGLCtx(context: RAdapterContext, param: IRendererParam): void {
+
+		if(param.getScissorTestEanbled()) {
+			this.m_gl.enable(this.m_gl.SCISSOR_TEST);
+		}else {
+			this.m_gl.disable(this.m_gl.SCISSOR_TEST);
+		}
+		if (context.isDepthTestEnabled()) this.m_gl.enable(this.m_gl.DEPTH_TEST);
+		else this.m_gl.disable(this.m_gl.DEPTH_TEST);
+
+		if (context.isStencilTestEnabled()) {
+			this.m_gl.enable(this.m_gl.STENCIL_TEST);
+		}
+		else {
+			console.warn("STENCIL_TEST disable !!!");
+			this.m_gl.disable(this.m_gl.STENCIL_TEST);
+		}
+		if (param.getPolygonOffsetEanbled()) this.enabledPolygonOffset();
+		else this.disabledPolygonOffset();
+
+		this.m_gl.enable(this.m_gl.CULL_FACE);
+		this.m_gl.cullFace(this.m_gl.BACK);
+		this.m_gl.enable(this.m_gl.BLEND);
+		this.m_gl.enable(this.m_gl.BLEND);
+
+		if (param.getDitherEanbled()) this.m_gl.enable(this.m_gl.DITHER);
+		else this.m_gl.disable(this.m_gl.DITHER);
+		this.m_gl.frontFace(this.m_gl.CCW);
+	}
+	private m_param: IRendererParam = null;
+	updateGLCtx(): void {
+		this.m_gl = this.m_rtx.getRC();
+		this.initGLCtx(this.m_rtx, this.m_param);
+	}
 	initialize(context: RAdapterContext, param: IRendererParam, rState: RODrawState, uViewProbe: IShaderUniformProbe): void {
 		if (this.m_rtx == null) {
 			this.m_syncBgColor = param.syncBgColor;
 			this.m_webglVer = context.getWebGLVersion();
 			this.m_rState = rState;
 			this.m_rtx = context;
+
+			this.m_param = param;
 			this.m_gl = context.getRC();
-
-			this.m_gl.disable(this.m_gl.SCISSOR_TEST);
-			if (context.isDepthTestEnabled()) this.m_gl.enable(this.m_gl.DEPTH_TEST);
-			else this.m_gl.disable(this.m_gl.DEPTH_TEST);
-
-			if (context.isStencilTestEnabled()) {
-				this.m_gl.enable(this.m_gl.STENCIL_TEST);
-			}
-			else {
-				console.warn("STENCIL_TEST disable !!!");
-				this.m_gl.disable(this.m_gl.STENCIL_TEST);
-			}
-			if (param.getPolygonOffsetEanbled()) this.enabledPolygonOffset();
-			else this.disabledPolygonOffset();
-
-			this.m_gl.enable(this.m_gl.CULL_FACE);
-			this.m_gl.cullFace(this.m_gl.BACK);
-			this.m_gl.enable(this.m_gl.BLEND);
-			this.m_gl.enable(this.m_gl.BLEND);
-
-			if (param.getDitherEanbled()) this.m_gl.enable(this.m_gl.DITHER);
-			else this.m_gl.disable(this.m_gl.DITHER);
-			this.m_gl.frontFace(this.m_gl.CCW);
+			this.initGLCtx(context, param);
 
 			//m_gl.hint(m_gl.PERSPECTIVE_CORRECTION_HINT, m_gl.NICEST);	// Really Nice Perspective Calculations
 			this.m_clearMask = this.m_gl.COLOR_BUFFER_BIT | this.m_gl.DEPTH_BUFFER_BIT | this.m_gl.STENCIL_BUFFER_BIT;
@@ -156,7 +170,7 @@ class RenderAdapter implements IRenderAdapter {
 	 * @param factor the value is a GLfloat which sets the scale factor for the variable depth offset for each polygon. The default value is 0.
 	 * @param units the value is a which sets the multiplier by which an implementation-specific value is multiplied with to create a constant depth offset. The default value is 0.
 	 */
-	setPolygonOffset(factor: number, units: number = 0.0): void {
+	setPolygonOffset(factor: number, units = 0.0): void {
 		this.m_gl.polygonOffset(factor, units);
 		this.m_polygonOffsetFlag = true;
 	}
@@ -230,7 +244,7 @@ class RenderAdapter implements IRenderAdapter {
 	 * only clear up depth buffer
 	 * @param depth depth buffer depth value
 	 */
-	clearDepth(depth: number = 1.0): void {
+	clearDepth(depth = 1.0): void {
 
 		let mode = this.m_rState.getDepthTestMode();
 		this.m_rState.setDepthTestMode(DepthTestMode.OPAQUE);
@@ -287,7 +301,8 @@ class RenderAdapter implements IRenderAdapter {
 		// 	console.log("clear >>>>>>>");
 		// }
 		// if(DebugFlag.Flag_0 > 0) {
-		// 	console.log("color cvs: ", cvs);
+		// 	console.log("RenderAdapter::clear(), this.m_gl: ", this.m_gl);
+		// 	console.log("RenderAdapter::clear(), color cvs: ", cvs);
 		// }
 		this.m_gl.clearColor(cvs[0], cvs[1], cvs[2], cvs[3]);
 		this.m_gl.clear(this.m_clearMask);
@@ -320,8 +335,8 @@ class RenderAdapter implements IRenderAdapter {
 			this.clear();
 		}
 	}
-	private m_devPRatio: number = 1.0;
-	private m_viewportUnlock: boolean = true;
+	private m_devPRatio = 1.0;
+	private m_viewportUnlock = true;
 
 	private updateViewPort(): void {
 		let size = this.m_viewPortRect;
@@ -373,7 +388,7 @@ class RenderAdapter implements IRenderAdapter {
 	/**
 	 * @param sync the default value is true
 	 */
-	updateRenderBufferSize(sync: boolean = true): void {
+	updateRenderBufferSize(sync = true): void {
 		this.m_rtx.updateRenderBufferSize(sync);
 	}
 	destroy(): void {
@@ -404,7 +419,7 @@ class RenderAdapter implements IRenderAdapter {
 		this.m_fboViewportRectData[3] = ph;
 		this.m_fboViewportRectBoo = true;
 	}
-	createFBOAt(index: number, fboType: number, pw: number, ph: number, enableDepth: boolean = false, enableStencil: boolean = false, multisampleLevel: number = 0): void {
+	createFBOAt(index: number, fboType: number, pw: number, ph: number, enableDepth = false, enableStencil = false, multisampleLevel = 0): void {
 		if (this.m_fboBufList[index] == null) {
 			if (index > 7) {
 				index = 7;
@@ -443,7 +458,7 @@ class RenderAdapter implements IRenderAdapter {
 		}
 		return 0;
 	}
-	private m_synFBOSizeWithViewport: boolean = false;
+	private m_synFBOSizeWithViewport = false;
 	synFBOSizeWithViewport(): void {
 		this.m_synFBOSizeWithViewport = true;
 	}
@@ -476,7 +491,7 @@ class RenderAdapter implements IRenderAdapter {
 			throw Error("Fatal Error!!! this.m_fboBuf == null.");
 		}
 	}
-	clearFBODepthAt(index: number, clearDepth: number = 1.0): void {
+	clearFBODepthAt(index: number, clearDepth = 1.0): void {
 		let fboBuf = this.m_fboBufList[index];
 		if (fboBuf != null) {
 			fboBuf.clearOnlyDepth(clearDepth);
@@ -510,7 +525,7 @@ class RenderAdapter implements IRenderAdapter {
 	 * @param enableStencil  enable stencil buffer yes or no
 	 * @param attachmentIndex  fbo attachment index
 	 */
-	setRenderToTexture(texProxy: IRenderTexture, enableDepth: boolean = false, enableStencil: boolean = false, attachmentIndex: number = 0): void {
+	setRenderToTexture(texProxy: IRenderTexture, enableDepth = false, enableStencil = false, attachmentIndex = 0): void {
 		if (attachmentIndex < 0 || attachmentIndex >= 8) {
 			attachmentIndex = 0;
 		}
@@ -567,7 +582,7 @@ class RenderAdapter implements IRenderAdapter {
 	getAttachmentTotal(): number {
 		return this.m_activeAttachmentTotal;
 	}
-	useFBO(clearColorBoo: boolean = false, clearDepthBoo: boolean = false, clearStencilBoo: boolean = false): void {
+	useFBO(clearColorBoo = false, clearDepthBoo = false, clearStencilBoo = false): void {
 		if (this.m_fboBuf != null) {
 			if (this.m_fboClearBoo) {
 				this.m_fboClearBoo = false;
@@ -639,7 +654,7 @@ class RenderAdapter implements IRenderAdapter {
 			}
 		}
 	}
-	setRenderToBackBuffer(frameBufferType: number = FrameBufferType.FRAMEBUFFER): void {
+	setRenderToBackBuffer(frameBufferType = FrameBufferType.FRAMEBUFFER): void {
 		this.m_fboRunning = false;
 		this.m_activeAttachmentTotal = 1;
 		FrameBufferObject.BindToBackbuffer(this.m_gl, frameBufferType);
@@ -671,7 +686,7 @@ class RenderAdapter implements IRenderAdapter {
 	/**
 	 * @oaram			clearType, it is RenderProxy.COLOR or RenderProxy.DEPTH or RenderProxy.STENCIL or RenderProxy.DEPTH_STENCIL
 	*/
-	blitFBO(readFBOIndex: number = 0, writeFBOIndex: number = 0, mask_bitfiled: number = RenderMaskBitfield.COLOR_BUFFER_BIT, filter: number = RenderFilter.NEAREST, clearType: number = 0, clearIndex: number = 0, dataArr: number[] = null): void {
+	blitFBO(readFBOIndex = 0, writeFBOIndex = 0, mask_bitfiled = RenderMaskBitfield.COLOR_BUFFER_BIT, filter = RenderFilter.NEAREST, clearType = 0, clearIndex = 0, dataArr: number[] = null): void {
 		if (readFBOIndex > 7) {
 			readFBOIndex = 7;
 		}

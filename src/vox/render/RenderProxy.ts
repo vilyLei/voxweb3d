@@ -106,7 +106,7 @@ class RenderProxy implements IRenderProxy {
     private m_uid: number = 0;
     private m_camUBO: any = null;
     private m_adapter: RenderAdapter = null;
-    private m_adapterContext = new RAdapterContext();
+    private m_actx = new RAdapterContext();
     private m_vtxRes: ROVertexResource;
     private m_rc: any = null;
     private m_perspectiveEnabled = true;
@@ -245,10 +245,10 @@ class RenderProxy implements IRenderProxy {
         }
     }
     getContext(): RAdapterContext {
-        return this.m_adapterContext;
+        return this.m_actx;
     }
     getStage3D(): IRenderStage3D {
-        return this.m_adapterContext.getStage();
+        return this.m_actx.getStage();
     }
     getRenderAdapter(): IRenderAdapter {
         return this.m_adapter;
@@ -263,14 +263,14 @@ class RenderProxy implements IRenderProxy {
         this.m_cameraFar = far;
     }
     getMouseXYWorldRay(rl_position: IVector3D, rl_tv: IVector3D): void {
-        let stage = this.m_adapterContext.getStage();
+        let stage = this.m_actx.getStage();
         this.m_camera.getWorldPickingRayByScreenXY(stage.mouseX, stage.mouseY, rl_position, rl_tv);
     }
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
         return this.m_viewPortRect.testEqualWithParams(px, py, pw, ph);
     }
     testRCViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
-        return this.m_adapterContext.testViewPortChanged(px, py, pw, ph);
+        return this.m_actx.testViewPortChanged(px, py, pw, ph);
     }
     getDevicePixelRatio(): number { return this.adapter.getDevicePixelRatio(); }
     getViewX(): number { return this.m_viewPortRect.x; }
@@ -282,16 +282,16 @@ class RenderProxy implements IRenderProxy {
         this.m_autoSynViewAndStage = false;
 
         this.m_viewPortRect.setTo(px, py, pw, ph);
-        let stage = this.m_adapterContext.getStage();
+        let stage = this.m_actx.getStage();
         if (stage) {
             stage.setViewPort(pw, py, pw, ph);
             this.updateCameraView();
         }
-        this.m_adapterContext.setViewport(px, py, pw, ph);
+        this.m_actx.setViewport(px, py, pw, ph);
     }
     setRCViewPort(px: number, py: number, pw: number, ph: number, autoSynViewAndStage: boolean = false): void {
         this.m_autoSynViewAndStage = autoSynViewAndStage;
-        this.m_adapterContext.setViewport(px, py, pw, ph);
+        this.m_actx.setViewport(px, py, pw, ph);
     }
     reseizeRCViewPort(): void {
         this.m_adapter.unlockViewport();
@@ -308,12 +308,12 @@ class RenderProxy implements IRenderProxy {
         // console.log("XXX resizeCallback(), m_autoSynViewAndStage: "+this.m_autoSynViewAndStage);
         if (this.m_autoSynViewAndStage) {
             let rect = this.m_viewPortRect;
-            rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
+            rect.setSize(this.m_actx.getRCanvasWidth(), this.m_actx.getRCanvasHeight());
 
             this.createMainCamera();
 
             console.log("resizeCallback(), viewW,viewH: ", rect.width+","+rect.height);
-            this.m_adapterContext.setViewport(rect.x, rect.y, rect.width, rect.height);
+            this.m_actx.setViewport(rect.x, rect.y, rect.width, rect.height);
 
             this.updateCameraView();
         }
@@ -376,6 +376,23 @@ class RenderProxy implements IRenderProxy {
                 1);
         }
     }
+	setCanvas(canvas: HTMLCanvasElement): boolean {
+		if( this.m_actx.setCanvas(canvas) ) {
+
+			this.m_rc = this.m_actx.getRC();
+			let gl = this.m_rc;
+			let selfT: any = this;
+			selfT.adapter.updateGLCtx();
+			selfT.Vertex.setGLCtx(gl);
+			selfT.Texture.setGLCtx(gl);
+			selfT.rshader.setGLCtx(gl);
+			selfT.rshader.renderBegin();
+			selfT.RDrawState.updateGLCtx();
+			selfT.RContext = this.m_rc;
+			return true;
+		}
+		return false;
+	}
     initialize(param: IRendererParam, camera: IRenderCamera, stage: IRenderStage3D, proxyParam: RenderProxyParam): void {
         if (this.m_rc != null) {
             return;
@@ -389,17 +406,18 @@ class RenderProxy implements IRenderProxy {
         if (stage != null) stage.uProbe = proxyParam.uniformContext.createUniformVec4Probe(1);
 
         this.m_perspectiveEnabled = param.cameraPerspectiveEnabled;
-        this.m_adapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
-        this.m_adapterContext.setResizeCallback(():void=>{
+        this.m_actx.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
+        this.m_actx.offscreenRenderEnabled = param.offscreenRenderEnabled;
+        this.m_actx.setResizeCallback(():void=>{
             this.resizeCallback();
         });
-        this.m_adapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
-        this.m_adapterContext.initialize(this.m_uid, stage, param);
-        this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
-        this.m_rc = this.m_adapterContext.getRC();
+        this.m_actx.setWebGLMaxVersion(this.m_maxWebGLVersion);
+        this.m_actx.initialize(this.m_uid, stage, param);
+        this.m_WEBGL_VER = this.m_actx.getWebGLVersion();
+        this.m_rc = this.m_actx.getRC();
 
         let selfT: any = this;
-        let gl: any = this.m_rc;
+        let gl = this.m_rc;
         let vtxRes = new ROVertexResource(this.m_uid, gl, proxyParam.vtxBuilder);
         let texRes = new ROTextureResource(this.m_uid, gl);
         this.m_vtxRes = vtxRes;
@@ -410,7 +428,7 @@ class RenderProxy implements IRenderProxy {
         selfT.uniformContext = proxyParam.uniformContext;
 
         let rstate = new RODrawState();
-        rstate.setRenderContext(this.m_adapterContext);
+        rstate.setRenderContext(this.m_actx);
         let obj: any = RendererState;
         new RSTBuilder().initialize(obj, rstate, new VROBase());
 
@@ -423,14 +441,14 @@ class RenderProxy implements IRenderProxy {
         this.buildCameraParam();
 
         let rect = this.m_viewPortRect;
-        rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
+        rect.setSize(this.m_actx.getRCanvasWidth(), this.m_actx.getRCanvasHeight());
 
         this.m_adapter = new RenderAdapter(this.m_uid, texRes);
-        this.m_adapter.initialize(this.m_adapterContext, param, rstate, this.uniformContext.createUniformVec4Probe(1));
+        this.m_adapter.initialize(this.m_actx, param, rstate, this.uniformContext.createUniformVec4Probe(1));
 
         selfT.adapter = this.m_adapter;
         if (this.m_autoSynViewAndStage) {
-            let stage = this.m_adapterContext.getStage();
+            let stage = this.m_actx.getStage();
             if (stage != null) {
                 rect.setSize(rect.width, rect.height);
             }
@@ -438,7 +456,7 @@ class RenderProxy implements IRenderProxy {
 
         this.createMainCamera();
 
-        this.m_adapterContext.setViewport(rect.x, rect.y, rect.width, rect.height);
+        this.m_actx.setViewport(rect.x, rect.y, rect.width, rect.height);
         this.m_camera.lookAtRH(posV3, lookAtPosV3, upV3);
         this.m_camera.update();
 
@@ -474,7 +492,7 @@ class RenderProxy implements IRenderProxy {
         classRenderMaskBitfield.COLOR_BUFFER_BIT = gl.COLOR_BUFFER_BIT;
         classRenderMaskBitfield.DEPTH_BUFFER_BIT = gl.DEPTH_BUFFER_BIT;
         classRenderMaskBitfield.STENCIL_BUFFER_BIT = gl.STENCIL_BUFFER_BIT;
-        RenderFBOProxy.SetRenderer(this.m_adapterContext);
+        RenderFBOProxy.SetRenderer(this.m_actx);
     }
     flush(): void {
         this.m_rc.flush();
@@ -534,10 +552,10 @@ class RenderProxy implements IRenderProxy {
         RenderStateObject.UseRenderStateByName(stateName);
     }
     setScissorEnabled(boo: boolean): void {
-        this.m_adapterContext.setScissorEnabled(boo);
+        this.m_actx.setScissorEnabled(boo);
     }
     setScissorRect(px: number, py: number, pw: number, ph: number): void {
-        this.m_adapterContext.setScissorRect(px, py, pw, ph);
+        this.m_actx.setScissorRect(px, py, pw, ph);
     }
     useRenderColorMask(state: number): void {
         RenderColorMask.UseRenderState(state);
@@ -603,9 +621,6 @@ class RenderProxy implements IRenderProxy {
     }
     setViewProbeValue(x: number, y: number, width: number, height: number): void {
         this.m_adapter.setViewProbeValue(x, y, width, height);
-    }
-    toString(): string {
-        return "[Object RenderProxy()]";
     }
 }
 export { RenderProxyParam, RenderProxy }

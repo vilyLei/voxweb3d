@@ -8,6 +8,7 @@
 import IROVtxBuilder from "../../vox/render/IROVtxBuilder";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import VROBase from "../../vox/render/VROBase";
+import DebugFlag from "../debug/DebugFlag";
 
 export default class VaoVertexRenderObj extends VROBase {
     private static s_uid: number = 0;
@@ -24,7 +25,9 @@ export default class VaoVertexRenderObj extends VROBase {
 
     run(): void {
         if (this.m_rc.testVROUid(this.m_uid) || this.indicesRes.test()) {
-            // console.log("VaoVertexRenderObj::run(), rcuid: ",this.m_rc.getRCUid(),this.m_vtxUid, this.m_uid);
+			// if(DebugFlag.Flag_0 > 0) {
+			// 	console.log("VaoVertexRenderObj::run(), rcuid: ",this.m_rc.getRCUid(),this.m_vtxUid, this.m_uid);
+			// }
             this.m_rc.bindVertexArray(this.vao);
             this.indicesRes.bindToGPU(VROBase.s_mid != this.m_mid);
             VROBase.s_mid = this.m_mid;

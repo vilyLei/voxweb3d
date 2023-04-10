@@ -37,6 +37,10 @@ class ROVertexResource implements IRenderResource {
         this.m_gl = gl;
         this.m_vtxBuilder = vtxBuilder;
     }
+	setGLCtx(gl: any): void {
+        this.m_gl = gl;
+		(this.m_vtxBuilder as any).setGLCtx(gl);
+	}
     /**
      * set the updating times total that update vertex data to gpu in one frame time
      * @param total updating times total, the min value is 4, the default value is 16
@@ -164,7 +168,7 @@ class ROVertexResource implements IRenderResource {
                     }
                 }
             }
-            else {                
+            else {
                 this.m_haveDeferredUpdate = false;
             }
         }
