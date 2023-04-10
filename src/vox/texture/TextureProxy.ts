@@ -52,7 +52,7 @@ export class TextureProxy implements IRenderTexture {
     flipY = false;
     premultiplyAlpha = false;
     /**
-     * the value contains (1,2,4,8) 
+     * the value contains (1,2,4,8)
      */
     unpackAlignment: number = 4;
     minFilter: number = TextureConst.LINEAR_MIPMAP_LINEAR;
@@ -83,7 +83,7 @@ export class TextureProxy implements IRenderTexture {
         resTex.bindToGpu(this.getResUid());
     }
     __$setRenderProxy(rc: IRenderProxy): void {
-        if (this.m_slot != null) {
+        if (this.m_slot) {
             this.m_renderProxy = rc;
         }
         else {
