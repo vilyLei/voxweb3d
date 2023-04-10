@@ -1,15 +1,20 @@
 
+interface IFileUrlObj {
+	name: string;
+	type: string;
+	resType: string;
+	url: string;
+}
 interface IDropFileListerner {
 	isDropEnabled(): boolean;
-	initFileLoad(files: any[]): void;
+	initFileLoad(files: IFileUrlObj[]): void;
 }
 class DropFileController {
 	private m_canvas: HTMLCanvasElement = null;
 	private m_listener: IDropFileListerner = null;
-	constructor() { }
+	constructor() {}
 
 	initialize(canvas: HTMLCanvasElement, listener: IDropFileListerner): void {
-
 		if (this.m_canvas == null) {
 			this.m_canvas = canvas;
 			this.m_listener = listener;
@@ -17,34 +22,49 @@ class DropFileController {
 		}
 	}
 	private initDrop(canvas: HTMLCanvasElement): void {
-
 		// --------------------------------------------- 阻止必要的行为 begin
-		canvas.addEventListener("dragenter", (e) => {
-			e.preventDefault();
-			e.stopPropagation();
-		}, false);
+		canvas.addEventListener(
+			"dragenter",
+			e => {
+				e.preventDefault();
+				e.stopPropagation();
+			},
+			false
+		);
 
-		canvas.addEventListener("dragover", (e) => {
-			e.preventDefault();
-			e.stopPropagation();
-		}, false);
+		canvas.addEventListener(
+			"dragover",
+			e => {
+				e.preventDefault();
+				e.stopPropagation();
+			},
+			false
+		);
 
-		canvas.addEventListener("dragleave", (e) => {
-			e.preventDefault();
-			e.stopPropagation();
-		}, false);
+		canvas.addEventListener(
+			"dragleave",
+			e => {
+				e.preventDefault();
+				e.stopPropagation();
+			},
+			false
+		);
 
-		canvas.addEventListener("drop", (e) => {
-			e.preventDefault();
-			e.stopPropagation();
-			console.log("canvas drop evt.", e);
-			this.receiveDropFile(e);
-		}, false);
+		canvas.addEventListener(
+			"drop",
+			e => {
+				e.preventDefault();
+				e.stopPropagation();
+				console.log("canvas drop evt.", e);
+				this.receiveDropFile(e);
+			},
+			false
+		);
 	}
-
+	private m_files: any[] = null;
 	private receiveDropFile(e: DragEvent): void {
+		this.m_files = null;
 		if (this.m_listener.isDropEnabled()) {
-
 			let dt = e.dataTransfer;
 			// 只能拽如一个文件或者一个文件夹里面的所有文件。如果文件夹里面有子文件夹则子文件夹中的文件不会载入
 			let files: any = [];
@@ -62,7 +82,7 @@ class DropFileController {
 							let file = item.getAsFile();
 							// console.log("drop a file: ", file);
 							files.push(file);
-							this.m_listener.initFileLoad(files);
+							this.initFileLoad(files);
 							filesTotal = 1;
 						} else if (entity.isDirectory) {
 							// let file = item.getAsFile();
@@ -78,7 +98,7 @@ class DropFileController {
 												files.push(file);
 												filesCurrTotal++;
 												if (filesTotal == filesCurrTotal) {
-													this.m_listener.initFileLoad(files);
+													this.initFileLoad(files);
 												}
 											});
 										}
@@ -94,18 +114,63 @@ class DropFileController {
 						break;
 					}
 				}
+				this.m_files = files;
 			}
 		}
 	}
-	alertShow(flag: number): void {
+	private alertShow(flag: number): void {
 		switch (flag) {
 			case 31:
-				alert("没有找到对应的文件");
+				alert("无法找到或无法识别对应的文件");
 				break;
 			default:
 				break;
 		}
 	}
+	private initFileLoad(files: any): void {
+		this.m_files = null;
+		if (this.m_listener) {
+			this.m_files = files;
+			this.m_listener.initFileLoad(this.getFiles());
+		}
+	}
+	readonly imgKeys = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
+	readonly geomModelKeys = ["obj", "ctm", "draco", "drc", "fbx"];
+	private testFile(name: string): IFileUrlObj {
+		let pns = name.toLocaleLowerCase();
+		let suffixNS = "";
+		if (pns.indexOf(".") > 0) {
+			suffixNS = pns.slice(pns.indexOf(".") + 1);
+			console.log("suffixNS: ", suffixNS);
+		}
+		if (this.imgKeys.includes(suffixNS)) {
+			return { name: name, type: suffixNS, resType: "image", url: "" };
+		}else if (this.geomModelKeys.includes(suffixNS)) {
+			return { name: name, type: suffixNS, resType: "geometryModel", url: "" };
+		}
+		return null;
+	}
+	private getFiles(): IFileUrlObj[] {
+		let flag = 1;
+		let files = this.m_files;
+		if (files) {
+			if (files.length > 0) {
+				let urls: IFileUrlObj[] = [];
+				for (let i = 0; i < files.length; i++) {
+					let obj = this.testFile(files[i].name);
+					if (obj) {
+						obj.url = window.URL.createObjectURL(files[i]);
+						urls.push(obj);
+					}
+				}
+				return urls;
+			} else {
+				flag = 31;
+			}
+		}
+		this.alertShow(flag);
+		return null;
+	}
 }
 
-export { IDropFileListerner, DropFileController };
+export { IFileUrlObj, IDropFileListerner, DropFileController };
