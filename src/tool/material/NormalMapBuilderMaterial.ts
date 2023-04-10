@@ -8,98 +8,7 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
-/*
 
-struct pixel
-{
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
-};
-
-struct vector3d; // a 3-vector with doubles
-struct texture; // a 2d array of pixels
-
-// determine intensity of pixel, from 0 - 1
-const double intensity(const pixel& pPixel)
-{
-    const double r = static_cast<double>(pPixel.red);
-    const double g = static_cast<double>(pPixel.green);
-    const double b = static_cast<double>(pPixel.blue);
-
-    const double average = (r + g + b) / 3.0;
-
-    return average / 255.0;
-}
-
-const int clamp(int pX, int pMax)
-{
-    if (pX > pMax)
-    {
-        return pMax;
-    }
-    else if (pX < 0)
-    {
-        return 0;
-    }
-    else
-    {
-        return pX;
-    }
-}
-
-// transform -1 - 1 to 0 - 255
-const uint8_t map_component(double pX)
-{
-    return (pX + 1.0) * (255.0 / 2.0);
-}
-
-texture normal_from_height(const texture& pTexture, double pStrength = 2.0)
-{
-    // assume square texture, not necessarily true in real code
-    texture result(pTexture.size(), pTexture.size());
-
-    const int textureSize = static_cast<int>(pTexture.size());
-    for (size_t row = 0; row < textureSize; ++row)
-    {
-        for (size_t column = 0; column < textureSize; ++column)
-        {
-            // surrounding pixels
-            const pixel topLeft = pTexture(clamp(row - 1, textureSize), clamp(column - 1, textureSize));
-            const pixel top = pTexture(clamp(row - 1, textureSize), clamp(column, textureSize));
-            const pixel topRight = pTexture(clamp(row - 1, textureSize), clamp(column + 1, textureSize));
-            const pixel right = pTexture(clamp(row, textureSize), clamp(column + 1, textureSize));
-            const pixel bottomRight = pTexture(clamp(row + 1, textureSize), clamp(column + 1, textureSize));
-            const pixel bottom = pTexture(clamp(row + 1, textureSize), clamp(column, textureSize));
-            const pixel bottomLeft = pTexture(clamp(row + 1, textureSize), clamp(column - 1, textureSize));
-            const pixel left = pTexture(clamp(row, textureSize), clamp(column - 1, textureSize));
-
-            // their intensities
-            const double tl = intensity(topLeft);
-            const double t = intensity(top);
-            const double tr = intensity(topRight);
-            const double r = intensity(right);
-            const double br = intensity(bottomRight);
-            const double b = intensity(bottom);
-            const double bl = intensity(bottomLeft);
-            const double l = intensity(left);
-
-            // sobel filter
-            const double dX = (tr + 2.0 * r + br) - (tl + 2.0 * l + bl);
-            const double dY = (bl + 2.0 * b + br) - (tl + 2.0 * t + tr);
-            const double dZ = 1.0 / pStrength;
-
-            math::vector3d v(dX, dY, dZ);
-            v.normalize();
-
-            // convert to rgb
-            result(row, column) = pixel(map_component(v.x), map_component(v.y), map_component(v.z));
-        }
-    }
-
-    return result;
-}
-// */
 class NormalMapBuilderShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
@@ -124,13 +33,14 @@ class NormalMapBuilderShaderBuffer extends ShaderCodeBuffer {
             coder.mapLodEnabled = this.mapLodEnabled;
             this.m_uniform.addDiffuseMap();
         }
-        coder.addFragUniform("vec4", "u_params", 2);
+        coder.addFragUniform("vec4", "u_params", 3);
         // coder.useVertSpaceMats(true, false, false);
 		coder.addFragFunction(
 			`
 float colorToGray(vec3 color)
 {
- 	return dot(color, vec3(0.2126, 0.7152, 0.0722) );
+	float h = dot(color, vec3(0.2126, 0.7152, 0.0722) );
+ 	return u_params[2].w > 0.0 ? 1.0 - h : h;
 }
 
 vec3 buildWithSobel(vec2 uv) {
@@ -185,10 +95,7 @@ void main() {
 #ifdef VOX_USE_2D_MAP
 
 	vec4 color4 = vec4(buildWithSobel(vec2(v_uv.x, 1.0 - v_uv.y)), 1.0);
-	// color4.z *= -1.0;
-	// float k = 3.0;
-	// color4.xy = pow(color4.xy, vec2(k)) * 1.5;
-	// color4.xyz = normalize(color4.xyz);
+	color4.xy *= u_params[2].xy;
 	color4.xyz = normalize(color4.xyz * 0.5 + 0.5);
 
     FragColor0 = color4;
@@ -238,7 +145,8 @@ export default class NormalMapBuilderMaterial extends MaterialBase {
     private m_param = new Float32Array(
         [
             256.0, 256.0, 1.0, 5.0,
-			1.0, 1.0, 1.0, 1.0
+			1.0, 1.0, 1.0, 0.0,
+			1.0, 1.0, 0.0, 0.0,
         ]);
     setTexSize(w: number, h: number): void {
         this.m_param[0] = w;
@@ -246,6 +154,16 @@ export default class NormalMapBuilderMaterial extends MaterialBase {
     }
 	setStrength(p: number): void {
         this.m_param[3] = p;
+    }
+
+	setInvertEnabled(b: boolean): void {
+        this.m_param[11] = b ? 2.0 : 0.0;
+    }
+	setInvertXEnabled(b: boolean): void {
+        this.m_param[8] = b ? -1.0 : 1.0;
+    }
+	setInvertYEnabled(b: boolean): void {
+        this.m_param[9] = b ? -1.0 : 1.0;
     }
 	setSharpness(p: number): void {
         this.m_param[2] = p;
