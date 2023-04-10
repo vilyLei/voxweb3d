@@ -13,7 +13,7 @@ import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../orthoui/u
 
 import RendererSceneGraph from "../vox/scene/RendererSceneGraph";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import { IDropFileListerner, DropFileController } from "./base/DropFileController";
+import { IFileUrlObj, IDropFileListerner, DropFileController } from "./base/DropFileController";
 import Color4 from "../vox/material/Color4";
 
 import { IAwardSceneParam } from "./base/award/IAwardSceneParam";
@@ -140,50 +140,22 @@ export class RemoveBlackBG2 {
 		pdiv.innerHTML = "<font color='#eeee00'>将图片拖入任意区域, 去除黑色背景生成透明PNG</font>";
 	}
 	private m_dropEnabled = true;
-	initFileLoad(files: any[]): void {
-		// this.m_dropEnabled = false;
+	initFileLoad(files: IFileUrlObj[]): void {
 		console.log("initFileLoad(), files.length: ", files.length);
-		let flag = 1;
-		if (files.length > 0) {
-			let name = "";
-			let urls: string[] = [];
-			for (let i = 0; i < files.length; i++) {
-				if (i == 0) name = files[i].name;
-				const urlObj = window.URL.createObjectURL(files[i]);
-				urls.push(urlObj);
-			}
-
-			if (name != "") {
-				name.toLocaleLowerCase();
-				if (name.indexOf(".jpg") > 1) {
-				} else if (name.indexOf(".jpeg") > 1) {
-				} else if (name.indexOf(".png") > 1) {
-				} else if (name.indexOf(".gif") > 1) {
-				} else if (name.indexOf(".bmp") > 1) {
-				} else {
-					flag = 31;
-				}
-				if(flag != 31) {
-					this.loadAImg(urls[0], files[0].name);
-				}
-			} else {
-				flag = 31;
-			}
-		} else {
-			flag = 31;
+		for(let i = 0; i < files.length; ++i) {
+			this.loadedRes(files[i].url, files[i].name);
 		}
-		this.m_dropController.alertShow(flag);
 	}
 	isDropEnabled(): boolean {
 		return this.m_dropEnabled;
 	}
 	private m_name = "";
-	private loadAImg(url: string, name: string): void {
-		// console.log("loadAImg A, url: ", url,", name: ", name);
+	private loadedRes(url: string, name: string): void {
+		// console.log("loadedRes A, url: ", url,", name: ", name);
 		if(name.indexOf(".") > 0) {
 			name = name.slice(0, name.indexOf("."));
 		}
-		console.log("loadAImg, url: ", url,", name: ", name);
+		console.log("loadedRes, url: ", url,", name: ", name);
 		this.m_name = name;
 		this.createAEntityByTexUrl(url);
 	}
@@ -236,8 +208,8 @@ export class RemoveBlackBG2 {
 		ui.proBarBGBarAlpha = 0.9;
 		ui.proBarBGPlaneAlpha = 0.7;
 		ui.initialize(this.m_rscene, true);
-		
-		
+
+
 		let selectBarStyle: SelectionBarStyle = null;
 		selectBarStyle = new SelectionBarStyle();
 		selectBarStyle.fontBgColor.setRGBA4f(0.7,0.8,0.6, 0.6);
@@ -302,7 +274,7 @@ export class RemoveBlackBG2 {
 
 	private m_rflag = false;
 	private saveBegin(): void {
-		
+
 		let pw = this.m_currTexture.getWidth();
 		let ph = this.m_currTexture.getHeight();
 		let div = this.m_div;
