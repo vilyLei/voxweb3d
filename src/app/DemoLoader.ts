@@ -32,7 +32,7 @@ export class DemoLoader {
         codeLoader.send(null);
     }
     private showLoadInfo(e: ProgressEvent, req: XMLHttpRequest): void {
-        this.showLoadProgressInfo(e, req);
+        this.showPro(e, req);
     }
     private parseUrl(url: string): string {
 
@@ -60,32 +60,37 @@ export class DemoLoader {
         return host + "static/voxweb3d/demos/"+params[1]+".js";
     }
 
-    private m_bodyDiv: HTMLDivElement = null;
-    private m_infoDiv: HTMLDivElement = null;
+    private mBDV: HTMLDivElement = null;
+    private mIDV: HTMLDivElement = null;
     private initUI(): void {
-        document.body.style.background = "#000000";
-        this.m_bodyDiv = document.createElement('div');
-        this.m_bodyDiv.style.width = "100vw";
-        this.m_bodyDiv.style.height = "100vh";
-        this.elementCenter(this.m_bodyDiv);
-        document.body.appendChild( this.m_bodyDiv );
-        document.body.style.margin = '0';
+        let db = document.body;
+        db.style.background = "#000000";
+        
+        let b = this.mBDV;
+        b = document.createElement('div');
+        b.style.width = "100vw";
+        b.style.height = "100vh";
+        this.elementCenter(b);
+        db.appendChild( b );
+        db.style.margin = '0';
 
         this.showInfo("init...");
     }
 
     private showInfo(str: string): void {
 
-        if (this.m_infoDiv == null) {
-            this.m_infoDiv = document.createElement('div');
-            this.m_infoDiv.style.backgroundColor = "rgba(255,255,255,0.1)";
-            this.m_infoDiv.style.color = "#00ee00";
-            this.elementCenter(this.m_infoDiv);
-            this.m_bodyDiv.appendChild(this.m_infoDiv);
+        let div = this.mIDV;
+        if (div == null) {
+            div = document.createElement('div');
+            div.style.backgroundColor = "rgba(255,255,255,0.1)";
+            div.style.color = "#00ee00";
+            this.elementCenter(div);
+            this.mBDV.appendChild(div);
         }
-        this.m_infoDiv.innerHTML = str;
+        div.innerHTML = str;
+        this.mIDV = div;
     }
-    showLoadProgressInfo(evt: ProgressEvent, req: XMLHttpRequest): void {
+    showPro(evt: ProgressEvent, req: XMLHttpRequest): void {
         console.log("loading evt: ",evt);
         // let pro = e.total > 0 ? Math.round(100.0 * e.loaded / e.total) + "% " : e.loaded + " bytes ";
         // console.log("progress evt: ", evt);
@@ -105,8 +110,7 @@ export class DemoLoader {
                 console.warn("lengthComputable failed");
             }
         }
-        let str: string = "loading " + Math.round(k * 100) +"% ";
-        this.showInfo(str);
+        this.showInfo( "loading " + Math.round(k * 100) +"% " );
     }
 
     showLoadStart(): void {
@@ -116,18 +120,20 @@ export class DemoLoader {
         this.showInfo("100% ");
     }
     loadFinish(): void {
-        if (this.m_bodyDiv != null){
-            this.m_bodyDiv.parentElement.removeChild(this.m_bodyDiv);
-            this.m_bodyDiv = null;
+        let b = this.mBDV;
+        if (b){
+            b.parentElement.removeChild(b);
+            this.mBDV = null;
         }
     }
     private elementCenter(ele: HTMLElement,top: string = "50%", left: string = "50%", position: string = "absolute"): void {
 
-        ele.style.textAlign = "center";
-        ele.style.display = "flex";
-        ele.style.flexDirection = "column";
-        ele.style.justifyContent = "center";
-        ele.style.alignItems = "center";
+        const s = ele.style;
+        s.textAlign = "center";
+        s.display = "flex";
+        s.flexDirection = "column";
+        s.justifyContent = "center";
+        s.alignItems = "center";
         // ele.style.top = top;
         // ele.style.left = left;
         // ele.style.position = position;
