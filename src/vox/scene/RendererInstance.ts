@@ -122,6 +122,15 @@ export class RendererInstance implements IRendererInstance {
             this.m_renderProxy.updateCamera();
         }
     }
+	private m_shdProgramBuider: IShaderProgramBuilder = null;
+	setCanvas(canvas: HTMLCanvasElement): boolean {
+		if(this.m_renderProxy.setCanvas(canvas)) {
+			(this.m_shdProgramBuider as any).clear();
+			this.m_dataBuilder.setGLCtx(this.m_renderProxy.RContext);
+			return true;
+		}
+		return false;
+	}
     initialize(param: IRendererParam = null, camera: IRenderCamera = null, shdProgramBuider: IShaderProgramBuilder = null): void {
 
         if (this.m_dataBuilder == null && camera != null) {
@@ -132,6 +141,7 @@ export class RendererInstance implements IRendererInstance {
             this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
             this.m_uid = this.m_renderProxy.getUid();
 
+			this.m_shdProgramBuider = shdProgramBuider;
             this.m_dataBuilder = new RODataBuilder(shdProgramBuider);
             this.m_roVtxBuilder = new ROVtxBuilder();
             this.m_renderInsContext.setCameraParam(param.camProjParam.x, param.camProjParam.y, param.camProjParam.z);

@@ -49,6 +49,9 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         this.m_tickId = setTimeout(this.tickUpdate.bind(this), this.m_rparam.getTickUpdateTime());
         this.textureBlock.run();
     }
+	setCanvas(canvas: HTMLCanvasElement): boolean {
+		return (this.m_renderer as RendererInstance).setCanvas( canvas );
+	}
     /**
      * @param rparam IRendererParam instance, the default value is null
      * @param renderProcessesTotal the default value is 3
@@ -77,10 +80,10 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         console.log("fakeRun ...");
     }
     setAutoRunning(auto: boolean): RendererScene {
-        
+
         if (this.m_autoRRun != auto) {
             if (this.m_autoRRun) {
-                
+
                 let runFunc = this.run;
                 this.run = this.fakeRun;
                 this.fakeRun = runFunc;
@@ -88,7 +91,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
                 this.m_autoRRun = false;
             } else {
                 this.m_autoRRun = true;
-                
+
                 let runFunc = this.fakeRun;
                 this.fakeRun = this.run;
                 this.run = runFunc;
@@ -104,7 +107,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         }
         return this;
     }
-    
+
     isAutoRunning(): boolean {
         return this.m_autoRRun;
     }

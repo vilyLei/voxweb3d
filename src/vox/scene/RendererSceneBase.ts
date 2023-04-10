@@ -315,6 +315,9 @@ export default class RendererSceneBase {
 	protected initThis(): void {
 		// this.tickUpdate();
 	}
+	setCanvas(canvas: HTMLCanvasElement): boolean {
+		return false;
+	}
 	initialize(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
 		if (this.m_renderer == null) {
 			if (rparam == null) rparam = new RendererParam();
