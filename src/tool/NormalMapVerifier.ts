@@ -10,7 +10,7 @@ import IRendererScene from "../vox/scene/IRendererScene";
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../orthoui/usage/ParamCtrlUI";
 import RendererSceneGraph from "../vox/scene/RendererSceneGraph";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import { IDropFileListerner, DropFileController } from "./base/DropFileController";
+import { IFileUrlObj, IDropFileListerner, DropFileController } from "./base/DropFileController";
 import Color4 from "../vox/material/Color4";
 
 import { IAwardSceneParam } from "./base/award/IAwardSceneParam";
@@ -153,50 +153,23 @@ export class NormalMapVerifier {
 		pdiv.innerHTML = "<font color='#eeee00'>将Normal图或Albedo图拖入任意区域</font>";
 	}
 	private m_dropEnabled = true;
-	initFileLoad(files: any[]): void {
-		// this.m_dropEnabled = false;
+	initFileLoad(files: IFileUrlObj[]): void {
 		console.log("initFileLoad(), files.length: ", files.length);
-		let flag = 1;
-		if (files.length > 0) {
-			let name = "";
-			let urls: string[] = [];
-			for (let i = 0; i < files.length; i++) {
-				if (i == 0) name = files[i].name;
-				const urlObj = window.URL.createObjectURL(files[i]);
-				urls.push(urlObj);
-			}
-
-			if (name != "") {
-				name.toLocaleLowerCase();
-				if (name.indexOf(".jpg") > 1) {
-				} else if (name.indexOf(".jpeg") > 1) {
-				} else if (name.indexOf(".png") > 1) {
-				} else if (name.indexOf(".gif") > 1) {
-				} else {
-					flag = 31;
-				}
-				if(flag != 31) {
-					this.loadAImg(urls[0], files[0].name);
-				}
-			} else {
-				flag = 31;
-			}
-		} else {
-			flag = 31;
+		for(let i = 0; i < files.length; ++i) {
+			this.loadedRes(files[i].url, files[i].name);
 		}
-		this.m_dropController.alertShow(flag);
 	}
 	isDropEnabled(): boolean {
 		return this.m_dropEnabled;
 	}
 	private m_name = "";
-	private loadAImg(url: string, name: string): void {
-		// console.log("loadAImg A, url: ", url,", name: ", name);
+	private loadedRes(url: string, name: string): void {
+		// console.log("loadedRes A, url: ", url,", name: ", name);
 		if(name.indexOf(".") > 0) {
 			name = name.slice(0, name.indexOf("."));
 		}
-		console.log("loadAImg, url: ", url,", name: ", name);
-		console.log("loadAImg, this.m_loadNormalMap: ", this.m_loadNormalMap);
+		console.log("loadedRes, url: ", url,", name: ", name);
+		console.log("loadedRes, this.m_loadNormalMap: ", this.m_loadNormalMap);
 		this.m_name = name;
 		if(this.m_loadNormalMap) {
 			this.createAEntityByTexUrl(url);
@@ -414,7 +387,7 @@ export class NormalMapVerifier {
 	}
 	private m_uv = new Vector3D(1.0, 1.0);
 	private m_loadNormalMap = true;
-	
+
 	private m_initUI = true;
 	private initUI(): void {
 		if (!this.m_initUI) {
