@@ -16,32 +16,34 @@ import IROTransform from "../../vox/display/IROTransform";
 import Color4 from "../material/Color4";
 
 export default class Plane3DEntity extends DisplayEntity {
-    
-    private m_startX: number = 0;
-    private m_startZ: number = 0;
-    private m_pwidth: number = 0;
-    private m_plong: number = 0;
-    private m_flag: number = 0;
-    private m_screenAlignEnabled: boolean = false;
 
-    readonly color0: Color4 = new Color4();
-    readonly color1: Color4 = new Color4();
-    readonly color2: Color4 = new Color4();
-    readonly color3: Color4 = new Color4();
-    private m_polyhedralBoo: boolean = true;
+    private m_startX = 0;
+    private m_startZ = 0;
+    private m_pwidth = 0;
+    private m_plong = 0;
+    private m_flag = 0;
+    private m_polyhedralBoo = true;
+    private m_screenAlignEnabled = false;
 
-    offsetU: number = 0.0;
-    offsetV: number = 0.0;
-    uScale: number = 1.0;
-    vScale: number = 1.0;
+    readonly color0 = new Color4();
+    readonly color1 = new Color4();
+    readonly color2 = new Color4();
+    readonly color3 = new Color4();
 
-    normalEnabled: boolean = false;
-    wireframe: boolean = false;
+    offsetU = 0.0;
+    offsetV = 0.0;
+    uScale = 1.0;
+    vScale = 1.0;
+
+    normalEnabled = false;
+    wireframe = false;
     uvs: Float32Array = null;
-    flipVerticalUV: boolean = false;
-    vertColorEnabled: boolean = false;
-    premultiplyAlpha: boolean = false;
+    flipVerticalUV = false;
+    vertColorEnabled = false;
+    premultiplyAlpha = false;
 
+    materialName = "";
+	materialFragMainTailCode = "";
     constructor(transform: IROTransform = null) {
         super(transform);
     }
@@ -51,8 +53,8 @@ export default class Plane3DEntity extends DisplayEntity {
      */
     setPolyhedral(boo: boolean): void {
         this.m_polyhedralBoo = boo;
-        let pmesh: RectPlaneMesh = this.getMesh() as RectPlaneMesh;
-        if(pmesh != null) {
+        let pmesh = this.getMesh() as RectPlaneMesh;
+        if(pmesh) {
             pmesh.setPolyhedral(boo);
         }
     }
@@ -63,12 +65,16 @@ export default class Plane3DEntity extends DisplayEntity {
     createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             if (this.m_screenAlignEnabled) {
-                let cm: ScreenPlaneMaterial = new ScreenPlaneMaterial();
+                let cm = new ScreenPlaneMaterial();
+				cm.name = this.materialName;
+				cm.fragMainTailCode = this.materialFragMainTailCode;
                 cm.setTextureList(texList);
                 this.setMaterial(cm);
             }
             else {
-                let cm: Default3DMaterial = new Default3DMaterial();
+                let cm = new Default3DMaterial();
+				cm.name = this.materialName;
+				cm.fragMainTailCode = this.materialFragMainTailCode;
                 cm.normalEnabled = this.normalEnabled;
                 cm.vertColorEnabled = this.vertColorEnabled;
                 cm.premultiplyAlpha = this.premultiplyAlpha;
@@ -217,11 +223,11 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.offsetU = this.offsetU;
             mesh.offsetV = this.offsetV;
             mesh.wireframe = this.wireframe;
-            
+
             mesh.flipVerticalUV = this.flipVerticalUV;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.axisFlag = this.m_flag;
-            
+
             mesh.setVtxBufRenderData(material);
             // mesh.setBufSortFormat(material.getBufSortFormat());
             // mesh.setBufSizeList(material.getBufSizeList());
