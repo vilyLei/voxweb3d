@@ -11,7 +11,7 @@ import IRendererScene from "../vox/scene/IRendererScene";
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../orthoui/usage/ParamCtrlUI";
 import RendererSceneGraph from "../vox/scene/RendererSceneGraph";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import { IDropFileListerner, DropFileController } from "./base/DropFileController";
+import { IFileUrlObj, IDropFileListerner, DropFileController } from "./base/DropFileController";
 import Color4 from "../vox/material/Color4";
 
 import { IAwardSceneParam } from "./base/award/IAwardSceneParam";
@@ -37,6 +37,8 @@ import Vector3D from "../vox/math/Vector3D";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 import IColorMaterial from "../vox/material/mcase/IColorMaterial";
+import Matrix4 from "../vox/math/Matrix4";
+import EventBase from "../vox/event/EventBase";
 
 class AwardSceneParam implements IAwardSceneParam {
 	texLoader: TextureResLoader = null;
@@ -60,7 +62,7 @@ class AwardSceneParam implements IAwardSceneParam {
 		pl.initializeXOY(x, y, w, h, [tex]);
 		return pl;
 	}
-	pid: number = 1;
+	pid = 1;
 }
 
 export class NormalMapBuilder {
@@ -120,15 +122,34 @@ export class NormalMapBuilder {
 			new RenderStatusDisplay(rscene, true);
 
 			this.initMaterialCtx();
-			// this.createAMapPlane();
 		}
 	}
 	private m_mapMaterial: NormalMapBuilderMaterial = null;
 	private m_mapPlane: Plane3DEntity = null;
-
+	private m_mapAreaFactor = 0.3;
 	private m_loadingTex: IRenderTexture = null;
+
+	private layoutMapPlane(): void {
+
+		let st = this.m_rscene.getStage3D();
+		let stw = Math.round( st.stageWidth * this.m_mapAreaFactor );
+		let tex = this.m_currTexture;
+
+		let pw = tex.getWidth();
+		let ph = tex.getHeight();
+		let k = ph / pw;
+		if(pw > Math.round(0.9 * stw)) {
+			pw = Math.round(0.9 * stw);
+		}
+		ph = Math.round(pw * k);
+		let px = Math.round((stw - pw) * 0.5);
+		let pl0 = this.m_mapPlane;
+		pl0.setScaleXYZ(pw, ph, 1.0);
+		pl0.setXYZ(px, 370, 0.0);
+		pl0.update();
+	}
 	private createAMapPlane(url: string): void {
-		// let url = "static/assets/circleWave_disp.png";
+
 		let tex = this.getTexByUrl(url);
 		this.m_loadingTex = tex;
 		this.m_currTexture = tex;
@@ -140,19 +161,20 @@ export class NormalMapBuilder {
 		if(pl0 == null) {
 			pl0 = new Plane3DEntity();
 			pl0.setMaterial(material);
-			// pl0.initializeXOY(-0.5, -0.5, 1, 1);
 			pl0.initializeXOY(0,0,1,1);
 		}else {
 			this.m_ctrlui.ruisc.removeEntity(pl0);
 			pl0.setMaterial(material);
 		}
-		pl0.intoRendererListener = (): void => {
+		if(tex.isDataEnough()){
 			material.setTexSize(tex.getWidth(), tex.getHeight());
-			pl0.setScaleXYZ(tex.getWidth(), tex.getHeight(), 1.0);
-			pl0.setXYZ(30, 300, 0.0);
-			pl0.update();
+			this.layoutMapPlane();
+		}else {
+			pl0.intoRendererListener = (): void => {
+				material.setTexSize(tex.getWidth(), tex.getHeight());
+				this.layoutMapPlane();
+			}
 		}
-		pl0.setXYZ(30, 300, 0.0);
 		this.m_mapPlane = pl0;
 		this.m_ctrlui.ruisc.addEntity(pl0);
 		//this.m_ctrlui
@@ -174,14 +196,22 @@ export class NormalMapBuilder {
 		srcPlane.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
 		this.m_rscene.addEntity( srcPlane, 0 );
 
-
 		let axis = new Axis3DEntity();
 		axis.initialize(300);
 		this.m_rscene.addEntity(axis, 0);
-		let st = this.m_rscene.getStage3D();
-		this.m_rscene.setViewPort(400, 0, st.stageWidth - 400, st.stageHeight);
+		this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
+		this.resize(null);
 	}
+
+	private resize(evt: any): void {
+		let st = this.m_rscene.getStage3D();
+		let px = Math.round(st.stageWidth * this.m_mapAreaFactor);
+		this.m_rscene.setViewPort(px, 0, st.stageWidth - px, st.stageHeight);
+		this.layoutMapPlane();
+	}
+
 	private initTextDiv(): void {
+
 		let div = document.createElement("div");
 		div.style.color = "";
 		let pdiv: any = div;
@@ -197,49 +227,22 @@ export class NormalMapBuilder {
 		pdiv.innerHTML = "<font color='#eeee00'>将生成法线图的原图拖入任意区域</font>";
 	}
 	private m_dropEnabled = true;
-	initFileLoad(files: any[]): void {
-		// this.m_dropEnabled = false;
+	initFileLoad(files: IFileUrlObj[]): void {
 		console.log("initFileLoad(), files.length: ", files.length);
-		let flag = 1;
-		if (files.length > 0) {
-			let name = "";
-			let urls: string[] = [];
-			for (let i = 0; i < files.length; i++) {
-				if (i == 0) name = files[i].name;
-				const urlObj = window.URL.createObjectURL(files[i]);
-				urls.push(urlObj);
-			}
-
-			if (name != "") {
-				name.toLocaleLowerCase();
-				if (name.indexOf(".jpg") > 1) {
-				} else if (name.indexOf(".jpeg") > 1) {
-				} else if (name.indexOf(".png") > 1) {
-				} else if (name.indexOf(".gif") > 1) {
-				} else {
-					flag = 31;
-				}
-				if (flag != 31) {
-					this.loadAImg(urls[0], files[0].name);
-				}
-			} else {
-				flag = 31;
-			}
-		} else {
-			flag = 31;
+		for(let i = 0; i < files.length; ++i) {
+			this.loadedRes(files[i].url, files[i].name);
 		}
-		this.m_dropController.alertShow(flag);
 	}
 	isDropEnabled(): boolean {
 		return this.m_dropEnabled;
 	}
 	private m_name = "";
-	private loadAImg(url: string, name: string): void {
-		// console.log("loadAImg A, url: ", url,", name: ", name);
+	private loadedRes(url: string, name: string): void {
+		// console.log("loadedRes A, url: ", url,", name: ", name);
 		if (name.indexOf(".") > 0) {
 			name = name.slice(0, name.indexOf("."));
 		}
-		console.log("loadAImg, url: ", url, ", name: ", name);
+		console.log("loadedRes, url: ", url, ", name: ", name);
 		this.m_name = name;
 		// this.createAEntityByTexUrl(url);
 		this.createAMapPlane(url);
@@ -461,6 +464,7 @@ export class NormalMapBuilder {
 
 		// this.initMapApplyCtrlUIItem();
 		this.initMapBuildCtrlUIItem();
+		ui.updateLayout(true);
 
 		this.m_graph.addScene(ui.ruisc);
 
@@ -486,6 +490,27 @@ export class NormalMapBuilder {
 		}, true, false);
 		ui.addStatusItem( "恢复", "resetBuildSetting", "默认设置", "默认设置", true, (info: CtrlInfo): void => {
 				this.resetMapBuildCtrlValue();
+			},
+			true, false
+		);
+		ui.addStatusItem( "翻转法线", "invert", "是", "否", false, (info: CtrlInfo): void => {
+				if (this.m_mapMaterial) {
+					this.m_mapMaterial.setInvertEnabled(info.flag);
+				}
+			},
+			true, false
+		);
+		ui.addStatusItem( "翻转法线X值", "invert-x", "是", "否", false, (info: CtrlInfo): void => {
+				if (this.m_mapMaterial) {
+					this.m_mapMaterial.setInvertXEnabled(info.flag);
+				}
+			},
+			true, false
+		);
+		ui.addStatusItem( "翻转法线Y值", "invert-y", "是", "否", false, (info: CtrlInfo): void => {
+				if (this.m_mapMaterial) {
+					this.m_mapMaterial.setInvertYEnabled(info.flag);
+				}
 			},
 			true, false
 		);
@@ -619,8 +644,6 @@ export class NormalMapBuilder {
 			true,
 			false
 		);
-
-		ui.updateLayout(true);
 	}
 	private resetMapApplyCtrlValue(): void {
 		console.log("resetMapApplyCtrlValue() ...");
@@ -668,6 +691,7 @@ export class NormalMapBuilder {
 	}
 	private createCanvasData(): string {
 
+		let mapEntity = this.m_mapPlane;
 		let pw = this.m_currTexture.getWidth();
 		let ph = this.m_currTexture.getHeight();
 		let div = this.m_rscene.getRenderProxy().getDiv();
@@ -687,11 +711,12 @@ export class NormalMapBuilder {
 		let st = this.m_rscene.getStage3D();
 		// let dpr = st.getDevicePixelRatio();
 		// console.log("createCanvasData(), dpr: ", dpr, ", pw, ph: ", pw,ph);
+		let pos = mapEntity.getPosition();
 		const ctx2d = canvas.getContext('2d')!;
 		ctx2d.drawImage(
 			srcCanvas,
-			30,
-			st.stageHeight - ( 300 + ph ),
+			pos.x,
+			st.stageHeight - ( pos.y + ph ),
 			// srcCanvas.width,
 			// srcCanvas.height,
 			pw, ph,
