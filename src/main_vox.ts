@@ -188,7 +188,7 @@
 
 //  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
 
- import {DemoRenderSortA as Demo} from "./demo/DemoRenderSortA";
+//  import {DemoRenderSortA as Demo} from "./demo/DemoRenderSortA";
 
 //  import {DemoRenderSortContainerRender as Demo} from "./demo/DemoRenderSortContainerRender";
 
@@ -341,6 +341,10 @@
 //  import {DemoScene as Demo} from "./demo/DemoScene";
 
 //  import {DemoMouseInteraction as Demo} from "./demo/DemoMouseInteraction";
+
+//  import {DemoReplaceRenderingCanvas as Demo} from "./demo/DemoReplaceRenderingCanvas";
+
+ import {DemoOffscreenScene as Demo} from "./demo/DemoOffscreenScene";
 
 //  import {DemoSubScene as Demo} from "./demo/DemoSubScene";
 
