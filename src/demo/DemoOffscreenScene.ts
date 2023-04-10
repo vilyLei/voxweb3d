@@ -107,7 +107,7 @@ export class DemoOffscreenScene {
 					this.m_axis = axis;
 				}
 				rscene.updateRenderBufferSize();
-				rscene.setClearRGBColor3f(0.1, 0.2, 0.0);
+				rscene.setClearRGBColor3f(0.3 * Math.random(), 0.3 * Math.random(), 0.3 * Math.random());
 				//*/
 				this.m_buildingImg = true;
 				this.m_times = 8;
