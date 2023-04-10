@@ -73,7 +73,7 @@ export class DemoLoader {
         this.elementCenter(b);
         db.appendChild( b );
         db.style.margin = '0';
-
+        this.mBDV = b;
         this.showInfo("init...");
     }
 
