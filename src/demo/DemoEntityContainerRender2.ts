@@ -76,7 +76,7 @@ class ClockEntity {
 	}
 	private createMaterial(color: IColor4): IRenderMaterial {
 		const pbr = ClockEntity.s_pbr;
-		let material = pbr.createMaterial(Math.random(), Math.random() * 0.2 + 0.8, 1.3, color);
+		let material = pbr.createMaterial(Math.random(), Math.random(), 1.0, color);
 		return material;
 	}
 	private createMaterial2(roughness: number, metallic: number): IRenderMaterial {
@@ -130,7 +130,7 @@ class ClockEntity {
 		let container = new RenderableEntityContainer();
 
 		// material.setRGB3f(0.3, 0.7, 0.8);
-		let material = this.createMaterial2(0.9, 0.3);
+		let material = this.createMaterial2(Math.random(), Math.random());
 
 		// let base = VoxEntity.createCylinder(radius + 20, 8, 50, material);
 		let base = new Cylinder3DEntity();

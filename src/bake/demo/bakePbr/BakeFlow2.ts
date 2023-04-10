@@ -326,7 +326,7 @@ export class BakeFlow2 {
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
 
-		if (this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
+		// if (this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
 		let visible = bakeType == 0 || bakeType == 2 || bakeType == -1 || bakeType == 3;
 		visible = visible && bvParam.drawShape;
 		entity.setVisible(visible);
@@ -408,7 +408,7 @@ export class BakeFlow2 {
 		entity.setMesh(mesh);
 		entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
 		// console.log("createWithMesh(), mesh: ", mesh);
-		if (this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
+		// if (this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
 		this.m_wirees.push(entity);
 		this.m_rscene.addEntity(entity, 0);
 	}

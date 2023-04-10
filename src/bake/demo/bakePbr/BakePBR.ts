@@ -345,7 +345,7 @@ export class BakePBR {
         if (transform != null) {
             entity.getTransform().setParentMatrix(mat4);
         }
-        if(this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
+        // if(this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
         let visible = bakeType == 0 || bakeType == 2 || bakeType == -1 || bakeType == 3;
         entity.setVisible(visible);
         entity.update();
@@ -406,7 +406,7 @@ export class BakePBR {
         entity.setMesh(mesh);
         entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
         // console.log("createWithMesh(), mesh: ", mesh);
-        if(this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
+        // if(this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
         this.m_wirees.push(entity);
         this.m_rscene.addEntity(entity, 0);
     }

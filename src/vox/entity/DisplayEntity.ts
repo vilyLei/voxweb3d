@@ -381,37 +381,37 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 	getIvsCount(): number {
 		return this.m_display.ivsCount;
 	}
-	setIvsParam(ivsIndex: number, ivsCount: number, updateBounds: boolean = false): void {
-		// if (this.m_display != null) {
+	// setIvsParam(ivsIndex: number, ivsCount: number, updateBounds: boolean = false): void {
+	// 	// if (this.m_display != null) {
 
-		//     this.m_display.ivsIndex = ivsIndex;
-		//     this.m_display.ivsCount = ivsCount;
-		//     if (this.m_display.__$ruid > -1) {
+	// 	//     this.m_display.ivsIndex = ivsIndex;
+	// 	//     this.m_display.ivsCount = ivsCount;
+	// 	//     if (this.m_display.__$ruid > -1) {
 
-		//         const mh = this.m_mesh;
+	// 	//         const mh = this.m_mesh;
 
-		//         let ut = this.m_display.__$$runit;
-		//         ut.setIvsParam(ivsIndex, ivsCount);
+	// 	//         let ut = this.m_display.__$$runit;
+	// 	//         ut.setIvsParam(ivsIndex, ivsCount);
 
-		//         if (updateBounds && this.isPolyhedral()) {
+	// 	//         if (updateBounds && this.isPolyhedral()) {
 
-		//             if (this.m_localBounds == mh.bounds) {
-		//                 this.m_localBounds = new AABB();
-		//                 this.m_localBounds.copyFrom(mh.bounds);
-		//             }
-		//             this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
-		//             this.m_localBounds.reset();
-		//             let ivs = mh.getIVS();
-		//             this.m_localBounds.addFloat32AndIndices(mh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount), mh.getVSStride());
-		//             this.m_localBounds.update();
-		//             if (this.m_trw != null) {
-		//                 this.m_trw.updateTo();
-		//             }
-		//         }
-		//     }
-		// }
-		throw Error("illagel operations ...");
-	}
+	// 	//             if (this.m_localBounds == mh.bounds) {
+	// 	//                 this.m_localBounds = new AABB();
+	// 	//                 this.m_localBounds.copyFrom(mh.bounds);
+	// 	//             }
+	// 	//             this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
+	// 	//             this.m_localBounds.reset();
+	// 	//             let ivs = mh.getIVS();
+	// 	//             this.m_localBounds.addFloat32AndIndices(mh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount), mh.getVSStride());
+	// 	//             this.m_localBounds.update();
+	// 	//             if (this.m_trw != null) {
+	// 	//                 this.m_trw.updateTo();
+	// 	//             }
+	// 	//         }
+	// 	//     }
+	// 	// }
+	// 	throw Error("illagel operations ...");
+	// }
 	getMesh(): IMeshBase {
 		return this.m_mesh;
 	}

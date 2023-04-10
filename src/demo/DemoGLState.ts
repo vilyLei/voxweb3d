@@ -175,7 +175,7 @@ export class DemoGLState {
         let ivsIndex: number = this.m_target.getIvsIndex();
         let ivsCount: number = this.m_target.getIvsCount();
         ///*
-        this.m_target.setIvsParam(2700, 500);
+        // this.m_target.setIvsParam(2700, 500);
         (this.m_target.getMaterial() as any).setAlpha(1.0);
         this.m_target.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
         this.m_rscene.runAt(1);
@@ -184,7 +184,7 @@ export class DemoGLState {
         this.m_target.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
         this.m_rscene.drawEntity(this.m_target);
         //*/
-        this.m_target.setIvsParam(ivsIndex, ivsCount);
+        // this.m_target.setIvsParam(ivsIndex, ivsCount);
 
         ///*
         (this.m_target.getMaterial() as any).setAlpha(0.2);

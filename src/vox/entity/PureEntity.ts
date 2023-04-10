@@ -354,31 +354,31 @@ export default class PureEntity implements IDisplayEntity {
     //     }
     // }
 
-    setIvsParam(ivsIndex: number, ivsCount: number, updateBounds: boolean = false): void {
+    // setIvsParam(ivsIndex: number, ivsCount: number, updateBounds: boolean = false): void {
 
-        if (this.m_display != null) {
+    //     if (this.m_display != null) {
 
-            this.m_display.ivsIndex = ivsIndex;
-            this.m_display.ivsCount = ivsCount;
-            if (this.m_display.__$ruid > -1) {
+    //         this.m_display.ivsIndex = ivsIndex;
+    //         this.m_display.ivsCount = ivsCount;
+    //         if (this.m_display.__$ruid > -1) {
 
-                const mh = this.m_mesh;
-                this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
+    //             const mh = this.m_mesh;
+    //             this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
 
-                if (updateBounds && this.isPolyhedral()) {
+    //             if (updateBounds && this.isPolyhedral()) {
 
-                    if (this.m_localBounds == mh.bounds) {
-                        this.m_localBounds = new AABB();
-                        this.m_localBounds.copyFrom(mh.bounds);
-                    }
-                    this.m_localBounds.reset();
-                    let ivs = mh.getIVS();
-                    this.m_localBounds.addFloat32AndIndices(mh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount), mh.getVSStride());
-                    this.m_localBounds.update();
-                }
-            }
-        }
-    }
+    //                 if (this.m_localBounds == mh.bounds) {
+    //                     this.m_localBounds = new AABB();
+    //                     this.m_localBounds.copyFrom(mh.bounds);
+    //                 }
+    //                 this.m_localBounds.reset();
+    //                 let ivs = mh.getIVS();
+    //                 this.m_localBounds.addFloat32AndIndices(mh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount), mh.getVSStride());
+    //                 this.m_localBounds.update();
+    //             }
+    //         }
+    //     }
+    // }
     getMesh(): IMeshBase {
         return this.m_mesh;
     }

@@ -308,7 +308,7 @@
 
 //  import {DemoEntityContainerRender as Demo} from "./demo/DemoEntityContainerRender";
 
-//  import {DemoEntityContainerRender2 as Demo} from "./demo/DemoEntityContainerRender2";
+ import {DemoEntityContainerRender2 as Demo} from "./demo/DemoEntityContainerRender2";
 
 //  import {DemoContainerToRSpace as Demo} from "./demo/DemoContainerToRSpace";
 
@@ -344,7 +344,7 @@
 
 //  import {DemoReplaceRenderingCanvas as Demo} from "./demo/DemoReplaceRenderingCanvas";
 
- import {DemoOffscreenScene as Demo} from "./demo/DemoOffscreenScene";
+//  import {DemoOffscreenScene as Demo} from "./demo/DemoOffscreenScene";
 
 //  import {DemoSubScene as Demo} from "./demo/DemoSubScene";
 
