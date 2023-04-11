@@ -53,7 +53,7 @@ export class RemoveBlackBG2 {
 			this.m_init = false;
 
 			document.oncontextmenu = function(e) {
-				// e.preventDefault();
+				e.preventDefault();
 			};
 
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
