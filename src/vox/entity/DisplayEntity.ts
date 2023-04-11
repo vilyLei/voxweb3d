@@ -740,7 +740,4 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 		}
 		this.intoRendererListener = null;
 	}
-	toString(): string {
-		return "DisplayEntity(uuid=" + this.uuid + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";
-	}
 }
