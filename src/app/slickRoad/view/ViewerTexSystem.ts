@@ -1,4 +1,4 @@
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
 import { MaterialContext } from "../../../materialLab/base/MaterialContext";

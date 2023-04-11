@@ -19,7 +19,7 @@ import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import CameraViewRay from "../vox/view/CameraViewRay";
-import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../app/engine/UserInteraction";
 import { UVTool } from "../vox/utils/UVTool";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 

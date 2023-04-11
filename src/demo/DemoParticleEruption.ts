@@ -23,7 +23,7 @@ import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import Billboard3DGroupEntity from "../vox/entity/Billboard3DGroupEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
-import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../app/engine/UserInteraction";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";

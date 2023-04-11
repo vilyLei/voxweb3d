@@ -12,7 +12,7 @@ import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
-import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../app/engine/UserInteraction";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Vector3D from "../vox/math/Vector3D";
 import DisplayEntity from "../vox/entity/DisplayEntity";

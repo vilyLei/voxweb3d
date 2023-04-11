@@ -1,5 +1,5 @@
 import Vector3D from "../../../vox/math/Vector3D";
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 
 import { PathTool } from "./PathTool";
 import { RoadMesh } from "../geometry/RoadMesh";

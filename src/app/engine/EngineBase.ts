@@ -8,14 +8,12 @@ import RendererSubScene from "../../vox/scene/RendererSubScene";
 
 // import Stage3D from "../../vox/display/Stage3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import { OrthoUIScene } from "../../vox/ui/OrthoUIScene";
+import { OrthoUIScene } from "../ui/OrthoUIScene";
 import { UserInteraction } from "./UserInteraction";
 
 import {IRendererSceneAccessor} from "../../vox/scene/IRendererSceneAccessor";
-import { RenderableMaterialBlock } from "../scene/block/RenderableMaterialBlock";
-import { RenderableEntityBlock } from "../scene/block/RenderableEntityBlock";
-import IRenderProxy from "../render/IRenderProxy";
-import RendererSceneNode from "../scene/RendererSceneNode";
+import IRenderProxy from "../../vox/render/IRenderProxy";
+import RendererSceneNode from "../../vox/scene/RendererSceneNode";
 
 export class EngineBase {
 

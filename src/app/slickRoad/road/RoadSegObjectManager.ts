@@ -1,4 +1,4 @@
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 import { PathSegmentObject } from "./PathSegmentObject";
 import { SegmentData } from "./segment/SegmentData";
 import EventBaseDispatcher from "../../../vox/event/EventBaseDispatcher";

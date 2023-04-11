@@ -12,7 +12,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 
-import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../app/engine/UserInteraction";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 
 export class DemoGLState {

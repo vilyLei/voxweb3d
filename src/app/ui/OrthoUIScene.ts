@@ -7,31 +7,31 @@
 /***************************************************************************/
 
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
-import { IRenderableMaterialBlock } from "../scene/block/IRenderableMaterialBlock";
-import { IRenderableEntityBlock } from "../scene/block/IRenderableEntityBlock";
-import RendererScene from "../scene/RendererScene";
-import RendererSubScene from "../scene/RendererSubScene";
-import EventBase from "../event/EventBase";
-import RendererParam from "../scene/RendererParam";
+import { IRenderableMaterialBlock } from "../../vox/scene/block/IRenderableMaterialBlock";
+import { IRenderableEntityBlock } from "../../vox/scene/block/IRenderableEntityBlock";
+import RendererScene from "../../vox/scene/RendererScene";
+import RendererSubScene from "../../vox/scene/RendererSubScene";
+import EventBase from "../../vox/event/EventBase";
+import RendererParam from "../../vox/scene/RendererParam";
 import CanvasTextureTool from "../../orthoui/assets/CanvasTextureTool";
-import Color4 from "../material/Color4";
+import Color4 from "../../vox/material/Color4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import { IFBOInstance } from "../../vox/scene/IFBOInstance";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import IRenderNode from "../../vox/scene/IRenderNode";
-import { IRenderCamera } from "../render/IRenderCamera";
-import IRenderProcess from "../render/IRenderProcess";
-import IRenderStage3D from "../render/IRenderStage3D";
-import Vector3D from "../math/Vector3D";
-import IRenderProxy from "../render/IRenderProxy";
-import IMatrix4 from "../math/IMatrix4";
-import IVector3D from "../math/IVector3D";
-import { IRendererSceneAccessor } from "../scene/IRendererSceneAccessor";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
+import IRenderProcess from "../../vox/render/IRenderProcess";
+import IRenderStage3D from "../../vox/render/IRenderStage3D";
+import Vector3D from "../../vox/math/Vector3D";
+import IRenderProxy from "../../vox/render/IRenderProxy";
+import IMatrix4 from "../../vox/math/IMatrix4";
+import IVector3D from "../../vox/math/IVector3D";
+import { IRendererSceneAccessor } from "../../vox/scene/IRendererSceneAccessor";
 import IRunnableQueue from "../../vox/base/IRunnableQueue";
 import RunnableQueue from "../../vox/base/RunnableQueue";
-import IRendererParam from "../scene/IRendererParam";
+import IRendererParam from "../../vox/scene/IRendererParam";
 
 
 class OrthoUIScene implements IRendererScene, IRenderNode {

@@ -4,7 +4,7 @@ import RendererParam from "../vox/scene/RendererParam";
 import {Scene} from "./slickRoad/scene/Scene";
 import {EditorSceneAccessor} from "./slickRoad/render/EditorSceneAccessor";
 import {UIScene} from "./slickRoad/ui/UIScene";
-import EngineBase from "../vox/engine/EngineBase";
+import EngineBase from "./engine/EngineBase";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
 export class SlickRoad {

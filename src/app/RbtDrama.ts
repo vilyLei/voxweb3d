@@ -6,12 +6,10 @@ import MouseEvent from "../vox/event/MouseEvent";
 import RendererScene from "../vox/scene/RendererScene";
 import { SceneModule } from "../app/robot/scene/SceneModule";
 
-import { UserInteraction } from "../vox/engine/UserInteraction";
-
 import { CommonMaterialContext } from "../materialLab/base/CommonMaterialContext";
 import { IShaderLibListener, MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import { DirectionLight } from "../light/base/DirectionLight";
-import EngineBase from "../vox/engine/EngineBase";
+import EngineBase from "../app/engine/EngineBase";
 
 export class RbtDrama implements IShaderLibListener {
     constructor() { }

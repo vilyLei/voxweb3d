@@ -18,7 +18,7 @@ import SelectionBar from "../orthoui/button/SelectionBar";
 
 import {CameraScene} from "./scene/CameraScene";
 import {CameraScenePath} from "./scene/CameraScenePath";
-import EngineBase from "../vox/engine/EngineBase";
+import EngineBase from "../app/engine/EngineBase";
 import TextureConst from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
 import CubeMapMaterial from "../vox/material/mcase/CubeMapMaterial";

@@ -1,7 +1,7 @@
 
 import Vector3D from "../../../vox/math/Vector3D";
 import MouseEvent from "../../../vox/event/MouseEvent";
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 
 import { RoadPath } from "./RoadPath";
 import { PathCurveEditorUI } from "./PathCurveEditorUI";

@@ -1,4 +1,4 @@
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 
 import { RoadGeometryBuilder } from "../geometry/RoadGeometryBuilder";
 import { PathCurveEditor } from "./PathCurveEditor";

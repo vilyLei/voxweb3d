@@ -8,7 +8,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import DemoInstance from "./DemoInstance";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import ThreadSystem from "../thread/ThreadSystem";
-import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../app/engine/UserInteraction";
 
 import { ToyCarScene } from "./thread/toyCar/scene/ToyCarScene";
 

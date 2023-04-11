@@ -1,4 +1,4 @@
-import EngineBase from "../vox/engine/EngineBase";
+import EngineBase from "../app/engine/EngineBase";
 
 /**
  * A empty engine instance example

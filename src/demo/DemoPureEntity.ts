@@ -17,7 +17,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import PureEntity from "../vox/entity/PureEntity";
 import MathConst from "../vox/math/MathConst";
 import BoxFrame3D from "../vox/entity/BoxFrame3D";
-import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../app/engine/UserInteraction";
 
 export class DemoPureEntity {
 

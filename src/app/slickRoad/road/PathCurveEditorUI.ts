@@ -1,5 +1,5 @@
 import MouseEvent from "../../../vox/event/MouseEvent";
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 import { DragMoveController } from "../../../voxeditor/entity/DragMoveController";
 import Vector3D from "../../../vox/math/Vector3D";
 class PathCurveEditorUI {

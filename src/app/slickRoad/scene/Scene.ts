@@ -2,7 +2,7 @@ import Vector3D from "../../../vox/math/Vector3D";
 import MouseEvent from "../../../vox/event/MouseEvent";
 import KeyboardEvent from "../../../vox/event/KeyboardEvent";
 
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 import { PathCurveEditor } from "../road/PathCurveEditor";
 import { RoadEntityBuilder } from "../road/RoadEntityBuilder";
 

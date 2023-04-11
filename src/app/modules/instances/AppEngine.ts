@@ -5,7 +5,7 @@ import RenderStatusDisplay from "../../../vox/scene/RenderStatusDisplay";
 import RendererScene from "../../../vox/scene/RendererScene";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 import IRendererScene from "../../../vox/scene/IRendererScene";
-import { UserInteraction } from "../../../vox/engine/UserInteraction";
+import { UserInteraction } from "../../../app/engine/UserInteraction";
 
 import Matrix4 from "../../../vox/math/Matrix4";
 import { IAppEngine } from "../interfaces/IAppEngine";

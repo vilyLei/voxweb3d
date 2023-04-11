@@ -11,8 +11,7 @@ import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import Vector3D from "../../vox/math/Vector3D";
 import CameraViewRay from "../../vox/view/CameraViewRay";
-import { OrthoUIScene } from "../../vox/ui/OrthoUIScene";
-//import ThreadSystem from "../../thread/ThreadSystem";
+import { OrthoUIScene } from "../ui/OrthoUIScene";
 
 export class EngineThread {
     

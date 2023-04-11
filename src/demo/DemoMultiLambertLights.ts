@@ -26,7 +26,7 @@ import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 
-import EngineBase from "../vox/engine/EngineBase";
+import EngineBase from "../app/engine/EngineBase";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import { PointLight } from "../light/base/PointLight";
 import Matrix4 from "../vox/math/Matrix4";

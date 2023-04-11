@@ -26,7 +26,7 @@ import RCExtension from "../vox/render/RCExtension";
 import { IBytesCubeTexture } from "../vox/render/texture/IBytesCubeTexture";
 import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
-import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../app/engine/UserInteraction";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 
 ///*

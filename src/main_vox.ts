@@ -344,7 +344,7 @@
 
 //  import {DemoReplaceRenderingCanvas as Demo} from "./demo/DemoReplaceRenderingCanvas";
 
- import {DemoOffscreenScene as Demo} from "./demo/DemoOffscreenScene";
+//  import {DemoOffscreenScene as Demo} from "./demo/DemoOffscreenScene";
 
 //  import {DemoSubScene as Demo} from "./demo/DemoSubScene";
 
@@ -518,7 +518,7 @@
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-// import {SlickRoad as Demo} from "./app/SlickRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

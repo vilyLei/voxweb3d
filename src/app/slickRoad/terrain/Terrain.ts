@@ -1,5 +1,5 @@
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import DataMesh from "../../../vox/mesh/DataMesh";

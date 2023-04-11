@@ -12,7 +12,7 @@ import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
 import DataMesh from "../../vox/mesh/DataMesh";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import { UserInteraction } from "../../vox/engine/UserInteraction";
+import { UserInteraction } from "../../app/engine/UserInteraction";
 
 
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";

@@ -49,7 +49,7 @@ import FrustrumFrame3DEntity from "../../vox/entity/FrustrumFrame3DEntity";
 import RendererParam from "../../vox/scene/RendererParam";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import IRendererInstance from "../../vox/scene/IRendererInstance";
-import EngineBase from "../../vox/engine/EngineBase";
+import EngineBase from "../../app/engine/EngineBase";
 
 
 var pwindow: any = window;

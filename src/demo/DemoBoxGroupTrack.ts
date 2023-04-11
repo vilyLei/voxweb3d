@@ -14,7 +14,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 
 import RendererScene from "../vox/scene/RendererScene";
 import BoxGroupTrack from "../voxanimate/primitive/BoxGroupTrack";
-import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../app/engine/UserInteraction";
 
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";

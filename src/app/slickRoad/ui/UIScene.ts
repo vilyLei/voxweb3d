@@ -7,7 +7,7 @@ import SelectionBar from "../../../orthoui/button/SelectionBar";
 import ProgressBar from "../../../orthoui/button/ProgressBar";
 import ProgressDataEvent from "../../../vox/event/ProgressDataEvent";
 
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 import {Scene} from "../scene/Scene";
 import TextButton from "../../../orthoui/button/TextButton";
 import Color4 from "../../../vox/material/Color4";

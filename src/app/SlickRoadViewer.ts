@@ -1,6 +1,6 @@
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import EngineBase from "../vox/engine/EngineBase";
+import EngineBase from "../app/engine/EngineBase";
 import {SceneViewer} from "./slickRoad/view/SceneViewer";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 export class SlickRoadViewer {

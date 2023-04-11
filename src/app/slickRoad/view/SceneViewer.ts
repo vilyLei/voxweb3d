@@ -1,4 +1,4 @@
-import EngineBase from "../../../vox/engine/EngineBase";
+import EngineBase from "../../../app/engine/EngineBase";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 

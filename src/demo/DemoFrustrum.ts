@@ -19,7 +19,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 
 import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
-import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../app/engine/UserInteraction";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 export class DemoFrustrum {
     constructor() {
