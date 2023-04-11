@@ -8,7 +8,7 @@ class VoxAwardScene {
 	constructor() {}
 
 	initialize(uisc: IRendererScene, vasParam: IAwardSceneParam): void {
-		
+
 		if (this.m_init) {
 			this.m_init = false;
 			this.m_uisc = uisc;
@@ -17,7 +17,7 @@ class VoxAwardScene {
 		}
 	}
 	private initScene(): void {
-
+		// let rst = this.m_uisc.getRenderProxy().renderingState;
 		let vparam = this.m_vasParam;
 		let tex = vparam.getTexByUrl("static/assets/vox.png");
 		tex.flipY = true;

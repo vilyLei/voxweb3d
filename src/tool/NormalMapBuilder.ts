@@ -39,6 +39,9 @@ import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEnti
 import IColorMaterial from "../vox/material/mcase/IColorMaterial";
 import Matrix4 from "../vox/math/Matrix4";
 import EventBase from "../vox/event/EventBase";
+import RenderingImageBuilder from "./base/RenderingImageBuilder";
+import { IImageTexture } from "../vox/render/texture/IImageTexture";
+import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 
 class AwardSceneParam implements IAwardSceneParam {
 	texLoader: TextureResLoader = null;
@@ -77,7 +80,8 @@ export class NormalMapBuilder {
 	private m_aspParam = new AwardSceneParam();
 	private m_vasScene = new VoxAwardScene();
 
-	private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
+	private m_imgBuilder: RenderingImageBuilder = null;
+	private m_materialCtx = new DebugMaterialContext();
 	constructor() {}
 
 	private getAssetTexByUrl(pns: string): IRenderTexture {
@@ -124,21 +128,58 @@ export class NormalMapBuilder {
 			this.initMaterialCtx();
 		}
 	}
+	private initImgBuilder(): void {
+		if (this.m_imgBuilder == null) {
+			this.m_imgBuilder = new RenderingImageBuilder();
+			let rparam = new RendererParam();
+			rparam.setCamProject(45, 0.1, 6000.0);
+			rparam.setCamPosition(1100.0, 1100.0, 1100.0);
+			rparam.cameraPerspectiveEnabled = false;
+			rparam.offscreenRenderEnabled = true;
+			rparam.divW = 200;
+			rparam.divH = 200;
+			rparam.autoAttachingHtmlDoc = !rparam.offscreenRenderEnabled;
+			rparam.autoSyncRenderBufferAndWindowSize = false;
+			rparam.sysEvtReceived = false;
+			rparam.setAttriAlpha(false);
+			this.m_imgBuilder.initialize(rparam, new Color4(0, 0, 0, 1.0));
+		}
+	}
+	private saveToImg(): void {
+		this.initImgBuilder();
+		if (this.m_imgBuilder.isEnabled()) {
+			let currTex = this.m_currTexture;
+			let tex = this.m_rscene.textureBlock.createImageTex2D();
+			tex.setDataFromImage((currTex as ImageTextureProxy).getTexData().data);
+			// tex.flipY = true;
+			let material = new NormalMapBuilderMaterial();
+			material.fixScreen = true;
+			material.setTextureList([tex]);
+			if(this.m_mapMaterial) {
+				material.dataCopyFrom(this.m_mapMaterial);
+			}
+			let pl0 = new Plane3DEntity();
+			pl0.setMaterial(material);
+			pl0.initializeXOY(-1.0, -1.0, 2, 2);
+			this.m_imgBuilder.setName(this.m_normalMapName);
+			this.m_imgBuilder.addEntity(pl0);
+			this.m_imgBuilder.setSize(currTex.getWidth(), currTex.getHeight());
+		}
+	}
 	private m_mapMaterial: NormalMapBuilderMaterial = null;
 	private m_mapPlane: Plane3DEntity = null;
 	private m_mapAreaFactor = 0.4;
 	private m_loadingTex: IRenderTexture = null;
 
 	private layoutMapPlane(): void {
-
 		let st = this.m_rscene.getStage3D();
-		let stw = Math.round( st.stageWidth * this.m_mapAreaFactor );
+		let stw = Math.round(st.stageWidth * this.m_mapAreaFactor);
 		let tex = this.m_currTexture;
 
 		let pw = tex.getWidth();
 		let ph = tex.getHeight();
 		let k = ph / pw;
-		if(pw > Math.round(0.9 * stw)) {
+		if (pw > Math.round(0.9 * stw)) {
 			pw = Math.round(0.9 * stw);
 		}
 		ph = Math.round(pw * k);
@@ -149,31 +190,33 @@ export class NormalMapBuilder {
 		pl0.update();
 	}
 	private createAMapPlane(url: string): void {
-
 		let tex = this.getTexByUrl(url);
 		this.m_loadingTex = tex;
 		this.m_currTexture = tex;
-		tex.flipY = true;
+		// tex.flipY = true;
 		let material = new NormalMapBuilderMaterial();
 		material.setTextureList([tex]);
+		if(this.m_mapMaterial) {
+			material.dataCopyFrom(this.m_mapMaterial);
+		}
 		this.m_mapMaterial = material;
 		let pl0 = this.m_mapPlane;
-		if(pl0 == null) {
+		if (pl0 == null) {
 			pl0 = new Plane3DEntity();
 			pl0.setMaterial(material);
-			pl0.initializeXOY(0,0,1,1);
-		}else {
+			pl0.initializeXOY(0, 0, 1, 1);
+		} else {
 			this.m_ctrlui.ruisc.removeEntity(pl0);
 			pl0.setMaterial(material);
 		}
-		if(tex.isDataEnough()){
+		if (tex.isDataEnough()) {
 			material.setTexSize(tex.getWidth(), tex.getHeight());
 			this.layoutMapPlane();
-		}else {
+		} else {
 			pl0.intoRendererListener = (): void => {
 				material.setTexSize(tex.getWidth(), tex.getHeight());
 				this.layoutMapPlane();
-			}
+			};
 		}
 		this.m_mapPlane = pl0;
 		this.m_ctrlui.ruisc.addEntity(pl0);
@@ -192,9 +235,9 @@ export class NormalMapBuilder {
 		color.randomRGB(0.2);
 		let srcPlane = new ScreenFixedAlignPlaneEntity();
 		srcPlane.initialize(-1.0, -1.0, 2.0, 2.0);
-		(srcPlane.getMaterial() as IColorMaterial).setColor( color );
+		(srcPlane.getMaterial() as IColorMaterial).setColor(color);
 		srcPlane.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
-		this.m_rscene.addEntity( srcPlane, 0 );
+		this.m_rscene.addEntity(srcPlane, 0);
 
 		let axis = new Axis3DEntity();
 		axis.initialize(300);
@@ -211,7 +254,6 @@ export class NormalMapBuilder {
 	}
 
 	private initTextDiv(): void {
-
 		let div = document.createElement("div");
 		div.style.color = "";
 		let pdiv: any = div;
@@ -229,21 +271,21 @@ export class NormalMapBuilder {
 	private m_dropEnabled = true;
 	initFileLoad(files: IFileUrlObj[]): void {
 		console.log("initFileLoad(), files.length: ", files.length);
-		for(let i = 0; i < files.length; ++i) {
+		for (let i = 0; i < files.length; ++i) {
 			this.loadedRes(files[i].url, files[i].name);
 		}
 	}
 	isDropEnabled(): boolean {
 		return this.m_dropEnabled;
 	}
-	private m_name = "";
+	private m_normalMapName = "";
 	private loadedRes(url: string, name: string): void {
 		// console.log("loadedRes A, url: ", url,", name: ", name);
 		if (name.indexOf(".") > 0) {
 			name = name.slice(0, name.indexOf("."));
 		}
 		console.log("loadedRes, url: ", url, ", name: ", name);
-		this.m_name = name;
+		this.m_normalMapName = name;
 		// this.createAEntityByTexUrl(url);
 		this.createAMapPlane(url);
 	}
@@ -471,76 +513,115 @@ export class NormalMapBuilder {
 		// this.m_vasScene.initialize(ui.ruisc, this.m_aspParam);
 		this.createAMapPlane("static/assets/guangyun_H_0007.png");
 	}
-	private setUIItemValue(ns: string, value: number, syncEnabled: boolean = true): void {
-		let item = this.m_ctrlui.getItemByUUID(ns);
-		if(item) {
-			item.param.value = value;
-			item.syncEnabled = syncEnabled;
-			item.updateParamToUI();
-		}
-	}
-	
-	private setUIItemFlag(ns: string, flag: boolean, syncEnabled: boolean = true): void {
-		let item = this.m_ctrlui.getItemByUUID(ns);
-		if(item) {
-			item.param.flag = flag;
-			item.syncEnabled = syncEnabled;
-			item.updateParamToUI();
-		}
-	}
-
 	private resetMapBuildCtrlValue(): void {
-		this.setUIItemValue("strength", 5.0);
-		this.setUIItemValue("sharpness", 1.0);
-		this.setUIItemFlag("invert", false);
-		this.setUIItemFlag("invert-x", false);
-		this.setUIItemFlag("invert-y", false);
+		let ui = this.m_ctrlui;
+		ui.setUIItemValue("strength", 5.0);
+		ui.setUIItemValue("sharpness", 1.0);
+		ui.setUIItemFlag("invert", false);
+		ui.setUIItemFlag("invert-x", false);
+		ui.setUIItemFlag("invert-y", false);
 	}
 	private initMapBuildCtrlUIItem(): void {
 		let ui = this.m_ctrlui;
 
-		ui.addStatusItem("保存", "saveNormalMap", "法线图", "法线图", true, (info: CtrlInfo): void => {
-			this.m_savingImg = true;
-		}, true, false);
-		ui.addStatusItem( "恢复", "resetBuildSetting", "默认设置", "默认设置", true, (info: CtrlInfo): void => {
+		ui.addStatusItem(
+			"保存",
+			"saveNormalMap",
+			"法线图",
+			"法线图",
+			true,
+			(info: CtrlInfo): void => {
+				// this.m_savingImg = true;
+				this.saveToImg();
+			},
+			true,
+			false
+		);
+		ui.addStatusItem(
+			"恢复",
+			"resetBuildSetting",
+			"默认设置",
+			"默认设置",
+			true,
+			(info: CtrlInfo): void => {
 				this.resetMapBuildCtrlValue();
 			},
-			true, false
+			true,
+			false
 		);
-		ui.addStatusItem( "翻转法线", "invert", "是", "否", false, (info: CtrlInfo): void => {
+		ui.addStatusItem(
+			"翻转法线",
+			"invert",
+			"是",
+			"否",
+			false,
+			(info: CtrlInfo): void => {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setInvertEnabled(info.flag);
 				}
 			},
-			true, false
+			true,
+			false
 		);
-		ui.addStatusItem( "翻转法线X值", "invert-x", "是", "否", false, (info: CtrlInfo): void => {
+		ui.addStatusItem(
+			"翻转法线X值",
+			"invert-x",
+			"是",
+			"否",
+			false,
+			(info: CtrlInfo): void => {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setInvertXEnabled(info.flag);
 				}
 			},
-			true, false
+			true,
+			false
 		);
-		ui.addStatusItem( "翻转法线Y值", "invert-y", "是", "否", false, (info: CtrlInfo): void => {
+		ui.addStatusItem(
+			"翻转法线Y值",
+			"invert-y",
+			"是",
+			"否",
+			false,
+			(info: CtrlInfo): void => {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setInvertYEnabled(info.flag);
 				}
 			},
-			true, false
+			true,
+			false
 		);
-		ui.addValueItem( "强度", "strength", 5.0, 0.01, 70.0, (info: CtrlInfo): void => {
+		ui.addValueItem(
+			"强度",
+			"strength",
+			5.0,
+			0.01,
+			70.0,
+			(info: CtrlInfo): void => {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setStrength(info.values[0]);
 				}
 			},
-			false, true, null, false
+			false,
+			true,
+			null,
+			false
 		);
-		ui.addValueItem( "锐度", "sharpness", 1.0, 0.01, 10.0, (info: CtrlInfo): void => {
+		ui.addValueItem(
+			"锐度",
+			"sharpness",
+			1.0,
+			0.01,
+			10.0,
+			(info: CtrlInfo): void => {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setSharpness(info.values[0]);
 				}
 			},
-			false, true, null, false
+			false,
+			true,
+			null,
+			false
 		);
 	}
 	private initMapApplyCtrlUIItem(): void {
@@ -661,15 +742,16 @@ export class NormalMapBuilder {
 	}
 	private resetMapApplyCtrlValue(): void {
 		console.log("resetMapApplyCtrlValue() ...");
-		this.setUIItemValue("uv_u_scale", 1.0);
-		this.setUIItemValue("uv_v_scale", 1.0);
-		this.setUIItemValue("uv_scale", 1.0);
-		this.setUIItemValue("metallic", 0.1);
-		this.setUIItemValue("roughness", 0.3);
+		let ui = this.m_ctrlui;
+		ui.setUIItemValue("uv_u_scale", 1.0);
+		ui.setUIItemValue("uv_v_scale", 1.0);
+		ui.setUIItemValue("uv_scale", 1.0);
+		ui.setUIItemValue("metallic", 0.1);
+		ui.setUIItemValue("roughness", 0.3);
 	}
 
-
 	private m_currTexture: IRenderTexture = null;
+	/*
 	private m_savingImg = false;
 	private m_rflag = false;
 	private m_stDivW = "";
@@ -717,8 +799,9 @@ export class NormalMapBuilder {
 		let ri = 1;
 		canvas.style.display = 'bolck';
 		canvas.style.zIndex = '9999';
-		// canvas.style.left = `${66 + k * 66}px`;
-		// canvas.style.top = `${100 + ri * 66}px`;
+		canvas.style.left = `${66 + k * 66}px`;
+		canvas.style.top = `${100 + ri * 66}px`;
+		canvas.style.position = "absolute";
 		// canvas.style.zIndex = '9999';
 		// canvas.style.width = pw + 'px';
 		// canvas.style.width = ph + 'px';
@@ -726,18 +809,19 @@ export class NormalMapBuilder {
 		// let dpr = st.getDevicePixelRatio();
 		// console.log("createCanvasData(), dpr: ", dpr, ", pw, ph: ", pw,ph);
 		let pos = mapEntity.getPosition();
-		const ctx2d = canvas.getContext('2d')!;
+		const ctx2d = canvas.getContext('2d');
 		ctx2d.drawImage(
 			srcCanvas,
 			pos.x,
-			st.stageHeight - ( pos.y + ph ),
+			st.stageHeight - (pos.y + ph),
 			// srcCanvas.width,
 			// srcCanvas.height,
-			pw, ph,
+			pw,
+			ph,
 			0,
 			0,
 			canvas.width,
-			canvas.height,
+			canvas.height
 		);
 		// document.body.appendChild(canvas);
 		return canvas.toDataURL('image/jpeg');
@@ -749,35 +833,39 @@ export class NormalMapBuilder {
 	private downloadSavedImage(): void {
 		const a = document.createElement('a');
 		a.href =  this.m_imgData;
-		a.download = this.m_name != "" ? this.m_name + "_new.jpg": "normal.jpg";
+		a.download = this.m_normalMapName != "" ? this.m_normalMapName + "_new.jpg": "normal.jpg";
 		document.body.appendChild(a);
 		(a as any).style = 'display: none';
 		a.click();
 		a.remove();
 		this.m_imgData = "";
 	}
+	//*/
 	run(): void {
-		if(this.m_imgData != "") {
-			this.downloadSavedImage();
-		}
-		if(this.m_loadingTex && this.m_loadingTex.isDataEnough()) {
-			// this.layoutEntity();
-			this.m_loadingTex = null;
-		}
-		if(this.m_savingImg) {
-			// this.m_ctrlui.ruisc.disable();
-			this.m_ctrlui.close();
-			this.m_rflag = true;
-			this.saveBegin();
-		}
+		// if(this.m_imgData != "") {
+		// 	this.downloadSavedImage();
+		// }
+		// if(this.m_loadingTex && this.m_loadingTex.isDataEnough()) {
+		// 	// this.layoutEntity();
+		// 	this.m_loadingTex = null;
+		// }
+		// if(this.m_savingImg) {
+		// 	// this.m_ctrlui.ruisc.disable();
+		// 	this.m_ctrlui.close();
+		// 	this.m_rflag = true;
+		// 	this.saveBegin();
+		// }
 		this.m_graph.run();
-		if(this.m_rflag && this.m_savingImg) {
-			this.saveImage();
-			this.m_savingImg = false;
-			// this.m_ctrlui.ruisc.enable();
-			this.m_ctrlui.open();
-			this.m_rflag = false;
-			this.saveEnd();
+		// if(this.m_rflag && this.m_savingImg) {
+		// 	this.saveImage();
+		// 	this.m_savingImg = false;
+		// 	// this.m_ctrlui.ruisc.enable();
+		// 	this.m_ctrlui.open();
+		// 	this.m_rflag = false;
+		// 	this.saveEnd();
+		// }
+		if (this.m_imgBuilder) {
+			this.m_imgBuilder.run();
 		}
 	}
 	// run(): void {

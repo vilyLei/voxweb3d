@@ -199,7 +199,7 @@ export class NormalMapVerifier {
 		let pointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
 		if (pointLight != null) {
 			// pointLight.position.setXYZ(200.0, 180.0, 200.0);
-			pointLight.position.setXYZ(0.0, 450.0, -200.0);
+			pointLight.position.setXYZ(0.0, 550.0, -200.0);
 			// pointLight.color.setRGB3f(0.0, 1.5, 0.0);
 			pointLight.color.randomRGB(1.5);
 			pointLight.attenuationFactor1 = 0.00001;
@@ -209,7 +209,7 @@ export class NormalMapVerifier {
 		pointLight = this.m_materialCtx.lightModule.getPointLightAt(1);
 		if (pointLight != null) {
 			// pointLight.position.setXYZ(200.0, 180.0, 200.0);
-			pointLight.position.setXYZ(0.0, -500.0, 0.0);
+			pointLight.position.setXYZ(0.0, -650.0, 0.0);
 			// pointLight.color.setRGB3f(0.5, 0.2, 1.0);
 			pointLight.color.randomRGB(1.7);
 			pointLight.attenuationFactor1 = 0.00001;
@@ -322,7 +322,7 @@ export class NormalMapVerifier {
 		}
 
 		let normalMap = this.getTexByUrl(this.m_normalTexUrl);
-        normalMap.flipY = true;
+        // normalMap.flipY = true;
 
 		let material: PBRMaterial;
 
@@ -402,8 +402,8 @@ export class NormalMapVerifier {
 		ui.initialize(this.m_rscene, true);
 
 		let selectBarStyle: SelectionBarStyle = null;
-		selectBarStyle = new SelectionBarStyle();
-		selectBarStyle.fontBgColor.setRGBA4f(0.7,0.8,0.6, 0.6);
+		// selectBarStyle = new SelectionBarStyle();
+		// selectBarStyle.headFontBgColor.setRGBA4f(0.7,0.8,0.6, 0.6);
 
 		ui.addStatusItem("恢复", "reset", "默认设置", "默认设置", true, (info: CtrlInfo): void => {
 			this.resetCtrlValue();

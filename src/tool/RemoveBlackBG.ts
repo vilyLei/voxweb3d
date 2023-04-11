@@ -302,7 +302,7 @@ export class RemoveBlackBG {
 		canvas.height = ph;
 		canvas.style.display = 'bolck';
 
-		const ctx2d = canvas.getContext('2d')!;
+		const ctx2d = canvas.getContext('2d');
 		ctx2d.drawImage(
 			srcCanvas,
 			0,

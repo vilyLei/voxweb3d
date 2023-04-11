@@ -14,9 +14,10 @@ class NormalMapBuilderShaderBuffer extends ShaderCodeBuffer {
         super();
     }
     private static s_instance: NormalMapBuilderShaderBuffer = null;
-    private m_uniqueName: string = "";
-    private m_hasTex: boolean = false;
-    mapLodEnabled: boolean = false;
+    private m_uniqueName = "";
+    private m_hasTex = false;
+    mapLodEnabled = false;
+	fixScreen = false;
     initialize(texEnabled: boolean): void {
         this.m_uniqueName = "NormalMapBuilderShd";
         this.m_hasTex = texEnabled;
@@ -24,6 +25,9 @@ class NormalMapBuilderShaderBuffer extends ShaderCodeBuffer {
             this.m_uniqueName += "_tex";
             if(this.mapLodEnabled) this.m_uniqueName += "Lod";
         }
+		if(this.fixScreen) {
+			this.m_uniqueName += "FixScr";
+		}
     }
 
     buildShader(): void {
@@ -33,8 +37,11 @@ class NormalMapBuilderShaderBuffer extends ShaderCodeBuffer {
             coder.mapLodEnabled = this.mapLodEnabled;
             this.m_uniform.addDiffuseMap();
         }
+		if(this.fixScreen) {
+			coder.useVertSpaceMats(true, false, false);
+			coder.addDefine("VOX_FIX_SCREEN");
+		}
         coder.addFragUniform("vec4", "u_params", 3);
-        // coder.useVertSpaceMats(true, false, false);
 		coder.addFragFunction(
 			`
 float colorToGray(vec3 color)
@@ -108,7 +115,11 @@ void main() {
         this.m_coder.addVertMainCode(
             `
 void main() {
+#ifndef VOX_FIX_SCREEN
     gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
+#else
+	gl_Position = u_objMat * vec4(a_vs,1.0);
+#endif
 #ifdef VOX_USE_2D_MAP
     v_uv = a_uvs.xy;
 #endif
@@ -131,12 +142,14 @@ void main() {
 
 export default class NormalMapBuilderMaterial extends MaterialBase {
     mapLodEnabled: boolean = false;
+	fixScreen = false;
     constructor() {
         super();
     }
 
     protected buildBuf(): void {
         let buf = NormalMapBuilderShaderBuffer.GetInstance();
+		buf.fixScreen = this.fixScreen;
         buf.mapLodEnabled = this.mapLodEnabled;
     }
     getCodeBuf(): ShaderCodeBuffer {
@@ -174,4 +187,9 @@ export default class NormalMapBuilderMaterial extends MaterialBase {
         oum.dataList = [this.m_param];
         return oum;
     }
+	dataCopyFrom(src: NormalMapBuilderMaterial): void {
+		if(src != null) {
+			this.m_param.set(src.m_param);
+		}
+	}
 }

@@ -14,9 +14,10 @@ class RemoveBlackBGShaderBuffer extends ShaderCodeBuffer {
         super();
     }
     private static s_instance: RemoveBlackBGShaderBuffer = null;
-    private m_uniqueName: string = "";
-    private m_hasTex: boolean = false;
-    mapLodEnabled: boolean = false;
+    private m_uniqueName = "";
+    private m_hasTex = false;
+    mapLodEnabled = false;
+	fixScreen = true;
     initialize(texEnabled: boolean): void {
         this.m_uniqueName = "RemoveBlackBGShd";
         this.m_hasTex = texEnabled;
@@ -33,18 +34,24 @@ class RemoveBlackBGShaderBuffer extends ShaderCodeBuffer {
             coder.mapLodEnabled = this.mapLodEnabled;
             this.m_uniform.addDiffuseMap();
         }
-        coder.addFragUniform("vec4", "u_param");
-        coder.useVertSpaceMats(true, false, false);
+        coder.addFragUniform("vec4", "u_params", 2);
+		if(this.fixScreen) {
+			coder.addDefine("VOX_FIX_SCREEN");
+			coder.useVertSpaceMats(true, false, false);
+		}
 
         this.m_coder.addFragMainCode(
             `
 void main() {
 #ifdef VOX_USE_2D_MAP
+	vec4 param = u_params[0];
 	vec4 color4 = VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv);
-    vec4 c0 = vec4(color4.xyz, max(length(color4.xyz) * u_param.x - u_param.z, 0.0)) * u_param.y;
-    FragColor0 = c0 * u_param.wwww  + vec4(1.0 - u_param.w) * color4;
+	color4.xyz = mix(color4.xyz, vec3(1.0) - color4.xyz, u_params[1].xxx);
+    vec4 c0 = vec4(color4.xyz, max(length(color4.xyz) * param.x - param.z, 0.0)) * param.y;
+    FragColor0 = c0 * param.wwww  + vec4(1.0 - param.w) * color4;
+	FragColor0.xyz = mix(FragColor0.xyz, vec3(1.0) - FragColor0.xyz, u_params[1].xxx);
 #else
-    FragColor0 = u_param;
+    FragColor0 = u_param[0];
 #endif
 }
 `
@@ -52,7 +59,11 @@ void main() {
         this.m_coder.addVertMainCode(
             `
 void main() {
+#ifndef VOX_FIX_SCREEN
+	gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
+#else
     gl_Position = u_objMat * vec4(a_vs,1.0);
+#endif
 #ifdef VOX_USE_2D_MAP
     v_uv = a_uvs.xy;
 #endif
@@ -75,12 +86,14 @@ void main() {
 
 export default class RemoveBlackBGMaterial extends MaterialBase {
     mapLodEnabled: boolean = false;
+	fixScreen = true;
     constructor() {
         super();
     }
 
     protected buildBuf(): void {
         let buf = RemoveBlackBGShaderBuffer.GetInstance();
+		buf.fixScreen = this.fixScreen;
         buf.mapLodEnabled = this.mapLodEnabled;
     }
     getCodeBuf(): ShaderCodeBuffer {
@@ -88,7 +101,8 @@ export default class RemoveBlackBGMaterial extends MaterialBase {
     }
     private m_param: Float32Array = new Float32Array(
         [
-            1.0, 1.0, 0.02, 1.0
+            1.0, 1.0, 0.02, 1.0,
+			0, 0, 0, 0
         ]);
     setParam0(p: number): void {
         this.m_param[0] = p;
@@ -102,12 +116,15 @@ export default class RemoveBlackBGMaterial extends MaterialBase {
 	setParam3(p: number): void {
         this.m_param[3] = p;
     }
+	setInvertDiscard(b: boolean): void {
+        this.m_param[4] = b ? 1.0 : 0.0;
+    }
 	paramCopyFrom(dst: RemoveBlackBGMaterial): void {
 		this.m_param.set(dst.m_param);
 	}
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_param"];
+        oum.uniformNameList = ["u_params"];
         oum.dataList = [this.m_param];
         return oum;
     }
