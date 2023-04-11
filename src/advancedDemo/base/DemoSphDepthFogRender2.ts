@@ -228,8 +228,8 @@ export class DemoSphDepthFogRender2 {
 		ui.initialize(this.m_rscene, true);
 
 		let selectBarStyle: SelectionBarStyle = null;
-		selectBarStyle = new SelectionBarStyle();
-		selectBarStyle.fontBgColor.setRGBA4f(0.7, 0.8, 0.6, 0.6);
+		// selectBarStyle = new SelectionBarStyle();
+		// selectBarStyle.headFontBgColor.setRGBA4f(0.7, 0.8, 0.6, 0.6);
 
 		ui.addStatusItem("渲染优化", "optimize", "是", "否", false, (info: CtrlInfo): void => {
 			if (this.m_fogRenderNode) {
