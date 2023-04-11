@@ -20,7 +20,7 @@ import IRenderMaterial from '../../vox/render/IRenderMaterial';
 import RenderShader from '../../vox/render/RenderShader';
 
 import RPOUnit from "../../vox/render/RPOUnit";
-import { RCRPObj, RPOUnitBuilder } from "../../vox/render/RPOUnitBuilder";
+import { RPOUnitBuilder } from "../../vox/render/RPOUnitBuilder";
 import RenderProcessBuider from "../../vox/render/RenderProcessBuider";
 import ROTransPool from "../../vox/render/ROTransPool";
 import { GpuVtxObject } from "../../vox/render/vtx/GpuVtxObject";
@@ -30,11 +30,8 @@ import IRenderBuffer from "../../vox/render/IRenderBuffer";
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
 import IRODataBuilder from "./IRODataBuilder";
 import IVDRInfo from "./vtx/IVDRInfo";
-import { IROIvsRDP } from "./vtx/IROIvsRDP";
-import { BufRDataPair } from "./vtx/ROIndicesRes";
 import EmptyVDRInfo from "./vtx/EmptyVDRInfo";
 import IRenderEntity from "./IRenderEntity";
-import IRPOUnit from "./IRPOUnit";
 
 /**
  * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的数据资源(包括: 渲染运行时管理数据和显存数据)
@@ -54,7 +51,7 @@ export default class RODataBuilder implements IRODataBuilder {
     private m_haveDeferredUpdate: boolean = false;
     private m_shdUniformTool: ShdUniformTool;
     private m_shdpBuilder: IShaderProgramBuilder = null;
-
+	readonly transPool = new ROTransPool();
     constructor(shdProgramBuilder: IShaderProgramBuilder) {
         this.m_shdpBuilder = shdProgramBuilder;
     }
@@ -77,8 +74,8 @@ export default class RODataBuilder implements IRODataBuilder {
         }
     }
 	setGLCtx(gl: any): void {
-		ROTransPool.Clear();
-		TextureRenderObj.Clear();
+		this.transPool.clear();
+		TextureRenderObj.Clear(this.m_rc.getRCUid());
 	}
     getRenderProxy(): RenderProxy {
         return this.m_rc;
@@ -230,7 +227,7 @@ export default class RODataBuilder implements IRODataBuilder {
             if (hasTrans) {
                 if (dispFlag && disp.getTransform() != null) {
                     //console.log("disp.getTransform().getUid(): "+disp.getTransform().getUid());
-                    runit.transUniform = ROTransPool.GetTransUniform(disp.getTransform(), shdp);
+                    runit.transUniform = this.transPool.getTransUniform(disp.getTransform(), shdp);
                     //console.log("RODataBuilder::updateDispMaterial(), get runit.transUniform: ",runit.transUniform);
                 }
             }
@@ -240,7 +237,7 @@ export default class RODataBuilder implements IRODataBuilder {
             if (dispFlag) {
                 if (runit.transUniform == null) {
                     runit.transUniform = this.m_shdUniformTool.buildLocalFromTransformV(hasTrans ? disp.getMatrixFS32() : null, shdp);
-                    ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform, shdp);
+                    this.transPool.setTransUniform(disp.getTransform(), runit.transUniform, shdp);
                 }
                 else {
                     runit.transUniform = this.m_shdUniformTool.updateLocalFromTransformV(runit.transUniform, hasTrans ? disp.getMatrixFS32() : null, shdp);

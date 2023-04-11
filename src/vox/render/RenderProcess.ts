@@ -22,7 +22,6 @@ import RenderSortBlock from "../../vox/render/RenderSortBlock";
 import RPOBlock from "../../vox/render/RPOBlock";
 import MaterialRPOBlock from "../../vox/render/MaterialRPOBlock";
 import IRenderProcess from "../../vox/render/IRenderProcess";
-import ROTransPool from "./ROTransPool";
 import { SortNodeLinker } from "../../vox/utils/SortNodeLinker";
 import IRenderEntity from "./IRenderEntity";
 import IRenderEntityContainer from "./IRenderEntityContainer";
@@ -340,7 +339,8 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 					let runit = node.unit;
 					let transU = runit.transUniform;
 					if (transU) {
-						ROTransPool.RemoveTransUniform(transU.key);
+						// ROTransPool.RemoveTransUniform(transU.key);
+						(this.m_rc.rdataBuilder as any).transPool.removeTransUniform(transU.key);
 					}
 					if (this.m_sortBlock) {
 						this.m_sortBlock.removeNode(node);
@@ -374,7 +374,8 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 			let runit = disp.__$$runit as RPOUnit;
 			let transU = runit.transUniform;
 			if (transU) {
-				ROTransPool.RemoveTransUniform(transU.key);
+				// ROTransPool.RemoveTransUniform(transU.key);
+				(this.m_rc.rdataBuilder as any).transPool.removeTransUniform(transU.key);
 			}
 			this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.getUid(), -1);
 			this.m_rpoUnitBuilder.restore(runit);

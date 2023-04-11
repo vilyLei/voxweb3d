@@ -9,25 +9,105 @@ import DivLog from "../../vox/utils/DivLog";
 import RendererDevice from "../../vox/render/RendererDevice";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
+class SysEvtNode {
+	ls: any[] = [];
+	funcs: ((evt: any) => void)[] = [];
+	constructor(){
+	}
+	add(l: any, func: (evt: any) => void): void {
+		let i = 0;
+		let ls = this.ls;
+		for(; i < this.ls.length; ++i) {
+			if(l == ls[i]) {
+				break;
+			}
+		}
+		if(i >= this.ls.length) {
+			ls.push(l);
+			this.funcs.push(func);
+		}
+	}
+	remove(l: any): void {
+		let ls = this.ls;
+		for(let i = 0; i < this.ls.length; ++i) {
+			if(l == ls[i]) {
+				ls.splice(i, 1);
+				this.funcs.splice(i, 1);
+				break;
+			}
+		}
+	}
+	run(evt: any): void {
+		for(let i = 0; i < this.ls.length; ++i) {
+			this.funcs[i](evt);
+		}
+	}
+}
+class SysEvtMana {
+	evts: SysEvtNode[] = null;
+	constructor(){
+	}
+	init(): void {
+		if(this.evts == null) {
+			this.evts = [];
+			for(let i = 0; i < 2; ++i) {
+				this.evts.push( new SysEvtNode() );
+				// [new SysEvtNode(), new SysEvtNode()]
+			}
+		}
+		var pdocument: any = null;
+        var pwindow: any = null;
+        if (document) {
+			pdocument = document;
+			pwindow = window;
+			pdocument.onmouseup = (evt: any): void => {
+				this.evts[1].run( evt );
+			}
+		}
+		if(pwindow) {
+			pwindow.onresize = (evt: any): void => {
+				this.evts[0].run( evt );
+			}
+		}
+
+	}
+	addWindowResizeEvt(l: any, func: (evt: any) => void): void {
+		this.evts[0].add(l, func);
+	}
+	removeWindowResizeEvt(l: any): void {
+		this.evts[0].remove(l);
+	}
+
+	addDocMouUpEvt(l: any, func: (evt: any) => void): void {
+		this.evts[1].add(l, func);
+	}
+	removeDocMouUpEvt(l: any): void {
+		this.evts[1].remove(l);
+	}
+}
 class ContextMouseEvtDispatcher {
-    private m_singleDown: boolean = false;
-    private m_mouseX: number = 0;
-    private m_mouseY: number = 0;
-    private m_mouseClickTime: number = 0;
-    dpr: number = 1.0;
+    private m_singleDown = false;
+    private m_mouseX = 0;
+    private m_mouseY = 0;
+    private m_mouseClickTime = 0;
+	private static s_sevt = new SysEvtMana();
+	sysEvt: SysEvtMana = null;
+    dpr = 1.0;
     constructor() {
+		this.sysEvt = ContextMouseEvtDispatcher.s_sevt;
+		this.sysEvt.init();
     }
     initMobile(canvas: any, div: any, stage: IRenderStage3D): void {
         var pdocument: any = null;
         try {
-            if (document != undefined) {
+            if (document) {
                 pdocument = document;
             }
         }
         catch (err) {
             console.log("ContextMouseEvtDispatcher::initMobile(), document is undefined.");
         }
-        if (pdocument != null) {
+        if (pdocument) {
             let selfT: ContextMouseEvtDispatcher = this;
             div.addEventListener('touchstart', (evt: any): void => {
                 /*
@@ -222,7 +302,18 @@ class ContextMouseEvtDispatcher {
                     stage.mouseRightUp(1);
                 }
             }
-            document.onmouseup = (evt: any): void => {
+            // document.onmouseup = (evt: any): void => {
+            //     if (evt.button == 0) {
+            //         stage.mouseWindowUp(1);
+            //     }
+            //     else if (evt.button == 1) {
+            //         // stage.mouseMiddleUp();
+            //     }
+            //     else if (evt.button == 2) {
+            //         stage.mouseWindowRightUp(1);
+            //     }
+            // }
+            let docOnmouseup = (evt: any): void => {
                 if (evt.button == 0) {
                     stage.mouseWindowUp(1);
                 }
@@ -233,6 +324,7 @@ class ContextMouseEvtDispatcher {
                     stage.mouseWindowRightUp(1);
                 }
             }
+			this.sysEvt.addDocMouUpEvt(this, docOnmouseup);
 
             canvas.onmousemove = (evt: any): void => {
                 // console.log("ContextMouseEvtDispatcher::onmouseMove"+evt.pageX+","+evt.pageY);

@@ -117,7 +117,7 @@ class RenderProxy implements IRenderProxy {
     private m_maxWebGLVersion = 2;
     private m_WEBGL_VER = 2;
     // main camera
-    private m_camera: IRenderCamera = null;
+    private m_cam: IRenderCamera = null;
     private m_camSwitched = false;
     // 是否舞台尺寸和view自动同步一致
     private m_autoSynViewAndStage = true;
@@ -164,31 +164,31 @@ class RenderProxy implements IRenderProxy {
         return this.m_adapter.getCanvas();
     }
     cameraLock(): void {
-        this.m_camera.lock();
+        this.m_cam.lock();
     }
     cameraUnlock(): void {
-        this.m_camera.unlock();
+        this.m_cam.unlock();
     }
     getCamera(): IRenderCamera {
-        return this.m_camera;
+        return this.m_cam;
     }
     updateCamera(): void {
-        return this.m_camera.update();
+        return this.m_cam.update();
     }
     createCameraUBO(shd: any): void {
         //  if(this.m_camUBO == null)
         //  {
         //      this.m_camUBO = ShaderUBOBuilder.createUBOWithDataFloatsCount("UBlock_Camera", shd, 32);
-        //      this.m_camUBO.setSubDataArrAt(0, m_camera.getViewMatrix().getLocalFS32());
-        //      this.m_camUBO.setSubDataArrAt(16, m_camera.getProjectMatrix().getLocalFS32());
+        //      this.m_camUBO.setSubDataArrAt(0, m_cam.getViewMatrix().getLocalFS32());
+        //      this.m_camUBO.setSubDataArrAt(16, m_cam.getProjectMatrix().getLocalFS32());
         //      this.m_camUBO.run();
         //  }
     }
     updateCameraDataFromCamera(camera: IRenderCamera): void {
         if (camera != null) {
-            if (this.m_camSwitched || camera != this.m_camera) {
-                this.m_camSwitched = camera != this.m_camera;
-                camera.updateCamMatToUProbe(this.m_camera.matUProbe);
+            if (this.m_camSwitched || camera != this.m_cam) {
+                this.m_camSwitched = camera != this.m_cam;
+                camera.updateCamMatToUProbe(this.m_cam.matUProbe);
                 if (this.m_camUBO != null) {
                     this.m_camUBO.setSubDataArrAt(0, camera.matUProbe.getFS32At(0));
                     this.m_camUBO.setSubDataArrAt(16, camera.matUProbe.getFS32At(1));
@@ -264,7 +264,7 @@ class RenderProxy implements IRenderProxy {
     }
     getMouseXYWorldRay(rl_position: IVector3D, rl_tv: IVector3D): void {
         let stage = this.m_actx.getStage();
-        this.m_camera.getWorldPickingRayByScreenXY(stage.mouseX, stage.mouseY, rl_position, rl_tv);
+        this.m_cam.getWorldPickingRayByScreenXY(stage.mouseX, stage.mouseY, rl_position, rl_tv);
     }
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
         return this.m_viewPortRect.testEqualWithParams(px, py, pw, ph);
@@ -298,10 +298,10 @@ class RenderProxy implements IRenderProxy {
         this.m_adapter.reseizeViewPort();
     }
     private updateCameraView(): void {
-        if (this.m_camera != null) {
+        if (this.m_cam) {
             let rect = this.m_viewPortRect;
-            this.m_camera.setViewXY(rect.x, rect.y);
-            this.m_camera.setViewSize(rect.width, rect.height);
+            this.m_cam.setViewXY(rect.x, rect.y);
+            this.m_cam.setViewSize(rect.width, rect.height);
         }
     }
     private resizeCallback(): void {
@@ -324,15 +324,15 @@ class RenderProxy implements IRenderProxy {
         if (this.m_initMainCamera) {
 
             this.m_initMainCamera = false;
-            this.m_camera.uniformEnabled = true;
+            this.m_cam.uniformEnabled = true;
 
             let rect = this.m_viewPortRect;
-
+			console.log("RenderProxy::createMainCamera(), this.m_perspectiveEnabled: ", this.m_perspectiveEnabled);
             if (this.m_perspectiveEnabled) {
-                this.m_camera.perspectiveRH((Math.PI * this.m_cameraFov) / 180.0, rect.width / rect.height, this.m_cameraNear, this.m_cameraFar);
+                this.m_cam.perspectiveRH((Math.PI * this.m_cameraFov) / 180.0, rect.width / rect.height, this.m_cameraNear, this.m_cameraFar);
             }
             else {
-                this.m_camera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * rect.height, 0.5 * rect.height, -0.5 * rect.width, 0.5 * rect.width);
+                this.m_cam.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * rect.height, 0.5 * rect.height, -0.5 * rect.width, 0.5 * rect.width);
             }
             this.updateCameraView();
         }
@@ -351,7 +351,7 @@ class RenderProxy implements IRenderProxy {
     }
     private buildCameraParam(): void {
 
-        let camera = this.m_camera;
+        let camera = this.m_cam;
 
         if (camera.matUProbe == null) {
             camera.matUProbe = this.uniformContext.createShaderUniformProbe();
@@ -397,7 +397,7 @@ class RenderProxy implements IRenderProxy {
         if (this.m_rc != null) {
             return;
         }
-        this.m_camera = camera;
+        this.m_cam = camera;
 
         let posV3: IVector3D = param.camPosition;
         let lookAtPosV3: IVector3D = param.camLookAtPos;
@@ -457,8 +457,8 @@ class RenderProxy implements IRenderProxy {
         this.createMainCamera();
 
         this.m_actx.setViewport(rect.x, rect.y, rect.width, rect.height);
-        this.m_camera.lookAtRH(posV3, lookAtPosV3, upV3);
-        this.m_camera.update();
+        this.m_cam.lookAtRH(posV3, lookAtPosV3, upV3);
+        this.m_cam.update();
 
         selfT.RGBA = gl.RGBA;
         selfT.UNSIGNED_BYTE = gl.UNSIGNED_BYTE;
@@ -542,7 +542,7 @@ class RenderProxy implements IRenderProxy {
         this.m_adapter.clearDepth(depth);
     }
     renderBegin(): void {
-        this.m_camera.update();
+        this.m_cam.update();
         this.m_adapter.renderBegin();
     }
 

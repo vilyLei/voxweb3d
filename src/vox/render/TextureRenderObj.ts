@@ -201,12 +201,14 @@ class TextureRenderObj implements ITextureRenderObj {
     static GetByMid(rcuid: number, uid: number): TextureRenderObj {
         return TextureRenderObj.s_troMaps[rcuid].get(uid);
     }
-	static Clear(): void {
+	static Clear(rcuid: number): void {
 		let ls = TextureRenderObj.s_troMaps;
-		for(let i = 0; i < ls.length; ++i) {
-			ls[i].clear();
-		}
-		TextureRenderObj.s_freeTROList = [];
+		ls[rcuid].clear();
+		// for(let i = 0; i < ls.length; ++i) {
+		// 	ls[i].clear();
+		// }
+		// TextureRenderObj.s_freeTROList = [];
+		console.log("TextureRenderObj::Clear(), rcuid: ", rcuid);
 	}
 }
 

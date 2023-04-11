@@ -25,10 +25,10 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     private m_sharedUniformList: IRenderShaderUniform[] = [];
     private m_unlocked: boolean = true;
     private m_texUnlocked: boolean = false;
-    private m_preuid: number = -1;
+    private m_preuid = -1;
     private m_currShd: IShdProgram = null;
-    private m_fragOutputTotal: number = 1;
-    private m_rcuid: number = -1;
+    private m_fragOutputTotal = 1;
+    private m_rcuid = -1;
     private m_rc: any = null;
     private m_gpuProgram: any = null;
     private m_adapter: IRenderAdapter = null;
@@ -39,7 +39,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     private m_trsu: IRenderShaderUniform = null;
     private m_shdPB: IShaderProgramBuilder = null;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
-    drawFlag: number = -1;
+    drawFlag = -1;
 
     constructor(rcuid: number, gl: any, adapter: IRenderAdapter, shdProgramBuilder: IShaderProgramBuilder) {
 

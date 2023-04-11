@@ -18,7 +18,7 @@ import IRendererParam from "../scene/IRendererParam";
 
 class RAdapterContext implements IRAdapterContext {
 
-    private m_mouseEvtDisplather: ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
+    private m_sysEvt: ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
     private m_div: HTMLDivElement = null;
     private m_canvas: HTMLCanvasElement = null;
     private m_scissorEnabled = false;
@@ -135,12 +135,13 @@ class RAdapterContext implements IRAdapterContext {
 
 		RCExtension.Initialize(this.m_webGLVersion, this.m_gl);
 	}
+	private m_param: IRendererParam = null;
     initialize(rcuid: number, stage: IRenderStage3D, param: IRendererParam): void {
         this.m_stage = stage;
         var pdocument: any = null;
         var pwindow: any = null;
         try {
-            if (document != undefined) {
+            if (document) {
                 pdocument = document;
                 pwindow = window;
             }
@@ -148,6 +149,7 @@ class RAdapterContext implements IRAdapterContext {
         catch (err) {
             console.log("RAdapterContext::initialize(), document is undefined.");
         }
+		this.m_param = param;
         if (pdocument != null) {
             this.m_dpr = window.devicePixelRatio;
             let div = param.getDiv();
@@ -158,7 +160,7 @@ class RAdapterContext implements IRAdapterContext {
             let canvas = this.m_canvas = this.m_viewEle.getCanvas();
 
             this.m_dpr = window.devicePixelRatio;
-            this.m_mouseEvtDisplather.dpr = this.m_dpr;
+            this.m_sysEvt.dpr = this.m_dpr;
 
             const rattr = param.getRenderContextAttri();
             let attr = rattr;
@@ -279,7 +281,6 @@ class RAdapterContext implements IRAdapterContext {
             RendererDevice.Initialize([this.m_webGLVersion]);
 
             console.log("RadapterContext stage: ", stage);
-            if (stage != null) this.m_mouseEvtDisplather.initialize(canvas, div, stage);
             //  console.log("viewPortIMS: ",viewPortIMS);
             console.log("MAX_TEXTURE_SIZE: ", RendererDevice.MAX_TEXTURE_SIZE);
             console.log("IsMobileWeb: ", RendererDevice.IsMobileWeb());
@@ -298,9 +299,9 @@ class RAdapterContext implements IRAdapterContext {
             //  console.log("rc_vendor: ",rc_vendor);
             //  console.log("rc_renderer: ",rc_renderer);
             let debugInfo: any = RCExtension.WEBGL_debug_renderer_info;
-            if (debugInfo != null) {
-                let webgl_vendor = this.m_gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-                let webgl_renderer = this.m_gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+            if (debugInfo) {
+                let webgl_vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+                let webgl_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
                 device.GPU_VENDOR = webgl_vendor;
                 device.GPU_RENDERER = webgl_renderer;
                 console.log("webgl_vendor: ", webgl_vendor);
@@ -311,12 +312,22 @@ class RAdapterContext implements IRAdapterContext {
                 // DivLog.ShowLog("webgl_vendor: " + webgl_vendor);
                 // DivLog.ShowLog("webgl_renderer: " + webgl_renderer);
             }
-            pwindow.onresize = (evt: any): void => {
-                if (this.autoSyncRenderBufferAndWindowSize) {
-                    this.m_resizeFlag = true;
-                    this.updateRenderBufferSize();
-                }
-            }
+			this.initEvt();
+			// if(param.sysEvtReceived) {
+			// 	// if (stage) this.m_sysEvt.initialize(canvas, div, stage);
+			// 	// pwindow.onresize = (evt: any): void => {
+			// 	// 	if (this.autoSyncRenderBufferAndWindowSize) {
+			// 	// 		this.m_resizeFlag = true;
+			// 	// 		this.updateRenderBufferSize();
+			// 	// 	}
+			// 	// }
+			// 	let winOnresize = (evt: any): void => {
+			// 		if (this.autoSyncRenderBufferAndWindowSize) {
+			// 			this.m_resizeFlag = true;
+			// 			this.updateRenderBufferSize();
+			// 		}
+			// 	}
+			// }
             this.updateRenderBufferSize();
         }
         else {
@@ -335,9 +346,22 @@ class RAdapterContext implements IRAdapterContext {
 			this.m_canvas = c1;
 			this.buildGLCtx(c1, this.m_ctxAttri);
 			this.m_glLoseCtx = null;
-            this.m_mouseEvtDisplather.initialize(c1, this.m_div, this.m_stage);
+			this.initEvt();
+
 		}
 		return c0 != c1;
+	}
+	private initEvt(): void {
+		if(this.m_param.sysEvtReceived) {
+			this.m_sysEvt.initialize(this.m_canvas, this.m_div, this.m_stage);
+			let winOnresize = (evt: any): void => {
+				if (this.autoSyncRenderBufferAndWindowSize) {
+					this.m_resizeFlag = true;
+					this.updateRenderBufferSize();
+				}
+			}
+			this.m_sysEvt.sysEvt.addWindowResizeEvt(this, winOnresize);
+		}
 	}
     loseContext(): void {
 
@@ -396,7 +420,7 @@ class RAdapterContext implements IRAdapterContext {
         let k = sync ? window.devicePixelRatio : 1.0;
         let dprChanged = Math.abs(k - this.m_dpr) > 0.01 || this.m_resizeFlag;
         this.m_dpr = k;
-        this.m_mouseEvtDisplather.dpr = k;
+        this.m_sysEvt.dpr = k;
         RendererDevice.SetDevicePixelRatio(this.m_dpr);
         console.log("window.devicePixelRatio: ", this.m_dpr, ", sync: ", sync, ", this.m_dpr: ", this.m_dpr);
         this.m_resizeFlag = false;
