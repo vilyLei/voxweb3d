@@ -338,7 +338,7 @@
 
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
-//  import {DemoScene as Demo} from "./demo/DemoScene";
+ import {DemoScene as Demo} from "./demo/DemoScene";
 
 //  import {DemoMouseInteraction as Demo} from "./demo/DemoMouseInteraction";
 
@@ -518,7 +518,7 @@
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-import {SlickRoad as Demo} from "./app/SlickRoad";
+// import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 
