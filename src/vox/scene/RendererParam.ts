@@ -41,6 +41,10 @@ class RendererParam implements IRendererParam {
 	 */
 	evtFlowEnabled = false;
 	/**
+	 * receiving sys events flag
+	 */
+	sysEvtReceived = true;
+	/**
 	 * x: fov, y: near, z: far
 	 */
 	readonly camProjParam = new Vector3D(45.0, 10.0, 5000.0);
@@ -51,7 +55,6 @@ class RendererParam implements IRendererParam {
 	syncBgColor = true;
 	batchEnabled = true;
 	processFixedState = false;
-	sysEvtReceived = true;
 
 	constructor(div: HTMLDivElement = null) {
 		this.m_mainDiv = div;

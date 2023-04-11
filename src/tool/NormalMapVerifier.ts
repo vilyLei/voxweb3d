@@ -396,6 +396,7 @@ export class NormalMapVerifier {
 		this.m_initUI = false;
 
 		let ui = this.m_ctrlui;
+		ui.syncStageSize = false;
 		ui.fontBgColor.setRGBA4f(0.7,0.8,0.6, 0.6);
 		ui.proBarBGBarAlpha = 0.9;
 		ui.proBarBGPlaneAlpha = 0.7;

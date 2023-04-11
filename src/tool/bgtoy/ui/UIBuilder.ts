@@ -32,7 +32,7 @@ class UIBuilder {
 		img.onload = (evt: any): void => {
 			let fontColor = new Color4(1.0,1.0,1.0, 1.0);
 			let bgColor = new Color4(1.0,1.0,1.0, 0.5);
-			let btn = this.createBtn("reset_btn", img, 230, 50, "恢复初始设置", 30, new Vector3D(-20,0), new Vector3D(-10), fontColor, bgColor);
+			let btn = this.createBtn("reset_btn", img, 230, 60, "恢复初始设置", 30, new Vector3D(-20,0), new Vector3D(-10), fontColor, bgColor);
 			// this.m_uisrc.addEntity(btn);
 			this.resetBtn = btn;
 			this.m_total ++;
@@ -43,11 +43,11 @@ class UIBuilder {
 		img.src = url;
 
 		url = "static/assets/ui/download.png";
-		img = new Image();
-		img.onload = (evt: any): void => {
+		let img1 = new Image();
+		img1.onload = (evt: any): void => {
 			let fontColor = new Color4(1.0,1.0,1.0, 1.0);
 			let bgColor = new Color4(1.0,1.0,1.0, 0.5);
-			let btn = this.createBtn("save_btn", img, 230, 50, "保存图片", 30, new Vector3D(-18,0), new Vector3D(-20), fontColor, bgColor);
+			let btn = this.createBtn("save_btn", img1, 230, 60, "保存图片", 30, new Vector3D(-18,0), new Vector3D(-20), fontColor, bgColor);
 			// this.m_uisrc.addEntity(btn);
 			this.saveBtn = btn;
 			this.m_total ++;
@@ -55,7 +55,7 @@ class UIBuilder {
 				this.buildFinishCall();
 			}
 		}
-		img.src = url;
+		img1.src = url;
 	}
 
 	private m_index = 0;

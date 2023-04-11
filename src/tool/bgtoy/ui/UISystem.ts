@@ -14,6 +14,7 @@ import { Background } from "./Background";
 import Vector3D from "../../../vox/math/Vector3D";
 import ProgressBarStyle from "../../../orthoui/button/ProgressBarStyle";
 import { UIBuilder } from "./UIBuilder";
+import MouseEvent from "../../../vox/event/MouseEvent";
 
 class UISystem {
 	private m_rscene: IRendererScene = null;
@@ -119,9 +120,9 @@ class UISystem {
 				this.m_currMaterial.setInvertDiscard(info.flag);
 			}
 		}, true, false, selectBarStyle);
-		ui.addStatusItem("恢复", "reset", "默认设置", "默认设置", true, (info: CtrlInfo): void => {
-			this.resetCtrlValue();
-		}, true, false, selectBarStyle);
+		// ui.addStatusItem("恢复", "reset", "默认设置", "默认设置", true, (info: CtrlInfo): void => {
+		// 	this.resetCtrlValue();
+		// }, true, false, selectBarStyle);
 		ui.addValueItem("透明度强度", "alpha_factor", 1.0, 0.0, 3.0, (info: CtrlInfo): void => {
 			if(this.m_currMaterial) {
 				this.m_currMaterial.setParam0(info.values[0]);
@@ -141,8 +142,18 @@ class UISystem {
 		}, false, true, null, false, progressBarStyle);
 		// 还可以设置: 更红，更绿，更蓝
 
-		ui.ruisc.addEntity(this.m_uiBuilder.resetBtn);
-		ui.ruisc.addEntity(this.m_uiBuilder.saveBtn);
+		let resetBtn = this.m_uiBuilder.resetBtn;
+		let saveBtn = this.m_uiBuilder.saveBtn;
+		resetBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, (evt: any):void=>{
+			this.resetCtrlValue();
+		});
+		saveBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, (evt: any):void=>{
+			if(this.m_savingCall) {
+				this.m_savingCall();
+			}
+		});
+		ui.ruisc.addEntity(resetBtn);
+		ui.ruisc.addEntity(saveBtn);
 
 		this.updateLayout();
 		this.initTextDiv();
