@@ -10,7 +10,6 @@ import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
-// import ROTransPool from '../../vox/render/ROTransPool';
 import IROTransform from './IROTransform';
 import IROTransUpdateWrapper from './IROTransUpdateWrapper';
 import IEntityUpdate from "../../vox/scene/IEntityUpdate";

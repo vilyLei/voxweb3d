@@ -596,7 +596,7 @@ export default class RendererSceneBase {
 	}
 	useMainCamera(): void {
 		this.m_currCamera = null;
-		let camera: IRenderCamera = this.m_rproxy.getCamera();
+		let camera = this.m_rproxy.getCamera();
 		this.m_rproxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight(), true);
 		this.m_rproxy.reseizeRCViewPort();
 		this.m_rproxy.updateCamera();

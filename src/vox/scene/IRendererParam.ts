@@ -44,6 +44,7 @@ interface IRendererParam {
     batchEnabled: boolean;
     processFixedState: boolean;
 
+	sysEvtReceived: boolean;
     /**
      * @param   tickUpdateTime default value 50 ms delay
      */

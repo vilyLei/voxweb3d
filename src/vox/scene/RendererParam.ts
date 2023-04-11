@@ -51,6 +51,7 @@ class RendererParam implements IRendererParam {
 	syncBgColor = true;
 	batchEnabled = true;
 	processFixedState = false;
+	sysEvtReceived = true;
 
 	constructor(div: HTMLDivElement = null) {
 		this.m_mainDiv = div;

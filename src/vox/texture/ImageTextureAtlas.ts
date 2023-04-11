@@ -10,6 +10,7 @@ import RendererDevice from "../render/RendererDevice";
 import AABB2D from "../geom/AABB2D";
 import Color4 from "../material/Color4";
 import IColor4 from "../material/IColor4";
+import IVector3D from "../math/IVector3D";
 
 export default class ImageTextureAtlas extends TextureAtlas {
 	private static s_imgMap: Map<string, HTMLCanvasElement> = new Map();
@@ -117,9 +118,10 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		chars: string,
 		fontSize: number,
 		fontColor: IColor4 = null,
-		bgColor: IColor4 = null
+		bgColor: IColor4 = null,
+		offsetV: IVector3D = null
 	): HTMLCanvasElement {
-		return ImageTextureAtlas.CreateCharsCanvasFixSize(width, height, chars, fontSize, fontColor, bgColor);
+		return ImageTextureAtlas.CreateCharsCanvasFixSize(width, height, chars, fontSize, fontColor, bgColor, offsetV);
 	}
 
 	static CreateCharsCanvasFixSize(
@@ -128,7 +130,8 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		chars: string,
 		fontSize: number,
 		fontColor: IColor4 = null,
-		bgColor: IColor4 = null
+		bgColor: IColor4 = null,
+		offsetV: IVector3D = null
 	): HTMLCanvasElement {
 		if (fontColor == null) {
 			fontColor = new Color4(0, 0, 0, 1.0);
@@ -138,7 +141,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		}
 		width = 0 | width;
 		height = 0 | height;
-		let texImg = ImageTextureAtlas.CreateCharsCanvas(chars, fontSize, fontColor, bgColor);
+		let texImg = ImageTextureAtlas.CreateCharsCanvas(chars, fontSize, fontColor);
 		if (width == texImg.width && height == texImg.height) {
 			return texImg;
 		}
@@ -148,9 +151,15 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		if (height < texImg.height) {
 			throw Error("height < texImg.height");
 		}
+		let sx = 0;
+		let sy = 0;
+		if(offsetV) {
+			sx = offsetV.x;
+			sy = offsetV.y;
+		}
+		sx += Math.round((width - texImg.width) * 0.5);
+		sy += Math.round((height - texImg.height) * 0.5);
 
-		let sx = Math.round((width - texImg.width) * 0.5);
-		let sy = Math.round((height - texImg.height) * 0.5);
 		let canvas = ImageTextureAtlas.CreateCanvas(width, height, null);
 		let ctx2D = canvas.getContext("2d");
 		ctx2D.fillStyle = bgColor.getCSSDecRGBAColor();
@@ -173,10 +182,10 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		if (chars == null || chars == "" || size < 8) {
 			return null;
 		}
-		if(frontStyle == "") {
+		if (frontStyle == "") {
 			frontStyle = "rgba(255,255,255,1.0)";
 		}
-		if(bgStyle == "") {
+		if (bgStyle == "") {
 			bgStyle = "rgba(255,255,255,0.3)";
 		}
 		const keyStr = chars + "-" + size + "-" + frontStyle + "-" + bgStyle;
@@ -278,7 +287,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 			fontColor = new Color4(0, 0, 0, 1.0);
 		}
 		if (bgColor == null) {
-			bgColor = new Color4();
+			bgColor = new Color4(1.0,1.0,1.0, 0.0);
 		}
 		let ftCStr = fontColor.getCSSDecRGBAColor();
 		let bgCStr = bgColor.getCSSDecRGBAColor();

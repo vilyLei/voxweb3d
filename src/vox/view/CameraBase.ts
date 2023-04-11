@@ -19,56 +19,56 @@ class CameraBase implements IRenderCamera {
 
     constructor() {
     }
-    version: number = 0;
+    version = 0;
     matUProbe: IShaderUniformProbe = null;
     ufrustumProbe: IShaderUniformProbe = null;
     ucameraPosProbe: IShaderUniformProbe;
-    uniformEnabled: boolean = false;
+    uniformEnabled = false;
     name = "Camera";
 
-    private m_tempV: Vector3D = new Vector3D()
-    private m_tempV1: Vector3D = new Vector3D();
-    private m_initRV: Vector3D = new Vector3D();
-    private m_initUP: Vector3D = new Vector3D();
-    private m_lookRHEnabled: boolean = true;
+    private m_tempV = new Vector3D()
+    private m_tempV1 = new Vector3D();
+    private m_initRV = new Vector3D();
+    private m_initUP = new Vector3D();
+    private m_lookRHEnabled = true;
 
-    private m_matrix: Matrix4 = new Matrix4();
-    private m_viewMat: Matrix4 = new Matrix4();
-    private m_viewInvertMat: Matrix4 = new Matrix4();
-    private m_vpMat: Matrix4 = new Matrix4();
-    private m_tempMat: Matrix4 = new Matrix4();
-    private m_projMat: Matrix4 = new Matrix4();
-    private m_camPos: Vector3D = new Vector3D();
-    private m_lookAtPos: Vector3D = new Vector3D();
-    private m_up: Vector3D = new Vector3D();
-    private m_lookDirectNV: Vector3D = new Vector3D();
-    private m_lookAtDirec: Vector3D = new Vector3D();
+    private m_matrix = new Matrix4();
+    private m_viewMat = new Matrix4();
+    private m_viewInvertMat = new Matrix4();
+    private m_vpMat = new Matrix4();
+    private m_tempMat = new Matrix4();
+    private m_projMat = new Matrix4();
+    private m_camPos = new Vector3D();
+    private m_lookAtPos = new Vector3D();
+    private m_up = new Vector3D();
+    private m_lookDirectNV = new Vector3D();
+    private m_lookAtDirec = new Vector3D();
 
-    private m_nearPlaneWidth: number = 1.0;
-    private m_nearPlaneHeight: number = 1.0;
+    private m_nearPlaneWidth = 1.0;
+    private m_nearPlaneHeight = 1.0;
 
-    private m_viewX: number = 0.0;
-    private m_viewY: number = 0.0;
-    private m_viewW: number = 800.0
-    private m_viewH: number = 600.0;
-    private m_viewHalfW: number = 400.0
-    private m_viewHalfH: number = 300.0;
-    private m_fovRadian: number = 0.0;
-    private m_aspect: number = 1.0;
-    private m_zNear: number = 0.1;
-    private m_zFar: number = 1000.0;
-    private m_b: number = 0.0;
-    private m_t: number = 0.0;
-    private m_l: number = 0.0;
-    private m_r: number = 0.0;
-    private m_perspectiveEnabled: boolean = false;
-    private m_project2Enabled: boolean = false;
-    private m_rightHandEnabled: boolean = true;
-    private m_rotV: Vector3D = new Vector3D(0.0,0.0,0.0);
+    private m_viewX = 0.0;
+    private m_viewY = 0.0;
+    private m_viewW = 800.0
+    private m_viewH = 600.0;
+    private m_viewHalfW = 400.0
+    private m_viewHalfH = 300.0;
+    private m_fovRadian = 0.0;
+    private m_aspect = 1.0;
+    private m_zNear = 0.1;
+    private m_zFar = 1000.0;
+    private m_b = 0.0;
+    private m_t = 0.0;
+    private m_l = 0.0;
+    private m_r = 0.0;
+    private m_perspectiveEnabled = false;
+    private m_project2Enabled = false;
+    private m_rightHandEnabled = true;
+    private m_rotV = new Vector3D(0.0,0.0,0.0);
 
-    private m_viewFieldZoom: number = 1.0;
-    private m_changed: boolean = true;
-    private m_unlock: boolean = true;
+    private m_viewFieldZoom = 1.0;
+    private m_changed = true;
+    private m_unlock = true;
     // 不允许外界修改camera数据
     lock(): void {
         this.m_unlock = false;
@@ -556,10 +556,10 @@ class CameraBase implements IRenderCamera {
     getPerspectiveEnabled(): boolean { return this.m_perspectiveEnabled; }
     setPerspectiveEnabled(boo: boolean): void { this.m_perspectiveEnabled = boo; }
 
-    private m_rotDegree: number = 0.0;
-    private m_rotAxis: Vector3D = new Vector3D();
+    private m_rotDegree = 0.0;
+    private m_rotAxis = new Vector3D();
     private m_rotPivotPoint: Vector3D = null;
-    private m_axisRotEnabled: boolean = false;
+    private m_axisRotEnabled = false;
     appendRotationByAxis(degree: number, axis: Vector3D, pivotPoint: Vector3D = null): void {
         if (this.m_unlock) {
             this.m_rotDegree = degree;
@@ -718,7 +718,7 @@ class CameraBase implements IRenderCamera {
         if (this.m_invViewMat == null) this.m_invViewMat = new Matrix4();
         this.m_invViewMat.copyFrom(this.m_viewMat);
         this.m_invViewMat.invert();
-        
+
         let plane: Plane = null;
         let halfMinH = this.m_viewHalfH;
         let halfMinW = this.m_viewHalfW;

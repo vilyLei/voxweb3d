@@ -72,14 +72,15 @@ export default class RSCGraph implements IRendererSceneGraph {
 	 * @param createNewCamera the default value is true
 	 */
 	createScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
-		// let sc = new RendererScene();
-
-		let sc = this.createRScene();
-		sc.initialize(rparam, renderProcessesTotal, createNewCamera);
-		let node = new RendererSceneNode(sc);
-		this.m_nodes.push(node);
-		this.m_map.set(sc.getUid(), node);
-		return sc;
+		if(this.m_nodes.length < 1) {
+			let sc = this.createRScene();
+			sc.initialize(rparam, renderProcessesTotal, createNewCamera);
+			let node = new RendererSceneNode(sc);
+			this.m_nodes.push(node);
+			this.m_map.set(sc.getUid(), node);
+			return sc;
+		}
+		return this.m_nodes[0].getRScene();
 	}
 	/**
 	 * @param rparam IRendererParam instance, the default value is null
@@ -136,7 +137,7 @@ export default class RSCGraph implements IRendererSceneGraph {
 		return null;
 	}
 	run(): void {
-        
+
 		let list = this.m_nodes;
 		let total = list.length;
 
