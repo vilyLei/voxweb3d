@@ -87,10 +87,12 @@ export class RemoveBlackBG2 {
 	}
 	private m_dropEnabled = true;
 	initFileLoad(files: IFileUrlObj[]): void {
-		console.log("initFileLoad(), files.length: ", files.length);
+		console.log("initFileLoad(), files: ", files);
 		for(let i = 0; i < files.length; ++i) {
-			this.loadedRes(files[i].url, files[i].name);
-			break;
+			if(files[i].resType == "image") {
+				this.loadedRes(files[i].url, files[i].name);
+				break;
+			}
 		}
 	}
 	isDropEnabled(): boolean {
