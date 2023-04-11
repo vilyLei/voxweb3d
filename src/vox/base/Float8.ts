@@ -91,12 +91,7 @@ export default class Float8 implements Float32Data {
 			++c;
 		}
 	}
-	/////////////////////////////////////////////////////////////
-	toString(): string {
-		let str: string = "\n" + this.m_localFS32[0] + "," + this.m_localFS32[1] + "," + this.m_localFS32[2] + "," + this.m_localFS32[3] + "\n";
-		str += this.m_localFS32[4] + "," + this.m_localFS32[5] + "," + this.m_localFS32[6] + "," + this.m_localFS32[7] + "\n";
-		return str;
-	}
+
 	destroy(): void {
 		this.m_localFS32 = null;
 		this.m_fs32 = null;
