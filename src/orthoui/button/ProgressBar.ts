@@ -22,6 +22,7 @@ import UIBarTool from "./UIBarTool";
 import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
 import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
+import ProgressBarStyle from "./ProgressBarStyle";
 
 export class ProgressBar {
     private m_ruisc: IRendererScene = null;
@@ -34,6 +35,7 @@ export class ProgressBar {
     private m_nameBtn: ColorRectImgButton = null;
     private m_barBoundsBtn: BoundsButton = null;
     private m_barPlane: Plane3DEntity = null;
+    private m_barBgPlane: Plane3DEntity = null;
     private m_rect: AABB2D = new AABB2D();
 
     private m_btnSize: number = 64;
@@ -53,7 +55,7 @@ export class ProgressBar {
     minValue: number = 0.0;
     maxValue: number = 1.0;
     step: number = 0.1;
-
+	style: ProgressBarStyle = null;
     constructor() { }
 
     open(): void {
@@ -110,24 +112,43 @@ export class ProgressBar {
     }
     private initBody(): void {
 
-        let size: number = this.m_btnSize;
-        let container: DisplayEntityContainer = new DisplayEntityContainer();
+        let style = this.style;
+		if(style) {
+			this.m_btnSize = style.fontSize;
+		}
+        let size = this.m_btnSize;
+        let container = new DisplayEntityContainer();
         this.m_container = container;
 
-        if (this.m_barName != null && this.m_barName.length > 0) {
-            let nameBtn: ColorRectImgButton = UIBarTool.CreateBtn(this.m_barName, size, this.fontColor, this.fontBgColor);
+		let fc = this.fontColor;
+        let fbc = this.fontBgColor;
+
+        let haveNameBt = this.m_nameBtn == null && this.m_barName != "" && (style == null || style.headVisible);
+        if (haveNameBt) {
+
+			if(style) {
+				fc = style.headFontColor;
+				fbc = style.headFontBgColor;
+			}
+            let nameBtn = UIBarTool.CreateBtn(this.m_barName, size, fc, fbc);
             nameBtn.setXYZ(-1.0 * nameBtn.getWidth() - 1.0, 0.0, 0.0);
             container.addEntity(nameBtn);
 
             this.m_nameBtn = nameBtn;
             this.m_nameBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
         }
-        let subBtn: ColorRectImgButton = UIBarTool.CreateBtn("-", size, this.fontColor, this.fontBgColor);
+
+		if(style) {
+			fc = style.progressBtnFontColor;
+			fbc = style.progressBtnFontBgColor;
+			this.m_barInitLength = style.progressBarLength;
+		}
+
+        let subBtn = UIBarTool.CreateBtn("-", size, fc, fbc);
         container.addEntity(subBtn);
-        let addBtn: ColorRectImgButton = UIBarTool.CreateBtn("+", size, this.fontColor, this.fontBgColor);
+        let addBtn = UIBarTool.CreateBtn("+", size, fc, fbc);
         addBtn.setXYZ(this.m_barInitLength + addBtn.getWidth(), 0, 0);
         container.addEntity(addBtn);
-
         this.m_rect.y = 0;
         if (this.m_nameBtn != null) {
             this.m_rect.x = -1.0 * this.m_nameBtn.getWidth() - 1.0;
@@ -140,9 +161,8 @@ export class ProgressBar {
         addBtn.getPosition(pos);
         this.m_rect.width = (pos.x + addBtn.getWidth()) - this.m_rect.x;
         this.m_rect.update();
-
         this.m_barBgX = size;
-        this.initProBg(container, this.m_barBgX, 0.0, this.m_barInitLength, addBtn.getHeight());
+        this.initProBg(container, this.m_barBgX, 2.0, this.m_barInitLength, addBtn.getHeight() - 2);
 
         this.m_ruisc.addContainer(container, 1);
 
@@ -151,6 +171,28 @@ export class ProgressBar {
 
         this.m_addBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnMouseDown);
         this.m_subBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnMouseDown);
+
+        if(style) {
+            style.applyToBtn(this.m_nameBtn);
+            style.applyToBtn(subBtn);
+            style.applyToBtn(addBtn);
+			if(this.m_nameBtn) {
+				this.m_nameBtn.mouseEnabled = style.headEnabled;
+			}
+			let headAlignType = style.headAlignType;
+			let p = style.headAlignPosValue;
+			switch(headAlignType) {
+				case "left":
+					if(this.m_nameBtn) {
+						this.m_nameBtn.setXYZ(p, 0.0, 0.0);
+					}
+					break;
+			}
+        }
+		container.update();
+		let bounds = container.getGlobalBounds();
+		let minV = bounds.min;
+        this.m_rect.setTo(minV.x, minV.y, bounds.getWidth(), bounds.getHeight());
         this.setProgress(this.m_progress);
     }
     private initProBg(container: DisplayEntityContainer, px: number, py: number, width: number, height: number): void {
@@ -163,12 +205,16 @@ export class ProgressBar {
         (bgPlane.getMaterial() as any).setAlpha(this.bgPlaneAlpha);
         bgPlane.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(bgPlane);
+		this.m_barBgPlane = bgPlane;
 
         let barPlane = new Plane3DEntity();
         barPlane.premultiplyAlpha = true;
         barPlane.initializeXOY(0, 0, 1, height, [CanvasTextureTool.GetInstance().createWhiteTex()]);
         barPlane.setXYZ(px, py, 0.0);
 		let c = this.fontBgColor;
+		if(this.style) {
+			c = this.style.progressBarOutColor;
+		}
 		(barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
         (barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha);
         barPlane.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
@@ -236,8 +282,13 @@ export class ProgressBar {
     private nameBtnMouseDown(evt: any): void {
         this.sendEvt(0);
     }
+	private m_barDown = false;
     private barMouseDown(evt: any): void {
-        //console.log("barMouseDown");
+		if(this.style) {
+			let c = this.style.progressBarDownColor;
+			(this.m_barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+		}
+		this.m_barDown = true;
         this.m_moveMin = evt.mouseX - this.m_progress * this.m_barInitLength;
         this.setProgress(this.m_progress);
         this.m_ruisc.addEventListener(MouseEvent.MOUSE_MOVE, this, this.barMouseMove, true, false);
@@ -247,8 +298,15 @@ export class ProgressBar {
     }
     private barMouseUp(evt: any): void {
         //console.log("barMouseUp");
-        this.m_ruisc.removeEventListener(MouseEvent.MOUSE_MOVE, this, this.barMouseMove);
-        this.m_ruisc.removeEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame);
+		if(this.m_barDown) {
+			if(this.style) {
+				let c = this.style.progressBarOverColor;
+				(this.m_barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+			}
+			this.m_ruisc.removeEventListener(MouseEvent.MOUSE_MOVE, this, this.barMouseMove);
+			this.m_ruisc.removeEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame);
+		}
+		this.m_barDown = false;
     }
     private m_autoDelay: number = 0;
     private m_changeStep: number = 0;
@@ -262,10 +320,24 @@ export class ProgressBar {
         this.m_autoDelay++;
     }
     private barMouseOver(evt: any): void {
-        (this.m_barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha + 0.1);
+		if(this.style) {
+			let c = this.style.progressBarOverColor;
+			(this.m_barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+			c = this.style.progressBarBgOverColor;
+			(this.m_barBgPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+		}else{
+			(this.m_barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha + 0.1);
+		}
     }
     private barMouseOut(evt: any): void {
-        (this.m_barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha);
+		if(this.style) {
+			let c = this.style.progressBarOutColor;
+			(this.m_barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+			c = this.style.progressBarBgOutColor;
+			(this.m_barBgPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+		}else{
+			(this.m_barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha);
+		}
     }
     private btnMouseDown(evt: any): void {
         this.m_autoDelay = 0;
@@ -283,6 +355,9 @@ export class ProgressBar {
     update(): void {
         if (this.m_container != null) {
             this.m_container.update();
+			let bounds = this.m_container.getGlobalBounds();
+			let minV = bounds.min;
+			this.m_rect.setTo(minV.x, minV.y, bounds.getWidth(), bounds.getHeight());
         }
     }
     destroy(): void {

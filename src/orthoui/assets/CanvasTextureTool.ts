@@ -4,6 +4,8 @@ import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
 import { TexArea } from "../../vox/texture/TexAreaNode";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import IColor4 from "../../vox/material/IColor4";
+import IVector3D from "../../vox/math/IVector3D";
 
 export class CanvasTextureObject {
 
@@ -113,6 +115,17 @@ export class CanvasTextureTool {
         }
         return null;
     }
+	createCharsCanvasFixSize(
+		width: number,
+		height: number,
+		chars: string,
+		fontSize: number,
+		fontColor: IColor4 = null,
+		bgColor: IColor4 = null,
+		offsetV: IVector3D = null
+	): HTMLCanvasElement {
+		return CanvasTextureTool.s_atlasList[0].createCharsCanvasFixSize(width, height, chars, fontSize, fontColor, bgColor, offsetV);
+	}
     addImageToAtlas(uniqueName: string, img: HTMLCanvasElement | HTMLImageElement): CanvasTextureObject {
 
         let atlas: ImageTextureAtlas = CanvasTextureTool.s_atlasList[0];

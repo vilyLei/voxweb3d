@@ -62,7 +62,7 @@ export default class ColorRectImgButton extends Plane3DEntity {
             this.initEvtBase();
             super.initializeXOY(startX, startY, pwidth, pheight, texList);
             this.mouseEnabled = true;
-            
+
             this.setColor( this.outColor );
         }
     }
@@ -97,7 +97,7 @@ export default class ColorRectImgButton extends Plane3DEntity {
         this.setColor(this.downColor);
     }
     protected mouseUpListener(evt: any): void {
-        //this.setColor(this.overColor);
+        this.setColor(this.overColor);
     }
     setColor(color: Color4): void {
         let material: any = this.getMaterial();
