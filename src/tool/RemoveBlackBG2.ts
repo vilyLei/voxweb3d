@@ -24,6 +24,7 @@ import IRenderEntity from "../vox/render/IRenderEntity";
 import RendererState from "../vox/render/RendererState";
 import { UISystem } from "./bgtoy/ui/UISystem";
 import { ImageFileSystem } from "./bgtoy/fio/ImageFileSystem";
+import URLFilter from "./base/URLFilter";
 
 export class RemoveBlackBG2 {
 	private m_init = true;
@@ -155,14 +156,7 @@ class AwardSceneParam implements IAwardSceneParam {
 		return this.getTexByUrl("static/assets/" + pns);
 	}
 	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-		if(url.indexOf("blob:") < 0) {
-			console.log("use common tex url");
-			let hostUrl = window.location.href;
-			if (hostUrl.indexOf(".artvily.") > 0) {
-				hostUrl = "http://www.artvily.com:9090/";
-				url = hostUrl + url;
-			}
-		}
+		url = URLFilter.filterUrl(url);
 		return this.texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 	}
 	createContainer(): IDisplayEntityContainer {

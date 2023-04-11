@@ -19,11 +19,20 @@ class VoxAwardScene {
 	private initScene(): void {
 		// let rst = this.m_uisc.getRenderProxy().renderingState;
 		let vparam = this.m_vasParam;
-		let tex = vparam.getTexByUrl("static/assets/vox.png");
+		let tex = vparam.getTexByUrl("static/assets/ui/vox.png");
 		tex.flipY = true;
 		let pw = 130;
 		let ph = 130;
-		let pl0 = vparam.createXOYPlane(0,0, pw, ph, tex);
+		let pl0 = vparam.createXOYPlane(0,0, 1.0, 1.0, tex);
+		pl0.intoRendererListener = (): void => {
+
+			pw = tex.getWidth();
+			ph = tex.getHeight();
+			let st = this.m_uisc.getStage3D();
+			pl0.setScaleXYZ(pw, ph, 1.0);
+			pl0.setXYZ(st.stageWidth - pw - 20, st.stageHeight - ph - 20, 0);
+			pl0.update();
+		}
 		let st = this.m_uisc.getStage3D();
 		pl0.setXYZ(st.stageWidth - pw - 20, st.stageHeight - ph - 20, 0);
 		this.m_uisc.addEntity(pl0, vparam.pid);

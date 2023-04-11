@@ -5,7 +5,7 @@ import UIBarTool from "../../../orthoui/button/UIBarTool";
 import IColor4 from "../../../vox/material/IColor4";
 import Vector3D from "../../../vox/math/Vector3D";
 import Color4 from "../../../vox/material/Color4";
-import IVector3D from "../../../vox/math/IVector3D";
+import URLFilter from "../../base/URLFilter";
 
 class UIBuilder {
 	private m_rscene: IRendererScene = null;
@@ -28,6 +28,7 @@ class UIBuilder {
 	private init(): void {
 
 		let url = "static/assets/ui/reset.png";
+		url = URLFilter.filterUrl( url );
 		let img = new Image();
 		img.onload = (evt: any): void => {
 			let fontColor = new Color4(1.0,1.0,1.0, 1.0);
@@ -43,11 +44,12 @@ class UIBuilder {
 		img.src = url;
 
 		url = "static/assets/ui/download.png";
+		url = URLFilter.filterUrl( url );
 		let img1 = new Image();
 		img1.onload = (evt: any): void => {
 			let fontColor = new Color4(1.0,1.0,1.0, 1.0);
 			let bgColor = new Color4(1.0,1.0,1.0, 0.5);
-			let btn = this.createBtn("save_btn", img1, 230, 60, "保存图片", 30, new Vector3D(-18,0), new Vector3D(-20), fontColor, bgColor);
+			let btn = this.createBtn("save_btn", img1, 230, 60, "保存图片", 30, new Vector3D(-13,0), new Vector3D(-20), fontColor, bgColor);
 			// this.m_uisrc.addEntity(btn);
 			this.saveBtn = btn;
 			this.m_total ++;
