@@ -73,7 +73,6 @@ class ShaderProgramBuilder {
         return uid > -1 && uid < this.m_shdList.length;
     }
 	clear(): void {
-        console.log("ShaderProgramBuilder::clear() ...");
 		let map = this.m_shdDict;
 		this.m_shdList = [];
 		for (var [k, v] of map.entries()) {

@@ -97,6 +97,11 @@ class Color4 implements IColor4 {
         this.a = a;
         return this;
     }
+
+    setAlpha(a: number): Color4 {
+		this.a = a;
+		return this;
+	}
     copyFrom(c: Color4): Color4 {
         this.r = c.r;
         this.g = c.g;
