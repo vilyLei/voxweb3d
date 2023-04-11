@@ -44,6 +44,18 @@ Feature:
 
     12.PC鼠标和移动端(包括Pad)touch事件支持。
        pc web client mouse event and mobile(pad) touch event support.
+   
+    13.引擎实例中动态切换GPU context。
+       dynamically switch the GPU context in an engine instance (includes offscreen rendering process).
+   
+    14.几何数据编辑支持。
+       geometry data edting support.
+
+    15.粒子系统支持。
+       particle effect system support.
+
+    16.多种模型数据的并行加载并行解析。
+       multi-formats geometry model data parsing with concurrency strategy.
 
     Some Features that will be supported in the future:
        RSM, SSDO, VXGI, WebGPU, RayTracing, AI Model
