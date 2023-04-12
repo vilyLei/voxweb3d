@@ -23,6 +23,9 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
 	clipMixEnabled = false;
 	brightnessEnabled = false;
 	vtxColorEnabled = false;
+	brnToAlpha = false;
+	vtxClipUVRectEnabled = false;
+	clipRectIndex = -1;
 	constructor() {
 		super();
 	}
@@ -32,6 +35,9 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
 		if (this.clipMixEnabled) this.m_uniqueName += "Mix";
 		this.m_uniqueName += this.brightnessEnabled ? "Brn" : "Alp";
 		if (this.vtxColorEnabled) this.m_uniqueName += "VtxColor";
+		if (this.brnToAlpha) this.m_uniqueName += "BrnToA";
+		if (this.vtxClipUVRectEnabled) this.m_uniqueName += "vCUVR";
+		if (this.clipRectIndex >= 0) this.m_uniqueName += "CI"+this.clipRectIndex;
 
 		this.adaptationShaderVersion = false;
 	}
@@ -75,6 +81,13 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
 		coder.addVarying("vec4", "v_colorOffset");
 		coder.addVarying("vec4", "v_texUV");
 		coder.addVarying("vec4", "v_factor");
+
+		if(this.brnToAlpha) {
+			coder.addDefine("VOX_BRN_TO_ALPHA");
+		}
+		if(this.clipRectIndex >= 0) {
+			coder.addDefine("VOX_CLIP_RECT_INDEX", this.clipRectIndex + "");
+		}
 		if (this.m_clipEnabled) {
 			coder.addDefine("VOX_USE_CLIP");
 			if (this.clipMixEnabled) {

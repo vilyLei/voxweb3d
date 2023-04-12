@@ -94,6 +94,10 @@ interface IShaderCodeUniform {
      */
     addARMMap(): void;
     /**
+     * add Index of Refraction values map uniform code
+     */
+    addIORMap(): void;
+    /**
      * add sampler2d texture uniform code
      * @param macroName shader code macro define name, the default vaule is empty string
      * @param map2DEnabled texture 2d enabled, the default vaule is true

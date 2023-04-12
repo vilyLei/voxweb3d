@@ -30,6 +30,9 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 	flipVerticalUV = false;
 	premultiplyAlpha = false;
 	vtxColorEnabled = false;
+	brnToAlpha = false;
+	clipRectEnabled = false;
+	vtxClipUVRectEnabled = false;
 
 	constructor(transform: IROTransform = null, bounds: boolean = true) {
 		super(transform);
@@ -45,6 +48,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 		if (billboardTotal > 0 && this.m_mh == null) {
 			this.m_mh = new BillboardPlaneFlowMesh();
 			this.m_mh.vtxColorEnabled = this.vtxColorEnabled;
+			this.m_mh.vtxClipUVRectEnabled = this.vtxClipUVRectEnabled;
 			this.m_mh.createData(billboardTotal);
 		}
 	}
@@ -86,6 +90,11 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 	setTimeSpeedAt(i: number, beginTime: number): void {
 		if (this.m_mh) {
 			this.m_mh.setTimeSpeedAt(i, beginTime);
+		}
+	}
+	setVtxClipAreaUVRectAt(i: number, u: number, v: number, du: number, dv: number): void {
+		if (this.m_mh) {
+			this.m_mh.setVtxClipUVRectAt(i, u, v, du, dv);
 		}
 	}
 	setTimeSpeed(i: number, timeSpeed: number): void {
@@ -190,11 +199,13 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 	}
 	createMaterial(texList: IRenderTexture[]): void {
 		if (this.getMaterial() == null) {
-			this.m_mt = new BillboardFlowMaterial(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.vtxColorEnabled);
+			this.m_mt = new BillboardFlowMaterial(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.vtxColorEnabled, this.clipRectEnabled);
 			this.m_mt.vtxInfo = new VtxDrawingInfo();
 			this.m_mt.setPlayParam(this.m_playOnce, this.m_direcEnabled, this.m_clipMixEnabled, this.m_spdScaleEnabled);
 			this.m_mt.setTextureList(texList);
 			this.m_mt.premultiplyAlpha = this.premultiplyAlpha;
+			this.m_mt.brnToAlpha = this.brnToAlpha;
+			this.m_mt.vtxClipUVRectEnabled = this.vtxClipUVRectEnabled;
 			this.setMaterial(this.m_mt);
 		} else {
 			this.m_mt = this.getMaterial() as BillboardFlowMaterial;
@@ -243,7 +254,11 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 			this.setMesh(mesh);
 		}
 	}
-
+	setClipAreaUVRect(u: number, v: number, du: number, dv: number): void {
+		if (this.m_mt) {
+			this.m_mt.setClipAreaUVRect(u, v, du, dv);
+		}
+	}
 	setUV(pu: number, pv: number, du: number, dv: number): void {
 		if (this.m_mh) {
 			this.m_mh.setUV(pu, pv, du, dv);

@@ -1,6 +1,13 @@
     vec4 color = VOX_Texture2D(VOX_DIFFUSE_MAP, v_texUV.xy);
+	#ifdef VOX_BRN_TO_ALPHA
+		color = vec4(color.xyz, max(length(color.xyz) - 0.03, 0.0));
+	#endif
     #ifdef VOX_USE_CLIP_MIX
-        color = mix(color, VOX_Texture2D(VOX_DIFFUSE_MAP, v_texUV.zw),v_factor.x);
+		vec4 c1 = VOX_Texture2D(VOX_DIFFUSE_MAP, v_texUV.zw);
+		#ifdef VOX_BRN_TO_ALPHA
+			c1 = vec4(c1.xyz, max(length(c1.xyz) - 0.03, 0.0));
+		#endif
+		color = mix(color, c1,v_factor.x);
     #endif
 
     vec3 offsetColor = getOffsetColor();

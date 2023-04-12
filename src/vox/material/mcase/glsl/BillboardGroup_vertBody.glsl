@@ -32,14 +32,32 @@
 
     v_factor = vec4(0.0,0.0, kf * a_vs2.w, fi);
 
+	vec2 uv = a_uvs.xy;
+	vec4 r4;
+    #ifdef VOX_VTX_CLIP_RECT
+		r4 = a_tvs;
+        uv = uv * r4.zw + r4.xy;
+    #endif
+    #ifdef VOX_CLIP_RECT_INDEX
+		r4 = u_billParam[VOX_CLIP_RECT_INDEX];
+        uv = uv * r4.zw + r4.xy;
+    #endif
     #ifdef VOX_USE_RAW_UV
-        v_uv = vec4(a_uvs.xy,0.0,0.0);
+        v_uv = vec4(uv,0.0,0.0);
     #endif
 
     #ifdef VOX_USE_CLIP
-        calculateClipUV( fi );
+        calculateClipUV( fi, a_uvs.xy );
+		#ifdef VOX_VTX_CLIP_RECT
+			v_texUV *= r4.zwzw;
+			v_texUV += r4.xyxy;
+		#endif
+		#ifdef VOX_CLIP_RECT_INDEX
+			v_texUV *= r4.zwzw;
+			v_texUV += r4.xyxy;
+		#endif
     #else
-        v_texUV = vec4(a_uvs.xy, a_uvs.xy);
+        v_texUV = vec4(uv.xy, uv.xy);
     #endif
 
     #ifdef VOX_VERTEX_COLOR

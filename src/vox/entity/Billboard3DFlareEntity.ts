@@ -14,122 +14,124 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import BillboardPlaneFlareMesh from "../../vox/mesh/BillboardPlaneFlareMesh";
 
 export default class Billboard3DFlareEntity extends DisplayEntity {
-    private m_currMaterial: BillboardFlareMaterial = null;
-    private m_billMesh: BillboardPlaneFlareMesh = null;
+    private m_mt: BillboardFlareMaterial = null;
+    private m_mh: BillboardPlaneFlareMesh = null;
     private m_brightnessEnabled: boolean = true;
     private m_alphaEnabled: boolean = false;
     private m_clipEnabled: boolean = false;
     private m_clipMixEnabled: boolean = false;
-    flipVerticalUV: boolean = false;
+    flipVerticalUV = false;
+    brnToAlpha = false;
     constructor(transform: IROTransform = null) {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }
     createGroup(billboardTotal: number): void {
-        if (billboardTotal > 0 && this.m_billMesh == null && this.getMesh() == null) {
-            this.m_billMesh = new BillboardPlaneFlareMesh();
-            this.m_billMesh.createData(billboardTotal);
+        if (billboardTotal > 0 && this.m_mh == null && this.getMesh() == null) {
+            this.m_mh = new BillboardPlaneFlareMesh();
+            this.m_mh.createData(billboardTotal);
         }
     }
     setSizeAndScaleAt(i: number, width: number, height: number, minScale: number, maxScale: number): void {
-        if (this.m_billMesh != null) {
-            this.m_billMesh.setSizeAndScaleAt(i, width, height, minScale, maxScale);
+        if (this.m_mh != null) {
+            this.m_mh.setSizeAndScaleAt(i, width, height, minScale, maxScale);
         }
     }
     setPositionAt(i: number, x: number, y: number, z: number): void {
-        if (this.m_billMesh != null) {
-            this.m_billMesh.setPositionAt(i, x, y, z);
+        if (this.m_mh != null) {
+            this.m_mh.setPositionAt(i, x, y, z);
         }
     }
     setUVRectAt(i: number, u: number, v: number, du: number, dv: number): void {
-        if (this.m_billMesh != null) {
-            this.m_billMesh.setUVRectAt(i, u, v, du, dv);
+        if (this.m_mh != null) {
+            this.m_mh.setUVRectAt(i, u, v, du, dv);
         }
     }
     setTimeAt(i: number, lifeTime: number, fadeInEndFactor: number, fadeOutBeginFactor: number, timeSpeed: number = 1.0): void {
-        if (this.m_billMesh != null) {
-            this.m_billMesh.setTimeAt(i, lifeTime, fadeInEndFactor, fadeOutBeginFactor, timeSpeed);
+        if (this.m_mh != null) {
+            this.m_mh.setTimeAt(i, lifeTime, fadeInEndFactor, fadeOutBeginFactor, timeSpeed);
         }
     }
     setAlphaAt(i: number, alpha: number): void {
-        if (this.m_billMesh != null) {
-            this.m_billMesh.setAlphaAt(i, alpha);
+        if (this.m_mh != null) {
+            this.m_mh.setAlphaAt(i, alpha);
         }
     }
     setBrightnessAt(i: number, brightness: number): void {
-        if (this.m_billMesh != null) {
-            this.m_billMesh.setBrightnessAt(i, brightness);
+        if (this.m_mh != null) {
+            this.m_mh.setBrightnessAt(i, brightness);
         }
     }
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
-        if (this.m_currMaterial != null) {
-            this.m_currMaterial.setRGBA4f(pr, pg, pb, pa);
+        if (this.m_mt != null) {
+            this.m_mt.setRGBA4f(pr, pg, pb, pa);
         }
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
-        if (this.m_currMaterial != null) {
-            this.m_currMaterial.setRGB3f(pr, pg, pb);
+        if (this.m_mt != null) {
+            this.m_mt.setRGB3f(pr, pg, pb);
         }
     }
 
     setRGBAOffset4f(pr: number, pg: number, pb: number, pa: number): void {
-        if (this.m_currMaterial != null) {
-            this.m_currMaterial.setRGBAOffset4f(pr, pg, pb, pa);
+        if (this.m_mt != null) {
+            this.m_mt.setRGBAOffset4f(pr, pg, pb, pa);
         }
     }
     setRGBOffset3f(pr: number, pg: number, pb: number): void {
-        if (this.m_currMaterial != null) {
-            this.m_currMaterial.setRGBOffset3f(pr, pg, pb);
+        if (this.m_mt != null) {
+            this.m_mt.setRGBOffset3f(pr, pg, pb);
         }
     }
 
     setAlpha(pa: number): void {
-        if (this.m_currMaterial != null) {
-            this.m_currMaterial.setAlpha(pa);
+        if (this.m_mt != null) {
+            this.m_mt.setAlpha(pa);
         }
     }
     getAlpha(): number {
-        return this.m_currMaterial.getAlpha();
+        return this.m_mt.getAlpha();
     }
     setBrightness(brighness: number): void {
-        this.m_currMaterial.setBrightness(brighness);
+        this.m_mt.setBrightness(brighness);
     }
     getBrightness(): number {
-        return this.m_currMaterial.getBrightness();
+        return this.m_mt.getBrightness();
     }
     setClipUVParam(cn: number, total: number, du: number, dv: number): void {
-        if (this.m_clipEnabled && this.m_currMaterial != null) {
-            this.m_currMaterial.setClipUVParam(cn, total, du, dv);
+        if (this.m_clipEnabled && this.m_mt != null) {
+            this.m_mt.setClipUVParam(cn, total, du, dv);
         }
     }
-    getTime(): number { return this.m_currMaterial.getTime(); };
+    getTime(): number { return this.m_mt.getTime(); };
     setTime(time: number): void {
-        this.m_currMaterial.setTime(time);
+        this.m_mt.setTime(time);
     }
     updateTime(timeOffset: number): void {
-        this.m_currMaterial.updateTime(timeOffset);
+        this.m_mt.updateTime(timeOffset);
     }
-    getScaleX(): number { return this.m_currMaterial.getScaleX(); }
-    getScaleY(): number { return this.m_currMaterial.getScaleY(); }
-    setScaleX(p: number): void { this.m_currMaterial.setScaleX(p); }
-    setScaleY(p: number): void { this.m_currMaterial.setScaleY(p); }
+    getScaleX(): number { return this.m_mt.getScaleX(); }
+    getScaleY(): number { return this.m_mt.getScaleY(); }
+    setScaleX(p: number): void { this.m_mt.setScaleX(p); }
+    setScaleY(p: number): void { this.m_mt.setScaleY(p); }
     setScaleXY(sx: number, sy: number): void {
-        this.m_currMaterial.setScaleXY(sx, sy);
+        this.m_mt.setScaleXY(sx, sy);
     }
     createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
-            this.m_currMaterial = new BillboardFlareMaterial(
+            this.m_mt = new BillboardFlareMaterial(
                 this.m_brightnessEnabled
                 , this.m_alphaEnabled
                 , this.m_clipEnabled
                 , this.m_clipMixEnabled
             );
-            this.m_currMaterial.setTextureList(texList);
-            this.setMaterial(this.m_currMaterial);
+			this.m_mt.brnToAlpha = this.brnToAlpha;
+            this.m_mt.setTextureList(texList);
+            this.setMaterial(this.m_mt);
         }
         else {
-            this.m_currMaterial = this.getMaterial() as BillboardFlareMaterial;
-            this.m_currMaterial.setTextureList(texList);
+            this.m_mt = this.getMaterial() as BillboardFlareMaterial;
+            this.m_mt.setTextureList(texList);
         }
     }
     toTransparentBlend(always: boolean = false): void {
@@ -155,7 +157,7 @@ export default class Billboard3DFlareEntity extends DisplayEntity {
         this.m_brightnessEnabled = brightnessEnabled;
         this.m_alphaEnabled = alphaEnabled;
         this.m_clipEnabled = clipEnabled;
-        if (this.m_billMesh != null) {
+        if (this.m_mh != null) {
             this.createMaterial(texList);
             this.activeDisplay();
         }
@@ -167,7 +169,7 @@ export default class Billboard3DFlareEntity extends DisplayEntity {
     }
     protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
-            let mesh: BillboardPlaneFlareMesh = this.m_billMesh;
+            let mesh = this.m_mh;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.flipVerticalUV = this.flipVerticalUV;
             mesh.setBufSortFormat(material.getBufSortFormat());
@@ -177,16 +179,16 @@ export default class Billboard3DFlareEntity extends DisplayEntity {
     }
 
     setUV(pu: number, pv: number, du: number, dv: number): void {
-        if (this.m_billMesh != null) {
-            this.m_billMesh.setUV(pu, pv, du, dv);
+        if (this.m_mh != null) {
+            this.m_mh.setUV(pu, pv, du, dv);
         }
     }
     update(): void {
         this.m_trs.update();
     }
     destroy(): void {
-        this.m_currMaterial = null;
-        this.m_billMesh = null;
+        this.m_mt = null;
+        this.m_mh = null;
         super.destroy();
     }
 }

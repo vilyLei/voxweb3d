@@ -17,7 +17,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
     direcEnabled = false;
     // 因为速度增加，在x轴方向缩放(拉长或者缩短)
     spdScaleEnabled = false;
-
+	paramsTotal = 0;
     constructor() {
         super();
     }
@@ -48,12 +48,15 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 			coder.addVertLayout("vec4", "a_cvs");
 			coder.addVarying("vec4", "v_vtxColor");
 		}
+		if(this.vtxClipUVRectEnabled) {
+			coder.addDefine("VOX_VTX_CLIP_RECT");
+			coder.addVertLayout("vec4", "a_tvs");
+		}
         coder.addVertLayout("vec4", "a_vs2");
         coder.addVertLayout("vec4", "a_uvs2");
         coder.addVertLayout("vec4", "a_nvs2");
 
-        let paramTotal = this.m_clipEnabled ? 5 : 4;
-        coder.addVertUniform("vec4", "u_billParam", paramTotal);
+        coder.addVertUniform("vec4", "u_billParam", this.paramsTotal);
 
         if (this.direcEnabled) coder.addDefine("ROTATION_DIRECT");
         if (this.playOnce) coder.addDefine("PLAY_ONCE");
@@ -62,7 +65,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
     }
 
-    private static s_instance: BillboardFlowShaderBuffer = new BillboardFlowShaderBuffer();
+    private static s_instance = new BillboardFlowShaderBuffer();
     static GetInstance(): BillboardFlowShaderBuffer {
         if (BillboardFlowShaderBuffer.s_instance != null) {
             return BillboardFlowShaderBuffer.s_instance;
@@ -83,36 +86,68 @@ export default class BillboardFlowMaterial extends MaterialBase {
     private m_direcEnabled = false;
     private m_spdScaleEnabled = false;
     private m_time = 0;
-    private m_uniformData: Float32Array = null;
+    private m_ds: Float32Array = null;
     private m_color = new Color4(1.0, 1.0, 1.0, 1.0);
     private m_brightness = 1.0;
+	private m_clipRectIndex = -1;
+	private m_paramsTotal = 0;
     premultiplyAlpha = false;
-
-    constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, clipEnabled: boolean = false, vtxColorEnabled: boolean = false) {
+	// clipRectEnabled = false;
+	brnToAlpha = false;
+	vtxClipUVRectEnabled = false;
+    constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, clipEnabled: boolean = false, vtxColorEnabled: boolean = false, clipRectEnabled: boolean = false) {
         super();
         this.m_brightnessEnabled = brightnessEnabled;
         this.m_alphaEnabled = alphaEnabled;
         this.m_clipEnabled = clipEnabled;
         this.m_vtxColorEnabled = vtxColorEnabled;
+		let vs = [
+			1.0, 1.0, 0.0, 0.0,        // sx,sy,time, depth offset
+			1.0, 1.0, 1.0, 1.0,        // r,g,b, spdScaleFactor(0.1 -> 5.0)
+			0.0, 0.0, 0.0, 0.0,
+			0.0, 0.0, 0.0, 2.0,        // whole acceleration x,y,z,  speed scale max value
+		];
         if (clipEnabled) {
-            this.m_uniformData = new Float32Array([
-                1.0, 1.0, 0.0, 0.0,        // sx,sy,time, depth offset
-                1.0, 1.0, 1.0, 1.0,        // r,g,b, spdScaleFactor(0.1 -> 5.0)
-                0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 2.0,        // whole acceleration x,y,z,  speed scale max value
-                2, 4, 0.5, 0.5             // clip cn, clip total, clip du, clip dv
-            ]);
+            // this.m_ds = new Float32Array([
+            //     1.0, 1.0, 0.0, 0.0,        // sx,sy,time, depth offset
+            //     1.0, 1.0, 1.0, 1.0,        // r,g,b, spdScaleFactor(0.1 -> 5.0)
+            //     0.0, 0.0, 0.0, 0.0,
+            //     0.0, 0.0, 0.0, 2.0,        // whole acceleration x,y,z,  speed scale max value
+            //     2, 4, 0.5, 0.5             // clip cn, clip total, clip du, clip dv
+            // ]);
+			vs.push(
+				2, 4, 0.5, 0.5             // clip cn, clip total, clip du, clip dv
+			);
         }
-        else {
-            this.m_uniformData = new Float32Array([
-                1.0, 1.0, 0.0, 0.0,        // // sx,sy,time, depth offset
-                1.0, 1.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 2.0
-            ]);
-        }
+        // else {
+        //     this.m_ds = new Float32Array([
+        //         1.0, 1.0, 0.0, 0.0,        // // sx,sy,time, depth offset
+        //         1.0, 1.0, 1.0, 0.0,
+        //         0.0, 0.0, 0.0, 0.0,
+        //         0.0, 0.0, 0.0, 2.0
+        //     ]);
+        // }
+		if(clipRectEnabled) {
+			this.m_clipRectIndex = vs.length / 4;
+			vs.push(
+				0, 0, 1.0, 1.0             // u, v, du, dv
+			);
+		}
+		this.m_paramsTotal = vs.length / 4;
+		this.m_ds = new Float32Array(vs);
     }
+	setClipAreaUVRect(u: number, v: number, du: number, dv: number): void {
+		const i = this.m_clipRectIndex * 4;
+		if(i > 0) {
+			const ds = this.m_ds;
+			ds[i + 0] = u;
+			ds[i + 1] = v;
+			ds[i + 2] = du;
+			ds[i + 3] = dv;
+			console.log("setClipAreaUVRect(), ds: ", ds);
+		}
 
+	}
     setPlayParam(playOnce: boolean, direcEnabled: boolean, clipMixEnabled: boolean = false, spdScaleEnabled: boolean = false): void {
         this.m_playOnce = playOnce;
         this.m_direcEnabled = direcEnabled;
@@ -128,6 +163,10 @@ export default class BillboardFlowMaterial extends MaterialBase {
         buf.premultiplyAlpha = this.premultiplyAlpha;
         buf.brightnessEnabled = this.m_brightnessEnabled;
         buf.vtxColorEnabled = this.m_vtxColorEnabled;
+        buf.brnToAlpha = this.brnToAlpha;
+        buf.vtxClipUVRectEnabled = this.vtxClipUVRectEnabled;
+        buf.clipRectIndex = this.m_clipRectIndex;
+        buf.paramsTotal = this.m_paramsTotal;
         buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.getTextureTotal() > 1);
     }
 
@@ -137,7 +176,7 @@ export default class BillboardFlowMaterial extends MaterialBase {
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_billParam"];
-        oum.dataList = [this.m_uniformData];
+        oum.dataList = [this.m_ds];
         return oum;
     }
 
@@ -146,96 +185,96 @@ export default class BillboardFlowMaterial extends MaterialBase {
         this.m_color.g = pg;
         this.m_color.b = pb;
         this.m_color.a = pa;
-        this.m_uniformData[4] = pr * this.m_brightness;
-        this.m_uniformData[5] = pg * this.m_brightness;
-        this.m_uniformData[6] = pb * this.m_brightness;
+        this.m_ds[4] = pr * this.m_brightness;
+        this.m_ds[5] = pg * this.m_brightness;
+        this.m_ds[6] = pb * this.m_brightness;
     }
     setRGB3f(pr: number, pg: number, pb: number) {
         this.m_color.r = pr;
         this.m_color.g = pg;
         this.m_color.b = pb;
-        this.m_uniformData[4] = pr * this.m_brightness;
-        this.m_uniformData[5] = pg * this.m_brightness;
-        this.m_uniformData[6] = pb * this.m_brightness;
+        this.m_ds[4] = pr * this.m_brightness;
+        this.m_ds[5] = pg * this.m_brightness;
+        this.m_ds[6] = pb * this.m_brightness;
     }
     setAlpha(pa: number): void {
-        this.m_uniformData[7] = pa;
+        this.m_ds[7] = pa;
     }
     getAlpha(): number {
-        return this.m_uniformData[6];
+        return this.m_ds[6];
     }
     setBrightness(brighness: number): void {
         this.m_brightness = brighness;
-        this.m_uniformData[4] = this.m_color.r * brighness;
-        this.m_uniformData[5] = this.m_color.g * brighness;
-        this.m_uniformData[6] = this.m_color.b * brighness;
+        this.m_ds[4] = this.m_color.r * brighness;
+        this.m_ds[5] = this.m_color.g * brighness;
+        this.m_ds[6] = this.m_color.b * brighness;
     }
     getBrightness(): number {
         return this.m_brightness;
     }
 
     setRGBAOffset4f(pr: number, pg: number, pb: number, pa: number): void {
-        this.m_uniformData[8] = pr;
-        this.m_uniformData[9] = pg;
-        this.m_uniformData[10] = pb;
-        this.m_uniformData[11] = pa;
+        this.m_ds[8] = pr;
+        this.m_ds[9] = pg;
+        this.m_ds[10] = pb;
+        this.m_ds[11] = pa;
     }
     setRGBOffset3f(pr: number, pg: number, pb: number): void {
-        this.m_uniformData[8] = pr;
-        this.m_uniformData[9] = pg;
-        this.m_uniformData[10] = pb;
+        this.m_ds[8] = pr;
+        this.m_ds[9] = pg;
+        this.m_ds[10] = pb;
     }
     setAcceleration(accX: number, accY: number, accZ: number): void {
-        this.m_uniformData[12] = accX;
-        this.m_uniformData[13] = accY;
-        this.m_uniformData[14] = accZ;
+        this.m_ds[12] = accX;
+        this.m_ds[13] = accY;
+        this.m_ds[14] = accZ;
     }
     setSpdScaleMax(spdScaleMax: number, factor: number = 1.0): void {
         if (spdScaleMax < 1.0) spdScaleMax = 1.0;
         if (spdScaleMax > 10.0) spdScaleMax = 10.0;
         if (factor < 0.1) factor = 0.1;
         if (factor > 5.0) factor = 5.0;
-        this.m_uniformData[15] = spdScaleMax;
-        this.m_uniformData[7] = factor;
+        this.m_ds[15] = spdScaleMax;
+        this.m_ds[7] = factor;
     }
     setClipUVParam(cn: number, total: number, du: number, dv: number): void {
         if (this.m_clipEnabled) {
-            this.m_uniformData[16] = cn;
-            this.m_uniformData[17] = total;
-            this.m_uniformData[18] = du;
-            this.m_uniformData[19] = dv;
+            this.m_ds[16] = cn;
+            this.m_ds[17] = total;
+            this.m_ds[18] = du;
+            this.m_ds[19] = dv;
         }
     }
     getTime(): number { return this.m_time; };
     setTime(time: number): void {
         this.m_time = time;
-        this.m_uniformData[2] = time;
+        this.m_ds[2] = time;
     }
     updateTime(offsetTime: number): void {
         this.m_time += offsetTime;
-        this.m_uniformData[2] = this.m_time;
+        this.m_ds[2] = this.m_time;
     }
-    getScaleX(): number { return this.m_uniformData[0]; }
-    getScaleY(): number { return this.m_uniformData[1]; }
-    setScaleX(p: number): void { this.m_uniformData[0] = p; }
-    setScaleY(p: number): void { this.m_uniformData[1] = p; }
+    getScaleX(): number { return this.m_ds[0]; }
+    getScaleY(): number { return this.m_ds[1]; }
+    setScaleX(p: number): void { this.m_ds[0] = p; }
+    setScaleY(p: number): void { this.m_ds[1] = p; }
     setScaleXY(sx: number, sy: number): void {
-        this.m_uniformData[0] = sx;
-        this.m_uniformData[1] = sy;
+        this.m_ds[0] = sx;
+        this.m_ds[1] = sy;
     }
     /**
      * 设置深度偏移量
      * @param offset the value range: [-2.0 -> 2.0]
      */
     setDepthOffset(offset: number): void {
-        this.m_uniformData[3] = offset;
+        this.m_ds[3] = offset;
     }
     getUniformData(): Float32Array {
-        return this.m_uniformData;
+        return this.m_ds;
     }
 
     destroy() {
         super.destroy();
-        this.m_uniformData = null;
+        this.m_ds = null;
     }
 }

@@ -50,6 +50,7 @@ export default class BillboardFlareMaterial extends MaterialBase {
     private m_alphaEnabled: boolean = false;
     private m_clipEnabled: boolean = false;
     private m_clipMixEnabled: boolean = false;
+	brnToAlpha = false;
     constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, clipEnabled: boolean = false, clipMixEnabled: boolean = false) {
         super();
         this.m_brightnessEnabled = brightnessEnabled;
@@ -71,6 +72,7 @@ export default class BillboardFlareMaterial extends MaterialBase {
     protected buildBuf(): void {
 
         let buf = BillboardFlareShaderBuffer.GetInstance();
+        buf.brnToAlpha = this.brnToAlpha;
         buf.clipMixEnabled = this.m_clipMixEnabled;
         buf.brightnessEnabled = this.m_brightnessEnabled;
         buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.getTextureTotal() > 1);

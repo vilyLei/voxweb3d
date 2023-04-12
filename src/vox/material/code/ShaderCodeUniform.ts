@@ -240,6 +240,14 @@ class ShaderCodeUniform implements IShaderCodeUniform {
         this.m_uniqueNSKeys[11] = 1;
         this.m_uniqueNSKeyFlag = true;
     }
+    /**
+     * add Index of Refraction values map uniform code
+     */
+    addIORMap(): void {
+        this.m_codeBuilder.addTextureSample2D("VOX_IOR_MAP", true, true, false);
+        this.m_uniqueNSKeys[12] = 1;
+        this.m_uniqueNSKeyFlag = true;
+    }
 
     add2DMap(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
         this.m_codeBuilder.addTextureSample2D(macroName, map2DEnabled, fragEnabled, vertEnabled);
