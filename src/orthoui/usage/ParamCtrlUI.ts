@@ -373,8 +373,42 @@ export default class ParamCtrlUI {
 		if (this.rgbPanel != null) this.rgbPanel.close();
 	}
 	updateLayout(force: boolean = false, fixPos: Vector3D = null, distance: number = 5): void {
-		let dis = 5 - this.m_minBtnX;
+
 		let pos = new Vector3D();
+		let offsetV = new Vector3D();
+		if (fixPos == null) {
+			fixPos = new Vector3D();
+		}
+		let btns = force ? this.m_btns : this.m_visiBtns;
+		let bounds = this.bounds;
+		for (let i = 0; i < btns.length; ++i) {
+			btns[i].update();
+			bounds.union(btns[i].getRect());
+		}
+
+		offsetV.x = fixPos.x - bounds.x;
+		offsetV.y = fixPos.y - bounds.y;
+		offsetV.x += distance;
+		offsetV.y += distance;
+
+		bounds.reset();
+		for (let i = 0; i < btns.length; ++i) {
+			btns[i].getPosition(pos);
+			pos.addBy(offsetV);
+			btns[i].setPosition(pos);
+			btns[i].update();
+			bounds.union(btns[i].getRect());
+		}
+		bounds.update();
+		if (this.rgbPanel) {
+			this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
+		}
+	}
+	
+	updateLayout2(force: boolean = false, fixPos: Vector3D = null, distance: number = 5): void {
+		let dis = 0;
+		let pos = new Vector3D();
+
 		let btns = force ? this.m_btns : this.m_visiBtns;
 		let bounds = this.bounds;
 		bounds.reset();

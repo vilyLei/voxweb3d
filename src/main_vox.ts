@@ -1,4 +1,11 @@
 (document as any).demoState = 1;
+class VVF {
+    isEnabled(): boolean {
+        return true;
+    }
+}
+let pwin: any = window;
+pwin["VoxVerify"] = new VVF();
 
 //  import * as VatParallaxMap2 from "./voxvat/demo/VatParallaxMap2";
 //  import Demo = VatParallaxMap2.voxvat.demo.VatParallaxMap2;
