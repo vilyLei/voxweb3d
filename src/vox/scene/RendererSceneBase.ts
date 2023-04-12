@@ -57,6 +57,7 @@ import IRendererParam from "./IRendererParam";
 import IRenderEntityBase from "../render/IRenderEntityBase";
 import EntityTransUpdater from "./EntityTransUpdater";
 import EntityFency from "./mana/EntityFence";
+import VoxSystemVerify from "../base/VoxSystemVerify";
 
 export default class RendererSceneBase {
 	private ___$$$$$$$Author = "VilyLei(vily313@126.com)";
@@ -236,16 +237,16 @@ export default class RendererSceneBase {
 	}
 
 	setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
-		this.m_rproxy.setClearUint24Color(colorUint24, alpha);
+		if(this.m_rproxy)this.m_rproxy.setClearUint24Color(colorUint24, alpha);
 	}
 	setClearRGBColor3f(pr: number, pg: number, pb: number): void {
-		this.m_rproxy.setClearRGBColor3f(pr, pg, pb);
+		if(this.m_rproxy)this.m_rproxy.setClearRGBColor3f(pr, pg, pb);
 	}
 	setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
-		this.m_rproxy.setClearRGBAColor4f(pr, pg, pb, pa);
+		if(this.m_rproxy)this.m_rproxy.setClearRGBAColor4f(pr, pg, pb, pa);
 	}
 	setClearColor(color: Color4): void {
-		this.m_rproxy.setClearRGBAColor4f(color.r, color.g, color.b, color.a);
+		if(this.m_rproxy)this.m_rproxy.setClearRGBAColor4f(color.r, color.g, color.b, color.a);
 	}
 
 	setRenderToBackBuffer(): void {
@@ -274,7 +275,7 @@ export default class RendererSceneBase {
 		return this.m_evt3DCtr != null && this.m_evt3DCtr.isSelected();
 	}
 	enableMouseEvent(gpuTestEnabled: boolean = true): void {
-		if (this.m_evt3DCtr == null) {
+		if (this.m_evt3DCtr == null && this.m_rspace) {
 			if (gpuTestEnabled) {
 				this.m_rspace.setRaySelector(new RayGpuSelector());
 			} else {
@@ -297,10 +298,10 @@ export default class RendererSceneBase {
 		return this.m_adapter.getDevicePixelRatio();
 	}
 	addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-		this.m_currStage3D.addEventListener(type, target, func, captureEnabled, bubbleEnabled);
+		if(this.m_currStage3D)this.m_currStage3D.addEventListener(type, target, func, captureEnabled, bubbleEnabled);
 	}
 	removeEventListener(type: number, target: any, func: (evt: any) => void): void {
-		this.m_currStage3D.removeEventListener(type, target, func);
+		if(this.m_currStage3D)this.m_currStage3D.removeEventListener(type, target, func);
 	}
 	setAccessor(accessor: IRendererSceneAccessor): void {
 		this.m_accessor = accessor;
@@ -320,6 +321,9 @@ export default class RendererSceneBase {
 	}
 	initialize(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
 		if (this.m_renderer == null) {
+			if(!VoxSystemVerify.isEnabled()) {
+				return;
+			}
 			if (rparam == null) rparam = new RendererParam();
 			this.m_rparam = rparam;
 

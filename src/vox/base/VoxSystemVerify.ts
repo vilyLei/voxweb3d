@@ -5,11 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
+import URLFilter from "../../tool/base/URLFilter";
 import ISystemVerify from "../../vox/base/ISystemVerify";
 declare var VoxVerify: ISystemVerify;
 export default class VoxSystemVerify {
-    // constructor(){}
-    isEnabled(): boolean {
-        return VoxVerify.isEnabled();
+    static isEnabled(): boolean {
+        if(typeof VoxVerify !== "undefined") {
+            return VoxVerify.isEnabled();
+        }
+        return URLFilter.isEnabled();
     }
 }
