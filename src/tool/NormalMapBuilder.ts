@@ -293,6 +293,7 @@ export class NormalMapBuilder {
 		let px = Math.round(st.stageWidth * this.m_mapAreaFactor);
 		this.m_rscene.setViewPort(px, 0, st.stageWidth - px, st.stageHeight);
 
+		this.m_ctrlui.updateLayout(true);
 		let stw = Math.round(st.stageWidth * this.m_mapAreaFactor);
 		this.m_ctrlui2.updateLayout(true, new Vector3D(stw));
 
