@@ -18,7 +18,6 @@ import EventBase from "../../vox/event/EventBase";
 import SelectionBarStyle from "../button/SelectionBarStyle";
 import ProgressBarStyle from "../button/ProgressBarStyle";
 import AABB2D from "../../vox/geom/AABB2D";
-import AABB from "../../vox/geom/AABB";
 
 export default class ParamCtrlUI {
 	private m_rscene: IRendererScene = null;
@@ -33,6 +32,9 @@ export default class ParamCtrlUI {
 	proBarBGPlaneAlpha = 0.25;
 	syncStageSize = true;
 	selectPlaneEnabled = true;
+	btnSize = 30;
+	bounds = new AABB2D();
+
 	constructor(closeBtnFlag: boolean = true) {
 		this.m_closeBtnFlag = closeBtnFlag;
 	}
@@ -49,20 +51,20 @@ export default class ParamCtrlUI {
 		}
 	}
 	close(): void {
-		if (this.m_menuBtn != null) {
+		if (this.m_menuBtn) {
 			this.menuCtrl(false);
 			this.m_menuBtn.select(false);
-			if(this.m_selectPlane) this.m_selectPlane.setVisible(false);
+			if (this.m_selectPlane) this.m_selectPlane.setVisible(false);
 		}
 	}
 	open(): void {
-		if (this.m_menuBtn != null) {
+		if (this.m_menuBtn) {
 			this.menuCtrl(true);
 			this.m_menuBtn.deselect(true);
 		}
 	}
 	isOpen(): boolean {
-		return this.m_menuBtn != null && !this.m_menuBtn.isSelected();
+		return this.m_menuBtn && !this.m_menuBtn.isSelected();
 	}
 	private initUIScene(buildDisplay: boolean): void {
 		let rparam = this.m_rscene.createRendererParam();
@@ -83,11 +85,22 @@ export default class ParamCtrlUI {
 			this.initUI();
 		}
 	}
+	viewX = 0;
+	viewY = 0;
+	viewWidth = 0;
+	viewHeight = 0;
 	private resize(evt: any): void {
 		let stage = this.m_rscene.getStage3D();
 		// console.log("ParamCtrlUI(), stage.stageHalfWidth: ", stage.stageHalfWidth);
 		if (this.syncStageSize) {
-			this.ruisc.setViewPort(0, 0, stage.stageWidth, stage.stageHeight);
+			if (this.viewWidth > 0) {
+				this.ruisc.setViewPort(this.viewX, this.viewY, this.viewWidth, this.viewHeight);
+			} else {
+				this.ruisc.setViewPort(0, 0, stage.stageWidth, stage.stageHeight);
+			}
+		}
+		if(this.m_selectPlane) {
+			this.m_selectPlane.setVisible(false);
 		}
 		this.ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
 		this.ruisc.getCamera().update();
@@ -95,7 +108,6 @@ export default class ParamCtrlUI {
 	private initUI(): void {
 		this.initCtrlBars();
 	}
-	btnSize = 30;
 	private m_bgLength = 200.0;
 	private m_btnPX = 122.0;
 	private m_btnPY = 10.0;
@@ -206,10 +218,8 @@ export default class ParamCtrlUI {
 	}
 	private moveSelectToBtn(btn: ProgressBar | SelectionBar): void {
 		let rect = btn.getRect();
-		btn.getPosition(this.m_pos);
-		this.m_pos.x += rect.x;
 		if (this.m_selectPlane) {
-			this.m_selectPlane.setXYZ(this.m_pos.x, this.m_pos.y, -1.0);
+			this.m_selectPlane.setXYZ(rect.x, rect.y, -1.0);
 			this.m_selectPlane.setScaleXYZ(rect.width, rect.height, 1.0);
 			this.m_selectPlane.update();
 			this.m_selectPlane.setVisible(true);
@@ -229,7 +239,7 @@ export default class ParamCtrlUI {
 			this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
 		}
 
-		if(this.selectPlaneEnabled) this.m_selectPlane = new Plane3DEntity();
+		if (this.selectPlaneEnabled) this.m_selectPlane = new Plane3DEntity();
 
 		if (this.m_selectPlane) {
 			this.m_selectPlane.vertColorEnabled = true;
@@ -362,19 +372,27 @@ export default class ParamCtrlUI {
 		}
 		if (this.rgbPanel != null) this.rgbPanel.close();
 	}
-	bounds = new AABB2D();
-	updateLayout(force: boolean = false, offsetV: Vector3D = null): void {
-		if (offsetV == null) {
-			offsetV = new Vector3D();
-		}
-		let bounds = this.bounds;
-		bounds.reset();
+	updateLayout(force: boolean = false, fixPos: Vector3D = null, distance: number = 5): void {
 		let dis = 5 - this.m_minBtnX;
 		let pos = new Vector3D();
 		let btns = force ? this.m_btns : this.m_visiBtns;
+		let bounds = this.bounds;
+		bounds.reset();
+		if (fixPos == null) {
+			fixPos = new Vector3D();
+		}
 		for (let i = 0; i < btns.length; ++i) {
 			btns[i].getPosition(pos);
-			pos.addBy(offsetV);
+			pos.x = fixPos.x;
+			btns[i].setPosition(pos);
+			btns[i].update();
+			bounds.union(btns[i].getRect());
+		}
+		dis = distance - (bounds.x - fixPos.x);
+		bounds.reset();
+
+		for (let i = 0; i < btns.length; ++i) {
+			btns[i].getPosition(pos);
 			pos.x += dis;
 			btns[i].setPosition(pos);
 			btns[i].update();

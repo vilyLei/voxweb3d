@@ -55,6 +55,7 @@ export class DemoParticleFlowGroup {
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam, 3);
 			this.m_rscene.setRendererProcessParam(1, true, true);
+			this.m_rscene.setClearRGBColor3f(0.3, 0.4, 0.5);
 
 			this.m_viewRay.initialize(this.m_rscene);
 			this.m_viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
@@ -94,11 +95,12 @@ export class DemoParticleFlowGroup {
 			textures.push(this.getImageTexByUrl("static/assets/guangyun_H_0007.png"));
 			textures.push(this.getImageTexByUrl("static/assets/flare_core_01.jpg"));
 			textures.push(this.getImageTexByUrl("static/assets/flare_core_02.jpg"));
-			textures.push(this.getImageTexByUrl("static/assets/a_02_c.jpg"));
+			textures.push(this.getImageTexByUrl("static/assets/pe4Areas01.jpg"));
 			textures.push(this.getImageTexByUrl("static/assets/xulie_02_07.png"));
 			textures.push(this.getImageTexByUrl("static/assets/testEFT4_01.jpg"));
 			textures.push(this.getImageTexByUrl("static/assets/testFT4.jpg"));
 			textures.push(this.getImageTexByUrl("static/assets/testEFT4_monochrome3.jpg"));
+			textures.push(this.getImageTexByUrl("static/assets/par_tex_005.jpg"));
 
 			this.m_textures = textures;
 			//      let plane:Plane3DEntity = new Plane3DEntity();
@@ -123,12 +125,114 @@ export class DemoParticleFlowGroup {
 			//this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, true);
 			// this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, true, true);
 			// this.initFlowBill(this.m_textures[this.m_textures.length - 2],null, true, true,false,true);
-			// this.initFlowBill(this.m_textures[this.m_textures.length - 1], null, false, false);
-			this.initFlowBill(this.m_textures[this.m_textures.length - 1], null, false, true);
+			// this.initFlowBill(this.m_textures[this.m_textures.length - 2],null, true, true,false,true);
+			// this.initFlowBill(this.m_textures[this.m_textures.length - 6],null, true, true,false,true);
+			this.initFlowBillWithVtxClipRect(this.m_textures[this.m_textures.length - 6],null, true, true,false,true);
+			// this.initFlowBillBrnToAlpha(this.m_textures[this.m_textures.length - 2],null, true, true,false,true);
+			// this.initFlowBill(this.m_textures[this.m_textures.length - 6], null, false, false);
+			// this.initFlowBill(this.m_textures[this.m_textures.length - 6], null, false, true);
 			//*/
 		}
 	}
+	private getAreaParam(rn: number, cn: number): number[] {
+		let ri = Math.round(1000 * Math.random()) % rn;
+		let ci = Math.round(1000 * Math.random()) % cn;
+		let dw = 1.0 / cn;
+		let dh = 1.0 / rn;
+		return [ci * dw, ri * dh, dw, dh];
+	}
+	private getAreaParamAt(rn: number, cn: number, ri: number, ci: number): number[] {
+		// let ri = Math.round(1000 * Math.random()) % rn;
+		// let ci = Math.round(1000 * Math.random()) % cn;
+		let dw = 1.0 / cn;
+		let dh = 1.0 / rn;
+		return [ci * dw, ri * dh, dw, dh];
+	}
+	private initFlowBillWithVtxClipRect(
+		tex: TextureProxy,
+		colorTex: TextureProxy,
+		clipEnabled: boolean = false,
+		playOnce: boolean = false,
+		direcEnabled: boolean = false,
+		clipMixEnabled: boolean = false
+	): void {
+		let size = 100;
+		console.log("$$$$$$$$ clipEnabled: ", clipEnabled);
+		let total = 20;
+		let billGroup = new Billboard3DFlowEntity();
+		billGroup.vtxColorEnabled = true;
+		billGroup.clipRectEnabled = false;
+		billGroup.vtxClipUVRectEnabled = true;
+		billGroup.createGroup(total);
+		let color = new Color4();
+		let pv = new Vector3D();
+		let cn = 2;
+		let rn = 2;
+		let uvGridsTotal = cn * rn;
 
+		let vars = this.getAreaParamAt(rn, cn, 1, 0);
+
+		let dw = 1.0 / cn;
+		let dh = 1.0 / rn;
+		for (let i = 0; i < total; ++i) {
+			size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
+			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
+			if (!clipEnabled) {
+				// let uvparam = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
+				// billGroup.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
+				const uvParam = this.getAreaParam(cn, rn);
+				billGroup.setUVRectAt(i, uvParam[0], uvParam[1], uvParam[2], uvParam[3]);
+			}
+
+			billGroup.setTimeAt(i, 200.0 * Math.random() + 300, 0.2, 0.8, 0.0);
+			//billGroup.setTimeAt(i, 500.0, 0.4,0.6, 0.0);
+			billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
+			if(billGroup.vtxClipUVRectEnabled) {
+				vars = this.getAreaParam(rn, cn);
+				billGroup.setVtxClipAreaUVRectAt(i, vars[0], vars[1], vars[2], vars[3]);
+			}
+			//billGroup.setPositionAt(i,100.0,0.0,100.0);
+			//billGroup.setPositionAt(i, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
+			if(total > 1) {
+				pv.setTo(Math.random() * 500.0 - 250.0, Math.random() * 50.0 + 50.0, Math.random() * 500.0 - 250.0);
+				billGroup.setPositionAt(i, pv.x, pv.y, pv.z);
+			}else {
+				billGroup.setPositionAt(0, 0,0,0);
+			}
+			color.randomRGB();
+			color.a = Math.random() * 1.2;
+			billGroup.setColorAt(i, color);
+
+			//billGroup.setVelocityAt(i,0.0,Math.random() * 2.0 + 0.2,0.0);
+			// billGroup.setAccelerationAt(i, 0.003, -0.003, 0.0);
+			billGroup.setAccelerationAt(i, 0.0, -0.0, 0.0);
+			billGroup.setVelocityAt(i, 0.0, 0.8 + Math.random() * 0.8, 0.0);
+			pv.normalize();
+			pv.scaleBy((Math.random() * 2.0 + 0.2) * -1.0);
+			//billGroup.setVelocityAt(i,pv.x,pv.y,pv.z);
+		}
+		billGroup.setPlayParam(playOnce, direcEnabled, clipMixEnabled);
+		if (colorTex) {
+			billGroup.initialize(true, false, clipEnabled, [tex, colorTex]);
+			billGroup.setRGB3f(0.1, 0.1, 0.1);
+		} else {
+			billGroup.initialize(true, false, clipEnabled, [tex]);
+		}
+		billGroup.setClipUVParam(cn, uvGridsTotal, dw, dh);
+
+		rn = 2;
+		cn = 2;
+		dw = 1.0 / cn;
+		dh = 1.0 / rn;
+		let ri = 0;
+		let ci = 0;
+		// billGroup.setClipAreaUVRect(ci * dw, ri * dh, dw, dh);
+
+		this.m_rscene.addEntity(billGroup);
+
+		billGroup.setTime(5.0);
+		this.m_flowBill = billGroup;
+	}
 	private initFlowBill(
 		tex: TextureProxy,
 		colorTex: TextureProxy,
@@ -138,24 +242,27 @@ export class DemoParticleFlowGroup {
 		clipMixEnabled: boolean = false
 	): void {
 		let size = 100;
-		let params: number[][] = [
-			[0.0, 0.0, 0.5, 0.5],
-			[0.5, 0.0, 0.5, 0.5],
-			[0.0, 0.5, 0.5, 0.5],
-			[0.5, 0.5, 0.5, 0.5]
-		];
-		let total = 1;
+		console.log("$$$$$$$$ clipEnabled: ", clipEnabled);
+		let total = 20;
 		let billGroup = new Billboard3DFlowEntity();
 		billGroup.vtxColorEnabled = true;
+		billGroup.clipRectEnabled = true;
 		billGroup.createGroup(total);
 		let color = new Color4();
 		let pv = new Vector3D();
+		let cn = 2;
+		let rn = 2;
+		let uvGridsTotal = cn * rn;
+		let dw = 1.0 / cn;
+		let dh = 1.0 / rn;
 		for (let i = 0; i < total; ++i) {
 			size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
 			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
 			if (!clipEnabled) {
-				let uvparam = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
-				billGroup.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
+				// let uvparam = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
+				// billGroup.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
+				const uvParam = this.getAreaParam(cn, rn);
+				billGroup.setUVRectAt(i, uvParam[0], uvParam[1], uvParam[2], uvParam[3]);
 			}
 
 			billGroup.setTimeAt(i, 200.0 * Math.random() + 300, 0.2, 0.8, 0.0);
@@ -188,8 +295,95 @@ export class DemoParticleFlowGroup {
 		} else {
 			billGroup.initialize(true, false, clipEnabled, [tex]);
 		}
-		//billGroup.setClipUVParam(4,16,0.25,0.25);
-		billGroup.setClipUVParam(2, 4, 0.5, 0.5);
+		billGroup.setClipUVParam(cn, uvGridsTotal, dw, dh);
+
+		rn = 2;
+		cn = 2;
+		dw = 1.0 / cn;
+		dh = 1.0 / rn;
+		let ri = 0;
+		let ci = 0;
+		billGroup.setClipAreaUVRect(ci * dw, ri * dh, dw, dh);
+		this.m_rscene.addEntity(billGroup);
+
+		billGroup.setTime(5.0);
+		this.m_flowBill = billGroup;
+	}
+
+	private initFlowBillBrnToAlpha(
+		tex: TextureProxy,
+		colorTex: TextureProxy,
+		clipEnabled: boolean = false,
+		playOnce: boolean = false,
+		direcEnabled: boolean = false,
+		clipMixEnabled: boolean = false
+	): void {
+		let size = 100;
+		let total = 200;
+		let billGroup = new Billboard3DFlowEntity();
+		billGroup.brnToAlpha = true;
+		billGroup.vtxColorEnabled = true;
+		billGroup.premultiplyAlpha = false;
+		billGroup.createGroup(total);
+		let color = new Color4();
+		let pv = new Vector3D();
+		let cn = 2;
+		let rn = 2;
+		let uvGridsTotal = cn * rn;
+		let dw = 1.0 / cn;
+		let dh = 1.0 / rn;
+		for (let i = 0; i < total; ++i) {
+			size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
+			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
+			if (!clipEnabled) {
+				// let uvparam = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
+				// billGroup.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
+				const uvParam = this.getAreaParam(cn, rn);
+				billGroup.setUVRectAt(i, uvParam[0], uvParam[1], uvParam[2], uvParam[3]);
+			}
+
+			billGroup.setTimeAt(i, 200.0 * Math.random() + 300, 0.2, 0.8, 0.0);
+			//billGroup.setTimeAt(i, 500.0, 0.4,0.6, 0.0);
+			billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
+			//billGroup.setPositionAt(i,100.0,0.0,100.0);
+			//billGroup.setPositionAt(i, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
+			if(total > 1) {
+				pv.setTo(Math.random() * 500.0 - 250.0, Math.random() * 50.0 + 50.0, Math.random() * 500.0 - 250.0);
+				billGroup.setPositionAt(i, pv.x, pv.y, pv.z);
+			}else {
+				billGroup.setPositionAt(0, 0,0,0);
+			}
+			color.randomRGB();
+			color.a = Math.random() * 1.2;
+			billGroup.setColorAt(i, color);
+
+			//billGroup.setVelocityAt(i,0.0,Math.random() * 2.0 + 0.2,0.0);
+			// billGroup.setAccelerationAt(i, 0.003, -0.003, 0.0);
+			billGroup.setAccelerationAt(i, 0.0, -0.0, 0.0);
+			billGroup.setVelocityAt(i, 0.0, 0.8 + Math.random() * 0.8, 0.0);
+			pv.normalize();
+			pv.scaleBy((Math.random() * 2.0 + 0.2) * -1.0);
+			//billGroup.setVelocityAt(i,pv.x,pv.y,pv.z);
+		}
+		billGroup.setPlayParam(playOnce, direcEnabled, clipMixEnabled);
+		if (colorTex) {
+			billGroup.initialize(false, true, clipEnabled, [tex, colorTex]);
+			billGroup.setRGB3f(0.1, 0.1, 0.1);
+		} else {
+			billGroup.initialize(false, true, clipEnabled, [tex]);
+		}
+		billGroup.setClipUVParam(cn, uvGridsTotal, dw, dh);
+
+		rn = 2;
+		cn = 2;
+		dw = 1.0 / cn;
+		dh = 1.0 / rn;
+		let ri = 0;
+		let ci = 0;
+		billGroup.setClipAreaUVRect(ci * dw, ri * dh, dw, dh);
+
+		billGroup.toTransparentBlend();
+		// billGroup.setRenderState(RendererState.BACK_ALPHA_ADD_BLENDSORT_STATE);
 		this.m_rscene.addEntity(billGroup);
 
 		billGroup.setTime(5.0);
@@ -200,22 +394,22 @@ export class DemoParticleFlowGroup {
 
 	private initFlowBillOneByOne(textures: TextureProxy[]): void {
 		let size: number = 100;
-		let params: number[][] = [
-			[0.0, 0.0, 0.5, 0.5],
-			[0.5, 0.0, 0.5, 0.5],
-			[0.0, 0.5, 0.5, 0.5],
-			[0.5, 0.5, 0.5, 0.5]
-		];
+
 		let tex: TextureProxy = textures[textures.length - 1];
 		let total: number = 15;
 		let billGroup: Billboard3DFlowEntity = new Billboard3DFlowEntity();
 		billGroup.createGroup(total);
 		let pv: Vector3D = new Vector3D();
+		let cn = 2;
+		let rn = 2;
+		let uvGridsTotal = cn * rn;
+		let dw = 1.0 / cn;
+		let dh = 1.0 / rn;
 		for (let i: number = 0; i < total; ++i) {
 			size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
 			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
-			let uvparam: number[] = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
-			billGroup.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
+			const uvParam = this.getAreaParam(cn, rn);
+			billGroup.setUVRectAt(i, uvParam[0], uvParam[1], uvParam[2], uvParam[3]);
 			billGroup.setTimeAt(i, 100.0 * Math.random() + 100, 0.4, 0.6, i * 100);
 			billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
 			billGroup.setTimeSpeed(i, Math.random() * 1.0 + 0.5);
@@ -245,22 +439,21 @@ export class DemoParticleFlowGroup {
 		spdScaleEnabled: boolean = false
 	): void {
 		let size: number = 100;
-		let params: number[][] = [
-			[0.0, 0.0, 0.5, 0.5],
-			[0.5, 0.0, 0.5, 0.5],
-			[0.0, 0.5, 0.5, 0.5],
-			[0.5, 0.5, 0.5, 0.5]
-		];
 		let total: number = 5;
 		let billGroup: Billboard3DFlowEntity = new Billboard3DFlowEntity();
 		billGroup.createGroup(total);
 		let pv: Vector3D = new Vector3D();
+		let cn = 2;
+		let rn = 2;
+		let uvGridsTotal = cn * rn;
+		let dw = 1.0 / cn;
+		let dh = 1.0 / rn;
 		for (let i: number = 0; i < total; ++i) {
 			//size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
 			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
 			if (!clipEnabled) {
-				//  let uvparam:number[] = params[Math.floor((params.length-1) * Math.random() + 0.5)];
-				//  billGroup.setUVRectAt(i, uvparam[0],uvparam[1],uvparam[2],uvparam[3]);
+				// const uvParam = this.getAreaParam(cn, rn);
+				// billGroup.setUVRectAt(i, uvParam[0], uvParam[1], uvParam[2], uvParam[3]);
 			}
 			billGroup.setTimeAt(i, 200.0 * Math.random() + 300, 0.2, 0.8, 0.0);
 			//billGroup.setTimeAt(i, 500.0, 0.4,0.6, 0.0);
@@ -286,8 +479,7 @@ export class DemoParticleFlowGroup {
 			billGroup.initialize(true, false, clipEnabled, [tex]);
 		}
 		billGroup.setSpdScaleMax(4.0, 1.0);
-		//billGroup.setClipUVParam(4,16,0.25,0.25);
-		billGroup.setClipUVParam(2, 4, 0.5, 0.5);
+		billGroup.setClipUVParam(cn, uvGridsTotal, dw, dh);
 		this.m_rscene.addEntity(billGroup);
 
 		billGroup.setTime(5.0);

@@ -42,6 +42,8 @@ import EventBase from "../vox/event/EventBase";
 import RenderingImageBuilder from "./base/RenderingImageBuilder";
 import { IImageTexture } from "../vox/render/texture/IImageTexture";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
+import ColorRectImgButton from "../orthoui/button/ColorRectImgButton";
+import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
 
 class AwardSceneParam implements IAwardSceneParam {
 	texLoader: TextureResLoader = null;
@@ -75,6 +77,7 @@ export class NormalMapBuilder {
 	private m_texLoader: TextureResLoader = null;
 	private m_rscene: IRendererScene = null;
 	private m_ctrlui = new ParamCtrlUI(false);
+	private m_ctrlui2 = new ParamCtrlUI(false);
 
 	private m_dropController = new DropFileController();
 	private m_aspParam = new AwardSceneParam();
@@ -128,6 +131,23 @@ export class NormalMapBuilder {
 			this.initMaterialCtx();
 		}
 	}
+	private openDir(): void {
+		const input = document.createElement("input");
+		input.type = "file";
+		// (input as any).webkitdirectory = true;//这行代码用了即变成上传了
+		// input.accept = "image/png, image/jpeg";
+		input.addEventListener("change", () => {
+			let files = Array.from(input.files);
+			console.log("files: ", files);
+			this.m_dropController.initFilesLoad(files);
+		});
+		input.click();
+		// if ("showPicker" in HTMLInputElement.prototype) {
+		// 	(input as any).showPicker();
+		// } else {
+		// 	input.click();
+		// }
+	}
 	private initImgBuilder(): void {
 		if (this.m_imgBuilder == null) {
 			this.m_imgBuilder = new RenderingImageBuilder();
@@ -155,7 +175,7 @@ export class NormalMapBuilder {
 			let material = new NormalMapBuilderMaterial();
 			material.fixScreen = true;
 			material.setTextureList([tex]);
-			if(this.m_mapMaterial) {
+			if (this.m_mapMaterial) {
 				material.dataCopyFrom(this.m_mapMaterial);
 			}
 			let pl0 = new Plane3DEntity();
@@ -169,9 +189,25 @@ export class NormalMapBuilder {
 	private m_mapMaterial: NormalMapBuilderMaterial = null;
 	private m_mapPlane: Plane3DEntity = null;
 	private m_mapAreaFactor = 0.4;
-	private m_loadingTex: IRenderTexture = null;
 
+	private m_loadingTex: IRenderTexture = null;
+	private m_clickBtn: ColorRectImgButton = null;
+
+	private createClickArea(): void {
+		let clickBtn = new ColorRectImgButton();
+		clickBtn.outColor.setRGBA4f(0.0, 0.0, 0.0, 0.5);
+		clickBtn.overColor.setRGBA4f(0.0, 0.0, 0.0, 0.6);
+		clickBtn.downColor.setRGBA4f(0.0, 0.0, 0.0, 0.6);
+		clickBtn.initialize(-0.5, -0.5, 1, 1);
+		this.m_ctrlui.ruisc.addEntity(clickBtn);
+		this.m_clickBtn = clickBtn;
+		clickBtn.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+		clickBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, (): void => {
+			this.openDir();
+		});
+	}
 	private layoutMapPlane(): void {
+
 		let st = this.m_rscene.getStage3D();
 		let stw = Math.round(st.stageWidth * this.m_mapAreaFactor);
 		let tex = this.m_currTexture;
@@ -186,8 +222,14 @@ export class NormalMapBuilder {
 		let px = Math.round((stw - pw) * 0.5);
 		let pl0 = this.m_mapPlane;
 		pl0.setScaleXYZ(pw, ph, 1.0);
-		pl0.setXYZ(px, 370, 0.0);
+		pl0.setXYZ(px, 490, 0.0);
 		pl0.update();
+
+		pw = stw * 0.95;
+		let btn = this.m_clickBtn;
+		btn.setScaleXYZ(pw, pw, 1.0);
+		btn.setXYZ(stw * 0.5, 490 + 0.5 * ph, 0.0);
+		btn.update();
 	}
 	private createAMapPlane(url: string): void {
 		let tex = this.getTexByUrl(url);
@@ -196,7 +238,7 @@ export class NormalMapBuilder {
 		// tex.flipY = true;
 		let material = new NormalMapBuilderMaterial();
 		material.setTextureList([tex]);
-		if(this.m_mapMaterial) {
+		if (this.m_mapMaterial) {
 			material.dataCopyFrom(this.m_mapMaterial);
 		}
 		this.m_mapMaterial = material;
@@ -219,7 +261,7 @@ export class NormalMapBuilder {
 			};
 		}
 		this.m_mapPlane = pl0;
-		this.m_ctrlui.ruisc.addEntity(pl0);
+		this.m_ctrlui.ruisc.addEntity(pl0, 1);
 		//this.m_ctrlui
 	}
 	shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
@@ -250,6 +292,10 @@ export class NormalMapBuilder {
 		let st = this.m_rscene.getStage3D();
 		let px = Math.round(st.stageWidth * this.m_mapAreaFactor);
 		this.m_rscene.setViewPort(px, 0, st.stageWidth - px, st.stageHeight);
+
+		let stw = Math.round(st.stageWidth * this.m_mapAreaFactor);
+		this.m_ctrlui2.updateLayout(true, new Vector3D(stw));
+
 		this.layoutMapPlane();
 	}
 
@@ -291,6 +337,7 @@ export class NormalMapBuilder {
 	}
 	private mouseDown(evt: any): void {
 		console.log("mouseDown() ...");
+		// this.openDir();
 	}
 	private initScene(rscene: IRendererScene): void {
 		// this.createAEntityByTexUrl("static/assets/rock_a_n.jpg");
@@ -503,13 +550,28 @@ export class NormalMapBuilder {
 		ui.proBarBGBarAlpha = 0.9;
 		ui.proBarBGPlaneAlpha = 0.7;
 		ui.initialize(this.m_rscene, true);
-
-		// this.initMapApplyCtrlUIItem();
+		this.createClickArea();
 		this.initMapBuildCtrlUIItem();
 		ui.updateLayout(true);
+		this.m_graph.addScene(ui.ruisc);
+		// /*
+		ui = this.m_ctrlui2;
+		ui.fontBgColor.setRGBA4f(0.7, 0.8, 0.6, 0.6);
+		ui.proBarBGBarAlpha = 0.9;
+		ui.proBarBGPlaneAlpha = 0.7;
+		ui.initialize(this.m_rscene, true);
+		this.initMapApplyCtrlUIItem();
 
+		let st = this.m_rscene.getStage3D();
+		let stw = Math.round(st.stageWidth * this.m_mapAreaFactor);
+		ui.updateLayout(true, new Vector3D(stw));
 		this.m_graph.addScene(ui.ruisc);
 
+		// this.m_rscene.addEventListener(EventBase.RESIZE, this, (): void => {
+		// 	let stw = Math.round(st.stageWidth * this.m_mapAreaFactor);
+		// 	this.m_ctrlui2.updateLayout(true, new Vector3D(stw));
+		// });
+		//*/
 		// this.m_vasScene.initialize(ui.ruisc, this.m_aspParam);
 		this.createAMapPlane("static/assets/guangyun_H_0007.png");
 	}
@@ -625,7 +687,7 @@ export class NormalMapBuilder {
 		);
 	}
 	private initMapApplyCtrlUIItem(): void {
-		let ui = this.m_ctrlui;
+		let ui = this.m_ctrlui2;
 
 		ui.addStatusItem(
 			"恢复",
@@ -751,119 +813,9 @@ export class NormalMapBuilder {
 	}
 
 	private m_currTexture: IRenderTexture = null;
-	/*
-	private m_savingImg = false;
-	private m_rflag = false;
-	private m_stDivW = "";
-	private m_stDivH = "";
-	private saveBegin(): void {
 
-		let st = this.m_rscene.getStage3D();
-
-		let pw = this.m_currTexture.getWidth();
-		let ph = this.m_currTexture.getHeight();
-		let div = this.m_rscene.getRenderProxy().getDiv();
-		this.m_stDivW = div.style.width;
-		this.m_stDivH = div.style.height;
-		// div.style.width = pw + "px";
-		// div.style.height = ph + "px";
-		// (this.m_rscene as RendererScene).updateRenderBufferSize(false);
-
-		// if(this.m_mapPlane) {
-		// 	this.m_mapPlane.setXYZ(0, 0, 0);
-		// 	this.m_mapPlane.update();
-		// }
-	}
-	private saveEnd(): void {
-
-		// let div = this.m_rscene.getRenderProxy().getDiv();
-		// div.style.width = this.m_stDivW;
-		// div.style.height = this.m_stDivH;
-		// (this.m_rscene as RendererScene).updateRenderBufferSize();
-		// if(this.m_mapPlane) {
-		// 	this.m_mapPlane.setXYZ(30, 300, 0);
-		// 	this.m_mapPlane.update();
-		// }
-	}
-	private createCanvasData(): string {
-
-		let mapEntity = this.m_mapPlane;
-		let pw = this.m_currTexture.getWidth();
-		let ph = this.m_currTexture.getHeight();
-		let div = this.m_rscene.getRenderProxy().getDiv();
-		const srcCanvas = this.m_rscene.getRenderProxy().getCanvas();
-		const canvas = document.createElement('canvas');
-		canvas.width = pw;
-		canvas.height = ph;
-		let k = 1;
-		let ri = 1;
-		canvas.style.display = 'bolck';
-		canvas.style.zIndex = '9999';
-		canvas.style.left = `${66 + k * 66}px`;
-		canvas.style.top = `${100 + ri * 66}px`;
-		canvas.style.position = "absolute";
-		// canvas.style.zIndex = '9999';
-		// canvas.style.width = pw + 'px';
-		// canvas.style.width = ph + 'px';
-		let st = this.m_rscene.getStage3D();
-		// let dpr = st.getDevicePixelRatio();
-		// console.log("createCanvasData(), dpr: ", dpr, ", pw, ph: ", pw,ph);
-		let pos = mapEntity.getPosition();
-		const ctx2d = canvas.getContext('2d');
-		ctx2d.drawImage(
-			srcCanvas,
-			pos.x,
-			st.stageHeight - (pos.y + ph),
-			// srcCanvas.width,
-			// srcCanvas.height,
-			pw,
-			ph,
-			0,
-			0,
-			canvas.width,
-			canvas.height
-		);
-		// document.body.appendChild(canvas);
-		return canvas.toDataURL('image/jpeg');
-	}
-	private m_imgData = "";
-	private saveImage(): void {
-		this.m_imgData = this.createCanvasData();
-	}
-	private downloadSavedImage(): void {
-		const a = document.createElement('a');
-		a.href =  this.m_imgData;
-		a.download = this.m_normalMapName != "" ? this.m_normalMapName + "_new.jpg": "normal.jpg";
-		document.body.appendChild(a);
-		(a as any).style = 'display: none';
-		a.click();
-		a.remove();
-		this.m_imgData = "";
-	}
-	//*/
 	run(): void {
-		// if(this.m_imgData != "") {
-		// 	this.downloadSavedImage();
-		// }
-		// if(this.m_loadingTex && this.m_loadingTex.isDataEnough()) {
-		// 	// this.layoutEntity();
-		// 	this.m_loadingTex = null;
-		// }
-		// if(this.m_savingImg) {
-		// 	// this.m_ctrlui.ruisc.disable();
-		// 	this.m_ctrlui.close();
-		// 	this.m_rflag = true;
-		// 	this.saveBegin();
-		// }
 		this.m_graph.run();
-		// if(this.m_rflag && this.m_savingImg) {
-		// 	this.saveImage();
-		// 	this.m_savingImg = false;
-		// 	// this.m_ctrlui.ruisc.enable();
-		// 	this.m_ctrlui.open();
-		// 	this.m_rflag = false;
-		// 	this.saveEnd();
-		// }
 		if (this.m_imgBuilder) {
 			this.m_imgBuilder.run();
 		}

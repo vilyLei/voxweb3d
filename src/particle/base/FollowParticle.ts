@@ -12,25 +12,9 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 import IPoolNode from "../../vox/base/IPoolNode";
 import PoolNodeBuilder from "../../vox/base/PoolNodeBuilder";
+import { FollowParticleParam } from "./FollowParticleParam";
+import { ParticleShootParam } from "./ParticleShootParam";
 
-class FollowParticleParam {
-	textures: IRenderTexture[] = null;
-	uvParams: number[][] = [
-		[0.0, 0.0, 0.5, 0.5],
-		[0.5, 0.0, 0.5, 0.5],
-		[0.0, 0.5, 0.5, 0.5],
-		[0.5, 0.5, 0.5, 0.5]
-	];
-	speedScale = 1.0;
-	lifetimeScale = 1.0;
-	sizeParam = new Vector3D(30, 10, 0.2, 2.0);
-	accelerationScale = 0.001;
-	constructor() {
-	}
-	setSizeParam(sizeBase: number, sizeRange: number, sizeScaleMin: number = 0.2, sizeScaleMax: number = 2.0): void {
-		this.sizeParam.setTo(sizeBase, sizeRange, sizeScaleMin, sizeScaleMax);
-	}
-}
 class ParticleNode implements IPoolNode {
 
 	pos = new Vector3D();
@@ -153,17 +137,42 @@ class FollowParticle {
 	private m_nodeBuilder = new PNodeBuilder();
 	private m_total = 0;
 	private m_playOnce = true;
-	private m_param: FollowParticleParam = null;
+	protected m_param: FollowParticleParam = null;
 	particleEntity: Billboard3DFlowEntity = null;
 	constructor() { }
 	initialize(total: number, param: FollowParticleParam): void {
 		this.m_total = total;
 		this.m_param = param;
-		this.initTest();
+		// this.initTest();
+
+		const p = this.m_param;
+		const ts = p.textures;
+		this.initfollowBill(ts[0], ts.length > 1 ? ts[1] : null, this.m_playOnce);
 		this.m_nodeBuilder.entity = this.particleEntity;
 	}
 	getParam(): FollowParticleParam {
 		return this.m_param;
+	}
+	/**
+	 * @param pv the base position
+	 * @param total current shooting particles total, the defualt value 1
+	 * @param spaceRadius particle creation space radius, the defualt value 20
+	 * @param accelerationScale the defualt value -1.0
+	 * @param stepDis the defualt value 30
+	 */
+	addPosition(pv: Vector3D, total: number = 1, spaceRadius: number = 20, accelerationScale: number = -1.0, stepDis: number = 30): void {
+	}
+	shoot(pv: Vector3D, param: ParticleShootParam): void {
+		// const total = Math.random() * 2 + 1;
+		// const spaceRange = Math.random() * 15 + 15;
+		// const p = this.m_param;
+		// p.lifetimeScale = Math.random() * 1.7 + 0.3;
+		pv = param.getPosition(pv);
+		let total = param.getTotalValue();
+		let spaceRaduis = param.getSpaceRadiusValue();
+		this.m_param.lifetimeScale = param.getLifeTimeStaleValue();
+		// this.addPosition(pv, total, spaceRaduis, (Math.random() - 0.5) * (0.1 * Math.random() + 0.01));
+		this.addPosition(pv, total, spaceRaduis, param.getAccelerationScale(), param.stepDistance);
 	}
 	createParticles(pos: Vector3D, total: number, range: number, accelerationScale: number = -1.0): void {
 
@@ -195,27 +204,37 @@ class FollowParticle {
 	run(): void {
 		this.particleEntity.updateTime(1.0);
 	}
-	private initTest(): void {
-		this.initfollowBill(this.m_param.textures[0], null, false, this.m_playOnce);
-	}
 	private initfollowBill(
 		tex: IRenderTexture,
 		colorTex: IRenderTexture,
-		clipEnabled: boolean = false,
-		playOnce: boolean = false,
-		direcEnabled: boolean = false,
-		clipMixEnabled: boolean = false
+		playOnce: boolean = false
 	): void {
 		let size = 100;
-		let uvParams = this.m_param.uvParams;
+		const p = this.m_param;
 		let total = this.m_total;
 		let billGroup = new Billboard3DFlowEntity();
 		this.particleEntity = billGroup;
-		billGroup.vtxColorEnabled = true;
+		billGroup.flipVerticalUV = p.flipVerticalUV;
+		billGroup.vtxColorEnabled = p.vtxColorEnabled;
+		billGroup.premultiplyAlpha = p.premultiplyAlpha;
+		billGroup.brnToAlpha = p.brnToAlpha;
+		billGroup.clipRectEnabled = p.clipRectEnabled;
+		billGroup.vtxClipUVRectEnabled = p.vtxClipUVRectEnabled;
+
+		let clipEnabled = p.clipEnabled;
+		let direcEnabled = p.direcEnabled;
+		let clipMixEnabled = p.clipMixEnabled;
+
 		billGroup.createGroup(total);
 
-		let color = new Color4();
+		// let color = new Color4();
 		let pv = new Vector3D();
+		let cn = p.clipRN;
+		let rn = p.clipCN;
+		let uvGridsTotal = cn * rn;
+		let dw = 1.0 / cn;
+		let dh = 1.0 / rn;
+
 		let builder = this.m_nodeBuilder;
 		let node: ParticleNode;
 		let nodes: ParticleNode[] = [];
@@ -227,8 +246,13 @@ class FollowParticle {
 			}
 			billGroup.setSizeAndScaleAt(i, size, size, sizeParam.z, sizeParam.w);
 			if (!clipEnabled) {
-				let uparams = uvParams[Math.floor((uvParams.length - 1) * Math.random() + 0.5)];
-				billGroup.setUVRectAt(i, uparams[0], uparams[1], uparams[2], uparams[3]);
+				// const uvParam = this.getAreaParam(cn, rn);
+				const uvr = p.getUVRectAt(i);
+				billGroup.setUVRectAt(i, uvr[0], uvr[1], uvr[2], uvr[3]);
+			}
+			if(p.vtxClipUVRectEnabled) {
+				const vars = p.getAreaUVRectAt(i);
+				billGroup.setVtxClipAreaUVRectAt(i, vars[0], vars[1], vars[2], vars[3]);
 			}
 			node = builder.create();
 			node.entity = billGroup;
@@ -236,9 +260,12 @@ class FollowParticle {
 			node.param = this.m_param;
 
 			node.time.setTo(50, 0.2, 0.5, 0.0);
-			billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
-			color.randomRGB();
+
+			// billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
+			billGroup.setBrightnessAt(i, p.getBrnOrAlpha(i));
+			// color.randomRGB();
 			// color.a = Math.random() * 1.2;
+			const color = p.getColor(i);
 			billGroup.setColorAt(i, color);
 
 			// for test
@@ -261,13 +288,11 @@ class FollowParticle {
 		}
 		billGroup.setPlayParam(playOnce, direcEnabled, clipMixEnabled);
 		if (colorTex) {
-			billGroup.initialize(true, false, clipEnabled, [tex, colorTex]);
-			billGroup.setRGB3f(0.1, 0.1, 0.1);
+			billGroup.initialize(p.brightnessEnabled, p.alphaEnabled, clipEnabled, [tex, colorTex]);
 		} else {
-			billGroup.initialize(true, false, clipEnabled, [tex]);
+			billGroup.initialize(p.brightnessEnabled, p.alphaEnabled, clipEnabled, [tex]);
 		}
-		// billGroup.setClipUVParam(4,16,0.25,0.25);
-		billGroup.setClipUVParam(2, 4, 0.5, 0.5);
+		billGroup.setClipUVParam(cn, uvGridsTotal, dw, dh);
 		// 保证没有激活的粒子不显示
 		billGroup.setTime(130);
 
@@ -281,4 +306,4 @@ class FollowParticle {
 	}
 }
 
-export { FollowParticleParam, FollowParticle }
+export {ParticleShootParam, FollowParticleParam, FollowParticle }

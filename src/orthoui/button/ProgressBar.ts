@@ -303,9 +303,9 @@ export class ProgressBar {
 				let c = this.style.progressBarOverColor;
 				(this.m_barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
 			}
-			this.m_ruisc.removeEventListener(MouseEvent.MOUSE_MOVE, this, this.barMouseMove);
-			this.m_ruisc.removeEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame);
 		}
+		this.m_ruisc.removeEventListener(MouseEvent.MOUSE_MOVE, this, this.barMouseMove);
+		this.m_ruisc.removeEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame);
 		this.m_barDown = false;
     }
     private m_autoDelay: number = 0;

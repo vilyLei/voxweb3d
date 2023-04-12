@@ -162,6 +162,8 @@
 
 //  import {DemoParticleFollowGroup2 as Demo} from "./demo/DemoParticleFollowGroup2";
 
+ import {DemoParticleFollowGroup3 as Demo} from "./demo/DemoParticleFollowGroup3";
+
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
 //  import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
@@ -338,7 +340,7 @@
 
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
- import {DemoScene as Demo} from "./demo/DemoScene";
+//  import {DemoScene as Demo} from "./demo/DemoScene";
 
 //  import {DemoMouseInteraction as Demo} from "./demo/DemoMouseInteraction";
 

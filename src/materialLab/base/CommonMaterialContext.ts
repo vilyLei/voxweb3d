@@ -1,4 +1,3 @@
-import RendererScene from "../../vox/scene/RendererScene";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "./MaterialContext";
 
@@ -14,6 +13,7 @@ import { LightModule } from "../../light/base/LightModule";
 import EnvLightModule from "../../light/base/EnvLightModule";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import Vector3D from "../../vox/math/Vector3D";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 /**
  * 实现 material 构造 pipeline 的上下文
@@ -79,17 +79,17 @@ class CommonMaterialContext extends MaterialContext {
         }
         return material;
     }
-    initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
+    initialize(rscene: IRendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
         if (this.m_rscene == null) {
             // shaderLibConfigure = this.buildConfigure(param, shaderLibConfigure);
             super.initialize(rscene, param, shaderLibConfigure);
         }
     }
-    
+
     protected initPipes(param: MaterialContextParam): void {
-        
+
         let selfT: any = this;
-        
+
         param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
         param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
         param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);

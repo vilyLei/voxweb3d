@@ -11,11 +11,15 @@ import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraViewRay from "../vox/view/CameraViewRay";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
-import { FollowParticleParam, PathFollowParticle } from "../particle/base/PathFollowParticle";
+import { FollowParticleParam, ParticleShootParam, PathFollowParticle } from "../particle/base/PathFollowParticle";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import RendererState from "../vox/render/RendererState";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import IDefault3DMaterial from "../vox/material/mcase/IDefault3DMaterial";
+import IRenderEntity from "../vox/render/IRenderEntity";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 
-export class DemoParticleFollowGroup2 {
+export class DemoParticleFollowGroup3 {
 	constructor() {}
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
@@ -38,7 +42,7 @@ export class DemoParticleFollowGroup2 {
 		return ptex;
 	}
 	initialize(): void {
-		console.log("DemoParticleFollowGroup2::initialize()......");
+		console.log("DemoParticleFollowGroup3::initialize()......");
 		if (this.m_rscene == null) {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
@@ -104,14 +108,28 @@ export class DemoParticleFollowGroup2 {
 			this.m_containerMain.setRotationZ(Math.random() * 200);
 			this.m_containerMain.setRotationX(Math.random() * 200);
 			this.m_containerMain.update();
+
+			let envBox = new Box3DEntity();
+			envBox.showFrontFace();
+			envBox.initializeCube(3000, [this.getTexByUrl("static/assets/brickwall_big.jpg")]);
+			(envBox.getMaterial() as IDefault3DMaterial).setUVScale(5.0, 5.0);
+			this.m_rscene.addEntity(envBox, 0);
+			//color_01
+			let sph = new Sphere3DEntity();
+			sph.initialize(10, 20, 20, [this.getTexByUrl("static/assets/color_01.jpg")]);
+			(sph.getMaterial() as IDefault3DMaterial).setRGB3f(0.5, 1.0, 0.5);
+			this.m_rscene.addEntity(sph, 1);
+			this.m_followEntity = sph;
 			this.update();
 		}
 	}
+	private m_followEntity: IRenderEntity = null;
 	private m_container: DisplayEntityContainer = null;
 	private m_containerMain: DisplayEntityContainer = null;
 	private m_pathFollowEntity: PathFollowParticle = new PathFollowParticle();
 	private m_timeoutId: any = -1;
 	private m_time = 0.0;
+	private m_shootParam = new ParticleShootParam();
 	position = new Vector3D();
 	mouseDownListener(evt: any): void {
 		console.log("mouseDownListener(), call ...");
@@ -124,28 +142,24 @@ export class DemoParticleFollowGroup2 {
 			clearTimeout(this.m_timeoutId);
 		}
 		this.m_timeoutId = setTimeout(this.update.bind(this), 20); // 50 fps
-
+		const cmain = this.m_containerMain;
 		this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);
-		this.m_containerMain.setRotationZ(this.m_containerMain.getRotationZ() + 0.8);
-		this.m_containerMain.setRotationX(this.m_containerMain.getRotationX() + 0.8);
+		cmain.setRotationZ(cmain.getRotationZ() + 0.8);
+		cmain.setRotationX(cmain.getRotationX() + 0.8);
 		this.m_time += 0.01;
-		this.m_containerMain.setScaleY(Math.cos(this.m_time) * 2.0);
+		cmain.setScaleY(Math.cos(this.m_time) * 2.0);
 		// console.log("sy: ", this.m_containerMain.getScaleY());
-		this.m_containerMain.update();
+		cmain.update();
 
 		let pv = this.position;
 		pv.setXYZ(300.0, 10.0, 300.0);
 		this.m_container.localToGlobal(pv);
-		const total = Math.random() * 2 + 1;
-		const spaceRange = Math.random() * 15 + 15;
-		let param = this.m_pathFollowEntity.getParam();
-		param.lifetimeScale = Math.random() * 1.7 + 0.3;
-		this.m_pathFollowEntity.addPosition(pv, total, spaceRange, (Math.random() - 0.5) * (0.1 * Math.random() + 0.01));
-
+		this.m_followEntity.setPosition( pv );
+		this.m_pathFollowEntity.shoot(pv, this.m_shootParam);
 		this.m_pathFollowEntity.run();
 	}
 	run(): void {
 		this.m_rscene.run();
 	}
 }
-export default DemoParticleFollowGroup2;
+export default DemoParticleFollowGroup3;

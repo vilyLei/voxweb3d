@@ -36,7 +36,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         this.adaptationShaderVersion = false;
     }
     buildShader(): void {
-        
+
         if(this.vertUniform != null) {
             this.vertUniform.use(this.m_coder);
             //this.m_coder.addVertUniform("vec4", "u_vertLocalParams", this.vertUniform.getParamsTotal());
@@ -67,7 +67,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
 
     private m_envMapWidth: number = 128;
     private m_envMapHeight: number = 128;
-    
+
     private m_pbrParams: Float32Array = new Float32Array([
             0.0, 0.0, 1.0, 0.02,        // [metallic,roughness,ao, pixel noise intensity]
             1.0,                        // tone map exposure
@@ -96,7 +96,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     constructor() {
         super();
     }
-    
+
     protected buildBuf(): void {
 
         console.log("PBRMaterial::buildBuf()...");
@@ -111,11 +111,11 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         buf.decorator = decorator;
         buf.vertUniform = this.vertUniform;
         //buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
-        
+
         if(this.m_fragLocalParams == null) {
             this.initializeLocalData();
         }
-        
+
         let list = decorator.createTextureList( buf.getShaderCodeBuilder() );
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
         buf.getTexturesFromPipeline( list );
@@ -156,7 +156,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.decorator.copyFrom( src.decorator );
         // console.log("copyFrom src: ",src);
         // console.log("copyFrom this: ",this);
-        
+
         this.vertUniform = src.vertUniform;
         if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
             this.m_pbrParams = src.m_pbrParams.slice();
@@ -170,7 +170,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         else {
             this.m_fragLocalParams.set(src.m_fragLocalParams);
         }
-        
+
         if(this.m_mirrorParam == null || this.m_mirrorParam.length != src.m_mirrorParam.length) {
             this.m_mirrorParam = src.m_mirrorParam.slice();
         }
@@ -181,7 +181,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     setTextureList(texList: IRenderTexture[]): void {
         //throw Error("Illegal operations !!!");
     }
-    
+
     clone(): PBRMaterial {
 
         let m: PBRMaterial = new PBRMaterial();
@@ -322,7 +322,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.m_fragLocalParams[2] = f0z;
     }
     getF0(colorFactor: Color4): void {
-        
+
         colorFactor.r = this.m_fragLocalParams[0];
         colorFactor.g = this.m_fragLocalParams[1];
         colorFactor.b = this.m_fragLocalParams[2];
@@ -333,12 +333,12 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.m_fragLocalParams[6] = pb;
     }
     getAlbedoColor(colorFactor: Color4): void {
-        
+
         colorFactor.r = this.m_fragLocalParams[4];
         colorFactor.g = this.m_fragLocalParams[5];
         colorFactor.b = this.m_fragLocalParams[6];
     }
-    
+
     /**
      * 设置顶点置换贴图参数
      * @param numLayersMin ray march 最小层数, default value is 1.0
@@ -355,8 +355,8 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         }
     }
     createSelfUniformData(): ShaderUniformData {
-        
-        let sud: ShaderUniformData = new ShaderUniformData();
+
+        let sud = new ShaderUniformData();
         sud.uniformNameList = ["u_pbrParams", "u_fragLocalParams", "u_mirrorParams"];
         sud.dataList = [this.m_pbrParams, this.m_fragLocalParams, this.m_mirrorParam];
         if(this.vertUniform != null) {

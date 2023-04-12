@@ -10,20 +10,20 @@ interface IDropFileListerner {
 	initFileLoad(files: IFileUrlObj[]): void;
 }
 class DropFileController {
-	private m_canvas: HTMLCanvasElement = null;
+	private m_htmlObj: HTMLElement = null;
 	private m_listener: IDropFileListerner = null;
 	constructor() {}
 
-	initialize(canvas: HTMLCanvasElement, listener: IDropFileListerner): void {
-		if (this.m_canvas == null) {
-			this.m_canvas = canvas;
+	initialize(htmlObj: HTMLElement, listener: IDropFileListerner): void {
+		if (this.m_htmlObj == null) {
+			this.m_htmlObj = htmlObj;
 			this.m_listener = listener;
-			this.initDrop(this.m_canvas);
+			this.initDrop(this.m_htmlObj);
 		}
 	}
-	private initDrop(canvas: HTMLCanvasElement): void {
+	private initDrop(htmlObj: HTMLElement): void {
 		// --------------------------------------------- 阻止必要的行为 begin
-		canvas.addEventListener(
+		htmlObj.addEventListener(
 			"dragenter",
 			e => {
 				e.preventDefault();
@@ -32,7 +32,7 @@ class DropFileController {
 			false
 		);
 
-		canvas.addEventListener(
+		htmlObj.addEventListener(
 			"dragover",
 			e => {
 				e.preventDefault();
@@ -41,7 +41,7 @@ class DropFileController {
 			false
 		);
 
-		canvas.addEventListener(
+		htmlObj.addEventListener(
 			"dragleave",
 			e => {
 				e.preventDefault();
@@ -50,12 +50,11 @@ class DropFileController {
 			false
 		);
 
-		canvas.addEventListener(
+		htmlObj.addEventListener(
 			"drop",
 			e => {
 				e.preventDefault();
 				e.stopPropagation();
-				console.log("canvas drop evt.", e);
 				this.receiveDropFile(e);
 			},
 			false
@@ -82,7 +81,7 @@ class DropFileController {
 							let file = item.getAsFile();
 							// console.log("drop a file: ", file);
 							files.push(file);
-							this.initFileLoad(files);
+							this.initFilesLoad(files);
 							filesTotal = 1;
 						} else if (entity.isDirectory) {
 							// let file = item.getAsFile();
@@ -98,7 +97,7 @@ class DropFileController {
 												files.push(file);
 												filesCurrTotal++;
 												if (filesTotal == filesCurrTotal) {
-													this.initFileLoad(files);
+													this.initFilesLoad(files);
 												}
 											});
 										}
@@ -127,7 +126,7 @@ class DropFileController {
 				break;
 		}
 	}
-	private initFileLoad(files: any): void {
+	initFilesLoad(files: any): void {
 		this.m_files = null;
 		if (this.m_listener) {
 			this.m_files = files;

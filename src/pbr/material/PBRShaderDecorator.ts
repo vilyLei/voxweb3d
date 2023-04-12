@@ -8,13 +8,14 @@
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import UniformConst from "../../vox/material/UniformConst";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import PBRDecoratorParam from "./PBRDecoratorParam";
 
 export default class PBRShaderDecorator {
     constructor() {
     }
 
-    private m_uniqueName: string = "PBRShd";
-    
+    private m_uniqueName = "PBRShd";
+
     specularEnvMap: IRenderTexture = null;
     diffuseMap: IRenderTexture = null;
     normalMap: IRenderTexture = null;
@@ -24,12 +25,16 @@ export default class PBRShaderDecorator {
     aoMap: IRenderTexture = null;
     roughnessMap: IRenderTexture = null;
     metalhnessMap: IRenderTexture = null;
-    
+	/**
+	 * Index of Refraction values
+	 */
+    iorMap: IRenderTexture = null;
+
     /**
      * add ao, roughness, metalness map uniform code
      */
     armMap: IRenderTexture = null;
-    
+
     glossinessEnabeld = true;
     woolEnabled = true;
     toneMappingEnabled = true;
@@ -55,57 +60,81 @@ export default class PBRShaderDecorator {
     fogEnabled = false;
     depthFogEnabled = false;
     texturesTotal = 1;
-    
+
     fragLocalParamsTotal = 2;
     parallaxParamIndex = 2;
 
+	initWithParam(param: PBRDecoratorParam): void {
+
+		this.specularEnvMapEnabled = param.specularEnvMapEnabled;
+		this.diffuseMapEnabled = param.diffuseMapEnabled;
+		this.mirrorProjEnabled = param.mirrorProjEnabled;
+		this.indirectEnvMapEnabled = param.indirectEnvMapEnabled;
+		this.aoMapEnabled = param.aoMapEnabled;
+		this.scatterEnabled = param.scatterEnabled;
+
+		this.specularEnvMap = param.specularEnvMap;
+		this.diffuseMap = param.diffuseMap;
+		this.normalMap = param.normalMap;
+		this.mirrorMap = param.mirrorMap;
+		this.indirectEnvMap = param.indirectEnvMap;
+		this.parallaxMap = param.parallaxMap;
+		this.aoMap = param.aoMap;
+		this.roughnessMap = param.roughnessMap;
+		this.metalhnessMap = param.metalhnessMap;
+		this.iorMap = param.iorMap;
+		this.armMap = param.armMap;
+	}
     createTextureList(coder: IShaderCodeBuilder): IRenderTexture[] {
-        //IShaderCodeBuilder
-        //let coder: ShaderCodeBuilder = this.codeBuilder;
+
         let uniform = coder.uniform;
         let texList: IRenderTexture[] = [];
         if(this.armMap != null) {
             this.aoMapEnabled = true;
         }
 
-        if (this.specularEnvMapEnabled && this.specularEnvMap != null ) {
+        if (this.specularEnvMapEnabled && this.specularEnvMap ) {
             texList.push( this.specularEnvMap );
             uniform.addSpecularEnvMap(true);
             // console.log("VOX_ENV_MAP");
         }
-        if ( this.diffuseMapEnabled && this.diffuseMap != null ) {
+        if ( this.diffuseMapEnabled && this.diffuseMap ) {
             texList.push( this.diffuseMap );
             uniform.addDiffuseMap();
             // console.log("VOX_DIFFUSE_MAP");
         }
-        if (this.normalMapEnabled && this.normalMap != null) {
+        if (this.normalMapEnabled && this.normalMap) {
             texList.push( this.normalMap );
             uniform.addNormalMap();
             // console.log("VOX_NORMAL_MAP");
         }
 
-        if(this.parallaxMap != null) {
+        if(this.parallaxMap) {
             texList.push( this.parallaxMap );
             uniform.addParallaxMap( this.parallaxParamIndex );
         }
-        if (this.aoMapEnabled && this.aoMap != null) {
+        if (this.aoMapEnabled && this.aoMap) {
             texList.push( this.aoMap );
             uniform.addAOMap();
             // console.log("VOX_AO_MAP");
         }
-        if(this.roughnessMap != null) {
+        if(this.roughnessMap) {
             texList.push( this.roughnessMap );
             uniform.addRoughnessMap();
         }
-        if(this.metalhnessMap != null) {
+        if(this.metalhnessMap) {
             texList.push( this.metalhnessMap );
             uniform.addMetalnessMap();
         }
-        if(this.armMap != null) {
+        if(this.armMap) {
             texList.push( this.armMap );
             uniform.addARMMap();
         }
-        
+        if(this.iorMap) {
+            texList.push( this.iorMap );
+            uniform.addIORMap();
+        }
+
         if (this.mirrorProjEnabled && this.mirrorMap != null) {
             texList.push( this.mirrorMap );
             uniform.add2DMap("VOX_MIRROR_PROJ_MAP",true, true ,false);
@@ -116,7 +145,7 @@ export default class PBRShaderDecorator {
             uniform.addCubeMap("VOX_INDIRECT_ENV_MAP",true ,false);
             // console.log("VOX_INDIRECT_ENV_MAP");
         }
-        
+
 
         this.texturesTotal = texList.length;
         //  console.log("this.texturesTotal: ",this.texturesTotal);
@@ -144,9 +173,9 @@ export default class PBRShaderDecorator {
         this.fogEnabled = src.fogEnabled;
         this.hdrBrnEnabled = src.hdrBrnEnabled;
         this.vtxFlatNormal = src.vtxFlatNormal;
-        
+
         this.fragLocalParamsTotal = src.fragLocalParamsTotal;
-        
+
         if(this.specularEnvMap == null) this.specularEnvMap = src.specularEnvMap;
         if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
         if(this.normalMap == null) this.normalMap = src.normalMap;
@@ -157,7 +186,7 @@ export default class PBRShaderDecorator {
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.roughnessMap == null) this.roughnessMap = src.roughnessMap;
         // if(this.specularMap == null) this.specularMap = src.specularMap;
-        
+
         this.lightEnabled = src.lightEnabled;
         this.texturesTotal = src.texturesTotal;
 
@@ -199,10 +228,10 @@ export default class PBRShaderDecorator {
         coder.vertMatrixInverseEnabled = true;
 
     }
-    
+
     getUniqueShaderName(): string {
 
-        let ns: string = this.m_uniqueName;
+        let ns = this.m_uniqueName;
 
         if (this.woolEnabled) ns += "_wl";
         if (this.toneMappingEnabled) ns += "TM";
@@ -222,13 +251,10 @@ export default class PBRShaderDecorator {
         if (this.fogEnabled) ns += "Fog";
         if (this.hdrBrnEnabled) ns += "HdrBrn";
         if (this.vtxFlatNormal) ns += "vtxFlagN";
-        
+
         ns += "_T" + this.texturesTotal;
         this.m_uniqueName = ns;
 
         return ns;
-    }
-    toString(): string {
-        return "[PBRShaderBuffer()]";
     }
 }
