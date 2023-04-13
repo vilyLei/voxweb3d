@@ -176,8 +176,9 @@ export default class ImageTextureAtlas extends TextureAtlas {
 	static CreateCharsTexture(
 		chars: string,
 		size: number,
-		frontStyle: string = "rgba(255,255,255,1.0)",
-		bgStyle: string = "rgba(64,0,64,1.0)"
+		frontStyle: string = "",
+		bgStyle: string = "",
+		fixWidth: number = 0
 	): HTMLCanvasElement {
 		if (chars == null || chars == "" || size < 8) {
 			return null;
@@ -216,10 +217,13 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		ctx2D.textBaseline = "top";
 
 		var metrics: any = ctx2D.measureText(chars);
-		let texWidth: number = metrics.width;
+		let texWidth = metrics.width;
 
 		if (chars.length > 1) {
 			width = Math.round(texWidth + 8);
+			if(fixWidth > 0 && width < fixWidth) {
+				width = fixWidth;
+			}
 			canvas.width = width;
 			ctx2D = canvas.getContext("2d");
 			ctx2D.font = size - 4 + "px Verdana";

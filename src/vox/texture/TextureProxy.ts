@@ -54,13 +54,13 @@ export class TextureProxy implements IRenderTexture {
     /**
      * the value contains (1,2,4,8)
      */
-    unpackAlignment: number = 4;
-    minFilter: number = TextureConst.LINEAR_MIPMAP_LINEAR;
+    unpackAlignment = 4;
+    minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
     // webgl1环境下,这个参数值为LINEAR会报错:
     // [.WebGL-0BC70EE8]RENDER WARNING: texture bound to texture unit 1 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
-    magFilter: number = TextureConst.LINEAR;
+    magFilter = TextureConst.LINEAR;
     // 用于记录自身变换的版本号，例如数据变换
-    version: number = 0;
+    version = 0;
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         this.m_slot = TextureResSlot.GetInstance();
         this.m_uid = this.m_slot.getFreeUid();

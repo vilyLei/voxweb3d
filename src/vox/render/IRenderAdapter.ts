@@ -10,6 +10,10 @@ import IColor4 from "../material/IColor4";
 
 interface IRenderAdapter {
 	bgColor: Float32Array;
+
+	setSyncBgColor(boo: boolean): void;
+	getSyncBgColor(): boolean;
+
 	//initialize(context: RAdapterContext, param: RendererParam, rState: RODrawState): void;
 	/**
 	 * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW.

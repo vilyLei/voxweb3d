@@ -14,7 +14,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import IRenderNode from "./IRenderNode";
 
-interface IFBOInstance extends IRenderNode {
+export default interface IFBOInstance extends IRenderNode {
 
     /**
      * unique name string
@@ -316,11 +316,11 @@ interface IFBOInstance extends IRenderNode {
     setRenderingState(lockRenderState?: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
 	render(): void;
     /**
-	 * @param auto enable auto runnning this instance
+	 * @param auto enable auto runnning this instance, the default value is true
 	 * @param prepend perpend this into the renderer rendering process or append, the default value is true
 	 * @returns instance self
 	 */
-	setAutoRunning(auto: boolean, prepend?: boolean): IFBOInstance;
+	setAutoRunning(auto?: boolean, prepend?: boolean): IFBOInstance;
 	isAutoRunning(): boolean;
 }
 export { IFBOInstance }

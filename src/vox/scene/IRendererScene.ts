@@ -175,6 +175,7 @@ interface IRendererScene extends IREntityScene {
     getCamera(): IRenderCamera;
     getStage3D(): IRenderStage3D;
     getRenderProxy(): IRenderProxy;
+	getDevicePixelRatio(): number;
 
     getViewWidth(): number;
     getViewHeight(): number;

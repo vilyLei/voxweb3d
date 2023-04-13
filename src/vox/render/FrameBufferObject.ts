@@ -181,7 +181,7 @@ class FrameBufferObject {
 				/*
 				if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 				{
-					
+
 					//rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_2D, rTex, this.textureLevel);
 					this.glFramebufferTex2D(this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rTex);
 					++this.m_attachmentIndex;
@@ -329,7 +329,7 @@ class FrameBufferObject {
 		}
 		//trace("XXXXXXXXXXXXXXXXXXXX FrameBufferObject::clearOnlyColor(), m_fbo: ", m_fbo);
 	}
-	
+
 	clearOnlyDepth(depth: number = 1.0): void {
 
 		if (RendererDevice.IsWebGL2()) {
@@ -489,11 +489,11 @@ class FrameBufferObject {
 			rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.RGBA8, pw, ph);
 		}
 		rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-		
+
 		console.log("FrameBufferObject create only color buf...this.multisampleEnabled: " + this.multisampleEnabled + ",this.multisampleLevel:" + this.multisampleLevel);
 	}
 	private createNewFBO(rgl: any, pw: number, ph: number): void {
-		
+
 		let boo: boolean = this.m_fbo == null;
 
 		this.m_preAttachTotal = this.m_activeAttachmentTotal = 0;
@@ -537,7 +537,6 @@ class FrameBufferObject {
 			this.buildStencilRBO(rgl, pw, ph);
 		}
 		else {
-			console.log("fffrfrfrfrfrfr");
 			this.buildColorRBO(rgl, pw, ph);
 		}
 		if (boo) {

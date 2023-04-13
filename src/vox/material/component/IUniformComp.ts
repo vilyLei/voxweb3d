@@ -17,6 +17,7 @@ interface IUniformComp {
     reset(): void;
     destroy(): void;
     getUniqueNSKeyString(): string;
+	dataCopyFrom(src: IUniformComp): void;
     clone(): IUniformComp;
     getParams(): Float32Array;
     getParamsTotal(): number;

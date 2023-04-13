@@ -30,6 +30,7 @@ class ScreenFixedPlaneShaderBuffer extends ShaderCodeBuffer {
 	getFragShaderCode(): string {
 		let fragCode: string = "\
 precision mediump float;\n\
+//ScreenFixedPlaneShd\n\
 ";
 		if (this.m_hasTex) {
 			fragCode += "\

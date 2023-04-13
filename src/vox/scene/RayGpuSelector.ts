@@ -310,6 +310,9 @@ export default class RayGpuSelector implements IRaySelector {
     private gpuPick(total: number): void {
         let rcontext = this.m_renderer.getRendererContext();
         let proxy = this.m_renderer.getRenderProxy();
+		let adp = proxy.adapter;
+		let syncBgColor = adp.getSyncBgColor();
+		adp.setSyncBgColor(false);
         let pmx = proxy.getStage3D().mouseX;
         //let pmy:number = proxy.getStage3D().stageHeight - proxy.getStage3D().mouseY;
         let pmy = proxy.getStage3D().mouseY;
@@ -383,6 +386,7 @@ export default class RayGpuSelector implements IRaySelector {
 
         const c = this.m_initColor;
         rcontext.setClearRGBAColor4f(c.r, c.g, c.b, c.a);
+		adp.setSyncBgColor(syncBgColor);
 
         rcontext.resetState();
     }

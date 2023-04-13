@@ -30,7 +30,7 @@ export default class MouseCamDrager {
             this.m_stage3D = stage3D;
             this.m_dragSwinger.initialize(stage3D, camera);
             this.m_dragSlider.initialize(stage3D, camera);
-            
+
             const ME = MouseEvent;
             let downType = ME.MOUSE_DOWN;
             if (this.bgEventEnabled) {
@@ -52,7 +52,7 @@ export default class MouseCamDrager {
                     downType = ME.MOUSE_RIGHT_DOWN;
                 }
                 upType = ME.MOUSE_RIGHT_UP;
-                
+
                 document.oncontextmenu = function (e) {
                     e.preventDefault();
                 }

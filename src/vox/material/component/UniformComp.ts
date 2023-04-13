@@ -25,6 +25,9 @@ class UniformComp implements IUniformComp {
 
         return null;
     }
+	dataCopyFrom(src: IUniformComp): void {
+
+	}
     reset(): void {
 
     }

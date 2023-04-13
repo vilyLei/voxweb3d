@@ -113,6 +113,9 @@ class RendererParam implements IRendererParam {
 	setAttriAlpha(boo: boolean): void {
 		this.m_renderContextAttri.alpha = boo;
 	}
+	getAttriAlpha(): boolean {
+		return this.m_renderContextAttri.alpha;
+	}
 	setAttriPremultipliedAlpha(boo: boolean): void {
 		this.m_renderContextAttri.premultipliedAlpha = boo;
 	}

@@ -4,12 +4,15 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+import Vector3D from "../math/Vector3D";
 import IAABB2D from "./IAABB2D";
 
 export default class AABB2D implements IAABB2D {
 
 	private m_right = 100;
 	private m_top = 100;
+	private m_cx = 0;
+	private m_cy = 0;
 
 	x = 0;
 	y = 0;
@@ -25,7 +28,21 @@ export default class AABB2D implements IAABB2D {
 
 		this.update();
 	}
-
+	moveCenterTo(px: number, py: number): IAABB2D {
+		this.x += px - this.m_cx;
+		this.y += py - this.m_cy;
+		this.update();
+		return this;
+	}
+	scaleBy(s: number): IAABB2D {
+		this.x *= s;
+		this.y *= s;
+		this.width *= s;
+		this.height *= s;
+		this.m_right = this.x + this.width;
+		this.m_top = this.y + this.height;
+		return this;
+	}
 	union(r: IAABB2D): IAABB2D {
 		this.addXY(r.x, r.y);
 		this.addXY(r.getRight(), r.getTop());
@@ -41,23 +58,30 @@ export default class AABB2D implements IAABB2D {
 
 		this.width = this.m_right - this.x;
 		this.height = this.m_top - this.y;
+		this.m_cx = this.x + this.width * 0.5;
+		this.m_cy = this.y + this.height * 0.5;
 		return this;
 	}
 	reset(): IAABB2D {
 		this.x = this.y = 0xfffffff;
 		this.m_right = this.m_top = -0xfffffff;
 		this.width = this.height = 0;
+		this.m_cx = 0;
+		this.m_cy = 0;
 		return this;
 	}
-	copyFrom(dst: AABB2D): IAABB2D {
+	copyFrom(src: AABB2D): IAABB2D {
 
-		this.x = dst.x;
-		this.y = dst.y;
-		this.width = dst.width;
-		this.height = dst.height;
+		this.x = src.x;
+		this.y = src.y;
+		this.width = src.width;
+		this.height = src.height;
 
-		this.m_right = dst.m_right;
-		this.m_top = dst.m_top;
+		this.m_right = src.m_right;
+		this.m_top = src.m_top;
+
+		this.m_cx = src.m_cx;
+		this.m_cy = src.m_cy;
 
 		return this;
 	}
@@ -77,12 +101,12 @@ export default class AABB2D implements IAABB2D {
 	}
 	/**
 	 * 当前矩形是否包含目标矩形
-	 * @param dst 目标矩形
+	 * @param src 目标矩形
 	 * @returns 返回当前矩形是否包含目标矩形
 	 */
-	contains(dst: AABB2D): boolean {
-		if (dst.x >= this.x && dst.m_right <= this.m_right) {
-			if (dst.y >= this.y && dst.m_top <= this.m_top) {
+	contains(src: AABB2D): boolean {
+		if (src.x >= this.x && src.m_right <= this.m_right) {
+			if (src.y >= this.y && src.m_top <= this.m_top) {
 				return true;
 			}
 		}
@@ -90,15 +114,15 @@ export default class AABB2D implements IAABB2D {
 	}
 	/**
 	 * 当前矩形是否和目标矩形相交
-	 * @param dst 目标矩形
+	 * @param src 目标矩形
 	 * @returns 返回当前矩形是否和目标矩形相交
 	 */
-	intersect(dst: AABB2D): boolean {
+	intersect(src: AABB2D): boolean {
 
-		if (dst.x > this.m_right) return false;
-		if (dst.m_right < this.x) return false;
-		if (dst.y > this.m_top) return false;
-		if (dst.m_top < this.y) return false;
+		if (src.x > this.m_right) return false;
+		if (src.m_right < this.x) return false;
+		if (src.y > this.m_top) return false;
+		if (src.m_top < this.y) return false;
 		return true;
 	}
 	setTo(x: number, y: number, width: number, height: number): IAABB2D {
@@ -109,6 +133,8 @@ export default class AABB2D implements IAABB2D {
 		this.height = height;
 		this.m_right = this.width + this.x;
 		this.m_top = this.height + this.y;
+		this.m_cx = this.x + this.width * 0.5;
+		this.m_cy = this.y + this.height * 0.5;
 		return this;
 	}
 
@@ -118,11 +144,13 @@ export default class AABB2D implements IAABB2D {
 		this.height = height;
 		this.m_right = this.width + this.x;
 		this.m_top = this.height + this.y;
+		this.m_cx = this.x + this.width * 0.5;
+		this.m_cy = this.y + this.height * 0.5;
 		return this;
 	}
 
-    testEqual(dst: AABB2D): boolean {
-        return this.x != dst.x || this.y != dst.y || this.width != dst.width || this.height != dst.height;
+    testEqual(src: AABB2D): boolean {
+        return this.x != src.x || this.y != src.y || this.width != src.width || this.height != src.height;
     }
     testEqualWithParams(px: number, py: number, pw: number, ph: number): boolean {
         return this.x != px || this.y != py || this.width != pw || this.height != ph;
@@ -130,6 +158,8 @@ export default class AABB2D implements IAABB2D {
 	update(): IAABB2D {
 		this.m_right = this.width + this.x;
 		this.m_top = this.height + this.y;
+		this.m_cx = this.x + this.width * 0.5;
+		this.m_cy = this.y + this.height * 0.5;
 		return this;
 	}
 	flipY(height: number): IAABB2D {

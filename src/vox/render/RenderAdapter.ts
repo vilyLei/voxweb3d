@@ -72,6 +72,12 @@ class RenderAdapter implements IRenderAdapter {
 		this.m_texResource = texResource;
 		this.m_rcuid = rcuid;
 	}
+	setSyncBgColor(boo: boolean): void {
+		this.m_syncBgColor = boo;
+	}
+	getSyncBgColor(): boolean {
+		return this.m_syncBgColor;
+	}
 	syncHtmlBodyColor(): void {
 		if (this.m_rtx) {
 			const c = this.bgColor;

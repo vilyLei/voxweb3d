@@ -446,6 +446,19 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	sphereIntersect(centerV: Vector3D, radius: number): boolean {
 		return false;
 	}
+	private m_rst = 0;
+	setRenderState(rst: number): void {
+		this.m_rst = rst;
+		for(let i = 0; i < this.m_entities.length; ++i) {
+			this.m_entities[i].setRenderState(rst);
+		}
+		for(let i = 0; i < this.m_children.length; ++i) {
+			this.m_children[i].setRenderState(rst);
+		}
+	}
+	getRenderState(): number {
+		return this.m_rst;
+	}
 	protected __$getParentVisible(): boolean {
 		return this.m_parentVisible;
 	}

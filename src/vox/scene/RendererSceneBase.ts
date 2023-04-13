@@ -148,7 +148,6 @@ export default class RendererSceneBase {
 	getRenderProxy(): IRenderProxy {
 		return this.m_rproxy;
 	}
-
 	// set new view port rectangle area
 	setViewPort(px: number, py: number, pw: number, ph: number): void {
 		if (this.m_rproxy != null) {

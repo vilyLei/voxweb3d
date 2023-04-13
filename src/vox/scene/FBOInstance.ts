@@ -806,11 +806,11 @@ export default class FBOInstance implements IFBOInstance {
 
 	private m_autoRRun = false;
     /**
-	 * @param auto enable auto runnning this instance
+	 * @param auto enable auto runnning this instance, the default value is true
 	 * @param prepend perpend this into the renderer rendering process or append, the default value is true
 	 * @returns instance self
 	 */
-	setAutoRunning(auto: boolean, prepend: boolean = true): FBOInstance {
+	setAutoRunning(auto: boolean = true, prepend: boolean = true): FBOInstance {
 		if (auto != this.m_autoRRun) {
 			this.m_autoRRun = auto;
 			if (auto) {

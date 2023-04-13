@@ -25,7 +25,7 @@ class MouseInteraction {
 	 * @param buttonType the default value is 0, the value contains 0(mouse left button), 1(mouse middle button), 2(mouse right button)
 	 * @param bgEventEnabled apply background mouse event true or false, the default value is true
 	 */
-	initialize(rscene: IRendererScene, buttonType: number = 0, bgEventEnabled: boolean = true): MouseInteraction {
+	initialize(rscene: IRendererScene, buttonType: number = 0, bgEventEnabled: boolean = true, autoRunning: boolean = false): MouseInteraction {
 		if (this.m_rscene == null) {
 
 			this.m_rscene = rscene;
@@ -42,6 +42,7 @@ class MouseInteraction {
 			z.initialize(rscene.getStage3D());
 			z.setLookAtCtrlEnabled(false);
 		}
+		this.setAutoRunning( autoRunning );
 		return this;
 	}
 
