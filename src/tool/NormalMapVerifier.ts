@@ -78,7 +78,7 @@ export class NormalMapVerifier {
 	private m_aspParam = new AwardSceneParam();
 	private m_vasScene = new VoxAwardScene();
 
-	private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
+	private m_materialCtx = new DebugMaterialContext();
 	constructor() {}
 
 	private getAssetTexByUrl(pns: string): IRenderTexture {
@@ -469,21 +469,16 @@ export class NormalMapVerifier {
 
 		// this.m_vasScene.initialize(ui.ruisc, this.m_aspParam);
 	}
-	private setUIItemValue(ns: string, value: number, syncEnabled: boolean = true): void {
-		let item = this.m_ctrlui.getItemByUUID(ns);
-		item.param.value = value;
-		item.syncEnabled = syncEnabled;
-		item.updateParamToUI();
-	}
 	private resetCtrlValue(): void {
 		console.log("resetCtrlValue() ...");
-		this.setUIItemValue("uv_u_scale", 			1.0);
-		this.setUIItemValue("uv_v_scale", 			1.0);
-		this.setUIItemValue("uv_scale", 			1.0);
-		this.setUIItemValue("metallic", 			0.1);
-		this.setUIItemValue("roughness", 			0.3);
-		this.setUIItemValue("scatterIntensity", 	64);
-		this.setUIItemValue("tone", 				5);
+		let ui = this.m_ctrlui;
+		ui.setUIItemValue("uv_u_scale", 		1.0);
+		ui.setUIItemValue("uv_v_scale", 		1.0);
+		ui.setUIItemValue("uv_scale", 			1.0);
+		ui.setUIItemValue("metallic", 			0.1);
+		ui.setUIItemValue("roughness", 			0.3);
+		ui.setUIItemValue("scatterIntensity", 	64);
+		ui.setUIItemValue("tone", 				5);
 	}
 	run(): void {
 		this.m_graph.run();

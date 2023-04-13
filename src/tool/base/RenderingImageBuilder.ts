@@ -9,6 +9,7 @@ import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
 export class RenderingImageBuilder {
 	private m_init = true;
 
+	private m_rparam: IRendererParam = null;
 	private m_graph = new RendererSceneGraph();
 	texLoader: TextureResLoader = null;
 	rscene: IRendererScene = null;
@@ -30,6 +31,7 @@ export class RenderingImageBuilder {
 		console.log("RenderingImageBuilder::initialize()......");
 
 		if (this.m_init) {
+			this.m_rparam = rparam;
 			this.m_init = false;
 			this.rscene = this.m_graph.createScene(rparam);
 			this.rscene.setClearColor(color);
@@ -84,19 +86,20 @@ export class RenderingImageBuilder {
 		const canvas = document.createElement("canvas");
 		canvas.width = pw;
 		canvas.height = ph;
-		let k = 1 + this.m_index++;
-		let ri = 1;
-		canvas.style.display = "bolck";
-		canvas.style.zIndex = "9999";
-		canvas.style.left = `${66 + k * 66}px`;
-		canvas.style.top = `${200 + ri * 66}px`;
-		canvas.style.position = "absolute";
+		// let k = 1 + this.m_index++;
+		// let ri = 1;
+		// canvas.style.display = "bolck";
+		// canvas.style.zIndex = "9999";
+		// canvas.style.left = `${66 + k * 66}px`;
+		// canvas.style.top = `${200 + ri * 66}px`;
+		// canvas.style.position = "absolute";
+		canvas.style.backgroundColor = "transparent";
 		// canvas.style.width = pw + 'px';
 		// canvas.style.width = ph + 'px';
 		// let st = this.rscene.getStage3D();
 		// let dpr = st.getDevicePixelRatio();
-		console.log("RenderingImageBuilder::createCanvasData(), pw, ph: ", pw,ph);
-		let pos = mapEntity.getPosition();
+		// console.log("RenderingImageBuilder::createCanvasData(), pw, ph: ", pw,ph);
+		// let pos = mapEntity.getPosition();
 		const ctx2d = canvas.getContext("2d");
 		ctx2d.drawImage(
 			srcCanvas,
@@ -109,7 +112,11 @@ export class RenderingImageBuilder {
 			canvas.height
 		);
 		// document.body.appendChild(canvas);
+		if(this.m_rparam.getAttriAlpha()) {
+			return canvas.toDataURL('image/png');
+		}
 		return canvas.toDataURL('image/jpeg');
+
 		return "";
 	}
 
@@ -119,6 +126,7 @@ export class RenderingImageBuilder {
 		canvas.height = ph;
 		canvas.style.display = "bolck";
 		canvas.style.position = "absolute";
+		canvas.style.backgroundColor = "transparent";
 		return canvas;
 	}
 

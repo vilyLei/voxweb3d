@@ -7,7 +7,7 @@ interface IFileUrlObj {
 }
 interface IDropFileListerner {
 	isDropEnabled(): boolean;
-	initFileLoad(files: IFileUrlObj[]): void;
+	initFileLoad(files: IFileUrlObj[], type?: string): void;
 }
 class DropFileController {
 	private m_htmlObj: HTMLElement = null;
@@ -81,7 +81,7 @@ class DropFileController {
 							let file = item.getAsFile();
 							// console.log("drop a file: ", file);
 							files.push(file);
-							this.initFilesLoad(files);
+							this.initFilesLoad(files, "drop");
 							filesTotal = 1;
 						} else if (entity.isDirectory) {
 							// let file = item.getAsFile();
@@ -97,7 +97,7 @@ class DropFileController {
 												files.push(file);
 												filesCurrTotal++;
 												if (filesTotal == filesCurrTotal) {
-													this.initFilesLoad(files);
+													this.initFilesLoad(files, "drop");
 												}
 											});
 										}
@@ -126,11 +126,11 @@ class DropFileController {
 				break;
 		}
 	}
-	initFilesLoad(files: any): void {
+	initFilesLoad(files: any, type: string = "undefine"): void {
 		this.m_files = null;
 		if (this.m_listener) {
 			this.m_files = files;
-			this.m_listener.initFileLoad(this.getFiles());
+			this.m_listener.initFileLoad(this.getFiles(), type);
 		}
 	}
 	readonly imgKeys = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];

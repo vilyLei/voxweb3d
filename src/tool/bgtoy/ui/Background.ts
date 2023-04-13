@@ -1,12 +1,20 @@
+import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import ScreenAlignPlaneEntity from "../../../vox/entity/ScreenAlignPlaneEntity";
-import AABB2D from "../../../vox/geom/AABB2D";
+import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
+import IAABB2D from "../../../vox/geom/IAABB2D";
+import Color4 from "../../../vox/material/Color4";
+import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 import RendererState from "../../../vox/render/RendererState";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
 class Background {
 	private m_rscene: IRendererScene = null;
-	leftBG = new ScreenAlignPlaneEntity();
-	// rightBG = new ScreenAlignPlaneEntity();
+	// private leftBG = new ScreenAlignPlaneEntity();
+	private leftBG = new Plane3DEntity();
+	private rightBG = new Plane3DEntity();
+	// bg: Plane3DEntity = null;
+	bg: ScreenFixedAlignPlaneEntity = null;
+	// bg: ScreenAlignPlaneEntity = null;
 	constructor() {}
 
 	initialize(sc: IRendererScene, pw: number = 0, ph: number = 0): void {
@@ -23,23 +31,43 @@ class Background {
 		this.leftBG.setVisible(true);
 		// this.rightBG.setVisible(true);
 	}
+	setBGRGBAColor(c: Color4): void {
+		(this.bg.getMaterial() as IColorMaterial).setRGBA4f(c.r, c.g, c.b, 0.5);
+	}
 	private init(pw: number, ph: number): void {
 		let sc = this.m_rscene;
 
-		this.leftBG.initialize(-256, -256, 512, 512);
-		this.leftBG.setRGBA4f(0.0, 0.0, 0.0, 0.5);
-		this.leftBG.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
-		this.leftBG.setXYZ(-256, 0, 0);
-		sc.addEntity( this.leftBG );
-		// this.rightBG.copyMeshFrom(this.leftBG);
-		// this.rightBG.initialize(-256, -256, 512, 512);
-		// this.rightBG.setRGB3f(0.12, 0.21, 0.21);
-		// this.rightBG.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
-		// this.rightBG.setXYZ(256, 0, 0);
-		// sc.addEntity( this.rightBG );
-	}
-	updateLayout(rect: AABB2D): void {
+		let bg = new ScreenFixedAlignPlaneEntity();
+		bg.initialize(-1, -1, 2.0, 2.0);
+		(bg.getMaterial() as IColorMaterial).setRGBA4f(0.11, 0.21, 0.11, 1.0);
+		bg.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+		sc.addEntity( bg );
+		this.bg = bg;
 
+		this.leftBG.initializeXOY(-512, -256, 512, 512);
+		// this.leftBG.initializeXOY(-128, -64, 256, 128);
+		(this.leftBG.getMaterial() as IColorMaterial).setRGBA4f(0.0, 0.0, 0.0, 0.5);
+		this.leftBG.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+		sc.addEntity( this.leftBG );
+
+		// this.rightBG.initializeXOY(0, -256, 512, 512);
+		// (this.rightBG.getMaterial() as IColorMaterial).setRGBA4f(0.11, 0.21, 0.11, 0.6);
+		// this.rightBG.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
+		// sc.addEntity( this.rightBG );
+
+
+	}
+	updateLayout(rect: IAABB2D): void {
+		let sc = this.m_rscene;
+		let st = sc.getStage3D();
+		// if(this.leftBG) {
+		// 	this.bg.setScaleXYZ(st.stageWidth, st.stageHeight, 1.0);
+		// 	this.bg.update();
+		// 	// let dpr = sc.getDevicePixelRatio();
+		// 	// dpr = 1.0;
+		// 	// this.leftBG.setScaleXYZ(dpr, dpr, 1.0);
+		// 	// this.leftBG.update();
+		// }
 	}
 }
 

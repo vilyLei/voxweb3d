@@ -44,31 +44,10 @@ import { IImageTexture } from "../vox/render/texture/IImageTexture";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 import ColorRectImgButton from "../orthoui/button/ColorRectImgButton";
 import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
-
-class AwardSceneParam implements IAwardSceneParam {
-	texLoader: TextureResLoader = null;
-	constructor() {}
-	private getAssetTexByUrl(pns: string): IRenderTexture {
-		return this.getTexByUrl("static/assets/" + pns);
-	}
-	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-		let hostUrl = window.location.href;
-		if (hostUrl.indexOf(".artvily.") > 0) {
-			hostUrl = "http://www.artvily.com:9090/";
-			url = hostUrl + url;
-		}
-		return this.texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
-	}
-	createContainer(): IDisplayEntityContainer {
-		return new DisplayEntityContainer(true, true);
-	}
-	createXOYPlane(x: number, y: number, w: number, h: number, tex: IRenderTexture): IRenderEntity {
-		let pl = new Plane3DEntity();
-		pl.initializeXOY(x, y, w, h, [tex]);
-		return pl;
-	}
-	pid = 1;
-}
+import URLFilter from "./base/URLFilter";
+import IFBOInstance from "../vox/scene/IFBOInstance";
+import TextureConst from "../vox/texture/TextureConst";
+import MouseEventEntityProxy from "../vox/entity/MouseEventEntityProxy";
 
 export class NormalMapBuilder {
 	private m_init = true;
@@ -85,15 +64,33 @@ export class NormalMapBuilder {
 
 	private m_imgBuilder: RenderingImageBuilder = null;
 	private m_materialCtx = new DebugMaterialContext();
+	private m_mapFbo: IFBOInstance = null;
+	private m_mi: MouseInteraction = null;
 	constructor() {}
 
-	private getAssetTexByUrl(pns: string): IRenderTexture {
+	getAssetTexByUrl(pns: string): IRenderTexture {
 		return this.getTexByUrl("static/assets/" + pns);
 	}
-	private getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
 		return this.m_aspParam.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 	}
-
+	private buildMapFBO(): void {
+		if(this.m_mapFbo == null) {
+			let fboIns = this.m_rscene.createFBOInstance();
+			fboIns.setClearRGBAColor4f(0.3, 0.0, 0.0, 1.0);             // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
+			fboIns.createFBOAt(0, 256, 256, false, false);
+			fboIns.setRenderToRTTTextureAt(0);
+			fboIns.setRProcessIDList([0], false);
+			fboIns.asynFBOSizeWithViewport();
+			fboIns.setAutoRunning();
+			let tex = fboIns.getRTTAt(0);
+			tex.setWrap(TextureConst.WRAP_REPEAT);
+			// tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+			tex.minFilter = TextureConst.LINEAR;
+			tex.magFilter = TextureConst.LINEAR;
+			this.m_mapFbo = fboIns;
+		}
+	}
 	initialize(): void {
 		console.log("NormalMapBuilder::initialize()......");
 		if (this.m_init) {
@@ -116,7 +113,7 @@ export class NormalMapBuilder {
 			// 保持 html body color 和 renderer clear color 同步，以便正确表现alpha混合
 			// rparam.syncBgColor = false;
 
-			let rscene = this.m_graph.createScene(rparam);
+			let rscene = this.m_graph.createScene(rparam, 5);
 			// rscene.initialize(rparam).setAutoRunning(true);
 			rscene.setClearRGBAColor4f(0.2, 0.3, 0.2, 0.0);
 			rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
@@ -125,21 +122,75 @@ export class NormalMapBuilder {
 			this.m_texLoader = new TextureResLoader(rscene);
 			this.m_aspParam.texLoader = this.m_texLoader;
 
-			new MouseInteraction().initialize(rscene, 0, true).setAutoRunning(true);
+			this.m_mi = new MouseInteraction().initialize(rscene, 0, true).setAutoRunning(true);
 			new RenderStatusDisplay(rscene, true);
 
+			this.buildMapFBO();
 			this.initMaterialCtx();
 		}
+	}
+
+	private m_fboPlMaterial: NormalMapBuilderMaterial = null;
+	private initFboMapPlane(url: string, srcM: NormalMapBuilderMaterial): void {
+
+		let tex = this.getTexByUrl(url);
+		let fboPlMaterial = new NormalMapBuilderMaterial();
+		fboPlMaterial.fixScreen = true;
+		fboPlMaterial.setTextureList([tex]);
+		fboPlMaterial.dataCopyFrom(srcM);
+		this.m_fboPlMaterial = fboPlMaterial;
+		if(this.m_mapFBOPlane != null) {
+			this.m_rscene.removeEntity(this.m_mapFBOPlane);
+			this.m_mapFBOPlane.setMaterial(fboPlMaterial);
+		}else {
+			this.m_mapFBOPlane = new Plane3DEntity();
+			this.m_mapFBOPlane.setMaterial(fboPlMaterial);
+			this.m_mapFBOPlane.initializeXOYSquare(2.0);
+		}
+		this.m_mapFBOPlane.intoRendererListener = (): void=> {
+
+			let pw = tex.getWidth();
+			let ph = tex.getHeight();
+			let size = Math.max(pw, ph);
+			if(size > 1024) {
+				let k = 1024.0 / size;
+				pw *= k;
+				ph *= k;
+			}
+			this.m_mapFbo.resizeFBO(pw, ph);
+			fboPlMaterial.setTexSize(pw, ph);
+		}
+		this.m_rscene.addEntity(this.m_mapFBOPlane, 0);
+		this.applyNewMaterialToModel( this.m_mapFbo.getRTTAt(0), null);
+	}
+	private init3DScene(rscene: IRendererScene): void {
+		// this.createAEntityByTexUrl("static/assets/rock_a_n.jpg");
+		let color = new Color4();
+		color.randomRGB(0.2);
+		let srcPlane = new ScreenFixedAlignPlaneEntity();
+		srcPlane.initialize(-1.0, -1.0, 2.0, 2.0);
+		(srcPlane.getMaterial() as IColorMaterial).setColor(color);
+		srcPlane.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
+		this.m_rscene.addEntity(srcPlane, 1);
+
+		// let axis = new Axis3DEntity();
+		// axis.initialize(300);
+		// this.m_rscene.addEntity(axis, 1);
+
+		// let pl2 = new Plane3DEntity();
+		// pl2.initializeXOZSquare(300, [this.m_mapFbo.getRTTAt(0)])
+		// this.m_rscene.addEntity(pl2, 1);
 	}
 	private openDir(): void {
 		const input = document.createElement("input");
 		input.type = "file";
+		input.name = "hhh";
 		// (input as any).webkitdirectory = true;//这行代码用了即变成上传了
 		// input.accept = "image/png, image/jpeg";
 		input.addEventListener("change", () => {
 			let files = Array.from(input.files);
 			console.log("files: ", files);
-			this.m_dropController.initFilesLoad(files);
+			this.m_dropController.initFilesLoad(files, "open_dir_select");
 		});
 		input.click();
 		// if ("showPicker" in HTMLInputElement.prototype) {
@@ -161,6 +212,7 @@ export class NormalMapBuilder {
 			rparam.autoAttachingHtmlDoc = !rparam.offscreenRenderEnabled;
 			rparam.autoSyncRenderBufferAndWindowSize = false;
 			rparam.sysEvtReceived = false;
+			rparam.syncBgColor = false;
 			rparam.setAttriAlpha(false);
 			this.m_imgBuilder.initialize(rparam, new Color4(0, 0, 0, 1.0));
 		}
@@ -171,7 +223,6 @@ export class NormalMapBuilder {
 			let currTex = this.m_currTexture;
 			let tex = this.m_rscene.textureBlock.createImageTex2D();
 			tex.setDataFromImage((currTex as ImageTextureProxy).getTexData().data);
-			// tex.flipY = true;
 			let material = new NormalMapBuilderMaterial();
 			material.fixScreen = true;
 			material.setTextureList([tex]);
@@ -186,12 +237,12 @@ export class NormalMapBuilder {
 			this.m_imgBuilder.setSize(currTex.getWidth(), currTex.getHeight());
 		}
 	}
+	private m_mapFBOPlane: Plane3DEntity = null;
 	private m_mapMaterial: NormalMapBuilderMaterial = null;
 	private m_mapPlane: Plane3DEntity = null;
 	private m_mapAreaFactor = 0.4;
-
-	private m_loadingTex: IRenderTexture = null;
-	private m_clickBtn: ColorRectImgButton = null;
+	private m_loadNormalMap = true;
+	private m_clickMapAreaPlane: ColorRectImgButton = null;
 
 	private createClickArea(): void {
 		let clickBtn = new ColorRectImgButton();
@@ -199,10 +250,12 @@ export class NormalMapBuilder {
 		clickBtn.overColor.setRGBA4f(0.0, 0.0, 0.0, 0.6);
 		clickBtn.downColor.setRGBA4f(0.0, 0.0, 0.0, 0.6);
 		clickBtn.initialize(-0.5, -0.5, 1, 1);
+		clickBtn.setXYZ(0,0,-10);
 		this.m_ctrlui.ruisc.addEntity(clickBtn);
-		this.m_clickBtn = clickBtn;
+		this.m_clickMapAreaPlane = clickBtn;
 		clickBtn.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
-		clickBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, (): void => {
+		clickBtn.addEventListener(MouseEvent.MOUSE_CLICK, this, (): void => {
+			this.m_loadNormalMap = true;
 			this.openDir();
 		});
 	}
@@ -226,14 +279,16 @@ export class NormalMapBuilder {
 		pl0.update();
 
 		pw = stw * 0.95;
-		let btn = this.m_clickBtn;
+		let btn = this.m_clickMapAreaPlane;
 		btn.setScaleXYZ(pw, pw, 1.0);
 		btn.setXYZ(stw * 0.5, 490 + 0.5 * ph, 0.0);
 		btn.update();
 	}
 	private createAMapPlane(url: string): void {
+
 		let tex = this.getTexByUrl(url);
-		this.m_loadingTex = tex;
+
+		// this.m_loadingTex = tex;
 		this.m_currTexture = tex;
 		// tex.flipY = true;
 		let material = new NormalMapBuilderMaterial();
@@ -243,13 +298,13 @@ export class NormalMapBuilder {
 		}
 		this.m_mapMaterial = material;
 		let pl0 = this.m_mapPlane;
-		if (pl0 == null) {
+		if (pl0) {
+			this.m_ctrlui.ruisc.removeEntity(pl0);
+			pl0.setMaterial(material);
+		} else {
 			pl0 = new Plane3DEntity();
 			pl0.setMaterial(material);
 			pl0.initializeXOY(0, 0, 1, 1);
-		} else {
-			this.m_ctrlui.ruisc.removeEntity(pl0);
-			pl0.setMaterial(material);
 		}
 		if (tex.isDataEnough()) {
 			material.setTexSize(tex.getWidth(), tex.getHeight());
@@ -262,28 +317,18 @@ export class NormalMapBuilder {
 		}
 		this.m_mapPlane = pl0;
 		this.m_ctrlui.ruisc.addEntity(pl0, 1);
-		//this.m_ctrlui
+
+		this.initFboMapPlane(url, material);
 	}
 	shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
 		console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
 
-		this.initScene(this.m_rscene);
+		this.init3DScene(this.m_rscene);
 		this.initUI();
 
 		this.m_dropController.initialize(document.body as any, this);
 		this.initTextDiv();
 
-		let color = new Color4();
-		color.randomRGB(0.2);
-		let srcPlane = new ScreenFixedAlignPlaneEntity();
-		srcPlane.initialize(-1.0, -1.0, 2.0, 2.0);
-		(srcPlane.getMaterial() as IColorMaterial).setColor(color);
-		srcPlane.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
-		this.m_rscene.addEntity(srcPlane, 0);
-
-		let axis = new Axis3DEntity();
-		axis.initialize(300);
-		this.m_rscene.addEntity(axis, 0);
 		this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
 		this.resize(null);
 	}
@@ -313,11 +358,14 @@ export class NormalMapBuilder {
 		pdiv.style.zIndex = "99999";
 		pdiv.style.position = "absolute";
 		document.body.appendChild(pdiv);
-		pdiv.innerHTML = "<font color='#eeee00'>将生成法线图的原图拖入任意区域</font>";
+		pdiv.innerHTML = "<font color='#eeee00'>将原图拖入任意区域, 即可生成法线图</font>";
 	}
 	private m_dropEnabled = true;
-	initFileLoad(files: IFileUrlObj[]): void {
+	initFileLoad(files: IFileUrlObj[], type?: string): void {
 		console.log("initFileLoad(), files.length: ", files.length);
+		if(type && type == "drop") {
+			this.m_loadNormalMap = true;
+		}
 		for (let i = 0; i < files.length; ++i) {
 			this.loadedRes(files[i].url, files[i].name);
 		}
@@ -332,16 +380,17 @@ export class NormalMapBuilder {
 			name = name.slice(0, name.indexOf("."));
 		}
 		console.log("loadedRes, url: ", url, ", name: ", name);
-		this.m_normalMapName = name;
 		// this.createAEntityByTexUrl(url);
-		this.createAMapPlane(url);
+		if(this.m_loadNormalMap) {
+			this.m_normalMapName = name;
+			this.createAMapPlane(url);
+		}else {
+			this.applyNewMaterialToModel(null, this.getTexByUrl(url));
+		}
 	}
 	private mouseDown(evt: any): void {
 		console.log("mouseDown() ...");
 		// this.openDir();
-	}
-	private initScene(rscene: IRendererScene): void {
-		// this.createAEntityByTexUrl("static/assets/rock_a_n.jpg");
 	}
 
 	private initMaterialCtx(): void {
@@ -359,7 +408,7 @@ export class NormalMapBuilder {
 		let pointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
 		if (pointLight != null) {
 			// pointLight.position.setXYZ(200.0, 180.0, 200.0);
-			pointLight.position.setXYZ(0.0, 300.0, -200.0);
+			pointLight.position.setXYZ(0.0, 600.0, -200.0);
 			// pointLight.color.setRGB3f(0.0, 1.5, 0.0);
 			pointLight.color.randomRGB(1.5);
 			pointLight.attenuationFactor1 = 0.00001;
@@ -369,7 +418,7 @@ export class NormalMapBuilder {
 		pointLight = this.m_materialCtx.lightModule.getPointLightAt(1);
 		if (pointLight != null) {
 			// pointLight.position.setXYZ(200.0, 180.0, 200.0);
-			pointLight.position.setXYZ(0.0, -400.0, 0.0);
+			pointLight.position.setXYZ(0.0, -600.0, 0.0);
 			// pointLight.color.setRGB3f(0.5, 0.2, 1.0);
 			pointLight.color.randomRGB(1.7);
 			pointLight.attenuationFactor1 = 0.00001;
@@ -431,14 +480,45 @@ export class NormalMapBuilder {
 			entity4.normalEnabled = true;
 			entity4.initialize(300, 80, 30, 30, [tex]);
 			this.m_baseEntities[4] = entity4;
+
+			for(let i = 0; i < this.m_baseEntities.length; ++i) {
+				const evtProxy = new MouseEventEntityProxy( this.m_baseEntities[i] );
+				evtProxy.addEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseCliclEntity);
+				evtProxy.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownEntity);
+			}
 		}
 	}
-	private createAEntityByTexUrl(url: string): void {
-		this.createBaseEntities();
+	private mouseDownEntity(evt: any): void {
+		// console.log("mouseDownEntity() .....");
+		this.m_mi.drager.attach();
+	}
+	private mouseCliclEntity(evt: any): void {
+		// console.log("mouseCliclEntity() .....");
+		this.m_loadNormalMap = false;
+		this.openDir();
+	}
+	private m_normalTex: IRenderTexture = null;
+	private m_difuseMap: IRenderTexture = null;
+	private applyNewMaterialToModel(normalTex: IRenderTexture, difuseMap: IRenderTexture): void {
 
+		this.createBaseEntities();
+		if(normalTex) {
+			this.m_normalTex = normalTex;
+		}
+		if(difuseMap) {
+			this.m_difuseMap = difuseMap;
+		}
+		if(this.m_difuseMap == null) {
+			this.m_difuseMap = this.m_rscene.textureBlock.createRGBATex2D(32,32, new Color4());
+		}
+		this.m_difuseMap.flipY = true;
+		let srcMaterial = this.m_currMaterial;
 		let material = this.m_currMaterial;
-		material = this.createPBREntityMaterial(url);
+		material = this.createPBREntityMaterial(this.m_normalTex, this.m_difuseMap);
 		this.m_currMaterial = material;
+		if(srcMaterial) {
+			material.copyFrom(srcMaterial);
+		}
 		console.log("material.getTextureList(): ", material.getTextureList());
 
 		let ls = this.m_baseEntities;
@@ -451,20 +531,13 @@ export class NormalMapBuilder {
 		}
 		for (let i = 0; i < ls.length; ++i) {
 			ls[i].setVisible(false);
-			this.m_rscene.addEntity(ls[i]);
+			this.m_rscene.addEntity(ls[i], 2);
 		}
 
 		if (ls.length > 0) {
 			(this.m_currMaterial.vertUniform as VertUniformComp).setUVScale(this.m_uv.x, this.m_uv.y);
 			ls[this.m_entityIndex].setVisible(true);
 		}
-
-		// // let entity = new Sphere3DEntity();
-		// // // entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-		// // entity.setMaterial( material );
-		// // entity.initialize(200, 30, 30);
-		// // this.m_rscene.addEntity(entity, 1);
-		// // this.m_mapPlane = entity;
 	}
 	private showNextModel(): void {
 		let ls = this.m_baseEntities;
@@ -475,10 +548,7 @@ export class NormalMapBuilder {
 			ls[this.m_entityIndex].setVisible(true);
 		}
 	}
-	private createPBREntityMaterial(url: string): PBRMaterial {
-		// let normalMap = this.m_materialCtx.getTextureByUrl(url);
-		let normalMap = this.getTexByUrl(url);
-		normalMap.flipY = true;
+	private createPBREntityMaterial(normalTex: IRenderTexture, difuseMap: IRenderTexture): PBRMaterial {
 
 		let material: PBRMaterial;
 
@@ -489,8 +559,10 @@ export class NormalMapBuilder {
 
 		material.decorator.aoMapEnabled = false;
 		material.decorator.scatterEnabled = false;
-		material.decorator.diffuseMapEnabled = false;
-		material.decorator.normalMap = normalMap;
+		material.decorator.diffuseMapEnabled = true;
+		material.decorator.diffuseMap = difuseMap;
+		material.decorator.normalMap = normalTex;
+		material.decorator.scatterEnabled = true;
 
 		material.initializeByCodeBuf(true);
 		vertUniform.setDisplacementParams(50.0, 0.0);
@@ -551,10 +623,20 @@ export class NormalMapBuilder {
 		ui.proBarBGBarAlpha = 0.9;
 		ui.proBarBGPlaneAlpha = 0.7;
 		ui.initialize(this.m_rscene, true);
-		this.createClickArea();
+
+		// let color = new Color4();
+		// color.randomRGB(0.2);
+		// let srcPlane = new ScreenFixedAlignPlaneEntity();
+		// srcPlane.initialize(-1.0, -1.0, this.m_mapAreaFactor * 2.0, 2.0);
+		// (srcPlane.getMaterial() as IColorMaterial).setColor(color);
+		// srcPlane.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
+		// ui.ruisc.addEntity(srcPlane, 0);
+
 		this.initMapBuildCtrlUIItem();
+		this.createClickArea();
 		ui.updateLayout(true);
 		this.m_graph.addScene(ui.ruisc);
+
 		// /*
 		ui = this.m_ctrlui2;
 		ui.fontBgColor.setRGBA4f(0.7, 0.8, 0.6, 0.6);
@@ -622,6 +704,9 @@ export class NormalMapBuilder {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setInvertEnabled(info.flag);
 				}
+				if (this.m_fboPlMaterial) {
+					this.m_fboPlMaterial.setInvertEnabled(info.flag);
+				}
 			},
 			true,
 			false
@@ -635,6 +720,9 @@ export class NormalMapBuilder {
 			(info: CtrlInfo): void => {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setInvertXEnabled(info.flag);
+				}
+				if (this.m_fboPlMaterial) {
+					this.m_fboPlMaterial.setInvertEnabled(info.flag);
 				}
 			},
 			true,
@@ -650,6 +738,9 @@ export class NormalMapBuilder {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setInvertYEnabled(info.flag);
 				}
+				if (this.m_fboPlMaterial) {
+					this.m_fboPlMaterial.setInvertEnabled(info.flag);
+				}
 			},
 			true,
 			false
@@ -663,6 +754,9 @@ export class NormalMapBuilder {
 			(info: CtrlInfo): void => {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setStrength(info.values[0]);
+				}
+				if (this.m_fboPlMaterial) {
+					this.m_fboPlMaterial.setStrength(info.values[0]);
 				}
 			},
 			false,
@@ -680,12 +774,19 @@ export class NormalMapBuilder {
 				if (this.m_mapMaterial) {
 					this.m_mapMaterial.setSharpness(info.values[0]);
 				}
+				if (this.m_fboPlMaterial) {
+					this.m_fboPlMaterial.setStrength(info.values[0]);
+				}
 			},
 			false,
 			true,
 			null,
 			false
 		);
+		ui.addStatusItem("加载", "load_normal_tex", "Normal纹理原图", "Normal纹理原图", true, (info: CtrlInfo): void => {
+			this.m_loadNormalMap = true;
+			this.openDir();
+		}, true, false);
 	}
 	private initMapApplyCtrlUIItem(): void {
 		let ui = this.m_ctrlui2;
@@ -708,11 +809,12 @@ export class NormalMapBuilder {
 			"uv_scale",
 			1.0,
 			0.01,
-			30.0,
+			50.0,
 			(info: CtrlInfo): void => {
 				if (this.m_currMaterial) {
 					this.m_uv.setXYZ(info.values[0], info.values[0], 0);
 					(this.m_currMaterial.vertUniform as VertUniformComp).setUVScale(this.m_uv.x, this.m_uv.y);
+					this.syncUVParam(this.m_uv.x, this.m_uv.y);
 				}
 			},
 			false,
@@ -726,7 +828,7 @@ export class NormalMapBuilder {
 			"uv_v_scale",
 			1.0,
 			0.01,
-			30.0,
+			50.0,
 			(info: CtrlInfo): void => {
 				if (this.m_currMaterial) {
 					this.m_uv.y = info.values[0];
@@ -743,7 +845,7 @@ export class NormalMapBuilder {
 			"uv_u_scale",
 			1.0,
 			0.01,
-			30.0,
+			50.0,
 			(info: CtrlInfo): void => {
 				if (this.m_currMaterial) {
 					this.m_uv.x = info.values[0];
@@ -790,6 +892,18 @@ export class NormalMapBuilder {
 			false
 		);
 
+		ui.addValueItem("散射强度", "scatterIntensity", 64, 0.0, 128.0, (info: CtrlInfo): void => {
+			if(this.m_currMaterial) {
+				console.log("scatterIntensity, info.values[0]: ", info.values[0]);
+				this.m_currMaterial.setScatterIntensity(info.values[0]);
+			}
+		}, false, true, null, false);
+
+		ui.addValueItem("色调映射强度", "tone", 5.0, 0.0, 10.0, (info: CtrlInfo): void => {
+			if(this.m_currMaterial) {
+				this.m_currMaterial.setToneMapingExposure(info.values[0]);
+			}
+		}, false, true, null, false);
 		ui.addStatusItem(
 			"切换",
 			"change_model",
@@ -802,15 +916,27 @@ export class NormalMapBuilder {
 			true,
 			false
 		);
+
+		ui.addStatusItem("加载", "load_albedo_tex", "Albedo纹理", "Albedo纹理", true, (info: CtrlInfo): void => {
+			this.m_loadNormalMap = false;
+			this.openDir();
+		}, true, false);
+	}
+	private syncUVParam(u: number, v: number): void {
+		let ui = this.m_ctrlui2;
+		ui.setUIItemValue("uv_u_scale", u, false);
+		ui.setUIItemValue("uv_v_scale", v, false);
 	}
 	private resetMapApplyCtrlValue(): void {
 		console.log("resetMapApplyCtrlValue() ...");
-		let ui = this.m_ctrlui;
+		let ui = this.m_ctrlui2;
 		ui.setUIItemValue("uv_u_scale", 1.0);
 		ui.setUIItemValue("uv_v_scale", 1.0);
 		ui.setUIItemValue("uv_scale", 1.0);
 		ui.setUIItemValue("metallic", 0.1);
 		ui.setUIItemValue("roughness", 0.3);
+		ui.setUIItemValue("scatterIntensity", 	64);
+		ui.setUIItemValue("tone", 				5);
 	}
 
 	private m_currTexture: IRenderTexture = null;
@@ -821,8 +947,26 @@ export class NormalMapBuilder {
 			this.m_imgBuilder.run();
 		}
 	}
-	// run(): void {
-	// 	this.m_graph.run();
-	// }
 }
 export default NormalMapBuilder;
+
+class AwardSceneParam implements IAwardSceneParam {
+	texLoader: TextureResLoader = null;
+	constructor() {}
+	getAssetTexByUrl(pns: string): IRenderTexture {
+		return this.getTexByUrl("static/assets/" + pns);
+	}
+	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+		url = URLFilter.filterUrl(url);
+		return this.texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
+	}
+	createXOYPlane(x: number, y: number, w: number, h: number, tex: IRenderTexture): IRenderEntity {
+		let pl = new Plane3DEntity();
+		pl.initializeXOY(x, y, w, h, [tex]);
+		return pl;
+	}
+	createContainer(): IDisplayEntityContainer {
+		return new DisplayEntityContainer(true, false, false);
+	}
+	pid = 1;
+}

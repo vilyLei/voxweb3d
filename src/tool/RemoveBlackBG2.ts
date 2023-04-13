@@ -25,6 +25,9 @@ import RendererState from "../vox/render/RendererState";
 import { UISystem } from "./bgtoy/ui/UISystem";
 import { ImageFileSystem } from "./bgtoy/fio/ImageFileSystem";
 import URLFilter from "./base/URLFilter";
+import AABB2D from "../vox/geom/AABB2D";
+import EventBase from "../vox/event/EventBase";
+import ColorRectImgButton from "../orthoui/button/ColorRectImgButton";
 
 export class RemoveBlackBG2 {
 	private m_init = true;
@@ -59,18 +62,20 @@ export class RemoveBlackBG2 {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-			let rparam = new RendererParam(this.m_uiSys.createDiv(0,0, 1024, 512));
+			// let rparam = new RendererParam(this.m_uiSys.createDiv(0,0, 1024, 512));
+			let rparam = new RendererParam();
 			rparam.setCamProject(45, 0.1, 3000.0);
 			rparam.setCamPosition(0.0, 0.0, 1500.0);
 			rparam.setAttriAlpha(true);
 			rparam.cameraPerspectiveEnabled = false;
-			rparam.autoSyncRenderBufferAndWindowSize = false;
+			// rparam.autoSyncRenderBufferAndWindowSize = false;
 			rparam.syncBgColor = true;
 
 			let rscene = this.m_graph.createScene(rparam);
 			// rscene.initialize(rparam).setAutoRunning(true);
-			rscene.setClearRGBAColor4f(0.2, 0.32, 0.2, 0.0);
+			rscene.setClearRGBAColor4f(0.1, 0.22, 0.2, 0.0);
 			rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+			rscene.addEventListener(EventBase.RESIZE, this, this.resize);
 			this.m_rscene = rscene;
 			this.m_texLoader = new TextureResLoader(rscene);
 			this.m_aspParam.texLoader = this.m_texLoader;
@@ -80,10 +85,38 @@ export class RemoveBlackBG2 {
 			this.initScene(rscene);
 			this.m_uiSys.initialize( this.m_graph );
 			this.m_fileSys.initialize(rscene, this.m_uiSys);
+			this.m_uiSys.setOpeningListener((): void => {
+				this.openDir();
+			});
 
 			this.m_vasScene.initialize(this.m_uiSys.ctrlui.ruisc, this.m_aspParam);
 			this.m_dropController.initialize(document.body as any, this);
+
+			this.resize( null );
 		}
+	}
+
+	private m_areaRect = new AABB2D(0, 0, 1024, 512);
+	private resize(evt: any): void {
+		let st = this.m_rscene.getStage3D();
+		let r = this.m_areaRect;
+		r.setTo(0,0, 1024, 512);
+		// r.scaleBy(this.m_rscene.getDevicePixelRatio());
+		r.moveCenterTo(st.stageHalfWidth, st.stageHalfHeight);
+
+		this.m_vasScene.updateLayout(r);
+		this.m_uiSys.updateLayout(r);
+	}
+	private openDir(): void {
+		const input = document.createElement("input");
+		input.type = "file";
+		// input.accept = "image/png, image/jpeg";
+		input.addEventListener("change", () => {
+			this.m_uiSys.hideBtns();
+			let files = Array.from(input.files);
+			this.m_dropController.initFilesLoad(files);
+		});
+		input.click();
 	}
 	private m_dropEnabled = true;
 	initFileLoad(files: IFileUrlObj[]): void {
@@ -109,7 +142,7 @@ export class RemoveBlackBG2 {
 		this.createAEntityByTexUrl(url);
 	}
 	private mouseDown(evt: any): void {
-		console.log("mouseDown() ...");
+		// console.log("mouseDown() ...");
 	}
 	private m_currMaterial: RemoveBlackBGMaterial = null;
 	private m_currEntity: Plane3DEntity = null;
@@ -143,11 +176,12 @@ export class RemoveBlackBG2 {
 	}
 	run(): void {
 
-		this.m_fileSys.savingBegin();
+		// this.m_fileSys.savingBegin();
 
 		this.m_graph.run();
 
-		this.m_fileSys.savingEnd();
+		// this.m_fileSys.savingEnd();
+		this.m_fileSys.run();
 
 	}
 }
@@ -167,7 +201,18 @@ class AwardSceneParam implements IAwardSceneParam {
 	createXOYPlane(x: number, y: number, w: number, h: number, tex: IRenderTexture): IRenderEntity {
 		let pl = new Plane3DEntity();
 		pl.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+		// pl.setRenderState(RendererState.BACK_ALPHA_ADD_BLENDSORT_STATE);
 		pl.initializeXOY(x,y,w,h, [tex]);
+		return pl;
+	}
+	createBtnEntity(tex: IRenderTexture, downListener: (evt: any) => void): IRenderEntity {
+		let pl = new ColorRectImgButton();
+		pl.initialize(0, 0, tex.getWidth(), tex.getHeight());
+		pl.setSize(tex.getWidth(), tex.getHeight());
+		pl.addEventListener(MouseEvent.MOUSE_DOWN, this, downListener);
+		// pl.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+		// pl.setRenderState(RendererState.BACK_ALPHA_ADD_BLENDSORT_STATE);
+		// pl.initializeXOY(x,y,w,h, [tex]);
 		return pl;
 	}
 	pid: number = 1;

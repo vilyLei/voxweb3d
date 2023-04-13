@@ -48,6 +48,16 @@ export class NormalMapVerifier2 extends PBRDebugScene {
 		this.m_dropController.initialize(this.rscene.getRenderProxy().getCanvas(), this);
 		this.initTextDiv();
 	}
+	private openDir(): void {
+		const input = document.createElement("input");
+		input.type = "file";
+		// input.accept = "image/png, image/jpeg";
+		input.addEventListener("change", () => {
+			let files = Array.from(input.files);
+			this.m_dropController.initFilesLoad(files);
+		});
+		input.click();
+	}
 	private m_infoDiv: HTMLDivElement = null;
 	private initTextDiv(): void {
 		let div = document.createElement("div");
@@ -216,20 +226,21 @@ export class NormalMapVerifier2 extends PBRDebugScene {
 			this.resetCtrlValue();
 		}, true, false, selectBarStyle);
 
-		ui.addValueItem("UV缩放", "uv_scale", 1.0, 0.01, 30.0, (info: CtrlInfo): void => {
+		ui.addValueItem("UV缩放", "uv_scale", 1.0, 0.01, 50.0, (info: CtrlInfo): void => {
 			if(this.m_currMaterial) {
 				this.m_uv.setXYZ(info.values[0], info.values[0], 0);
 				(this.m_currMaterial.vertUniform as VertUniformComp).setUVScale(this.m_uv.x, this.m_uv.y);
+				this.syncUVParam(this.m_uv.x, this.m_uv.y);
 			}
 		}, false, true, null, false);
 
-		ui.addValueItem("缩放V", "uv_v_scale", 1.0, 0.01, 30.0, (info: CtrlInfo): void => {
+		ui.addValueItem("缩放V", "uv_v_scale", 1.0, 0.01, 50.0, (info: CtrlInfo): void => {
 			if(this.m_currMaterial) {
 				this.m_uv.y = info.values[0];
 				(this.m_currMaterial.vertUniform as VertUniformComp).setUVScale(this.m_uv.x, this.m_uv.y);
 			}
 		}, false, true, null, false);
-		ui.addValueItem("缩放U", "uv_u_scale", 1.0, 0.01, 30.0, (info: CtrlInfo): void => {
+		ui.addValueItem("缩放U", "uv_u_scale", 1.0, 0.01, 50.0, (info: CtrlInfo): void => {
 			if(this.m_currMaterial) {
 				this.m_uv.x = info.values[0];
 				(this.m_currMaterial.vertUniform as VertUniformComp).setUVScale(this.m_uv.x, this.m_uv.y);
@@ -265,13 +276,21 @@ export class NormalMapVerifier2 extends PBRDebugScene {
 		ui.addStatusItem("切换", "change_model", "模型", "模型", true, (info: CtrlInfo): void => {
 			this.showNextModel();
 		}, true, false, selectBarStyle);
-		ui.addStatusItem("加载", "load_tex", "Normal纹理", "Albedo纹理", true, (info: CtrlInfo): void => {
-			this.m_loadNormalMap = info.flag;
-			if(info.flag) {
-				this.m_infoDiv.innerHTML = "<font color='#eeee00'>将Normal图拖入当前区域</font>";
-			}else {
-				this.m_infoDiv.innerHTML = "<font color='#eeee00'>将Albedo图拖入当前区域</font>";
-			}
+		ui.addStatusItem("加载", "load_normal_tex", "Normal纹理", "Normal纹理", true, (info: CtrlInfo): void => {
+			this.m_loadNormalMap = true;
+			this.m_infoDiv.innerHTML = "<font color='#eeee00'>将Normal图拖入当前区域</font>";
+			// if(info.flag) {
+			// 	this.m_infoDiv.innerHTML = "<font color='#eeee00'>将Normal图拖入当前区域</font>";
+			// }else {
+			// 	this.m_infoDiv.innerHTML = "<font color='#eeee00'>将Albedo图拖入当前区域</font>";
+			// }
+			this.openDir();
+		}, true, false, selectBarStyle);
+
+		ui.addStatusItem("加载", "load_albedo_tex", "Albedo纹理", "Albedo纹理", true, (info: CtrlInfo): void => {
+			this.m_loadNormalMap = false;
+			this.m_infoDiv.innerHTML = "<font color='#eeee00'>将Albedo图拖入当前区域</font>";
+			this.openDir();
 		}, true, false, selectBarStyle);
 
 		ui.updateLayout(true);
@@ -280,21 +299,21 @@ export class NormalMapVerifier2 extends PBRDebugScene {
 
 		// this.m_vasScene.initialize(ui.ruisc, this.m_aspParam);
 	}
-	private setUIItemValue(ns: string, value: number, syncEnabled: boolean = true): void {
-		let item = this.m_ctrlui.getItemByUUID(ns);
-		item.param.value = value;
-		item.syncEnabled = syncEnabled;
-		item.updateParamToUI();
+	private syncUVParam(u: number, v: number): void {
+		let ui = this.m_ctrlui;
+		ui.setUIItemValue("uv_u_scale", u, false);
+		ui.setUIItemValue("uv_v_scale", v, false);
 	}
 	private resetCtrlValue(): void {
 		console.log("resetCtrlValue() ...");
-		this.setUIItemValue("uv_u_scale", 			1.0);
-		this.setUIItemValue("uv_v_scale", 			1.0);
-		this.setUIItemValue("uv_scale", 			1.0);
-		this.setUIItemValue("metallic", 			0.1);
-		this.setUIItemValue("roughness", 			0.3);
-		this.setUIItemValue("scatterIntensity", 	64);
-		this.setUIItemValue("tone", 				5);
+		let ui = this.m_ctrlui;
+		ui.setUIItemValue("uv_u_scale", 		1.0);
+		ui.setUIItemValue("uv_v_scale", 		1.0);
+		ui.setUIItemValue("uv_scale", 			1.0);
+		ui.setUIItemValue("metallic", 			0.1);
+		ui.setUIItemValue("roughness", 			0.3);
+		ui.setUIItemValue("scatterIntensity", 	64);
+		ui.setUIItemValue("tone", 				5);
 	}
 	run(): void {
 		if(this.graph) {

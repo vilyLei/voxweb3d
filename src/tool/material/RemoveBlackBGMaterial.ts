@@ -25,6 +25,7 @@ class RemoveBlackBGShaderBuffer extends ShaderCodeBuffer {
             this.m_uniqueName += "_tex";
             if(this.mapLodEnabled) this.m_uniqueName += "Lod";
         }
+		if(this.fixScreen) this.m_uniqueName += "FixScreen";
     }
 
     buildShader(): void {
@@ -50,6 +51,7 @@ void main() {
     vec4 c0 = vec4(color4.xyz, max(length(color4.xyz) * param.x - param.z, 0.0)) * param.y;
     FragColor0 = c0 * param.wwww  + vec4(1.0 - param.w) * color4;
 	FragColor0.xyz = mix(FragColor0.xyz, vec3(1.0) - FragColor0.xyz, u_params[1].xxx);
+	// FragColor0.xyzw *= vec4(1.0, 0.0, 0.0, 0.1);
 #else
     FragColor0 = u_param[0];
 #endif

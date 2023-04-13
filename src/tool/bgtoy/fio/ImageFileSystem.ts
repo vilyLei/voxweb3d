@@ -5,6 +5,13 @@ import RendererState from "../../../vox/render/RendererState";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { UISystem } from "../ui/UISystem";
+import RenderingImageBuilder from "../../base/RenderingImageBuilder";
+import RendererParam from "../../../vox/scene/RendererParam";
+import Color4 from "../../../vox/material/Color4";
+import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
+import RemoveBlackBGMaterial from "../../material/RemoveBlackBGMaterial";
+import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
+import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
 
 class ImageFileSystem {
 	private m_rscene: IRendererScene = null;
@@ -17,6 +24,7 @@ class ImageFileSystem {
 	private m_loadingTex: IRenderTexture = null;
 
 	private m_uiSys: UISystem = null;
+	private m_imgBuilder: RenderingImageBuilder = null;
 	constructor() {}
 
 	initialize(sc: IRendererScene, uiSys: UISystem): void {
@@ -24,16 +32,74 @@ class ImageFileSystem {
 			this.m_rscene = sc;
 			this.m_uiSys = uiSys;
 			this.m_uiSys.setSavingListener((): void => {
-				this.m_savingImg = true;
+				// this.m_savingImg = true;
+				this.saveToImg();
 			});
 			this.init();
 		}
 	}
+
+	private initImgBuilder(): void {
+		if (this.m_imgBuilder == null) {
+			this.m_imgBuilder = new RenderingImageBuilder();
+			let rparam = new RendererParam();
+			rparam.setCamProject(45, 0.1, 6000.0);
+			rparam.setCamPosition(1100.0, 1100.0, 1100.0);
+			rparam.setAttriAlpha(true);
+			rparam.cameraPerspectiveEnabled = false;
+			rparam.offscreenRenderEnabled = true;
+			rparam.divW = 200;
+			rparam.divH = 200;
+			rparam.autoAttachingHtmlDoc = !rparam.offscreenRenderEnabled;
+			rparam.autoSyncRenderBufferAndWindowSize = false;
+			rparam.sysEvtReceived = false;
+			rparam.syncBgColor = false;
+			this.m_imgBuilder.initialize(rparam, new Color4(0, 0, 0, 0.0));
+		}
+	}
+	run(): void {
+		if (this.m_imgBuilder) {
+			this.m_imgBuilder.run();
+		}
+		this.layoutEntity();
+	}
+	private saveToImg(): void {
+		this.initImgBuilder();
+		if (this.m_imgBuilder.isEnabled()) {
+			if (this.m_currEntity) {
+				let color = new Color4();
+				this.m_rscene.getRenderProxy().getClearRGBAColor4f(color);
+				this.m_imgBuilder.rscene.setClearColor(color);
+				let srcMaterial = this.m_currEntity.getMaterial() as RemoveBlackBGMaterial;
+				let currTex = this.m_currTexture;
+				let tex = this.m_rscene.textureBlock.createImageTex2D();
+				tex.flipY = true;
+				let img = (currTex as ImageTextureProxy).getTexData().data;
+
+				tex.setDataFromImage(img);
+				let material = new RemoveBlackBGMaterial();
+				material.fixScreen = true;
+				material.setTextureList([tex]);
+				material.paramCopyFrom(srcMaterial);
+				let pl0 = new Plane3DEntity();
+				pl0.setMaterial(material);
+				pl0.initializeXOY(-1.0, -1.0, 2, 2, [tex]);
+				// let pl0 = new ScreenFixedAlignPlaneEntity();
+				// pl0.initialize(-1.0, -1.0, 2, 2, [tex]);
+				this.m_imgBuilder.setName(this.m_name);
+				this.m_imgBuilder.addEntity(pl0);
+				this.m_imgBuilder.setSize(currTex.getWidth(), currTex.getHeight());
+			}
+		}
+	}
+
 	private init(): void {
 		let sc = this.m_rscene;
 	}
-	// toSave(): void {
-	// }
+
+	updateLayout(rect: AABB2D): void {
+		this.layoutEntity();
+	}
 	savingBegin(): void {
 		if (this.m_loadingTex && this.m_loadingTex.isDataEnough()) {
 			this.layoutEntity();
@@ -68,9 +134,8 @@ class ImageFileSystem {
 		div.style.height = ph + "px";
 		(this.m_rscene as any).updateRenderBufferSize(false);
 		if (this.m_currEntity) {
-			this.m_currEntity.setXYZ(0, 0, 0);
-			let k = this.m_rscene.getRenderProxy().getDevicePixelRatio();
-			this.m_currEntity.setScaleXYZ(pw * k, ph * k, 1.0);
+			let factor = this.m_rscene.getRenderProxy().getDevicePixelRatio();
+			this.m_currEntity.setScaleXYZ(pw * factor, ph * factor, 1.0);
 			this.m_currEntity.update();
 		}
 	}
@@ -107,7 +172,6 @@ class ImageFileSystem {
 		a.click();
 		a.remove();
 	}
-
 	private layoutEntity(): void {
 		let pw = this.m_currTexture.getWidth();
 		let ph = this.m_currTexture.getHeight();
@@ -120,7 +184,7 @@ class ImageFileSystem {
 			}
 			pw *= k;
 			ph *= k;
-			let dpr = this.m_rscene.getRenderProxy().getDevicePixelRatio();
+			let dpr = 1.0;
 			this.m_currEntity.setXYZ(-256 * dpr, 0.1, 0.0);
 			this.m_currEntity.setScaleXYZ(pw, ph, 1.0);
 			this.m_currEntity.update();
