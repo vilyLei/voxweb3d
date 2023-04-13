@@ -1,3 +1,10 @@
+interface DemoInfoItem {
+    name: string;
+    ver: string;
+}
+interface DemoInfoData {
+    demos: DemoInfoItem[];
+}
 export class DemoLoader {
 
     constructor() { }
@@ -8,15 +15,21 @@ export class DemoLoader {
         url = this.parseUrl( url );
         console.log("url: ",url);
         this.initUI();
-        this.load( url );
+        // this.loadModule( url );
+        let hurl = location.href + "";
+        let host = "";
+        if(hurl.indexOf("artvily.") > 0) {
+            host = "http://www.artvily.com:9090/";
+        }
+        this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), url);
+        this.showInfo("loading 1% ");
     }
-    private load(purl: string): void {
+    private loadModule(purl: string): void {
         let codeLoader = new XMLHttpRequest();
         codeLoader.open("GET", purl, true);
         codeLoader.onerror = function (err) {
-            console.error("load error: ", err);
+            console.error("loadModule error: ", err);
         }
-
         codeLoader.onprogress = (e) => {
             this.showLoadInfo(e, codeLoader);
         };
@@ -31,9 +44,45 @@ export class DemoLoader {
         }
         codeLoader.send(null);
     }
+    
+    private loadInfo(purl: string, demoUrl: string): void {
+        let codeLoader = new XMLHttpRequest();
+        codeLoader.open("GET", purl, true);
+        codeLoader.onerror = function (err) {
+            console.error("loadInfo error: ", err);
+        }
+        codeLoader.onprogress = (e) => {
+            
+        };
+        codeLoader.onload = () => {
+            let jsonStr = codeLoader.response;
+            
+            let data: DemoInfoData = JSON.parse(jsonStr) as DemoInfoData;
+            let map: Map<string, DemoInfoItem> = new Map();
+            let ls = data.demos;
+            for(let i = 0; i < ls.length; ++i) {
+                map.set(ls[i].name, ls[i]);
+            }
+            if(map.has(this.m_name)) {
+                let item = map.get(this.m_name);
+                this.loadModule( demoUrl + "?dtk="+item.ver+"&uuid="+ Math.random() +"f90.1"+ Date.now() );
+            }else {
+                this.loadModule( demoUrl );
+            }
+            // let scriptEle = document.createElement("script");
+            // scriptEle.onerror = (e) => {
+            //     console.error("module script onerror, e: ", e);
+            // }
+            // scriptEle.innerHTML = codeLoader.response;
+            // document.head.appendChild(scriptEle);
+            // this.loadFinish();
+        }
+        codeLoader.send(null);
+    }
     private showLoadInfo(e: ProgressEvent, req: XMLHttpRequest): void {
         this.showPro(e, req);
     }
+    private m_name = "";
     private parseUrl(url: string): string {
 
         console.log("url: ",url);
@@ -52,11 +101,12 @@ export class DemoLoader {
         if(params.length < 2 || params[0] != "demo") {
             return "";
         }
-        let hurl: string = location.href + "";
+        let hurl = location.href + "";
         let host = "";
         if(hurl.indexOf("artvily.") > 0) {
             host = "http://www.artvily.com:9090/";
         }
+        this.m_name = params[1];
         return host + "static/voxweb3d/demos/"+params[1]+".js";
     }
 
@@ -114,7 +164,7 @@ export class DemoLoader {
     }
 
     showLoadStart(): void {
-        this.showInfo("loading 0% ");
+        this.showInfo("loading 1% ");
     }
     showLoaded(): void {
         this.showInfo("100% ");
