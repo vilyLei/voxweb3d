@@ -10,16 +10,19 @@ import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
+import IFBOInstance from "../vox/scene/IFBOInstance";
+import MouseEvent from "../vox/event/MouseEvent";
 
 
 export class DemoFBOInsRTT {
-    
+
     constructor() { }
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    
+	private m_fboIns: IFBOInstance = null;
+
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+        let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
@@ -27,11 +30,16 @@ export class DemoFBOInsRTT {
     initialize(): void {
         if (this.m_rscene == null) {
             console.log("DemoFBOInsRTT::initialize()......");
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+
+			document.oncontextmenu = function(e) {
+				e.preventDefault();
+			};
+
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-            let rparam: RendererParam = new RendererParam();
+            let rparam = new RendererParam();
             rparam.setCamPosition(500.0, 500.0, 500.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3).setAutoRunning( true );
@@ -40,18 +48,25 @@ export class DemoFBOInsRTT {
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-
 			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
 			new RenderStatusDisplay(this.m_rscene, true);
 
             this.buildRTT();
+			this.m_rscene.addEventListener(MouseEvent.MOUSE_RIGHT_DOWN, this, (): void => {
+				this.m_fboIns.asynFBOSizeWithViewport();
+				if(this.m_fboIns.getFBOWidth() >= 512) {
+					this.m_fboIns.resizeFBO(128, 128);
+				}else {
+					this.m_fboIns.resizeFBO(512, 512);
+				}
+			})
         }
     }
 
     private buildRTT(): void {
 
-        let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-        let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+        let tex0 = this.getImageTexByUrl("static/assets/default.jpg");
+        let tex1 = this.getImageTexByUrl("static/assets/broken_iron.jpg");
 
         // add common 3d display entity ---------------------------------- begin
 
@@ -76,7 +91,7 @@ export class DemoFBOInsRTT {
         fboIns.createFBOAt(0, 512, 512, true, false);
         fboIns.setRenderToRTTTextureAt(0);                          // apply the first rtt texture, and apply the fbo framebuffer color attachment 0
         fboIns.setRProcessIDList([0], false);
-
+		this.m_fboIns = fboIns;
         this.m_rscene.prependRenderNode( fboIns );
 
         let rttBox = new Box3DEntity();
