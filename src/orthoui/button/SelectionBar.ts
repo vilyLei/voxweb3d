@@ -138,11 +138,13 @@ export class SelectionBar {
     private initBody(): void {
 
         let style = this.style;
+		let rst = 0;
 		if(style) {
 			this.m_btnSize = style.fontSize;
+			rst = style.renderState;
 		}
         let size = this.m_btnSize;
-        let container: DisplayEntityContainer = new DisplayEntityContainer();
+        let container = new DisplayEntityContainer();
         this.m_container = container;
 
 
@@ -169,10 +171,13 @@ export class SelectionBar {
 			fc = style.bodyFontColor;
 			fbc = style.bodyFontBgColor;
 		}
-
+		let bodyFixWidth = 0;
+        if(style) {
+			bodyFixWidth = style.bodyFixWidth;
+		}
         if(style == null || style.bodyVisible) {
-			this.m_texObj0 = ctt.createCharsImageToAtlas("", this.m_selectName, size, fc, fbc);
-			this.m_texObj1 = ctt.createCharsImageToAtlas("", this.m_deselectName, size, fc, fbc);
+			this.m_texObj0 = ctt.createCharsImageToAtlas("", this.m_selectName, size, fc, fbc, bodyFixWidth);
+			this.m_texObj1 = ctt.createCharsImageToAtlas("", this.m_deselectName, size, fc, fbc, bodyFixWidth);
             selfT.selectionButton = new ColorRectImgButton();
 			let btn = this.selectionButton;
 			btn.uvs = this.m_texObj0.uvs;
@@ -214,8 +219,10 @@ export class SelectionBar {
         // this.m_rect.height = btn.getHeight();
         // this.m_rect.width = this.m_texObj0.getWidth() - this.m_rect.x;
         this.m_rect.update();
-
         this.m_ruisc.addContainer(container, 1);
+		if(rst > 0) {
+			container.setRenderState(rst);
+		}
     }
 
     /**

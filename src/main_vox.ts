@@ -79,12 +79,9 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoFloatRTT as Demo} from "./demo/DemoFloatRTT";
 
-//  import * as DemoMRT2 from "./demo/DemoMRT2";
-//  import Demo = DemoMRT2.demo.DemoMRT2;
-
 //  import { DemoFBOInstance as Demo } from "./demo/DemoFBOInstance";
 
-//  import { DemoFBOInsRTT as Demo } from "./demo/DemoFBOInsRTT";
+ import { DemoFBOInsRTT as Demo } from "./demo/DemoFBOInsRTT";
 
 //  import { DemoFBOInsFloatRTT as Demo } from "./demo/DemoFBOInsFloatRTT";
 
@@ -169,7 +166,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoParticleFollowGroup2 as Demo} from "./demo/DemoParticleFollowGroup2";
 
- import {DemoParticleFollowGroup3 as Demo} from "./demo/DemoParticleFollowGroup3";
+//  import {DemoParticleFollowGroup3 as Demo} from "./demo/DemoParticleFollowGroup3";
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 

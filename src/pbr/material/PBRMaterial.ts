@@ -149,16 +149,14 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             this.m_parallaxParams.set([1.0, 10.0, 2.0, 0.1]);
         }
     }
-    copyFrom(src: PBRMaterial): void {
-
-        this.setMaterialPipeline(src.m_pipeLine);
-        if(this.decorator == null)this.decorator = new PBRShaderDecorator();
-        this.decorator.copyFrom( src.decorator );
-        // console.log("copyFrom src: ",src);
-        // console.log("copyFrom this: ",this);
-
-        this.vertUniform = src.vertUniform;
-        if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
+    dataCopyFrom(src: PBRMaterial): void {
+		// if(src.m_fragLocalParams) {
+		// 	this.m_fragLocalParams = src.m_fragLocalParams.slice();
+		// }
+		// if(src.m_parallaxParams) {
+		// 	this.m_parallaxParams = src.m_parallaxParams.slice();
+		// }
+		if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
             this.m_pbrParams = src.m_pbrParams.slice();
         }
         else {
@@ -177,6 +175,39 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         else {
             this.m_mirrorParam.set(src.m_mirrorParam);
         }
+		this.vertUniform.dataCopyFrom(src.vertUniform);
+	}
+    copyFrom(src: PBRMaterial): void {
+
+        this.setMaterialPipeline(src.m_pipeLine);
+        if(this.decorator == null)this.decorator = new PBRShaderDecorator();
+        this.decorator.copyFrom( src.decorator );
+        // console.log("copyFrom src: ",src);
+        // console.log("copyFrom this: ",this);
+
+        if(src.vertUniform) {
+			if(this.vertUniform == null)this.vertUniform = src.vertUniform.clone();
+		}
+		this.dataCopyFrom(src);
+        // if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
+        //     this.m_pbrParams = src.m_pbrParams.slice();
+        // }
+        // else {
+        //     this.m_pbrParams.set(src.m_pbrParams);
+        // }
+        // if(this.m_fragLocalParams == null || this.m_fragLocalParams.length != src.m_fragLocalParams.length) {
+        //     this.m_fragLocalParams = src.m_fragLocalParams.slice();
+        // }
+        // else {
+        //     this.m_fragLocalParams.set(src.m_fragLocalParams);
+        // }
+
+        // if(this.m_mirrorParam == null || this.m_mirrorParam.length != src.m_mirrorParam.length) {
+        //     this.m_mirrorParam = src.m_mirrorParam.slice();
+        // }
+        // else {
+        //     this.m_mirrorParam.set(src.m_mirrorParam);
+        // }
     }
     setTextureList(texList: IRenderTexture[]): void {
         //throw Error("Illegal operations !!!");

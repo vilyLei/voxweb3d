@@ -155,16 +155,16 @@ export class CanvasTextureTool {
         return null;
     }
 
-    createCharsImage(chars: string, size: number, frontStyle: string = "", bgStyle: string = ""): HTMLCanvasElement | HTMLImageElement {
+    createCharsImage(chars: string, size: number, frontStyle: string = "", bgStyle: string = "", fixWidth: number = 0): HTMLCanvasElement | HTMLImageElement {
 
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
-        return ImageTextureAtlas.CreateCharsTexture(chars, size, frontStyle, bgStyle);
+        return ImageTextureAtlas.CreateCharsTexture(chars, size, frontStyle, bgStyle, fixWidth);
     }
-    createCharsImageToAtlas(keyStr: string, chars: string, size: number, frontColor: Color4 = null, bgColor: Color4 = null): CanvasTextureObject {
+    createCharsImageToAtlas(keyStr: string, chars: string, size: number, frontColor: Color4 = null, bgColor: Color4 = null, fixWidth: number = 0): CanvasTextureObject {
 
-        let img = this.createCharsImage(chars, size, frontColor ? frontColor.getCSSDecRGBAColor() : "", bgColor ? bgColor.getCSSDecRGBAColor() : "");
+        let img = this.createCharsImage(chars, size, frontColor ? frontColor.getCSSDecRGBAColor() : "", bgColor ? bgColor.getCSSDecRGBAColor() : "", fixWidth);
         if(!img) {
             return null;
         }

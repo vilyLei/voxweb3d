@@ -113,9 +113,12 @@ export class ProgressBar {
     private initBody(): void {
 
         let style = this.style;
+		let rst = 0;
 		if(style) {
 			this.m_btnSize = style.fontSize;
+			rst = style.renderState;
 		}
+
         let size = this.m_btnSize;
         let container = new DisplayEntityContainer();
         this.m_container = container;
@@ -143,7 +146,6 @@ export class ProgressBar {
 			fbc = style.progressBtnFontBgColor;
 			this.m_barInitLength = style.progressBarLength;
 		}
-
         let subBtn = UIBarTool.CreateBtn("-", size, fc, fbc);
         container.addEntity(subBtn);
         let addBtn = UIBarTool.CreateBtn("+", size, fc, fbc);
@@ -157,7 +159,7 @@ export class ProgressBar {
             this.m_rect.x = 0;
         }
         this.m_rect.height = subBtn.getHeight();
-        let pos: Vector3D = new Vector3D();
+        let pos = new Vector3D();
         addBtn.getPosition(pos);
         this.m_rect.width = (pos.x + addBtn.getWidth()) - this.m_rect.x;
         this.m_rect.update();
@@ -174,8 +176,8 @@ export class ProgressBar {
 
         if(style) {
             style.applyToBtn(this.m_nameBtn);
-            style.applyToBtn(subBtn);
-            style.applyToBtn(addBtn);
+            style.applyToBodyBtn(subBtn);
+            style.applyToBodyBtn(addBtn);
 			if(this.m_nameBtn) {
 				this.m_nameBtn.mouseEnabled = style.headEnabled;
 			}
@@ -194,6 +196,10 @@ export class ProgressBar {
 		let minV = bounds.min;
         this.m_rect.setTo(minV.x, minV.y, bounds.getWidth(), bounds.getHeight());
         this.setProgress(this.m_progress);
+
+		if(rst > 0) {
+			container.setRenderState(rst);
+		}
     }
     private initProBg(container: DisplayEntityContainer, px: number, py: number, width: number, height: number): void {
 

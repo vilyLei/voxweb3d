@@ -381,9 +381,22 @@ export default class ParamCtrlUI {
 		}
 		let btns = force ? this.m_btns : this.m_visiBtns;
 		let bounds = this.bounds;
+		let py = 0;
+
+		if(btns.length > 0) {
+			btns[0].getPosition(pos);
+			pos.y -= this.m_btnYSpace;
+			py = pos.y;
+		}
+
 		for (let i = 0; i < btns.length; ++i) {
+			btns[i].getPosition(pos);
+			pos.y = py;
+			py += btns[i].getRect().height;
+			btns[i].setPosition(pos);
 			btns[i].update();
 			bounds.union(btns[i].getRect());
+			py += this.m_btnYSpace;
 		}
 
 		offsetV.x = fixPos.x - bounds.x;
@@ -399,40 +412,7 @@ export default class ParamCtrlUI {
 			btns[i].update();
 			bounds.union(btns[i].getRect());
 		}
-		bounds.update();
-		if (this.rgbPanel) {
-			this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
-		}
-	}
-	
-	updateLayout2(force: boolean = false, fixPos: Vector3D = null, distance: number = 5): void {
-		let dis = 0;
-		let pos = new Vector3D();
-
-		let btns = force ? this.m_btns : this.m_visiBtns;
-		let bounds = this.bounds;
-		bounds.reset();
-		if (fixPos == null) {
-			fixPos = new Vector3D();
-		}
-		for (let i = 0; i < btns.length; ++i) {
-			btns[i].getPosition(pos);
-			pos.x = fixPos.x;
-			btns[i].setPosition(pos);
-			btns[i].update();
-			bounds.union(btns[i].getRect());
-		}
-		dis = distance - (bounds.x - fixPos.x);
-		bounds.reset();
-
-		for (let i = 0; i < btns.length; ++i) {
-			btns[i].getPosition(pos);
-			pos.x += dis;
-			btns[i].setPosition(pos);
-			btns[i].update();
-			bounds.union(btns[i].getRect());
-		}
-		bounds.update();
+		// bounds.update();
 		if (this.rgbPanel) {
 			this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
 		}

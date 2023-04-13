@@ -11,6 +11,7 @@ import CanvasTextureTool, { CanvasTextureObject } from "../assets/CanvasTextureT
 import Color4 from "../../vox/material/Color4";
 import IColor4 from "../../vox/material/IColor4";
 import IVector3D from "../../vox/math/IVector3D";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 export class UIBarTool {
 
@@ -43,6 +44,19 @@ export class UIBarTool {
         currBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         currBtn.setSize(texObj.getWidth(), texObj.getHeight());
 
+		return currBtn;
+	}
+
+    static CreateBtnWithTex(tex: IRenderTexture, currBtn: ColorRectImgButton = null): ColorRectImgButton {
+		if(tex.isDataEnough()) {
+			if(currBtn == null)currBtn = new ColorRectImgButton();
+			currBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
+			currBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
+			currBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
+			currBtn.initialize(0.0, 0.0, tex.getWidth(), tex.getHeight(), [tex]);
+			currBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+			currBtn.setSize(tex.getWidth(), tex.getHeight());
+		}
 		return currBtn;
 	}
     static CreateBtn(btn_name:string, fontSize: number, fontColor: Color4 = null, fontBgColor: Color4 = null): ColorRectImgButton {

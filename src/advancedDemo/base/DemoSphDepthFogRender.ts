@@ -20,8 +20,9 @@ import ScreenFixedAlignPlaneEntity from "../../vox/entity/ScreenFixedAlignPlaneE
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 import { SphDepthFogRenderNode } from "../../advancedDemo/depthFog/renderer/SphDepthFogRenderNode";
-import RendererState from "../../vox/render/RendererState";
 import MouseEvent from "../../vox/event/MouseEvent";
+import URLFilter from "../../tool/base/URLFilter";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 export class DemoSphDepthFogRender {
 	private m_pbr = new PBRMateralBuilder();
@@ -37,20 +38,13 @@ export class DemoSphDepthFogRender {
 		param.metallicMap = this.getAssetTexByUrl(`pbr/${texName}/metallic.jpg`);
 		param.aoMap = this.getAssetTexByUrl(`pbr/${texName}/ao.jpg`);
 	}
-	private getAssetTexByUrl(pns: string): TextureProxy {
+
+	getAssetTexByUrl(pns: string): IRenderTexture {
 		return this.getTexByUrl("static/assets/" + pns);
 	}
-	private getTexByUrl(url: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-		let hostUrl = window.location.href;
-		if (hostUrl.indexOf(".artvily.") > 0) {
-			hostUrl = "http://www.artvily.com:9090/";
-			url = hostUrl + url;
-		}
-		let ptex = this.m_texLoader.getImageTexByUrl(url);
-		ptex.mipmapEnabled = mipmapEnabled;
-		if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-
-		return ptex;
+	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+		url = URLFilter.filterUrl(url);
+		return this.m_texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 	}
 
 	createMaterial2(color: Color4 = null, uvParam: Vector3D = null, ns: string = ""): IRenderMaterial {
@@ -62,9 +56,8 @@ export class DemoSphDepthFogRender {
 	}
 	createMaterial(color: Color4 = null, uvParam: Vector3D = null, ns: string = ""): IRenderMaterial {
 		let param = new PBRParam(Math.random() * 0.5, Math.random() * 1.2, 1.2, new Color4(1.0, 1.0, 1.0));
-		// let param = new PBRParam(0.1, Math.random() * 1.2, 1.2, new Color4(1.0, 1.0, 1.0));
 		param.depthFog = true;
-		if (uvParam != null) {
+		if (uvParam) {
 			param.setUVOffset(uvParam.x, uvParam.y);
 			param.setUVScale(uvParam.z, uvParam.w);
 		}

@@ -7,12 +7,9 @@
 import Vector3D from "../../../vox/math/Vector3D";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../../vox/render/RenderConst";
 import TextureConst from "../../../vox/texture/TextureConst";
-import TextureProxy from "../../../vox/texture/TextureProxy";
-import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
 
 import RendererState from "../../../vox/render/RendererState";
-import FBOInstance from "../../../vox/scene/FBOInstance";
-import RendererScene from "../../../vox/scene/RendererScene";
+import IFBOInstance from "../../../vox/scene/IFBOInstance";
 
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 
@@ -32,22 +29,15 @@ export class SphDepthFogRenderNode implements IRenderNode {
 	constructor() {}
 
 	private m_rc: IRendererScene = null;
-	private m_factorFBO: FBOInstance = null;
-	private m_commonFBO: FBOInstance = null;
+	private m_factorFBO: IFBOInstance = null;
+	private m_commonFBO: IFBOInstance = null;
 
 	cloudTex: IRenderTexture = null;
-	// texLoader: ImageTextureLoader = null;
 	factorEntityIndex = 0;
 	maxRadius = 800.0;
 
 	private m_factorEntity: Sphere3DEntity;
 	private m_fogFactorM: FogSphFactorMaterial;
-	// private getImageTexByUrl(pns: string): TextureProxy {
-	// 	let tex: TextureProxy = this.texLoader.getImageTexByUrl("static/assets/" + pns);
-	// 	tex.setWrap(TextureConst.WRAP_REPEAT);
-	// 	tex.mipmapEnabled = true;
-	// 	return tex;
-	// }
 
 	private m_texs: IRTTTexture[] = [null, null, null, null, null, null];
 	public getTextureAt(index: number, float: boolean = false): IRTTTexture {
@@ -72,10 +62,10 @@ export class SphDepthFogRenderNode implements IRenderNode {
 
 		return tex;
 	}
-	getCommonFBO(): FBOInstance {
+	getCommonFBO(): IFBOInstance {
 		return this.m_commonFBO;
 	}
-	getFactorFBO(): FBOInstance {
+	getFactorFBO(): IFBOInstance {
 		return this.m_factorFBO;
 	}
 	private createCommonFBO(rpids: number[]): void {
@@ -87,7 +77,7 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		fbo.setRenderToTexture(this.getTextureAt(1, true), 1); // depth
 		fbo.setRProcessIDList(rpids, false);
 		fbo.setAutoRunning( true );
-		this.m_commonFBO = fbo as FBOInstance;
+		this.m_commonFBO = fbo;
 	}
 
 	private createParticleFBO(rpids: number[]): void {
@@ -105,7 +95,7 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		fbo.setClearState(true, true, false);
 		fbo.setRenderToTexture(this.getTextureAt(2, false), 0);
 		fbo.setRenderToTexture(this.getTextureAt(3, false), 1);
-		this.m_factorFBO = fbo as FBOInstance;
+		this.m_factorFBO = fbo;
 	}
 	setFactorFBOSizeFactor(factor: number): void {
 		this.m_factorFBO.setFBOSizeFactorWithViewPort( factor );

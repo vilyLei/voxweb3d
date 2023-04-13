@@ -13,17 +13,17 @@ export default class ProgressBarStyle extends SelectionBarStyle {
 
     readonly progressBtnFontColor = new Color4(1.0, 1.0, 1.0, 1.0);
     readonly progressBtnFontBgColor = new Color4(1.0, 1.0, 1.0, 0.5);
-    readonly progressBtnOverColor = new Color4(1.0, 0.5, 1.1, 1.0);
-    readonly progressBtnDownColor = new Color4(1.0, 0.0, 1.0, 1.0);
-    readonly progressBtnOutColor = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly progressBtnOverColor = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly progressBtnDownColor = new Color4(1.0, 1.0, 0.6, 1.0);
+    readonly progressBtnOutColor = new Color4(0.8, 0.8, 0.8, 1.0);
 
-    readonly progressBarOverColor = new Color4(1.0, 0.5, 1.1, 1.0);
-    readonly progressBarDownColor = new Color4(1.0, 0.0, 1.0, 1.0);
-    readonly progressBarOutColor = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly progressBarOverColor = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly progressBarDownColor = new Color4(1.0, 1.0, 0.6, 1.0);
+    readonly progressBarOutColor = new Color4(0.8, 0.8, 0.8, 1.0);
 
-    readonly progressBarBgOverColor = new Color4(1.0, 0.5, 1.1, 0.5);
-    readonly progressBarBgDownColor = new Color4(1.0, 0.0, 1.0, 0.5);
-    readonly progressBarBgOutColor = new Color4(1.0, 1.0, 1.0, 0.5);
+    readonly progressBarBgOverColor = new Color4(0.8, 0.8, 0.8, 0.5);
+    readonly progressBarBgDownColor = new Color4(0.8, 0.8, 0.5, 0.5);
+    readonly progressBarBgOutColor = new Color4(0.7, 0.7, 0.7, 0.5);
 
 	progressBarLength = 200;
     constructor() {
@@ -32,6 +32,28 @@ export default class ProgressBarStyle extends SelectionBarStyle {
 
     destroy(): void {
     }
+    applyToBodyBtn(btn: ColorRectImgButton): void {
+        if(btn) {
+            btn.overColor.copyFrom(this.progressBtnOverColor);
+            btn.downColor.copyFrom(this.progressBtnDownColor);
+            btn.outColor.copyFrom(this.progressBtnOutColor);
+			btn.setColor(btn.outColor);
+        }
+	}
+    // applyToHeadBtn(btn: ColorRectImgButton): void {
+    //     if(btn) {
+    //         btn.overColor.copyFrom(this.progressBtnOverColor);
+    //         btn.downColor.copyFrom(this.progressBtnDownColor);
+    //         btn.outColor.copyFrom(this.progressBtnOutColor);
+    //     }
+	// }
+    // applyToBtn(btn: ColorRectImgButton): void {
+    //     if(btn) {
+    //         btn.overColor.copyFrom(this.progressBtnOverColor);
+    //         btn.downColor.copyFrom(this.progressBtnDownColor);
+    //         btn.outColor.copyFrom(this.progressBtnOutColor);
+    //     }
+	// }
 	copyTo(dst: ProgressBarStyle): void {
 		super.copyTo(dst);
 		dst.progressBtnFontColor.copyFrom( this.progressBtnFontColor );

@@ -15,9 +15,9 @@ export default class SelectionBarStyle {
     readonly bodyFontColor = new Color4(1.0, 1.0, 1.0, 1.0);
     readonly bodyFontBgColor = new Color4(1.0, 1.0, 1.0, 0.3);
 
-    readonly overColor = new Color4(1.0, 0.5, 1.1, 1.0);
-    readonly downColor = new Color4(1.0, 0.0, 1.0, 1.0);
-    readonly outColor = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly overColor = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly downColor = new Color4(1.0, 1.0, 0.6, 1.0);
+    readonly outColor = new Color4(0.8, 0.8, 0.8, 1.0);
     // "left", "right"
     headAlignType = "";
     headAlignPosValue = 0;
@@ -27,6 +27,8 @@ export default class SelectionBarStyle {
 	headEnabled = true;
 	bodyEnabled = true;
 	fontSize = 30;
+	renderState = 0;
+	bodyFixWidth = 0;
     constructor() { }
 	copyTo(dst: SelectionBarStyle): void {
 		dst.headFontColor.copyFrom(this.headFontColor);
@@ -54,6 +56,7 @@ export default class SelectionBarStyle {
             btn.overColor.copyFrom(this.overColor);
             btn.downColor.copyFrom(this.downColor);
             btn.outColor.copyFrom(this.outColor);
+			btn.setColor(btn.outColor);
         }
     }
     destroy(): void {

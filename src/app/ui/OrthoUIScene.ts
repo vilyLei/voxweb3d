@@ -61,6 +61,9 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
         }
     }
 
+	getDevicePixelRatio(): number {
+		return this.m_rscene.getDevicePixelRatio();
+	}
     setViewPort(px: number, py: number, pw: number, ph: number): void {
     }
     setViewPortFromCamera(camera: IRenderCamera): void {
