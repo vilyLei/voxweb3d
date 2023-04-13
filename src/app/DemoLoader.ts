@@ -11,9 +11,9 @@ export class DemoLoader {
 
     initialize(): void {
         console.log("DemoLoader::initialize()......");
-        let url = location.href + "";
-        url = this.parseUrl( url );
-        console.log("url: ",url);
+        let demoUrl = location.href + "";
+        demoUrl = this.parseUrl( demoUrl );
+        console.log("demoUrl: ",demoUrl);
         this.initUI();
         // this.loadModule( url );
         let hurl = location.href + "";
@@ -21,7 +21,7 @@ export class DemoLoader {
         if(hurl.indexOf("artvily.") > 0) {
             host = "http://www.artvily.com:9090/";
         }
-        this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), url);
+        this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
         this.showInfo("loading 1% ");
     }
     private loadModule(purl: string): void {
@@ -63,6 +63,7 @@ export class DemoLoader {
             for(let i = 0; i < ls.length; ++i) {
                 map.set(ls[i].name, ls[i]);
             }
+            console.log("xxx demo name: ",this.m_name);
             if(map.has(this.m_name)) {
                 let item = map.get(this.m_name);
                 this.loadModule( demoUrl + "?dtk="+item.ver+"&uuid="+ Math.random() +"f90.1"+ Date.now() );
