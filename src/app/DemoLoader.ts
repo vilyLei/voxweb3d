@@ -66,7 +66,8 @@ export class DemoLoader {
             console.log("xxx demo name: ",this.m_name);
             if(map.has(this.m_name)) {
                 let item = map.get(this.m_name);
-                this.loadModule( demoUrl + "?dtk="+item.ver+"&uuid="+ Math.random() +"f90.1"+ Date.now() );
+                console.log("item: ", item);
+                this.loadModule( demoUrl + "?dtk="+item.ver );
             }else {
                 this.loadModule( demoUrl );
             }

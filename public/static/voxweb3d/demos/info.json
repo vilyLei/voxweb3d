@@ -10,7 +10,7 @@
         },
         {
             "name": "base3DEntityContainer",
-            "info": "base 3D entity container"
+            "ver": "1.00"
         },
         {
             "name": "3DEntityContainer",
