@@ -135,8 +135,8 @@ class UISystem {
 		ui.addStatusItem(
 			"图像处理方式",
 			"reset_init_img",
-			"原图展示",
-			"透明剔除",
+			"保持原图",
+			"背景剔除",
 			false,
 			(info: CtrlInfo): void => {
 				if (this.m_currMaterial) {
@@ -200,7 +200,7 @@ class UISystem {
 		);
 
 		ui.addValueItem(
-			"透明度剔除比例",
+			"背景剔除比例",
 			"alpha_discard_factor",
 			0.02,
 			0.0,
@@ -245,7 +245,7 @@ class UISystem {
 	changeBGColor(color: Color4 = null): void {
 
 		this.m_bgColor.randomRGB(0.25, 0.05);
-		this.m_bgColor.rgbSizeTo(0.3 + Math.random() * 0.2);
+		this.m_bgColor.rgbSizeTo(0.3 + Math.random() * 0.3);
 		color = color ? color : this.m_bgColor;
 		this.m_rscene.setClearRGBAColor4f(color.r, color.g, color.b, 0.0);
 		this.background.setBGRGBAColor(color);
