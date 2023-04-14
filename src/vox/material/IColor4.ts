@@ -78,6 +78,7 @@ interface IColor4 {
     copyFrom(c: IColor4): IColor4;
     copyFromRGB(c: IColor4): IColor4;
     scaleBy(s: number): IColor4;
+    rgbSizeTo(size: number): IColor4;
     inverseRGB(): IColor4;
     /**
      * @param density the default value is 1.0

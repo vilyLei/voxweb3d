@@ -158,6 +158,14 @@ class Color4 implements IColor4 {
         }
         return this;
     }
+    rgbSizeTo(size: number): Color4 {
+        let d = Math.sqrt(this.r * this.r + this.g * this.g + this.b * this.b);
+        d = size / d;
+        this.r *= d;
+        this.g *= d;
+        this.b *= d;
+        return this;
+    }
 
     /**
      * @returns for example: rgba(255,255,255,1.0)

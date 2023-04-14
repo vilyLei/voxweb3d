@@ -244,7 +244,8 @@ class UISystem {
 	}
 	changeBGColor(color: Color4 = null): void {
 
-		this.m_bgColor.randomRGB(0.25);
+		this.m_bgColor.randomRGB(0.25, 0.05);
+		this.m_bgColor.rgbSizeTo(0.3 + Math.random() * 0.2);
 		color = color ? color : this.m_bgColor;
 		this.m_rscene.setClearRGBAColor4f(color.r, color.g, color.b, 0.0);
 		this.background.setBGRGBAColor(color);
