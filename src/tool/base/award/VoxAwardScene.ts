@@ -36,7 +36,7 @@ class VoxAwardScene {
 			this.m_uisc.addEntity(plane, vparam.pid);
 			this.updateLayout(this.m_areaRect);
 
-			let tex3 = vparam.getTexByUrl("static/assets/box.jpg");
+			let tex3 = vparam.getTexByUrl("static/assets/ui/thankM01_lei.jpg");
 			tex3.dataEnoughListener = (): void => {
 				tex3.flipY = true;
 				let plane = vparam.createXOYPlane(0, 0, tex3.getWidth(), tex3.getHeight(), tex3);
