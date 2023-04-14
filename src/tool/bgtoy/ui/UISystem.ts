@@ -121,8 +121,8 @@ class UISystem {
 		ui.addStatusItem(
 			"切换",
 			"change_bg_color",
-			"切换随机背景色",
-			"切换随机背景色",
+			"切换随机背景",
+			"切换随机背景",
 			false,
 			(info: CtrlInfo): void => {
 				this.changeBGColor();
@@ -133,10 +133,10 @@ class UISystem {
 		);
 		selectBarStyle.headVisible = true;
 		ui.addStatusItem(
-			"原图显示",
+			"图像处理方式",
 			"reset_init_img",
-			"Yes",
-			"No",
+			"原图展示",
+			"透明剔除",
 			false,
 			(info: CtrlInfo): void => {
 				if (this.m_currMaterial) {
@@ -148,10 +148,10 @@ class UISystem {
 			selectBarStyle
 		);
 		ui.addStatusItem(
-			"反相剔除",
+			"剔除方式",
 			"invert_discard",
-			"Yes",
-			"No",
+			"白色背景剔除",
+			"黑色背景剔除",
 			false,
 			(info: CtrlInfo): void => {
 				if (this.m_currMaterial) {
