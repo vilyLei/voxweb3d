@@ -13,6 +13,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import MathConst from "../../vox/math/MathConst";
 import IPBRMaterial from "./IPBRMaterial";
 import PBRShaderDecorator from "./PBRShaderDecorator";
+import PBRDecoratorParam from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
@@ -97,6 +98,9 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         super();
     }
 
+	createDecoratorParam(): PBRDecoratorParam {
+		return new PBRDecoratorParam();
+	}
     protected buildBuf(): void {
 
         console.log("PBRMaterial::buildBuf()...");
