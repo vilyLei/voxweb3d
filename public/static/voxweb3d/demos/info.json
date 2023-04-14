@@ -159,6 +159,10 @@
         {
             "name": "normalMapVerifier",
             "ver": "1.00"
+        },
+        {
+            "name": "pngtoy",
+            "ver": "1.00"
         }
     ]
 }

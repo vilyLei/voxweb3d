@@ -65,6 +65,7 @@ class UIBuilder {
 		img1.src = url;
 
 		url = "static/assets/ui/addInto.png";
+		url = URLFilter.filterUrl(url);
 		let img2 = new Image();
 		img2.onload = (evt: any): void => {
 			let tex = this.m_rscene.textureBlock.createImageTex2D();
