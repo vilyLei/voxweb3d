@@ -59,7 +59,7 @@ export class UIBarTool {
 		}
 		return currBtn;
 	}
-    static CreateBtn(btn_name:string, fontSize: number, fontColor: Color4 = null, fontBgColor: Color4 = null): ColorRectImgButton {
+    static CreateBtn(btn_name:string, fontSize: number, fontColor: Color4 = null, fontBgColor: Color4 = null, fixWidth: number = 0): ColorRectImgButton {
         //string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"
         if(fontColor == null) {
             fontColor = UIBarTool.s_fontColor;
@@ -71,19 +71,8 @@ export class UIBarTool {
         let texObj = CanvasTextureTool.GetInstance().getTextureObject(keyStr);
         const ctt = CanvasTextureTool.GetInstance();
         if(texObj == null) {
-            // let image = CanvasTextureTool.GetInstance().createCharsImage(btn_name, fontSize, fontColor.getCSSDecRGBAColor(), fontBgColor.getCSSDecRGBAColor());
-            // texObj = CanvasTextureTool.GetInstance().addImageToAtlas(keyStr, image);
-            texObj = ctt.createCharsImageToAtlas("", btn_name, fontSize, fontColor, fontBgColor);
+            texObj = ctt.createCharsImageToAtlas("", btn_name, fontSize, fontColor, fontBgColor, fixWidth);
         }
-        // let currBtn: ColorRectImgButton = new ColorRectImgButton();
-        // currBtn.uvs = texObj.uvs;
-        // currBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
-        // currBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
-        // currBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-        // currBtn.initialize(0.0, 0.0, texObj.getWidth(), texObj.getHeight(), [texObj.texture]);
-        // currBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-        // currBtn.setSize(texObj.getWidth(), texObj.getHeight());
-
         return UIBarTool.CreateBtnWithKeyStr(keyStr);
     }
     static InitializeBtn(currBtn: ColorRectImgButton, btn_name:string, fontSize: number, fontColor: Color4 = null, fontBgColor: Color4 = null): ColorRectImgButton {

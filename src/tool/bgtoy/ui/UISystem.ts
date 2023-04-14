@@ -16,20 +16,25 @@ import ProgressBarStyle from "../../../orthoui/button/ProgressBarStyle";
 import { UIBuilder } from "./UIBuilder";
 import MouseEvent from "../../../vox/event/MouseEvent";
 import IAABB2D from "../../../vox/geom/IAABB2D";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 class UISystem {
 	private m_rscene: IRendererScene = null;
 	private m_graph: IRendererSceneGraph = null;
-	private m_uiBuilder = new UIBuilder();
+	private m_bgTex: IRenderTexture;
+
+	uiBuilder = new UIBuilder();
 	background = new Background();
 	ctrlui = new ParamCtrlUI(false);
 	position = new Vector3D(552, 80);
+	processTotal = 3;
 	constructor() {}
 
-	initialize(graph: IRendererSceneGraph): void {
+	initialize(graph: IRendererSceneGraph, bgTex: IRenderTexture = null): void {
 		if (this.m_graph == null && graph != null) {
 			this.m_graph = graph;
 			this.m_rscene = this.m_graph.getNodeAt(0).getRScene();
+			this.m_bgTex = bgTex;
 			this.init();
 		}
 	}
@@ -37,13 +42,13 @@ class UISystem {
 		let graph = this.m_graph;
 
 		let bg = this.background;
-		bg.initialize(this.m_rscene);
+		bg.initialize(this.m_rscene, this.m_bgTex);
 
 		this.initUI();
-		this.m_uiBuilder.buildFinishCall = (): void => {
+		this.uiBuilder.buildFinishCall = (): void => {
 			this.initUIItems();
 		};
-		this.m_uiBuilder.initialize(graph);
+		this.uiBuilder.initialize(graph);
 	}
 
 	private m_currMaterial: RemoveBlackBGMaterial = null;
@@ -75,6 +80,7 @@ class UISystem {
 		this.m_initUI = false;
 
 		let ui = this.ctrlui;
+		ui.processTotal = this.processTotal;
 		ui.syncStageSize = false;
 		ui.selectPlaneEnabled = false;
 		ui.syncStageSize = false;
@@ -104,32 +110,28 @@ class UISystem {
 		progressBarStyle.headFontBgColor.setRGBA4f(0.7, 0.7, 0.7, 0.0);
 		// progressBarStyle.bodyFontBgColor.setRGBA4f(0.5, 0.5, 0.5, 0.1);
 		progressBarStyle.progressBtnFontBgColor.setRGBA4f(0.7, 0.7, 0.7, 0.3);
+		progressBarStyle.progressBarBgOverColor.setRGBA4f(0.7, 0.7, 0.7, 0.3);
+		progressBarStyle.progressBarBgOutColor.setRGBA4f(0.5, 0.5, 0.5, 0.3);
 		progressBarStyle.headAlignType = "left";
 		progressBarStyle.headAlignPosValue = selectBarStyle.headAlignPosValue;
 		progressBarStyle.headEnabled = selectBarStyle.headEnabled;
 		progressBarStyle.progressBarLength = 250;
 
-		// ui.addStatusItem("保存", "save", "图片", "图片", true, (info: CtrlInfo): void => {
-		// 	// this.m_savingImg = true;
-		// 	if(this.m_savingCall) {
-		// 		this.m_savingCall();
-		// 	}
-		// }, true, false, selectBarStyle);
+		selectBarStyle.headVisible = false;
 		ui.addStatusItem(
 			"切换",
 			"change_bg_color",
-			"背景色",
-			"背景色",
+			"切换随机背景色",
+			"切换随机背景色",
 			false,
 			(info: CtrlInfo): void => {
-				this.m_bgColor.randomRGB(0.15);
-				this.m_rscene.setClearRGBAColor4f(this.m_bgColor.r, this.m_bgColor.g, this.m_bgColor.b, 0.0);
-				this.background.setBGRGBAColor(this.m_bgColor);
+				this.changeBGColor();
 			},
 			true,
 			false,
 			selectBarStyle
 		);
+		selectBarStyle.headVisible = true;
 		ui.addStatusItem(
 			"原图显示",
 			"reset_init_img",
@@ -160,9 +162,7 @@ class UISystem {
 			false,
 			selectBarStyle
 		);
-		// ui.addStatusItem("恢复", "reset", "默认设置", "默认设置", true, (info: CtrlInfo): void => {
-		// 	this.resetCtrlValue();
-		// }, true, false, selectBarStyle);
+
 		ui.addValueItem(
 			"透明度强度",
 			"alpha_factor",
@@ -218,9 +218,9 @@ class UISystem {
 		);
 		// 还可以设置: 更红，更绿，更蓝
 
-		let resetBtn = this.m_uiBuilder.resetBtn;
-		let saveBtn = this.m_uiBuilder.saveBtn;
-		let addIntoBtn = this.m_uiBuilder.addIntoBtn;
+		let resetBtn = this.uiBuilder.resetBtn;
+		let saveBtn = this.uiBuilder.saveBtn;
+		let addIntoBtn = this.uiBuilder.addIntoBtn;
 		resetBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, (evt: any): void => {
 			this.resetCtrlValue();
 		});
@@ -240,9 +240,17 @@ class UISystem {
 
 		this.initTextDiv();
 		this.updateLayoutUI();
+		this.changeBGColor();
+	}
+	changeBGColor(color: Color4 = null): void {
+
+		this.m_bgColor.randomRGB(0.25);
+		color = color ? color : this.m_bgColor;
+		this.m_rscene.setClearRGBAColor4f(color.r, color.g, color.b, 0.0);
+		this.background.setBGRGBAColor(color);
 	}
 	hideBtns(): void {
-		let addIntoBtn = this.m_uiBuilder.addIntoBtn;
+		let addIntoBtn = this.uiBuilder.addIntoBtn;
 		if(addIntoBtn) {
 			// addIntoBtn.mouseEnabled = false;
 			// addIntoBtn.setVisible(false);
@@ -252,6 +260,24 @@ class UISystem {
 			if(this.m_infoDiv && this.m_infoDiv.parentElement) {
 				document.body.removeChild(this.m_infoDiv);
 			}
+		}
+	}
+
+	applyFunction(key: string): void {
+		// this.uiSys.applyFunction(key);
+		switch(key) {
+			case "open_award":
+				if(this.m_infoDiv) {
+					this.m_infoDiv.style.visibility = "hidden";
+				}
+				break;
+			case "close_award":
+				if(this.m_infoDiv) {
+					this.m_infoDiv.style.visibility = "visible";
+				}
+				break;
+			default:
+				break;
 		}
 	}
 	private resetCtrlValue(): void {
@@ -281,9 +307,9 @@ class UISystem {
 
 			let bounds = ui.bounds;
 			let py = st.stageHalfHeight - 256 - 2;
-			let resetBtn = this.m_uiBuilder.resetBtn;
-			let saveBtn = this.m_uiBuilder.saveBtn;
-			let addIntoBtn = this.m_uiBuilder.addIntoBtn;
+			let resetBtn = this.uiBuilder.resetBtn;
+			let saveBtn = this.uiBuilder.saveBtn;
+			let addIntoBtn = this.uiBuilder.addIntoBtn;
 			if(resetBtn) {
 				resetBtn.setXY(bounds.x, py);
 				saveBtn.setXY(bounds.getRight() - saveBtn.getWidth(), py);
@@ -300,6 +326,14 @@ class UISystem {
 				div.style.left = tx + "px";
 				div.style.top = ty + "px";
 			}
+			if(this.m_withMeDiv) {
+				let div = this.m_withMeDiv;
+				let tx = st.viewWidth * 0.5 - 130.0;
+				let ty = st.viewHeight - 30;
+				div.style.left = tx + "px";
+				div.style.top = ty + "px";
+			}
+			//this.m_withMeDiv
 		}
 		if(this.background) {
 			this.background.updateLayout( rect );
@@ -321,10 +355,29 @@ class UISystem {
 		div.style.zIndex = "99999";
 		div.style.position = "absolute";
 		document.body.appendChild(pdiv);
-		pdiv.innerHTML = `<font color='${fontColor}'>将图片拖入任意区域, 或点击选择本地图片</font></br><font color='${fontColor}'>去除黑色或白色背景, 生成透明PNG图</font>`;
+		pdiv.innerHTML = `<font color='${fontColor}'>将图片拖入任意区域, 或点击选择本地图片</font></br><font color='${fontColor}'>去除黑色或白色背景, 生成透明PNG图</font></br><font color='${fontColor}'>可支持的最大图像尺寸:&nbsp16K</font>`;
 		this.m_infoDiv = pdiv;
+		this.initWithMeDiv();
 	}
-
+	private m_withMeDiv: HTMLDivElement = null;
+	private initWithMeDiv(): void {
+		let div = document.createElement("div");
+		div.style.color = "";
+		let pdiv: any = div;
+		// pdiv.width = 300;
+		// pdiv.height = 200;
+		let fontColor = "#888888"
+		div.style.fontSize = "12pt";
+		div.style.textAlign = "center";
+		// div.style.pointerEvents = "none";
+		div.style.left = 10 + "px";
+		div.style.top = 10 + "px";
+		div.style.zIndex = "99999";
+		div.style.position = "absolute";
+		document.body.appendChild(pdiv);
+		pdiv.innerHTML = `<font color='${fontColor}'>Contacts with me: vily313@126.com</font>`;
+		this.m_withMeDiv = pdiv;
+	}
 	createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
 		let div = document.createElement("div");
 		div.style.width = pw + "px";

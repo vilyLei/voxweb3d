@@ -5,8 +5,63 @@ interface DemoInfoItem {
 interface DemoInfoData {
     demos: DemoInfoItem[];
 }
+class WaitingPhase {
+	setInfoCall: (str: string) => void;
+	finishCall: () => void;
+	private m_t = 0;
+	constructor() {
+	}
+	start(): void {
+		this.m_t = Date.now();
+		this.autoUpdate();
+	}
+
+    private m_gooutId: any = -1;
+	private m_flag = 0;
+    private autoGo(): void {
+		if (this.m_gooutId > -1) {
+            clearTimeout(this.m_gooutId);
+        }
+		this.m_flag ++;
+		if(this.m_flag > 2) {
+			this.finishCall();
+		}else {
+			this.m_gooutId = setTimeout(this.autoGo.bind(this), 100);// 10 fps
+		}
+	}
+    private m_timeoutId: any = -1;
+    private autoUpdate(): void {
+        if (this.m_timeoutId > -1) {
+            clearTimeout(this.m_timeoutId);
+        }
+
+		let dt = Date.now() - this.m_t;
+		let t = dt / 2000.0;
+		let flag = false;
+		if(t >= 1.0) {
+			t = 1.0;
+			flag = true;
+		}else {
+			this.m_timeoutId = setTimeout(this.autoUpdate.bind(this), 50);// 20 fps
+		}
+		t = 1.0 - t;
+		t = Math.round(t * 100.0);
+		let headStr = "私人服务带宽小</br>请稍等两秒:&nbsp";
+		let endStr = "%</br>付费请联系作者</br>email:&nbspvily313@126.com";
+		if(t >= 10) {
+			this.setInfoCall(headStr + t+endStr);
+		}else {
+			this.setInfoCall(headStr + "&nbsp&nbsp"+t+endStr);
+		}
+		if(flag) {
+			this.autoGo();
+		}
+    }
+
+}
 export class DemoLoader {
 
+	private mWP = new WaitingPhase();
     constructor() { }
 
     initialize(): void {
@@ -21,9 +76,20 @@ export class DemoLoader {
         if(hurl.indexOf("artvily.") > 0) {
             host = "http://www.artvily.com:9090/";
         }
-        this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
-        this.showInfo("loading 1% ");
+        // this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
+
+		let mp = this.mWP;
+		mp.setInfoCall = (str: string): void => {
+			this.showInfo(str);
+		}
+		mp.finishCall = (): void => {
+			// this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
+			console.log("loading main module ...");
+			this.showInfo("loading 1% ");
+		}
+		mp.start();
     }
+
     private loadModule(purl: string): void {
         let codeLoader = new XMLHttpRequest();
         codeLoader.open("GET", purl, true);
@@ -44,7 +110,7 @@ export class DemoLoader {
         }
         codeLoader.send(null);
     }
-    
+
     private loadInfo(purl: string, demoUrl: string): void {
         let codeLoader = new XMLHttpRequest();
         codeLoader.open("GET", purl, true);
@@ -52,11 +118,11 @@ export class DemoLoader {
             console.error("loadInfo error: ", err);
         }
         codeLoader.onprogress = (e) => {
-            
+
         };
         codeLoader.onload = () => {
             let jsonStr = codeLoader.response;
-            
+
             let data: DemoInfoData = JSON.parse(jsonStr) as DemoInfoData;
             let map: Map<string, DemoInfoItem> = new Map();
             let ls = data.demos;
@@ -117,7 +183,7 @@ export class DemoLoader {
     private initUI(): void {
         let db = document.body;
         db.style.background = "#000000";
-        
+
         let b = this.mBDV;
         b = document.createElement('div');
         b.style.width = "100vw";
@@ -185,7 +251,10 @@ export class DemoLoader {
         s.display = "flex";
         s.flexDirection = "column";
         s.justifyContent = "center";
-        s.alignItems = "center";
+        // s.alignItems = "center";
+
+        // s.alignItems = "top";
+        // s.alignItems = "center";
         // ele.style.top = top;
         // ele.style.left = left;
         // ele.style.position = position;

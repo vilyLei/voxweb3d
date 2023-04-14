@@ -33,6 +33,7 @@ export default class ParamCtrlUI {
 	syncStageSize = true;
 	selectPlaneEnabled = true;
 	btnSize = 30;
+	processTotal = 3;
 	bounds = new AABB2D();
 
 	constructor(closeBtnFlag: boolean = true) {
@@ -75,7 +76,7 @@ export default class ParamCtrlUI {
 		this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
 
 		let subScene = this.m_rscene.createSubScene();
-		subScene.initialize(rparam);
+		subScene.initialize(rparam, this.processTotal);
 		subScene.enableMouseEvent(true);
 		this.ruisc = subScene;
 

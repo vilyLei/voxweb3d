@@ -193,11 +193,13 @@ export class NormalMapVerifier2 extends PBRDebugScene {
 		let normalMap = this.getTexByUrl(this.m_normalTexUrl);
 		let diffMap = this.getTexByUrl(this.m_diffuseTexUrl);
 		let param = this.createPBRDecoratorParam();
-		param.diffuseMapEnabled = true;
-		param.aoMapEnabled = false;
-		param.scatterEnabled = true;
-		param.diffuseMap = diffMap;
-		param.normalMap = normalMap;
+		let feature = param.feature;
+		let tex = param.texture;
+		feature.diffuseMapEnabled = true;
+		feature.aoMapEnabled = false;
+		feature.scatterEnabled = true;
+		tex.diffuseMap = diffMap;
+		tex.normalMap = normalMap;
 		return this.createPBRMaterial( param );
 	}
 

@@ -28,31 +28,40 @@ class UIBuilder {
 		}
 	}
 	private init(): void {
-
 		let url = "static/assets/ui/reset.png";
-		url = URLFilter.filterUrl( url );
+		url = URLFilter.filterUrl(url);
 		let img = new Image();
-		let fontColor = new Color4(1.0,1.0,1.0, 1.0);
-		let bgColor = new Color4(1.0,1.0,1.0, 0.3);
+		let fontColor = new Color4(1.0, 1.0, 1.0, 1.0);
+		let bgColor = new Color4(1.0, 1.0, 1.0, 0.3);
 
 		img.onload = (evt: any): void => {
-			let btn = this.createBtn("reset_btn", img, 200, 60, "恢复初始设置", 25, new Vector3D(-20,0), new Vector3D(-10), fontColor, bgColor);
+			let btn = this.createBtnWithIcon(
+				"reset_btn",
+				img,
+				200,
+				60,
+				"恢复初始设置",
+				25,
+				new Vector3D(-20, 0),
+				new Vector3D(-10),
+				fontColor,
+				bgColor
+			);
 			this.applyBtnColor(btn);
 			this.resetBtn = btn;
 			this.updateBuildFinish();
-		}
+		};
 		img.src = url;
 
 		url = "static/assets/ui/download.png";
-		url = URLFilter.filterUrl( url );
+		url = URLFilter.filterUrl(url);
 		let img1 = new Image();
 		img1.onload = (evt: any): void => {
-			let btn = this.createBtn("save_btn", img1, 200, 60, "保存图片", 25, new Vector3D(-13,0), new Vector3D(-20), fontColor, bgColor);
+			let btn = this.createBtnWithIcon("save_btn", img1, 200, 60, "保存图片", 25, new Vector3D(-13, 0), new Vector3D(-20), fontColor, bgColor);
 			this.applyBtnColor(btn);
 			this.saveBtn = btn;
 			this.updateBuildFinish();
-
-		}
+		};
 		img1.src = url;
 
 		url = "static/assets/ui/addInto.png";
@@ -65,7 +74,7 @@ class UIBuilder {
 			btn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
 			this.addIntoBtn = btn;
 			this.updateBuildFinish();
-		}
+		};
 		img2.src = url;
 	}
 	private applyBtnColor(btn: ColorRectImgButton): void {
@@ -75,13 +84,27 @@ class UIBuilder {
 		btn.setColor(btn.outColor);
 	}
 	private updateBuildFinish(): void {
-		this.m_total ++;
-		if(this.m_total > 2 && this.buildFinishCall) {
+		this.m_total++;
+		if (this.m_total > 2 && this.buildFinishCall) {
 			this.buildFinishCall();
 		}
 	}
-	private m_index = 0;
-	createBtn(
+	// private m_index = 0;
+	createBtn(btn_name: string, fontSize: number, fontColor: Color4 = null, fontBgColor: Color4 = null, fixWidth: number = 0): ColorRectImgButton {
+		return UIBarTool.CreateBtn(btn_name, fontSize, fontColor, fontBgColor, fixWidth);
+	}
+	createCharsCanvasFixSize(
+		width: number,
+		height: number,
+		str: string,
+		fontSize: number,
+		textPos: Vector3D,
+		fontColor: IColor4,
+		fontBgColor: IColor4
+	): HTMLCanvasElement | HTMLImageElement {
+		return UIBarTool.CreateCharsCanvasFixSize(width, height, str, fontSize, fontColor, fontBgColor, textPos);
+	}
+	createBtnWithIcon(
 		keyStr: string,
 		img: HTMLCanvasElement | HTMLImageElement,
 		width: number,
@@ -94,11 +117,18 @@ class UIBuilder {
 		fontBgColor: IColor4
 	): ColorRectImgButton {
 		let canvas = UIBarTool.CreateCharsCanvasFixSize(width, height, str, fontSize, fontColor, fontBgColor, textPos);
-
-		let imgPx = imgOffset.x + canvas.width - img.width;
-		let imgPy = imgOffset.y + Math.round(( canvas.height - img.height ) * 0.5);
-		const ctx2d = canvas.getContext("2d");
-		ctx2d.drawImage(img, 0, 0, img.width, img.height, imgPx, imgPy, img.width, img.height);
+		if (img) {
+			let imgPx = imgOffset.x + canvas.width - img.width;
+			let imgPy = imgOffset.y + Math.round((canvas.height - img.height) * 0.5);
+			const ctx2d = canvas.getContext("2d");
+			ctx2d.drawImage(img, 0, 0, img.width, img.height, imgPx, imgPy, img.width, img.height);
+		}
+		// else {
+		// 	// let imgPx = canvas.width;
+		// 	// let imgPy = Math.round(( canvas.height ) * 0.5);
+		// 	// const ctx2d = canvas.getContext("2d");
+		// 	// ctx2d.drawImage(img, 0, 0, img.width, img.height, imgPx, imgPy, img.width, img.height);
+		// }
 
 		// let k = 1 + this.m_index++;
 		// let ri = 1;

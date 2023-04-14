@@ -11,8 +11,20 @@ interface IAwardSceneParam {
 	 */
 	getTexByUrl(url: string, preAlpha?: boolean, wrapRepeat?: boolean, mipmapEnabled?: boolean): IRenderTexture;
 	createContainer(): IDisplayEntityContainer;
-	createXOYPlane(x: number, y: number, w: number, h: number, tex: IRenderTexture): IRenderEntity;
+	applyFunction?(key: string): void;
+	createCharsTexFixSize?(width: number, height: number, str: string, fontSize: number): IRenderTexture;
+	/**
+	 *
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
+	 * @param tex the defualt value is null
+	 * @param alignScreen the defualt value is false
+	 */
+	createXOYPlane(x: number, y: number, w: number, h: number, tex?: IRenderTexture, alignScreen?: boolean): IRenderEntity;
 	createBtnEntity?(tex: IRenderTexture, downListener: (evt: any) => void): IRenderEntity;
+	createTextBtnEntity?(btn_name: string, width: number, height: number, fontSize: number, downListener: (evt: any) => void): IRenderEntity;
 	pid: number;
 }
 export {IAwardSceneParam};

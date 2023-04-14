@@ -202,13 +202,20 @@ export class ProgressBar {
 		}
     }
     private initProBg(container: DisplayEntityContainer, px: number, py: number, width: number, height: number): void {
-
+		let style = this.style;
         let bgPlane = new Plane3DEntity();
         bgPlane.premultiplyAlpha = true;
         bgPlane.initializeXOY(0, 0, 1, height, [CanvasTextureTool.GetInstance().createWhiteTex()]);
         bgPlane.setScaleXYZ(width, 1.0, 1.0);
         bgPlane.setXYZ(px, py, 0.0);
-        (bgPlane.getMaterial() as any).setAlpha(this.bgPlaneAlpha);
+
+		let c = this.fontBgColor;
+		if(style) {
+			c = style.progressBarBgOutColor;
+			(bgPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+		}else {
+			(bgPlane.getMaterial() as any).setAlpha(this.bgPlaneAlpha);
+		}
         bgPlane.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(bgPlane);
 		this.m_barBgPlane = bgPlane;
@@ -217,9 +224,9 @@ export class ProgressBar {
         barPlane.premultiplyAlpha = true;
         barPlane.initializeXOY(0, 0, 1, height, [CanvasTextureTool.GetInstance().createWhiteTex()]);
         barPlane.setXYZ(px, py, 0.0);
-		let c = this.fontBgColor;
-		if(this.style) {
-			c = this.style.progressBarOutColor;
+		c = this.fontBgColor;
+		if(style) {
+			c = style.progressBarOutColor;
 		}
 		(barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
         (barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha);
