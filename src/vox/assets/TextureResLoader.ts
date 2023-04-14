@@ -85,7 +85,7 @@ class ImgResUnit {
         if (this.m_img == null) {
             // let selfT: ImgResUnit = this;
 
-            this.m_img = new Image();
+            this.m_img = new Image();            
             ///*
             this.m_img.onload = (evt: any): void => {
                 this.m_loaded = true;
@@ -103,6 +103,7 @@ class ImgResUnit {
                 let pwin: any = window;
                 var imageUrl = (pwin.URL || pwin.webkitURL).createObjectURL(request.response);
                 this.m_img.src = imageUrl;
+                this.m_img.crossOrigin = "Anonymous";
 
             };
             request.onerror = e => {
@@ -245,7 +246,8 @@ class CubeImgResLoader {
                     thisT.m_texList[0].name = img.src;
                 }
             }
-            img.crossOrigin = "";
+            // img.crossOrigin = "";
+            img.crossOrigin = "Anonymous";
             img.src = thisT.m_urls[i];
             thisT.m_imgs.push(img);
         }

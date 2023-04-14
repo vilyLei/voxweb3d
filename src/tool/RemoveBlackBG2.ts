@@ -253,9 +253,9 @@ class AwardSceneParam implements IAwardSceneParam {
 	uiSys: UISystem = null;
 	sc: IRendererScene = null;
 	constructor() {}
-	private getAssetTexByUrl(pns: string): IRenderTexture {
-		return this.getTexByUrl("static/assets/" + pns);
-	}
+	// private getAssetTexByUrl(pns: string): IRenderTexture {
+	// 	return this.getTexByUrl("static/assets/" + pns);
+	// }
 
 	createCharsTexFixSize?(width: number, height: number, str: string, fontSize: number): IRenderTexture {
 
@@ -270,7 +270,7 @@ class AwardSceneParam implements IAwardSceneParam {
 		this.uiSys.applyFunction(key);
 	}
 	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-		url = URLFilter.filterUrl(url);
+		// url = URLFilter.filterUrl(url);
 		return this.texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 	}
 	createContainer(): IDisplayEntityContainer {

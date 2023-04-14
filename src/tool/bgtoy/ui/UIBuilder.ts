@@ -29,7 +29,7 @@ class UIBuilder {
 	}
 	private init(): void {
 		let url = "static/assets/ui/reset.png";
-		url = URLFilter.filterUrl(url);
+		// url = URLFilter.filterUrl(url);
 		let img = new Image();
 		let fontColor = new Color4(1.0, 1.0, 1.0, 1.0);
 		let bgColor = new Color4(1.0, 1.0, 1.0, 0.3);
@@ -54,7 +54,7 @@ class UIBuilder {
 		img.src = url;
 
 		url = "static/assets/ui/download.png";
-		url = URLFilter.filterUrl(url);
+		// url = URLFilter.filterUrl(url);
 		let img1 = new Image();
 		img1.onload = (evt: any): void => {
 			let btn = this.createBtnWithIcon("save_btn", img1, 200, 60, "保存图片", 25, new Vector3D(-13, 0), new Vector3D(-20), fontColor, bgColor);
@@ -65,7 +65,7 @@ class UIBuilder {
 		img1.src = url;
 
 		url = "static/assets/ui/addInto.png";
-		url = URLFilter.filterUrl(url);
+		// url = URLFilter.filterUrl(url);
 		let img2 = new Image();
 		img2.onload = (evt: any): void => {
 			let tex = this.m_rscene.textureBlock.createImageTex2D();
