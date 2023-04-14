@@ -32,7 +32,7 @@ class ImageTextureProxy extends TextureProxy implements IImageTexture {
      * @param miplevel mipmaps level
     */
     setDataFromImage(img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel: number = 0, offsetx: number = 0, offsety: number = 0, rebuild: boolean = false): void {
-        if (img != null && img.width > 0 && img.height > 0) {
+        if (img && img.width > 0 && img.height > 0) {
             this.m_haveRData = true;
             if (miplevel < 0) miplevel = 0;
             if (miplevel > 15) miplevel = 15;
@@ -81,6 +81,7 @@ class ImageTextureProxy extends TextureProxy implements IImageTexture {
                 td.offsety = offsety;
             }
             this.version++;
+			this.testDataEnough();
         }
     }
     protected uploadData(texRes: IRenderResource): void {

@@ -391,7 +391,7 @@ export class RendererInstance implements IRendererInstance {
      */
     drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
 
-        if (entity != null && entity.getVisible() && !this.m_renderProxy.isContextLost()) {
+        if (entity && entity.getVisible() && !this.m_renderProxy.isContextLost()) {
             if (entity.getRendererUid() == this.m_uid) {
                 this.m_fixProcess.drawDisp(entity.getDisplay(), useGlobalUniform, forceUpdateUniform);
             }

@@ -141,6 +141,13 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		}
 		width = 0 | width;
 		height = 0 | height;
+		if(chars == "") {
+			let canvas = ImageTextureAtlas.CreateCanvas(width, height, null);
+			let ctx2D = canvas.getContext("2d");
+			ctx2D.fillStyle = bgColor.getCSSDecRGBAColor();
+			ctx2D.fillRect(0, 0, width, height);
+			return canvas;
+		}
 		let texImg = ImageTextureAtlas.CreateCharsCanvas(chars, fontSize, fontColor);
 		if (width == texImg.width && height == texImg.height) {
 			return texImg;

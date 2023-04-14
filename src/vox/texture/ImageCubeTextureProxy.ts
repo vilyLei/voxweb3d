@@ -38,6 +38,7 @@ class ImageCubeTextureProxy extends TextureProxy implements IImageCubeTexture {
                 }
                 this.m_imgDataList[index] = { imgData: img, miplevel: miplevel };
                 this.m_haveRData = this.m_imgDataList[index] != null;
+				this.testDataEnough();
             }
         }
     }
@@ -49,9 +50,6 @@ class ImageCubeTextureProxy extends TextureProxy implements IImageCubeTexture {
             imo = this.m_imgDataList[i];
             gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this.m_miplevel, TextureFormat.ToGL(gl, this.internalFormat), TextureFormat.ToGL(gl, this.srcFormat), TextureDataType.ToGL(gl, this.dataType), imo.imgData);
         }
-    }
-    toString(): string {
-        return "[ImageCubeTextureProxy(name:" + this.name + ",uid=" + this.getUid() + ",width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";
     }
     __$destroy(): void {
         if (this.getAttachCount() < 1) {

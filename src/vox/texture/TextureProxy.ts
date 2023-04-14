@@ -182,7 +182,13 @@ export class TextureProxy implements IRenderTexture {
      * @returns the texture data is enough or not.
      */
     isDataEnough(): boolean { return this.m_haveRData; }
+	dataEnoughListener: () => void = null;
+	protected testDataEnough(): void {
 
+		if(this.dataEnoughListener) {
+			this.dataEnoughListener();
+		}
+	}
     uploadFromFbo(texResource: IRenderResource, fboWidth: number, fboHeight: number): void {
         throw Error("Illegal operation !!!");
     }
@@ -321,6 +327,7 @@ export class TextureProxy implements IRenderTexture {
             this.m_slot = null;
             this.m_renderProxy = null;
             this.m_uid = -1;
+			this.dataEnoughListener = null;
         }
     }
 }

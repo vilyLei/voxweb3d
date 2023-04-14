@@ -202,7 +202,8 @@ export default class RPOUnit implements IRPOUnit {
 			case rdm.ELEMENTS_TRIANGLE_STRIP:
 			case rdm.ELEMENTS_LINES_STRIP:
 				// console.log("rd.gldm: ", rd.gldm);
-				// if(DebugFlag.Flag_0 > 0)console.log("RPOUnit::run(), drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
+				// if(DebugFlag.Flag_0 > 0)console.log("RPOUnit::run(), drawElements(ivsCount="+ivsCount+", ivsOffset="+rd.ivsOffset+")");
+				// console.log("RPOUnit::run(), drawElements(ivsCount="+ivsCount+", ivsOffset="+rd.ivsOffset+")");
 				//rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, rd.ibufType,this.ivsIndex * this.ibufStep);
 				gl.drawElements(rd.gldm, ivsCount, rd.bufType, rd.ivsOffset);
 				break;

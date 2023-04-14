@@ -154,7 +154,7 @@ interface IRendererScene extends IREntityScene {
      * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, the default value is false
      * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, the default value is true
      */
-    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean, forceUpdateUniform?: boolean): void;
+    drawEntity(entity: IRenderEntity, useGlobalUniform?: boolean, forceUpdateUniform?: boolean): void;
     /**
      * @param colorUint24 uint24 number rgb color value, example: 0xff0000, it is red rolor
      * @param alpha the default value is 1.0
