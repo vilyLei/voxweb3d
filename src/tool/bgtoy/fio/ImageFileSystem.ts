@@ -68,7 +68,7 @@ class ImageFileSystem {
 			if (this.m_currEntity) {
 				let color = new Color4();
 				this.m_rscene.getRenderProxy().getClearRGBAColor4f(color);
-				this.m_imgBuilder.rscene.setClearColor(color);
+				this.m_imgBuilder.setClearColor(color);
 				let srcMaterial = this.m_currEntity.getMaterial() as RemoveBlackBGMaterial2;
 				let currTex = this.m_currTexture;
 				let tex = this.m_rscene.textureBlock.createImageTex2D();
@@ -81,6 +81,8 @@ class ImageFileSystem {
 				material.setTextureList([tex]);
 				material.paramCopyFrom(srcMaterial);
 				let pl0 = new Plane3DEntity();
+				pl0.transparentBlend = true;
+				pl0.depthAlwaysFalse = true;
 				pl0.setMaterial(material);
 				pl0.initializeXOY(-1.0, -1.0, 2, 2, [tex]);
 				// let pl0 = new ScreenFixedAlignPlaneEntity();

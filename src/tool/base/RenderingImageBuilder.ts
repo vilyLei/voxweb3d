@@ -1,4 +1,5 @@
 import TextureResLoader from "../../vox/assets/TextureResLoader";
+import Color4 from "../../vox/material/Color4";
 import IColor4 from "../../vox/material/IColor4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
@@ -36,6 +37,9 @@ export class RenderingImageBuilder {
 			this.rscene = this.m_graph.createScene(rparam);
 			this.rscene.setClearColor(color);
 		}
+	}
+	setClearColor(c: Color4): void {
+		this.rscene.setClearColor( c );
 	}
 	private m_entity: IRenderEntity = null;
 	private m_pw = 300;
