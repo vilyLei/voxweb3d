@@ -100,7 +100,7 @@ export default class ParamCtrlUI {
 				this.ruisc.setViewPort(0, 0, stage.stageWidth, stage.stageHeight);
 			}
 		}
-		if(this.m_selectPlane) {
+		if (this.m_selectPlane) {
 			this.m_selectPlane.setVisible(false);
 		}
 		this.ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
@@ -373,7 +373,16 @@ export default class ParamCtrlUI {
 		}
 		if (this.rgbPanel != null) this.rgbPanel.close();
 	}
-	updateLayout(force: boolean = false, fixPos: Vector3D = null, distance: number = 5): void {
+	getBodyHeight(force: boolean = false): number {
+
+		let btns = force ? this.m_btns : this.m_visiBtns;
+		let bodyHeight = 0;
+		for (let i = 0; i < btns.length; ++i) {
+			bodyHeight += btns[i].getRect().height;
+		}
+		return bodyHeight;
+	}
+	updateLayout(force: boolean = false, fixPos: Vector3D = null, distance: number = 5, height: number = 0): void {
 
 		let pos = new Vector3D();
 		let offsetV = new Vector3D();
@@ -384,12 +393,15 @@ export default class ParamCtrlUI {
 		let bounds = this.bounds;
 		let py = 0;
 
-		if(btns.length > 0) {
+		if (btns.length > 0) {
 			btns[0].getPosition(pos);
 			pos.y -= this.m_btnYSpace;
 			py = pos.y;
+			if (btns.length > 1 && height > 0) {
+				let bodyH = this.getBodyHeight(force);
+				this.m_btnYSpace = (height - bodyH) / (btns.length - 1);
+			}
 		}
-
 		for (let i = 0; i < btns.length; ++i) {
 			btns[i].getPosition(pos);
 			pos.y = py;

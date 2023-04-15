@@ -216,6 +216,23 @@ class UISystem {
 			false,
 			progressBarStyle
 		);
+		ui.addValueItem(
+			"背景剔除颜色阈值",
+			"alpha_discard_threshold",
+			0.5,
+			0.0,
+			1.0,
+			(info: CtrlInfo): void => {
+				if (this.m_currMaterial) {
+					this.m_currMaterial.setDiscardRadius(info.values[0]);
+				}
+			},
+			false,
+			true,
+			null,
+			false,
+			progressBarStyle
+		);
 		// 还可以设置: 更红，更绿，更蓝
 
 		let resetBtn = this.uiBuilder.resetBtn;
@@ -288,6 +305,7 @@ class UISystem {
 		ui.setUIItemValue("alpha_factor", 1.0);
 		ui.setUIItemValue("color_factor", 1.0);
 		ui.setUIItemValue("alpha_discard_factor", 0.02);
+		ui.setUIItemValue("alpha_discard_threshold", 0.5);
 		ui.setUIItemFlag("reset_init_img", false);
 		ui.setUIItemFlag("invert_discard", false);
 	}
@@ -299,12 +317,16 @@ class UISystem {
 		this.m_areaRect = rect;
 		let ui = this.ctrlui;
 		if (ui) {
-			ui.setYSpace(48);
+			ui.setYSpace(15);
 			let st = this.m_rscene.getStage3D();
+			let uiBodyH = ui.getBodyHeight(true);
+			let uiAreaH = 400;
 			let pv = this.position;
-			pv.x = st.stageHalfWidth + 20;
-			pv.y = st.stageHalfHeight + (-256 + 105);
-			ui.updateLayout(true, pv);
+			// pv.x = st.stageHalfWidth + 20;
+			// pv.y = st.stageHalfHeight + (-256 + 105);
+			pv.x = st.stageHalfWidth + 25;
+			pv.y = st.stageHalfHeight + 256 - uiAreaH;
+			ui.updateLayout(true, pv, 0, uiAreaH);
 
 			let bounds = ui.bounds;
 			let py = st.stageHalfHeight - 256 - 2;
