@@ -115,6 +115,17 @@ export class CanvasTextureTool {
         }
         return null;
     }
+	createImageCanvasFixSize(
+		width: number,
+		height: number,
+		imageWidth: number,
+		imageHeight: number,
+		img: HTMLCanvasElement | HTMLImageElement,
+		bgColor: IColor4 = null,
+		offsetV: IVector3D = null
+	): HTMLCanvasElement {
+		return CanvasTextureTool.s_atlasList[0].createImageCanvasFixSize(width, height, imageWidth, imageHeight, img, bgColor, offsetV);
+	}
 	createCharsCanvasFixSize(
 		width: number,
 		height: number,

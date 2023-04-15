@@ -68,8 +68,11 @@ class UIBuilder {
 		// url = URLFilter.filterUrl(url);
 		let img2 = new Image();
 		img2.onload = (evt: any): void => {
+			let pw = img2.width * 2.0;
+			let ph = img2.height * 2.0;
+			let data = UIBarTool.CreateImageCanvasFixSize(512, 512, pw, ph, img2, new Color4(1.0,1.0,1.0, 0.1), new Vector3D((512 - pw) * 0.5, (512 - ph) * 0.5));
 			let tex = this.m_rscene.textureBlock.createImageTex2D();
-			tex.setDataFromImage(img2);
+			tex.setDataFromImage(data);
 			let btn = UIBarTool.CreateBtnWithTex(tex);
 			this.applyBtnColor(btn);
 			btn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);

@@ -18,6 +18,17 @@ export class UIBarTool {
     private static s_fontColor = new Color4(1.0,1.0,1.0,1.0);
     private static s_bgColor = new Color4(1.0,1.0,1.0,0.3);
 
+	static CreateImageCanvasFixSize(
+		width: number,
+		height: number,
+		imageWidth: number,
+		imageHeight: number,
+		img: HTMLCanvasElement | HTMLImageElement,
+		bgColor: IColor4 = null,
+		offsetV: IVector3D = null
+	): HTMLCanvasElement {
+		return CanvasTextureTool.GetInstance().createImageCanvasFixSize(width, height, imageWidth, imageHeight, img, bgColor, offsetV,);
+	}
 	static CreateCharsCanvasFixSize(
 		width: number,
 		height: number,
@@ -67,9 +78,9 @@ export class UIBarTool {
         if(fontBgColor == null) {
             fontBgColor = UIBarTool.s_bgColor;
         }
-        let keyStr = btn_name +"-"+fontSize+"-"+fontColor.getCSSDecRGBAColor() +"-"+ fontBgColor.getCSSDecRGBAColor();
-        let texObj = CanvasTextureTool.GetInstance().getTextureObject(keyStr);
         const ctt = CanvasTextureTool.GetInstance();
+        let keyStr = btn_name +"-"+fontSize+"-"+fontColor.getCSSDecRGBAColor() +"-"+ fontBgColor.getCSSDecRGBAColor();
+        let texObj = ctt.getTextureObject(keyStr);
         if(texObj == null) {
             texObj = ctt.createCharsImageToAtlas("", btn_name, fontSize, fontColor, fontBgColor, fixWidth);
         }

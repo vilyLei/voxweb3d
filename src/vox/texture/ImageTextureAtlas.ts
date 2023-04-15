@@ -112,6 +112,42 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		return area;
 	}
 
+	createImageCanvasFixSize(
+		width: number,
+		height: number,
+		imageWidth: number,
+		imageHeight: number,
+		img: HTMLCanvasElement | HTMLImageElement,
+		bgColor: IColor4 = null,
+		offsetV: IVector3D = null
+	): HTMLCanvasElement {
+		return ImageTextureAtlas.CreateImageCanvasFixSize(width, height, imageWidth, imageHeight, img, bgColor, offsetV);
+	}
+	static CreateImageCanvasFixSize(
+		width: number,
+		height: number,
+		imageWidth: number,
+		imageHeight: number,
+		img: HTMLCanvasElement | HTMLImageElement,
+		bgColor: IColor4 = null,
+		offsetV: IVector3D = null
+	): HTMLCanvasElement {
+
+		let sx = offsetV.x;
+		let sy = offsetV.y;
+		// if(offsetV) {
+		// 	sx = offsetV.x;
+		// 	sy = offsetV.y;
+		// }
+		// sx += Math.round((width - img.width) * 0.5);
+		// sy += Math.round((height - img.height) * 0.5);
+		let canvas = ImageTextureAtlas.CreateCanvas(width, height, null);
+		let ctx2D = canvas.getContext("2d");
+		ctx2D.fillStyle = bgColor.getCSSDecRGBAColor();
+		ctx2D.fillRect(0, 0, width, height);
+		ctx2D.drawImage(img, sx, sy, imageWidth, imageHeight);
+		return canvas;
+	}
 	createCharsCanvasFixSize(
 		width: number,
 		height: number,
@@ -141,7 +177,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		}
 		width = 0 | width;
 		height = 0 | height;
-		if(chars == "") {
+		if (chars == "") {
 			let canvas = ImageTextureAtlas.CreateCanvas(width, height, null);
 			let ctx2D = canvas.getContext("2d");
 			ctx2D.fillStyle = bgColor.getCSSDecRGBAColor();
@@ -160,7 +196,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		}
 		let sx = 0;
 		let sy = 0;
-		if(offsetV) {
+		if (offsetV) {
 			sx = offsetV.x;
 			sy = offsetV.y;
 		}
@@ -228,7 +264,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 
 		if (chars.length > 1) {
 			width = Math.round(texWidth + 8);
-			if(fixWidth > 0 && width < fixWidth) {
+			if (fixWidth > 0 && width < fixWidth) {
 				width = fixWidth;
 			}
 			canvas.width = width;
@@ -237,29 +273,29 @@ export default class ImageTextureAtlas extends TextureAtlas {
 			ctx2D.textBaseline = "top";
 		}
 		/*
-        let input = ImageTextureAtlas.s_inputTF;
-        if(ImageTextureAtlas.s_inputTF == null) {
-            ImageTextureAtlas.s_inputTF = document.createElement("input");
-            input = ImageTextureAtlas.s_inputTF;
-            input.type = "text";
-            input.id = "atlas_inputText";
-            input.className = "atlas_inputTFClass";
-            input.disabled = true;
+		let input = ImageTextureAtlas.s_inputTF;
+		if(ImageTextureAtlas.s_inputTF == null) {
+			ImageTextureAtlas.s_inputTF = document.createElement("input");
+			input = ImageTextureAtlas.s_inputTF;
+			input.type = "text";
+			input.id = "atlas_inputText";
+			input.className = "atlas_inputTFClass";
+			input.disabled = true;
 
 			let style = input.style;
 			style.left = "10px";
 			style.top = "10px";
 			style.zIndex = "9999";
 			style.position = "absolute";
-            style.borderWidth = "0";
-            // style.visibility = visible ? "visible" : "hidden";
-            style.visibility = "hidden";
-            document.body.appendChild(input);
-        }
-        input.value = chars;
-        let rect = input.getBoundingClientRect();
-        height = Math.round(rect.height) + 8;
-        //*/
+			style.borderWidth = "0";
+			// style.visibility = visible ? "visible" : "hidden";
+			style.visibility = "hidden";
+			document.body.appendChild(input);
+		}
+		input.value = chars;
+		let rect = input.getBoundingClientRect();
+		height = Math.round(rect.height) + 8;
+		//*/
 		// console.log("rect.height: ", rect.height, "size: ",size);
 		ctx2D.fillStyle = bgStyle;
 		ctx2D.fillRect(0, 0, width, height);
@@ -281,13 +317,13 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		ImageTextureAtlas.s_imgMap.set(keyStr, canvas);
 		return canvas;
 		/*
-        actualBoundingBoxAscent: 22
-        actualBoundingBoxDescent: -17
-        actualBoundingBoxLeft: -4
-        actualBoundingBoxRight: 24
-        fontBoundingBoxAscent: 60
-        fontBoundingBoxDescent: 13
-        */
+		actualBoundingBoxAscent: 22
+		actualBoundingBoxDescent: -17
+		actualBoundingBoxLeft: -4
+		actualBoundingBoxRight: 24
+		fontBoundingBoxAscent: 60
+		fontBoundingBoxDescent: 13
+		*/
 	}
 
 	static CreateCharsCanvas(chars: string, fontSize: number, fontColor: IColor4 = null, bgColor: IColor4 = null): HTMLCanvasElement {
@@ -298,7 +334,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 			fontColor = new Color4(0, 0, 0, 1.0);
 		}
 		if (bgColor == null) {
-			bgColor = new Color4(1.0,1.0,1.0, 0.0);
+			bgColor = new Color4(1.0, 1.0, 1.0, 0.0);
 		}
 		let ftCStr = fontColor.getCSSDecRGBAColor();
 		let bgCStr = bgColor.getCSSDecRGBAColor();
