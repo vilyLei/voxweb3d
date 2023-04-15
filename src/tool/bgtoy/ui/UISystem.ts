@@ -5,7 +5,7 @@ import RendererState from "../../../vox/render/RendererState";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRendererSceneGraph from "../../../vox/scene/IRendererSceneGraph";
 
-import RemoveBlackBGMaterial from "../../material/RemoveBlackBGMaterial";
+import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
 
 import SelectionBarStyle from "../../../orthoui/button/SelectionBarStyle";
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
@@ -51,12 +51,12 @@ class UISystem {
 		this.uiBuilder.initialize(graph);
 	}
 
-	private m_currMaterial: RemoveBlackBGMaterial = null;
+	private m_currMaterial: RemoveBlackBGMaterial2 = null;
 	private m_initUI = true;
 	private m_bgColor = new Color4();
 	private m_savingCall: () => void = null;
 	private m_openingCall: () => void = null;
-	setCurrMaterial(currMaterial: RemoveBlackBGMaterial): void {
+	setCurrMaterial(currMaterial: RemoveBlackBGMaterial2): void {
 		this.m_currMaterial = currMaterial;
 	}
 	setSavingListener(call: () => void): void {
@@ -150,8 +150,8 @@ class UISystem {
 		ui.addStatusItem(
 			"剔除方式",
 			"invert_discard",
-			"白色背景剔除",
-			"黑色背景剔除",
+			"反相背景剔除",
+			"正常背景剔除",
 			false,
 			(info: CtrlInfo): void => {
 				if (this.m_currMaterial) {
@@ -316,6 +316,7 @@ class UISystem {
 				saveBtn.setXY(bounds.getRight() - saveBtn.getWidth(), py);
 				let sx = 512 /addIntoBtn.getWidth();
 				let sy = 512 /addIntoBtn.getHeight();
+				// addIntoBtn.setXY(st.stageHalfWidth - 512 + 128, st.stageHalfHeight - 128);
 				addIntoBtn.setXY(st.stageHalfWidth - 512, st.stageHalfHeight - 256);
 				addIntoBtn.setScaleXYZ(sx, sy, 1.0);
 				addIntoBtn.update();
@@ -334,7 +335,6 @@ class UISystem {
 				div.style.left = tx + "px";
 				div.style.top = ty + "px";
 			}
-			//this.m_withMeDiv
 		}
 		if(this.background) {
 			this.background.updateLayout( rect );

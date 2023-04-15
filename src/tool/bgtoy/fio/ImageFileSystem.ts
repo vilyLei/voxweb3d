@@ -9,9 +9,8 @@ import RenderingImageBuilder from "../../base/RenderingImageBuilder";
 import RendererParam from "../../../vox/scene/RendererParam";
 import Color4 from "../../../vox/material/Color4";
 import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
-import RemoveBlackBGMaterial from "../../material/RemoveBlackBGMaterial";
+import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
 
 class ImageFileSystem {
 	private m_rscene: IRendererScene = null;
@@ -70,14 +69,14 @@ class ImageFileSystem {
 				let color = new Color4();
 				this.m_rscene.getRenderProxy().getClearRGBAColor4f(color);
 				this.m_imgBuilder.rscene.setClearColor(color);
-				let srcMaterial = this.m_currEntity.getMaterial() as RemoveBlackBGMaterial;
+				let srcMaterial = this.m_currEntity.getMaterial() as RemoveBlackBGMaterial2;
 				let currTex = this.m_currTexture;
 				let tex = this.m_rscene.textureBlock.createImageTex2D();
 				tex.flipY = true;
 				let img = (currTex as ImageTextureProxy).getTexData().data;
 
 				tex.setDataFromImage(img);
-				let material = new RemoveBlackBGMaterial();
+				let material = new RemoveBlackBGMaterial2();
 				material.fixScreen = true;
 				material.setTextureList([tex]);
 				material.paramCopyFrom(srcMaterial);

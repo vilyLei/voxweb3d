@@ -33,6 +33,7 @@ import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
 import Cloud01Material from "../pixelToy/cloud/material/Cloud01Material";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import { UIBuilder } from "./bgtoy/ui/UIBuilder";
+import RemoveBlackBGMaterial2 from "./material/RemoveBlackBGMaterial2";
 
 export class RemoveBlackBG2 {
 	private m_init = true;
@@ -208,7 +209,7 @@ export class RemoveBlackBG2 {
 	private mouseDown(evt: any): void {
 		// console.log("mouseDown() ...");
 	}
-	private m_currMaterial: RemoveBlackBGMaterial = null;
+	private m_currMaterial: RemoveBlackBGMaterial2 = null;
 	private m_currEntity: Plane3DEntity = null;
 	private initScene(rscene: IRendererScene): void {
 		this.createAEntityByTexUrl("static/assets/guangyun_40.jpg");
@@ -218,7 +219,7 @@ export class RemoveBlackBG2 {
 			this.m_rscene.removeEntity(this.m_currEntity);
 		}
 		let tex = this.getTexByUrl(url);
-		let material = new RemoveBlackBGMaterial();
+		let material = new RemoveBlackBGMaterial2();
 		material.fixScreen = false;
 		material.setTextureList([tex]);
 		if (this.m_currMaterial) {
