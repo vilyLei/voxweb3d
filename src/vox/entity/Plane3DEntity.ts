@@ -47,6 +47,24 @@ export default class Plane3DEntity extends DisplayEntity {
     alignScreen = false;
     fixAlignScreen = false;
 
+    /**
+     * 混合模式是否为亮度叠加模式, 默认值为false
+     */
+    brightnessBlend = false;
+    /**
+     * 混合模式是否为透明度混合模式, 默认值为false
+     */
+    transparentBlend = false;
+    /**
+     * 深度测试是否永远为false, 默认值为false
+     */
+    depthAlwaysFalse = false;
+    /**
+     * 是否双面显示, 默认值为false
+     */
+    doubleFace = false;
+
+
     materialName = "";
 	materialFragHeadTailCode = "";
 	materialFragBodyTailCode = "";
@@ -99,24 +117,6 @@ export default class Plane3DEntity extends DisplayEntity {
             cm.alignScreen = this.alignScreen;
             cm.fixAlignScreen = this.fixAlignScreen;
             cm.mapLodEnabled = this.mapLodEnabled;
-            
-            // if (this.m_screenAlignEnabled) {
-            //     let cm = new ScreenPlaneMaterial();
-			// 	cm.name = this.materialName;
-			// 	cm.fragMainTailCode = this.materialFragBodyTailCode;
-            //     cm.setTextureList(texList);
-            //     this.setMaterial(cm);
-            // }
-            // else {
-			// 	cm.name = this.materialName;
-			// 	cm.fragMainTailCode = this.materialFragBodyTailCode;
-            //     cm.normalEnabled = this.normalEnabled;
-            //     cm.vertColorEnabled = this.vertColorEnabled;
-            //     cm.premultiplyAlpha = this.premultiplyAlpha;
-            //     cm.setTextureList(texList);
-            //     this.setMaterial(cm);
-            // }
-            
             cm.name = this.materialName;
             cm.fragBodyTailCode = this.materialFragBodyTailCode;
             cm.fragHeadTailCode = this.materialFragHeadTailCode;
@@ -128,6 +128,13 @@ export default class Plane3DEntity extends DisplayEntity {
         }
         else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
+        }
+        if(this.brightnessBlend){
+            this.toBrightnessBlend(this.depthAlwaysFalse, this.doubleFace);
+        }else if(this.transparentBlend){
+            this.toTransparentBlend(this.depthAlwaysFalse, this.doubleFace);
+        }else {
+            this.showDoubleFace(this.doubleFace);
         }
     }
     showDoubleFace(always: boolean = false, doubleFace: boolean = true): void {
@@ -145,13 +152,24 @@ export default class Plane3DEntity extends DisplayEntity {
         }
     }
     toTransparentBlend(always: boolean = false, doubleFace: boolean = false): void {
-        if (always) {
-            if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
-            else this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
-        }
-        else {
-            if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-            else this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        if(this.premultiplyAlpha) {
+            if (always) {
+                if (doubleFace) this.setRenderState(RendererState.NONE_ALPHA_ADD_ALWAYS_STATE);
+                else this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+            }
+            else {
+                if (doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
+                else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+            }
+        }else {
+            if (always) {
+                if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
+                else this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+            }
+            else {
+                if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
+                else this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+            }
         }
     }
     toBrightnessBlend(always: boolean = false, doubleFace: boolean = false): void {
@@ -288,14 +306,14 @@ export default class Plane3DEntity extends DisplayEntity {
         }
     }
     setUVS(uvsLen8: Float32Array): void {
-        let mesh: RectPlaneMesh = this.getMesh() as RectPlaneMesh;
-        if(mesh != null) {
+        let mesh = this.getMesh() as RectPlaneMesh;
+        if(mesh) {
             mesh.setUVS(uvsLen8);
         }
     }
     reinitializeMesh(): void {
-        let mesh: RectPlaneMesh = this.getMesh() as RectPlaneMesh;
-        if (mesh != null) {
+        let mesh = this.getMesh() as RectPlaneMesh;
+        if (mesh) {
             mesh.reinitialize();
         }
     }

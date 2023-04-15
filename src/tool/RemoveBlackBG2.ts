@@ -228,7 +228,9 @@ export class RemoveBlackBG2 {
 		tex.flipY = true;
 		// let plane = new ScreenAlignPlaneEntity();
 		let plane = new Plane3DEntity();
-		plane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+		// plane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+		plane.transparentBlend = true;
+		plane.depthAlwaysFalse = true;
 		plane.setMaterial(material);
 		// plane.initialize(-1.0,-1.0, 2.0, 2.0);
 		plane.initializeXOY(-0.5, -0.5, 1.0, 1.0);
