@@ -13,7 +13,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {RemoveBlackBG as Demo} from "./tool/RemoveBlackBG";
 
-//  import {RemoveBlackBG2 as Demo} from "./tool/RemoveBlackBG2";
+ import {RemoveBlackBG2 as Demo} from "./tool/RemoveBlackBG2";
 
 //  import {NormalMapVerifier as Demo} from "./tool/NormalMapVerifier";
 
@@ -25,7 +25,7 @@ pwin["VoxVerify"] = new VVF();
 ///////////////////////////     algorithm    //////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
- import {DemoHistogram as Demo} from "./tool/algorithm/DemoHistogram";
+//  import {DemoHistogram as Demo} from "./tool/algorithm/DemoHistogram";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
