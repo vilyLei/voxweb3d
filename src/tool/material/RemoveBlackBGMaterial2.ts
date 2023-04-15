@@ -51,9 +51,10 @@ void main() {
     // invert color
 	color4.xyz = mix(color4.xyz, vec3(1.0) - color4.xyz, u_params[1].xxx);
     float dis = length(color4.xyz - u_params[2].xyz);
-    dis *= dis;
     dis = clamp(dis/clamp(u_params[1].y, 0.01, 1.0), 0.0, 1.0);
-    vec4 c0 = vec4(color4.xyz, max(dis * param.x - param.z, 0.0)) * param.y;
+    dis *= dis;
+    vec4 c0 = vec4(color4.xyz, max(dis * param.x - param.z, 0.0));
+    c0.xyz *= param.yyy;
     FragColor0 = c0 * param.wwww  + vec4(1.0 - param.w) * color4;
 	FragColor0.xyz = mix(FragColor0.xyz, vec3(1.0) - FragColor0.xyz, u_params[1].xxx);
 	// FragColor0.xyzw *= vec4(1.0, 0.0, 0.0, 0.1);
