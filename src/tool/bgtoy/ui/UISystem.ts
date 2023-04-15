@@ -356,7 +356,7 @@ class UISystem {
 		div.style.zIndex = "99999";
 		div.style.position = "absolute";
 		document.body.appendChild(pdiv);
-		pdiv.innerHTML = `<font color='${fontColor}'>将图片拖入任意区域, 或点击选择本地图片</font></br><font color='${fontColor}'>去除黑色或白色背景, 生成透明PNG图</font></br><font color='${fontColor}'>可支持的最大图像尺寸:&nbsp16K</font>`;
+		pdiv.innerHTML = `<font color='${fontColor}'>将图片拖入任意区域, 或点击选择本地图片</font></br><font color='${fontColor}'>去除黑色或白色背景, 生成透明PNG图</font></br><font color='${fontColor}'>可支持最大的图像尺寸:&nbsp16K</font>`;
 		this.m_infoDiv = pdiv;
 		this.initWithMeDiv();
 	}

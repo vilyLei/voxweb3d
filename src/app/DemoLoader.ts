@@ -1,6 +1,7 @@
 interface DemoInfoItem {
     name: string;
     ver: string;
+    pay?: string;
 }
 interface DemoInfoData {
     demos: DemoInfoItem[];
@@ -8,6 +9,7 @@ interface DemoInfoData {
 class WaitingPhase {
 	setInfoCall: (str: string) => void;
 	finishCall: () => void;
+    item: DemoInfoItem = null;
 	private m_t = 0;
 	constructor() {
 	}
@@ -48,6 +50,9 @@ class WaitingPhase {
 		t = Math.round(t * 100.0);
 		let headStr = "私人服务带宽小</br>请稍等两秒:&nbsp";
 		let endStr = "%</br>付费请联系作者</br>email:&nbspvily313@126.com";
+        if(!this.item || !this.item.pay) {
+            endStr = "%";
+        }
 		if(t >= 10) {
 			this.setInfoCall(headStr + t+endStr);
 		}else {
@@ -76,18 +81,19 @@ export class DemoLoader {
         if(hurl.indexOf("artvily.") > 0) {
             host = "http://www.artvily.com:9090/";
         }
-        // this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
+        this.showInfo("loading...");
+        this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
 
-		let mp = this.mWP;
-		mp.setInfoCall = (str: string): void => {
-			this.showInfo(str);
-		}
-		mp.finishCall = (): void => {
-			// this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
-			console.log("loading main module ...");
-			this.showInfo("loading 1% ");
-		}
-		mp.start();
+		// let mp = this.mWP;
+		// mp.setInfoCall = (str: string): void => {
+		// 	this.showInfo(str);
+		// }
+		// mp.finishCall = (): void => {
+		// 	// this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
+		// 	console.log("loading main module ...");
+		// 	this.showInfo("loading 1% ");
+		// }
+		// mp.start();
     }
 
     private loadModule(purl: string): void {
@@ -123,6 +129,8 @@ export class DemoLoader {
         codeLoader.onload = () => {
             let jsonStr = codeLoader.response;
 
+            
+            
             let data: DemoInfoData = JSON.parse(jsonStr) as DemoInfoData;
             let map: Map<string, DemoInfoItem> = new Map();
             let ls = data.demos;
@@ -130,20 +138,29 @@ export class DemoLoader {
                 map.set(ls[i].name, ls[i]);
             }
             console.log("xxx demo name: ",this.m_name);
+            let item: DemoInfoItem = null;
             if(map.has(this.m_name)) {
-                let item = map.get(this.m_name);
+                item = map.get(this.m_name);
                 console.log("item: ", item);
-                this.loadModule( demoUrl + "?dtk="+item.ver );
-            }else {
-                this.loadModule( demoUrl );
+                // this.loadModule( demoUrl + "?dtk="+item.ver );
+                demoUrl = demoUrl + "?dtk="+item.ver
             }
-            // let scriptEle = document.createElement("script");
-            // scriptEle.onerror = (e) => {
-            //     console.error("module script onerror, e: ", e);
+            // else {
+            //     // this.loadModule( demoUrl );
             // }
-            // scriptEle.innerHTML = codeLoader.response;
-            // document.head.appendChild(scriptEle);
-            // this.loadFinish();
+		let mp = this.mWP;
+        mp.item = item;
+		mp.setInfoCall = (str: string): void => {
+			this.showInfo(str);
+		}
+		mp.finishCall = (): void => {
+			// this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
+			console.log("loading main module ...");
+			this.showInfo("loading 1% ");
+            this.loadModule( demoUrl );
+
+		}
+		mp.start();
         }
         codeLoader.send(null);
     }
@@ -153,7 +170,7 @@ export class DemoLoader {
     private m_name = "";
     private parseUrl(url: string): string {
 
-        console.log("url: ",url);
+        console.log("parseUrl url: ",url);
 
         let params = url.split("?");
         if(params.length < 2 || params[0].indexOf("renderCase") < 1) {

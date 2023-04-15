@@ -228,9 +228,15 @@ export class RemoveBlackBG2 {
 		this.m_currMaterial = material;
 	}
 	private m_times = 4;
+	private m_delay = 20;
 	run(): void {
 		// this.m_fileSys.savingBegin();
-
+		if(this.m_delay > 0) {
+			this.m_delay --;
+			if(this.m_delay == 0) {
+				document.title = "PNG Toy";
+			}
+		}
 		this.m_graph.run();
 		this.m_vasScene.run();
 		if (this.m_currFboEntity) {
