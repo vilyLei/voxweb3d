@@ -162,6 +162,37 @@ class UISystem {
 			false,
 			selectBarStyle
 		);
+		// 
+		ui.addStatusItem(
+			"输出透明度翻转",
+			"invert_alpha",
+			"是",
+			"否",
+			false,
+			(info: CtrlInfo): void => {
+				if (this.m_currMaterial) {
+					this.m_currMaterial.setInvertAlpha(info.flag);
+				}
+			},
+			true,
+			false,
+			selectBarStyle
+		);
+		ui.addStatusItem(
+			"输出颜色值翻转",
+			"invert_rgb",
+			"是",
+			"否",
+			false,
+			(info: CtrlInfo): void => {
+				if (this.m_currMaterial) {
+					this.m_currMaterial.setInvertRGB(info.flag);
+				}
+			},
+			true,
+			false,
+			selectBarStyle
+		);
 
 		ui.addValueItem(
 			"透明度强度",
@@ -306,6 +337,8 @@ class UISystem {
 		ui.setUIItemValue("color_factor", 1.0);
 		ui.setUIItemValue("alpha_discard_factor", 0.02);
 		ui.setUIItemValue("alpha_discard_threshold", 0.5);
+		ui.setUIItemFlag("invert_alpha", false);
+		ui.setUIItemFlag("invert_rgb", false);
 		ui.setUIItemFlag("reset_init_img", false);
 		ui.setUIItemFlag("invert_discard", false);
 	}

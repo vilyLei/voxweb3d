@@ -56,8 +56,8 @@ void main() {
     vec4 c0 = vec4(color4.xyz, max(dis * param.x - param.z, 0.0));
     c0.xyz *= param.yyy;
     FragColor0 = c0 * param.wwww  + vec4(1.0 - param.w) * color4;
-	FragColor0.xyz = mix(FragColor0.xyz, vec3(1.0) - FragColor0.xyz, u_params[1].xxx);
-	// FragColor0.xyzw *= vec4(1.0, 0.0, 0.0, 0.1);
+	FragColor0.xyz = mix(FragColor0.xyz, vec3(1.0) - FragColor0.xyz, u_params[1].www);
+	FragColor0.w = mix(FragColor0.w, 1.0 - FragColor0.w, u_params[1].z);
 #else
     FragColor0 = u_param[0];
 #endif
@@ -138,13 +138,26 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase {
         this.m_param[3] = p;
     }
     /**
+     * 计算颜色透明情况的阈值
      * @param r 0.0, -> 1.0
      */
     setDiscardRadius(r: number): void {
         this.m_param[5] = r;
     }
-	setInvertDiscard(b: boolean): void {
-        this.m_param[4] = b ? 1.0 : 0.0;
+    /**
+     * @param boo true or false
+     */
+    setInvertAlpha(boo: boolean): void {
+        this.m_param[6] = boo ? 1.0 : 0;
+    }
+    /**
+     * @param boo true or false
+     */
+    setInvertRGB(boo: boolean): void {
+        this.m_param[7] = boo ? 1.0 : 0;
+    }
+	setInvertDiscard(boo: boolean): void {
+        this.m_param[4] = boo ? 1.0 : 0.0;
     }
 	paramCopyFrom(dst: RemoveBlackBGMaterial2): void {
 		this.m_param.set(dst.m_param);
