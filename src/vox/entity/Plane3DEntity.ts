@@ -48,7 +48,8 @@ export default class Plane3DEntity extends DisplayEntity {
     fixAlignScreen = false;
 
     materialName = "";
-	materialFragMainTailCode = "";
+	materialFragHeadTailCode = "";
+	materialFragBodyTailCode = "";
     constructor(transform: IROTransform = null) {
         super(transform);
     }
@@ -102,13 +103,13 @@ export default class Plane3DEntity extends DisplayEntity {
             // if (this.m_screenAlignEnabled) {
             //     let cm = new ScreenPlaneMaterial();
 			// 	cm.name = this.materialName;
-			// 	cm.fragMainTailCode = this.materialFragMainTailCode;
+			// 	cm.fragMainTailCode = this.materialFragBodyTailCode;
             //     cm.setTextureList(texList);
             //     this.setMaterial(cm);
             // }
             // else {
 			// 	cm.name = this.materialName;
-			// 	cm.fragMainTailCode = this.materialFragMainTailCode;
+			// 	cm.fragMainTailCode = this.materialFragBodyTailCode;
             //     cm.normalEnabled = this.normalEnabled;
             //     cm.vertColorEnabled = this.vertColorEnabled;
             //     cm.premultiplyAlpha = this.premultiplyAlpha;
@@ -117,7 +118,8 @@ export default class Plane3DEntity extends DisplayEntity {
             // }
             
             cm.name = this.materialName;
-            cm.fragMainTailCode = this.materialFragMainTailCode;
+            cm.fragBodyTailCode = this.materialFragBodyTailCode;
+            cm.fragHeadTailCode = this.materialFragHeadTailCode;
             cm.normalEnabled = this.normalEnabled;
             cm.vertColorEnabled = this.vertColorEnabled;
             cm.premultiplyAlpha = this.premultiplyAlpha;

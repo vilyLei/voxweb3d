@@ -216,7 +216,7 @@ export class DemoHistogram {
 		let plane = new Plane3DEntity();
 
 		plane.materialName = "threshold";
-		plane.materialFragMainTailCode = `
+		plane.materialFragBodyTailCode = `
 	float threshold = ${thresholdStr};
 	FragColor0.xyz = length(FragColor0.xyz) > threshold ? vec3(1.0) : vec3(0.0);
 		`;
