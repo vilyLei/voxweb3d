@@ -26,14 +26,14 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
         this.m_uniqueName = "VOX_Default3DShd";
-        if (this.m_texEnabled) this.m_uniqueName += "_tex";
-        if (this.vertColorEnabled) this.m_uniqueName += "_vtxColor";
-        if (this.premultiplyAlpha) this.m_uniqueName += "_preMulAlpha";
+        if (this.m_texEnabled) this.m_uniqueName += "Tex";
+        if (this.vertColorEnabled) this.m_uniqueName += "VtxColor";
+        if (this.premultiplyAlpha) this.m_uniqueName += "PreMulAlpha";
         this.adaptationShaderVersion = false;
         if(this.fixAlignScreen) {
-            this.m_uniqueName += "_fixAlScr";
+            this.m_uniqueName += "FixAlScr";
         }else if(this.alignScreen){
-            this.m_uniqueName += "_alScr";
+            this.m_uniqueName += "AlScr";
         }
     }
 
@@ -143,7 +143,7 @@ vec2 getUV(vec2 uv) {
         #endif
     #else
         #ifdef VOX_ALIGN_SCREEN
-            gl_Position = localPosition;
+            gl_Position = u_projMat * localPosition;
         #else
             gl_Position = localPosition;
         #endif
