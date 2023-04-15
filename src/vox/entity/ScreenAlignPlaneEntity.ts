@@ -5,15 +5,22 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererState from "../../vox/render/RendererState";
-import DisplayEntity from "../../vox/entity/DisplayEntity";
-import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import ScreenPlaneMaterial from "../../vox/material/mcase/ScreenPlaneMaterial";
-import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
-import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
+// import RendererState from "../../vox/render/RendererState";
+// import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Plane3DEntity from "../../vox/entity/Plane3DEntity";
+// import IRenderMaterial from "../../vox/render/IRenderMaterial";
+// import ScreenPlaneMaterial from "../../vox/material/mcase/ScreenPlaneMaterial";
+// import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+// import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
+// import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 
-export default class ScreenAlignPlaneEntity extends DisplayEntity {
+export default class ScreenAlignPlaneEntity extends Plane3DEntity {
+    constructor() {
+        super();
+        this.alignScreen = true;
+        console.log("ScreenAlignPlaneEntity::constructor() ...");
+    }
+    /*
     private m_startX: number = 0;
     private m_startZ: number = 0;
     private m_pwidth: number = 0;
@@ -83,4 +90,5 @@ export default class ScreenAlignPlaneEntity extends DisplayEntity {
         super.destroy();
         this.m_currMaterial = null;
     }
+    //*/
 }

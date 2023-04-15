@@ -5,15 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererState from "../../vox/render/RendererState";
-import DisplayEntity from "../../vox/entity/DisplayEntity";
+// import RendererState from "../../vox/render/RendererState";
+// import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
-import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import ScreenFixedPlaneMaterial from "../../vox/material/mcase/ScreenFixedPlaneMaterial";
-import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
-import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
-import Default3DMaterial from "../material/mcase/Default3DMaterial";
+// import IRenderMaterial from "../../vox/render/IRenderMaterial";
+// import ScreenFixedPlaneMaterial from "../../vox/material/mcase/ScreenFixedPlaneMaterial";
+// import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+// import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
+// import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
+// import Default3DMaterial from "../material/mcase/Default3DMaterial";
 
 export default class ScreenFixedAlignPlaneEntity extends Plane3DEntity {
     constructor() {

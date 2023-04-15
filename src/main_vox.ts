@@ -490,7 +490,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoPBRTextureShader as Demo} from "./demo/DemoPBRTextureShader";
 
- import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
@@ -522,7 +522,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-//  import {RbtDrama as Demo} from "./app/RbtDrama";
+ import {RbtDrama as Demo} from "./app/RbtDrama";
 
 // import {SlickRoad as Demo} from "./app/SlickRoad";
 

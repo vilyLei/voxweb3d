@@ -20,6 +20,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
 	fragMainTailCode = "\n";
     alignScreen = false;
     fixAlignScreen = false;
+    mapLodEnabled = false;
     constructor() {
         super();
     }
@@ -34,6 +35,9 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
             this.m_uniqueName += "FixAlScr";
         }else if(this.alignScreen){
             this.m_uniqueName += "AlScr";
+        }
+        if(this.mapLodEnabled) {
+            this.m_uniqueName += "TLod";
         }
     }
 
@@ -56,8 +60,13 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
             coder.addDefine("VOX_VTX_MAT_TRANSFORM");
             coder.useVertSpaceMats(true, true, true);
         }
+        if(this.mapLodEnabled) {
+        }
+        
+        coder.mapLodEnabled = false;
         if (this.m_texEnabled) {
             this.m_uniform.addDiffuseMap();
+            coder.mapLodEnabled = this.mapLodEnabled;
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
             coder.addVertUniform("vec4", "u_uvTrans");
@@ -184,6 +193,7 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     vtxMatrixTransform = true;
     alignScreen = false;
     fixAlignScreen = false;
+    mapLodEnabled = false;
     constructor() {
         super();
         if (Default3DMaterial.s_shdCodeBuffer == null) {
@@ -203,6 +213,7 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
         
         buf.alignScreen = this.alignScreen;
         buf.fixAlignScreen = this.fixAlignScreen;
+        buf.mapLodEnabled = this.mapLodEnabled;
     }
     /**
      * get a shader code buf instance, for sub class override

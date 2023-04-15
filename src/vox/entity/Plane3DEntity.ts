@@ -31,14 +31,16 @@ export default class Plane3DEntity extends DisplayEntity {
     readonly color2 = new Color4();
     readonly color3 = new Color4();
 
+    uvs: Float32Array = null;
+
     offsetU = 0.0;
     offsetV = 0.0;
     uScale = 1.0;
     vScale = 1.0;
 
+    mapLodEnabled = false;
     normalEnabled = false;
     wireframe = false;
-    uvs: Float32Array = null;
     flipVerticalUV = false;
     vertColorEnabled = false;
     premultiplyAlpha = false;
@@ -63,6 +65,17 @@ export default class Plane3DEntity extends DisplayEntity {
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
         if (this.m_mt) this.m_mt.setRGBA4f(pr, pg, pb, pa);
     }
+    setOffsetRGB3f(pr: number, pg: number, pb: number): void {
+        if (this.m_mt) this.m_mt.setOffsetRGB3f(pr, pg, pb);
+    }
+    setOffsetRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
+        if (this.m_mt) this.m_mt.setOffsetRGBA4f(pr, pg, pb, pa);
+    }
+    setTextureLodLevel(lodLv: number): void {
+        if(this.mapLodEnabled) {
+            if (this.m_mt) this.m_mt.setTextureLodLevel( lodLv );
+        }
+    }
     /**
      * 设置是否为多面体网格
      * @param boo 是否为多面体网格
@@ -84,6 +97,7 @@ export default class Plane3DEntity extends DisplayEntity {
             this.m_mt = cm;
             cm.alignScreen = this.alignScreen;
             cm.fixAlignScreen = this.fixAlignScreen;
+            cm.mapLodEnabled = this.mapLodEnabled;
             
             // if (this.m_screenAlignEnabled) {
             //     let cm = new ScreenPlaneMaterial();
@@ -102,13 +116,13 @@ export default class Plane3DEntity extends DisplayEntity {
             //     this.setMaterial(cm);
             // }
             
-				cm.name = this.materialName;
-				cm.fragMainTailCode = this.materialFragMainTailCode;
-                cm.normalEnabled = this.normalEnabled;
-                cm.vertColorEnabled = this.vertColorEnabled;
-                cm.premultiplyAlpha = this.premultiplyAlpha;
-                cm.setTextureList(texList);
-                this.setMaterial(cm);
+            cm.name = this.materialName;
+            cm.fragMainTailCode = this.materialFragMainTailCode;
+            cm.normalEnabled = this.normalEnabled;
+            cm.vertColorEnabled = this.vertColorEnabled;
+            cm.premultiplyAlpha = this.premultiplyAlpha;
+            cm.setTextureList(texList);
+            this.setMaterial(cm);
         }
         else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
