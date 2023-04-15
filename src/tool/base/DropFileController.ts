@@ -133,7 +133,7 @@ class DropFileController {
 			this.m_listener.initFileLoad(this.getFiles(), type);
 		}
 	}
-	readonly imgKeys = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
+	readonly imgKeys = ["jpg", "jpeg", "png", "gif", "bmp", "webp","jfif"];
 	readonly geomModelKeys = ["obj", "ctm", "draco", "drc", "fbx"];
 	private testFile(name: string): IFileUrlObj {
 		let pns = name.toLocaleLowerCase();
