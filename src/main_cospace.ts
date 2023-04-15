@@ -6,6 +6,7 @@ class VVF {
 }
 let pwin: any = window;
 pwin["VoxVerify"] = new VVF();
+
 // import {DemoThread as Demo} from "./cospace/modules/thread/example/DemoThread";
 // import {DemoThread as Demo} from "./cospace/demo/DemoThread";
 // import {DemoThreadLoadJS as Demo} from "./cospace/demo/DemoThreadLoadJS";

@@ -200,6 +200,9 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
         buf.normalEnabled = this.normalEnabled;
         buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
         buf.vtxMatrixTransform = this.vtxMatrixTransform;
+        
+        buf.alignScreen = this.alignScreen;
+        buf.fixAlignScreen = this.fixAlignScreen;
     }
     /**
      * get a shader code buf instance, for sub class override

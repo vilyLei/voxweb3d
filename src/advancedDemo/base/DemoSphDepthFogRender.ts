@@ -90,6 +90,10 @@ export class DemoSphDepthFogRender {
 
 			this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 			this.buildFogScene();
+			
+			// let scrPlane = new ScreenFixedAlignPlaneEntity();
+			// scrPlane.initialize(-0.9, -0.9, 0.3, 0.3);
+			// this.m_rscene.addEntity(scrPlane, 0);
 		}
 	}
 	private mouseDown(evt: any): void {

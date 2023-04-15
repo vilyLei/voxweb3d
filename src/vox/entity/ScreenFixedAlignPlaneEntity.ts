@@ -7,40 +7,49 @@
 
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import ScreenFixedPlaneMaterial from "../../vox/material/mcase/ScreenFixedPlaneMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
+import Default3DMaterial from "../material/mcase/Default3DMaterial";
 
-export default class ScreenFixedAlignPlaneEntity extends DisplayEntity {
+export default class ScreenFixedAlignPlaneEntity extends Plane3DEntity {
+    constructor() {
+        super();
+        this.fixAlignScreen = true;
+    }
+    /*
     private m_startX: number = 0;
     private m_startZ: number = 0;
     private m_pwidth: number = 0;
     private m_plong: number = 0;
     private m_flag: number = 0;
-    private m_currMaterial: ScreenFixedPlaneMaterial = null;
+    private m_mt: Default3DMaterial = null;
     flipVerticalUV: boolean = false;
     constructor() {
         super();
     }
     setUVScale(scaleU: number, scaleV: number): void {
-        if (this.m_currMaterial != null) this.m_currMaterial.setUVScale(scaleU, scaleV);
+        if (this.m_mt) this.m_mt.setUVScale(scaleU, scaleV);
     }
     setUVTranslation(offsetU: number, offsetV: number): void {
-        if (this.m_currMaterial != null) this.m_currMaterial.setUVTranslation(offsetU, offsetV);
+        // if (this.m_mt) this.m_mt.setUVTranslation(offsetU, offsetV);
+        if (this.m_mt) this.m_mt.setUVOffset(offsetU, offsetV);
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
-        if (this.m_currMaterial != null) this.m_currMaterial.setRGB3f(pr, pg, pb);
+        if (this.m_mt) this.m_mt.setRGB3f(pr, pg, pb);
     }
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
-        if (this.m_currMaterial != null) this.m_currMaterial.setRGBA4f(pr, pg, pb, pa);
+        if (this.m_mt) this.m_mt.setRGBA4f(pr, pg, pb, pa);
     }
     createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
-            this.m_currMaterial = new ScreenFixedPlaneMaterial();
-            this.m_currMaterial.setTextureList(texList);
-            this.setMaterial(this.m_currMaterial);
+            this.m_mt = new Default3DMaterial();
+            this.m_mt.fixAlignScreen = true;
+            this.m_mt.setTextureList(texList);
+            this.setMaterial(this.m_mt);
         }
         else {
             this.getMaterial().setTextureList(texList);
@@ -100,6 +109,7 @@ export default class ScreenFixedAlignPlaneEntity extends DisplayEntity {
 
     destroy(): void {
         super.destroy();
-        this.m_currMaterial = null;
+        this.m_mt = null;
     }
+    //*/
 }

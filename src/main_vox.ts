@@ -81,7 +81,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import { DemoFBOInstance as Demo } from "./demo/DemoFBOInstance";
 
- import { DemoFBOInsRTT as Demo } from "./demo/DemoFBOInsRTT";
+//  import { DemoFBOInsRTT as Demo } from "./demo/DemoFBOInsRTT";
 
 //  import { DemoFBOInsFloatRTT as Demo } from "./demo/DemoFBOInsFloatRTT";
 
@@ -490,7 +490,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoPBRTextureShader as Demo} from "./demo/DemoPBRTextureShader";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+ import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

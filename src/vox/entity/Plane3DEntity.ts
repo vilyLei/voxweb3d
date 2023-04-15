@@ -17,13 +17,14 @@ import Color4 from "../material/Color4";
 
 export default class Plane3DEntity extends DisplayEntity {
 
+    private m_mt: Default3DMaterial = null;
     private m_startX = 0;
     private m_startZ = 0;
     private m_pwidth = 0;
     private m_plong = 0;
     private m_flag = 0;
     private m_polyhedralBoo = true;
-    private m_screenAlignEnabled = false;
+    // private m_screenAlignEnabled = false;
 
     readonly color0 = new Color4();
     readonly color1 = new Color4();
@@ -41,11 +42,26 @@ export default class Plane3DEntity extends DisplayEntity {
     flipVerticalUV = false;
     vertColorEnabled = false;
     premultiplyAlpha = false;
+    alignScreen = false;
+    fixAlignScreen = false;
 
     materialName = "";
 	materialFragMainTailCode = "";
     constructor(transform: IROTransform = null) {
         super(transform);
+    }
+    
+    setUVScale(scaleU: number, scaleV: number): void {
+        if (this.m_mt) this.m_mt.setUVScale(scaleU, scaleV);
+    }
+    setUVTranslation(offsetU: number, offsetV: number): void {
+        if (this.m_mt) this.m_mt.setUVOffset(offsetU, offsetV);
+    }
+    setRGB3f(pr: number, pg: number, pb: number): void {
+        if (this.m_mt) this.m_mt.setRGB3f(pr, pg, pb);
+    }
+    setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
+        if (this.m_mt) this.m_mt.setRGBA4f(pr, pg, pb, pa);
     }
     /**
      * 设置是否为多面体网格
@@ -60,19 +76,32 @@ export default class Plane3DEntity extends DisplayEntity {
     }
     // 是否是平铺在屏幕上
     setScreenAlignEnable(enable: boolean): void {
-        this.m_screenAlignEnabled = enable;
+        this.alignScreen = enable;
     }
     createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
-            if (this.m_screenAlignEnabled) {
-                let cm = new ScreenPlaneMaterial();
-				cm.name = this.materialName;
-				cm.fragMainTailCode = this.materialFragMainTailCode;
-                cm.setTextureList(texList);
-                this.setMaterial(cm);
-            }
-            else {
-                let cm = new Default3DMaterial();
+            let cm = new Default3DMaterial();
+            this.m_mt = cm;
+            cm.alignScreen = this.alignScreen;
+            cm.fixAlignScreen = this.fixAlignScreen;
+            
+            // if (this.m_screenAlignEnabled) {
+            //     let cm = new ScreenPlaneMaterial();
+			// 	cm.name = this.materialName;
+			// 	cm.fragMainTailCode = this.materialFragMainTailCode;
+            //     cm.setTextureList(texList);
+            //     this.setMaterial(cm);
+            // }
+            // else {
+			// 	cm.name = this.materialName;
+			// 	cm.fragMainTailCode = this.materialFragMainTailCode;
+            //     cm.normalEnabled = this.normalEnabled;
+            //     cm.vertColorEnabled = this.vertColorEnabled;
+            //     cm.premultiplyAlpha = this.premultiplyAlpha;
+            //     cm.setTextureList(texList);
+            //     this.setMaterial(cm);
+            // }
+            
 				cm.name = this.materialName;
 				cm.fragMainTailCode = this.materialFragMainTailCode;
                 cm.normalEnabled = this.normalEnabled;
@@ -80,7 +109,6 @@ export default class Plane3DEntity extends DisplayEntity {
                 cm.premultiplyAlpha = this.premultiplyAlpha;
                 cm.setTextureList(texList);
                 this.setMaterial(cm);
-            }
         }
         else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
@@ -126,6 +154,13 @@ export default class Plane3DEntity extends DisplayEntity {
      */
     initializeFixScreen(texList: IRenderTexture[] = null): void {
         this.initializeXOY(-1.0, -1.0, 2.0, 2.0, texList);
+    }
+    /**
+     * initialize a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
+     * @param texList textures list, default value is null.
+     */
+    initialize(minX: number, minY: number, pwidth: number, pheight: number, texList: IRenderTexture[] = null): void {
+        this.initializeXOY(minX, minY, pwidth, pheight, texList);
     }
     /**
      * initialize a rectangle plane ,and it parallel the 3d space XOY plane
@@ -247,5 +282,9 @@ export default class Plane3DEntity extends DisplayEntity {
         if (mesh != null) {
             mesh.reinitialize();
         }
+    }
+    destroy(): void {
+        super.destroy();
+        this.m_mt = null;
     }
 }
