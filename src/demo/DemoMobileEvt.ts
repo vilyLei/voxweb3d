@@ -195,6 +195,7 @@ export class DemoMobileEvt {
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
+            ///*
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);
@@ -202,7 +203,6 @@ export class DemoMobileEvt {
             let srcBox: Box3DEntity = new Box3DEntity();
             srcBox.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
             let i: number = 0;
-            ///*
             for (i = 0; i < 2; ++i) {
                 let box: Box3DEntity = new Box3DEntity();
                 box.uuid = "box_" + i;
@@ -223,8 +223,7 @@ export class DemoMobileEvt {
                 this.useEntityEvtDispatcher(sph);
                 this.m_rscene.addEntity(sph);
             }
-            //*/
-            ///*
+            
             // container mouse event test
             for (i = 0; i < 2; ++i) {
                 let box: Box3DEntity = new Box3DEntity();
@@ -265,8 +264,8 @@ export class DemoMobileEvt {
             objDisp.setXYZ(800 * Math.random() - 400.0, 800 * Math.random() - 400.0, 800 * Math.random() - 400.0);
             this.useEntityEvtDispatcher(objDisp);
             this.m_rscene.addEntity(objDisp);
-            //*/
             this.initMobileEvt();
+            //*/
             this.m_rscene.setClearColor(this.m_clearColor);
         }
     }

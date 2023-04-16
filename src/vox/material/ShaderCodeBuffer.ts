@@ -48,6 +48,7 @@ class ShaderCodeBuffer implements IShaderCodeBuffer {
 	 * 是否自适应转换shader版本
 	 */
 	adaptationShaderVersion: boolean = true;
+	codeBuilderEnabled = true;
 	constructor() {
 		if (ShaderCodeBuffer.s_coder == null) {
 			ShaderCodeBuffer.s_uniform = new ShaderCodeUniform();
@@ -61,8 +62,12 @@ class ShaderCodeBuffer implements IShaderCodeBuffer {
 		this.m_uniform = ShaderCodeBuffer.s_uniform;
 		this.m_texBuilder = ShaderCodeBuffer.s_texBulder;
 		this.m_texture = this.m_uniform;
-
-		this.m_coder.reset();
+		// console.log(">>>>>>>>> this.codeBuilderEnabled: ", this.codeBuilderEnabled);
+		// this.m_coder.
+		// if(this.codeBuilderEnabled) {
+		// 	this.m_coder.reset();
+		// }
+		this.m_coder.reset( this.codeBuilderEnabled );
 
 		this.m_texList = null;
 		this.pipeTypes = null;
@@ -179,9 +184,9 @@ class ShaderCodeBuffer implements IShaderCodeBuffer {
 		throw Error("Illgel operation !!!");
 		return "";
 	}
-	toString(): string {
-		return "[ShaderCodeBuffer()]";
-	}
+	// toString(): string {
+	// 	return "[ShaderCodeBuffer()]";
+	// }
 	// static UseShaderBuffer(buf: ShaderCodeBuffer): void {
 	//     if (ShaderCodeBuffer.__$s_csBuf != null) {
 	//         ShaderCodeBuffer.__$s_csBuf.clear();

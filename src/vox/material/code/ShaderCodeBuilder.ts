@@ -115,7 +115,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         if(this.normalEnabled) ns += "Nor";
         return this.uniform.getUniqueNSKeyString() + ns;
     }
-    reset(): void {
+    reset(flag: boolean = true): void {
 
 		this.uns = "";
 
@@ -181,9 +181,11 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         this.vertMatrixInverseEnabled = false;
         this.fragMatrixInverseEnabled = false;
         this.vtxUVTransfromEnabled = false;
-
-        this.m_preCompileInfo = new ShaderCompileInfo();
-
+        if(flag) {
+            this.m_preCompileInfo = new ShaderCompileInfo();
+        }else {
+            this.m_preCompileInfo = null;
+        }
         this.uniform.reset();
     }
     addUniqueNSKeyString(key: string): void {

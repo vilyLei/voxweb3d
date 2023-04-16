@@ -43,7 +43,7 @@ class ShaderProgramBuilder {
         this.m_shdDict.set(uns, p);
 
         if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
-            console.log("this.Create() a new ShdProgram: ", p.toString());
+            console.log("this.Create() a new ShdProgram, uns: ",uns, ", p: ",p);
         }
         return p;
     }

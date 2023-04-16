@@ -27,7 +27,10 @@ interface IShaderCodeBuffer {
     envAmbientLightEnabled: boolean;
     brightnessOverlayEnabeld: boolean;
     glossinessEnabeld: boolean;
-
+    /**
+     * the default value is true;
+     */
+    codeBuilderEnabled: boolean;
     pipeTypes: MaterialPipeType[];
     keysString: string;
 

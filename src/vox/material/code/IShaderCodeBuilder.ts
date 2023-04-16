@@ -21,7 +21,10 @@ export default interface IShaderCodeBuilder {
     fragMatrixInverseEnabled: boolean;
     uniform: IShaderCodeUniform;
     autoBuildHeadCodeEnabled: boolean;
-    reset(): void;
+    /**
+     * @param flag the default value is true
+     */
+    reset(flag?: boolean): void;
     useHighPrecious(): void;
     useMediumPrecious(): void;
     useLowPrecious(): void;
