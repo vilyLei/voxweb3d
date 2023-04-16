@@ -19,7 +19,7 @@ export default class Default3DEntity extends DisplayEntity {
 
     wireframe = false;
     shape = true;
-    
+
     normalScale = 1.0;
     normalEnabled = false;
 
@@ -49,6 +49,7 @@ export default class Default3DEntity extends DisplayEntity {
 
 
     materialName = "";
+    fragUniformData: Float32Array = null;
 	materialFragHeadTailCode = "";
 	materialFragBodyTailCode = "";
     constructor(transform: IROTransform = null) {
@@ -100,9 +101,12 @@ export default class Default3DEntity extends DisplayEntity {
             cm.alignScreen = this.alignScreen;
             cm.fixAlignScreen = this.fixAlignScreen;
             cm.mapLodEnabled = this.mapLodEnabled;
+
+            cm.fragUniformData = this.fragUniformData;
             cm.name = this.materialName;
             cm.fragBodyTailCode = this.materialFragBodyTailCode;
             cm.fragHeadTailCode = this.materialFragHeadTailCode;
+            
             cm.normalEnabled = this.normalEnabled;
             cm.vertColorEnabled = this.vertColorEnabled;
             cm.premultiplyAlpha = this.premultiplyAlpha;

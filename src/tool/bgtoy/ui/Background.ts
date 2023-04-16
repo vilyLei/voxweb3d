@@ -33,6 +33,16 @@ class Background {
 	setBGRGBAColor(c: Color4): void {
 		(this.bg.getMaterial() as IColorMaterial).setRGBA4f(c.r, c.g, c.b, 1.0);
 	}
+	private initWorkSpaceBG(wbg: Plane3DEntity): void {
+		wbg.materialName = "left_bg";
+		let fcode = `
+		vec4 fc = vec4(1.0,1.0,0.0,0.5);
+		vec2 fuv = fract(gl_FragCoord.xy/vec2(512.0, 512.0));
+		fc.xy *= fuv;
+		FragColor0 = fc;
+		`;
+		this.leftBG.materialFragBodyTailCode = fcode;
+	}
 	private init(): void {
 		let sc = this.m_rscene;
 		console.log("xxx init builder .....");
@@ -44,8 +54,8 @@ class Background {
 		sc.addEntity( bg, 1 );
 		this.bg = bg;
 		bg.intoRendererListener = (): void => {
+			this.initWorkSpaceBG(this.leftBG);
 			this.leftBG.initializeXOY(-512, -256, 512, 512);
-			// this.leftBG.initializeXOY(-128, -64, 256, 128);
 			(this.leftBG.getMaterial() as IColorMaterial).setRGBA4f(0.0, 0.0, 0.0, 0.3);
 			this.leftBG.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
 			sc.addEntity( this.leftBG, 1 );
