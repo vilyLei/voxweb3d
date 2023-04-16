@@ -29,6 +29,7 @@ export default class SelectionBarStyle {
 	fontSize = 30;
 	renderState = 0;
 	bodyFixWidth = 0;
+	headFixWidth = 0;
     constructor() { }
 	copyTo(dst: SelectionBarStyle): void {
 		dst.headFontColor.copyFrom(this.headFontColor);

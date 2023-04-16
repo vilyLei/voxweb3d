@@ -245,7 +245,7 @@ export class RemoveBlackBG {
 
 		this.m_graph.addScene(ui.ruisc);
 
-		this.m_vasScene.initialize(ui.ruisc, this.m_aspParam);
+		// this.m_vasScene.initialize(ui.ruisc, this.m_aspParam);
 	}
 
 	private resetCtrlValue(): void {

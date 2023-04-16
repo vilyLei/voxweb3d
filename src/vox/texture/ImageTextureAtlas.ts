@@ -232,7 +232,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		if (bgStyle == "") {
 			bgStyle = "rgba(255,255,255,0.3)";
 		}
-		const keyStr = chars + "-" + size + "-" + frontStyle + "-" + bgStyle;
+		const keyStr = chars + "-" + size + "-" + frontStyle + "-" + bgStyle + "-" + fixWidth;
 		ImageTextureAtlas.s_keyStr = keyStr;
 		if (ImageTextureAtlas.s_imgMap.has(keyStr)) {
 			return ImageTextureAtlas.s_imgMap.get(keyStr);
@@ -262,7 +262,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		var metrics: any = ctx2D.measureText(chars);
 		let texWidth = metrics.width;
 
-		if (chars.length > 1) {
+		if (chars.length > 0) {
 			width = Math.round(texWidth + 8);
 			if (fixWidth > 0 && width < fixWidth) {
 				width = fixWidth;

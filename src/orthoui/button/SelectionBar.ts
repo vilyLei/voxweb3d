@@ -137,9 +137,13 @@ export class SelectionBar {
     }
     private initBody(): void {
 
+		let bodyFixWidth = 0;
+		let headFixWidth = 0;
         let style = this.style;
 		let rst = 0;
 		if(style) {
+			bodyFixWidth = style.bodyFixWidth;
+			headFixWidth = style.headFixWidth;
 			this.m_btnSize = style.fontSize;
 			rst = style.renderState;
 		}
@@ -161,7 +165,7 @@ export class SelectionBar {
 			}
 
             selfT.nameButton = new ColorRectImgButton();
-            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, fc, fbc);
+            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, fc, fbc, headFixWidth);
             this.nameButton.setXYZ(-1.0 * this.nameButton.getWidth() - 1.0, 0.0, 0.0);
             container.addEntity(this.nameButton);
 			// this.nameButton.setRenderState(RendererState);
@@ -171,11 +175,8 @@ export class SelectionBar {
 			fc = style.bodyFontColor;
 			fbc = style.bodyFontBgColor;
 		}
-		let bodyFixWidth = 0;
-        if(style) {
-			bodyFixWidth = style.bodyFixWidth;
-		}
         if(style == null || style.bodyVisible) {
+            console.log("### bodyFixWidth: ", bodyFixWidth);
 			this.m_texObj0 = ctt.createCharsImageToAtlas("", this.m_selectName, size, fc, fbc, bodyFixWidth);
 			this.m_texObj1 = ctt.createCharsImageToAtlas("", this.m_deselectName, size, fc, fbc, bodyFixWidth);
             selfT.selectionButton = new ColorRectImgButton();
@@ -211,13 +212,6 @@ export class SelectionBar {
 		let minV = bounds.min;
         this.m_rect.setTo(minV.x, minV.y, bounds.getWidth(), bounds.getHeight());
 
-        // this.m_rect.x = 0;
-        // this.m_rect.y = 0;
-        // if (haveNameBt) {
-        //     this.m_rect.x = -1.0 * this.nameButton.getWidth() - 1.0;
-        // }
-        // this.m_rect.height = btn.getHeight();
-        // this.m_rect.width = this.m_texObj0.getWidth() - this.m_rect.x;
         this.m_rect.update();
         this.m_ruisc.addContainer(container, 1);
 		if(rst > 0) {

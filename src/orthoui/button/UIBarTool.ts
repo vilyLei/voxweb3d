@@ -79,14 +79,14 @@ export class UIBarTool {
             fontBgColor = UIBarTool.s_bgColor;
         }
         const ctt = CanvasTextureTool.GetInstance();
-        let keyStr = btn_name +"-"+fontSize+"-"+fontColor.getCSSDecRGBAColor() +"-"+ fontBgColor.getCSSDecRGBAColor();
+        let keyStr = btn_name +"-"+fontSize+"-"+fontColor.getCSSDecRGBAColor() +"-"+ fontBgColor.getCSSDecRGBAColor() + "-" + fixWidth;
         let texObj = ctt.getTextureObject(keyStr);
         if(texObj == null) {
             texObj = ctt.createCharsImageToAtlas("", btn_name, fontSize, fontColor, fontBgColor, fixWidth);
         }
         return UIBarTool.CreateBtnWithKeyStr(keyStr);
     }
-    static InitializeBtn(currBtn: ColorRectImgButton, btn_name:string, fontSize: number, fontColor: Color4 = null, fontBgColor: Color4 = null): ColorRectImgButton {
+    static InitializeBtn(currBtn: ColorRectImgButton, btn_name:string, fontSize: number, fontColor: Color4 = null, fontBgColor: Color4 = null, fixWidth: number = 0): ColorRectImgButton {
 
         if(fontColor == null) {
             fontColor = UIBarTool.s_fontColor;
@@ -95,21 +95,11 @@ export class UIBarTool {
             fontBgColor = UIBarTool.s_bgColor;
         }
         const ctt = CanvasTextureTool.GetInstance();
-        let keyStr = btn_name +"-"+fontSize+"-"+fontColor.getCSSDecRGBAColor() +"-"+ fontBgColor.getCSSDecRGBAColor();
+        let keyStr = btn_name +"-"+fontSize+"-"+fontColor.getCSSDecRGBAColor() +"-"+ fontBgColor.getCSSDecRGBAColor() +"-" + fixWidth;
         let texObj = ctt.getTextureObject( keyStr );
         if(texObj == null) {
-            texObj = ctt.createCharsImageToAtlas("", btn_name, fontSize, fontColor, fontBgColor);
-            // let image = ctt.createCharsImage(btn_name, fontSize, fontColor.getCSSDecRGBAColor(), fontBgColor.getCSSDecRGBAColor());
-            // texObj = ctt.addImageToAtlas(keyStr, image);
+            texObj = ctt.createCharsImageToAtlas("", btn_name, fontSize, fontColor, fontBgColor, fixWidth);
         }
-
-        // currBtn.uvs = texObj.uvs;
-        // currBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
-        // currBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
-        // currBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-        // currBtn.initialize(0.0, 0.0, texObj.getWidth(), texObj.getHeight(), [texObj.texture]);
-        // currBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-        // currBtn.setSize(texObj.getWidth(), texObj.getHeight());
         return UIBarTool.CreateBtnWithKeyStr(keyStr, currBtn);
 
         // return currBtn;
