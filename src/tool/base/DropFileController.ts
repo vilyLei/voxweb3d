@@ -138,8 +138,8 @@ class DropFileController {
 	private testFile(name: string): IFileUrlObj {
 		let pns = name.toLocaleLowerCase();
 		let suffixNS = "";
-		if (pns.indexOf(".") > 0) {
-			suffixNS = pns.slice(pns.indexOf(".") + 1);
+		if (pns.lastIndexOf(".") > 0) {
+			suffixNS = pns.slice(pns.lastIndexOf(".") + 1);
 			console.log("suffixNS: ", suffixNS);
 		}
 		if (this.imgKeys.includes(suffixNS)) {
