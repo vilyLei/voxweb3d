@@ -178,18 +178,26 @@ export class ProgressBar {
             style.applyToBtn(this.m_nameBtn);
             style.applyToBodyBtn(subBtn);
             style.applyToBodyBtn(addBtn);
-			if(this.m_nameBtn) {
-				this.m_nameBtn.mouseEnabled = style.headEnabled;
-			}
-			let headAlignType = style.headAlignType;
-			let p = style.headAlignPosValue;
-			switch(headAlignType) {
-				case "left":
-					if(this.m_nameBtn) {
-						this.m_nameBtn.setXYZ(p, 0.0, 0.0);
-					}
-					break;
-			}
+            
+            let headAlignType = style.headAlignType;
+            let nsBtn = this.m_nameBtn;
+            if(nsBtn) {
+				nsBtn.mouseEnabled = style.headEnabled;
+                nsBtn.update();
+                let p = style.headAlignPosValue;
+                let width = nsBtn.getGlobalBounds().getWidth();
+                switch(headAlignType) {
+                    case "left":
+                        nsBtn.setXYZ(p, 0.0, 0.0);
+                        break;                    
+                    case "right":
+                        nsBtn.setXYZ(p - width, 0.0, 0.0);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
         }
 		container.update();
 		let bounds = container.getGlobalBounds();

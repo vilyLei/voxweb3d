@@ -98,8 +98,10 @@ class UISystem {
 		selectBarStyle.renderState = RendererState.BACK_ALPHA_ADD_BLENDSORT_STATE;
 		selectBarStyle.headFontBgColor.setRGBA4f(1.0, 1.0, 1.0, 0.0);
 		selectBarStyle.bodyFontBgColor.setRGBA4f(0.7, 0.7, 0.7, 0.3);
-		selectBarStyle.headAlignType = "left";
-		selectBarStyle.headAlignPosValue = -190;
+		// selectBarStyle.headAlignType = "left";
+		// selectBarStyle.headAlignPosValue = -190;
+		selectBarStyle.headAlignType = "right";
+		selectBarStyle.headAlignPosValue = -20;
 		selectBarStyle.headEnabled = false;
 		selectBarStyle.bodyFixWidth = 70;
 
@@ -112,7 +114,7 @@ class UISystem {
 		progressBarStyle.progressBtnFontBgColor.setRGBA4f(0.7, 0.7, 0.7, 0.3);
 		progressBarStyle.progressBarBgOverColor.setRGBA4f(0.7, 0.7, 0.7, 0.3);
 		progressBarStyle.progressBarBgOutColor.setRGBA4f(0.5, 0.5, 0.5, 0.3);
-		progressBarStyle.headAlignType = "left";
+		progressBarStyle.headAlignType = selectBarStyle.headAlignType;
 		progressBarStyle.headAlignPosValue = selectBarStyle.headAlignPosValue;
 		progressBarStyle.headEnabled = selectBarStyle.headEnabled;
 		progressBarStyle.progressBarLength = 250;

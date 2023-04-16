@@ -191,21 +191,31 @@ export class SelectionBar {
         if(style) {
             style.applyToBtn(this.nameButton);
             style.applyToBtn(this.selectionButton);
-			if(this.nameButton) {
-				this.nameButton.mouseEnabled = style.headEnabled;
-			}
+			// if(this.nameButton) {
+			// 	this.nameButton.mouseEnabled = style.headEnabled;
+			// }
 			if(this.selectionButton) {
 				this.selectionButton.mouseEnabled = style.bodyEnabled;
 			}
 			let headAlignType = style.headAlignType;
 			let p = style.headAlignPosValue;
-			switch(headAlignType) {
-				case "left":
-					if(this.nameButton) {
-						this.nameButton.setXYZ(p, 0.0, 0.0);
-					}
-					break;
-			}
+            let nsBtn = this.nameButton;
+            if(nsBtn) {
+				nsBtn.mouseEnabled = style.headEnabled;
+                nsBtn.update();
+                let p = style.headAlignPosValue;
+                let width = nsBtn.getGlobalBounds().getWidth();
+                switch(headAlignType) {
+                    case "left":
+                        nsBtn.setXYZ(p, 0.0, 0.0);
+                        break;                    
+                    case "right":
+                        nsBtn.setXYZ(p - width, 0.0, 0.0);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 		container.update();
 		let bounds = container.getGlobalBounds();
