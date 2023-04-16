@@ -1,15 +1,10 @@
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 
-import RendererScene from "../vox/scene/RendererScene";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import TextureResLoader from "../vox/assets/TextureResLoader";
-import RemoveBlackBGMaterial from "./material/RemoveBlackBGMaterial";
 import MouseEvent from "../vox/event/MouseEvent";
 import IRendererScene from "../vox/scene/IRendererScene";
-
-import SelectionBarStyle from "../orthoui/button/SelectionBarStyle";
-import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../orthoui/usage/ParamCtrlUI";
 
 import RendererSceneGraph from "../vox/scene/RendererSceneGraph";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";

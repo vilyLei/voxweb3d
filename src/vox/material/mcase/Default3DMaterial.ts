@@ -17,11 +17,12 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
     normalEnabled = false;
     vtxMatrixTransform = true;
     tns = "";
-	fragBodyTailCode = "\n";
-	fragHeadTailCode = "\n";
+    fragBodyTailCode = "\n";
+    fragHeadTailCode = "\n";
     alignScreen = false;
     fixAlignScreen = false;
     mapLodEnabled = false;
+    fragUniformData: Float32Array = null;
     constructor() {
         super();
     }
@@ -32,13 +33,16 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         if (this.vertColorEnabled) this.m_uniqueName += "VtxColor";
         if (this.premultiplyAlpha) this.m_uniqueName += "PreMulAlpha";
         this.adaptationShaderVersion = false;
-        if(this.fixAlignScreen) {
+        if (this.fixAlignScreen) {
             this.m_uniqueName += "FixAlScr";
-        }else if(this.alignScreen){
+        } else if (this.alignScreen) {
             this.m_uniqueName += "AlScr";
         }
-        if(this.mapLodEnabled) {
+        if (this.mapLodEnabled) {
             this.m_uniqueName += "TLod";
+        }
+        if (this.fragUniformData) {
+            this.m_uniqueName += "FUDL" + this.fragUniformData.length;
         }
     }
 
@@ -49,10 +53,10 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         coder.addFragUniform("vec4", "u_fragParams", 3);
 
         coder.useVertSpaceMats(false, false, false);
-        if(this.fixAlignScreen) {
+        if (this.fixAlignScreen) {
             this.vtxMatrixTransform = false;
             coder.addDefine("VOX_FIX_ALIGN_SCREEN");
-        }else if(this.alignScreen){
+        } else if (this.alignScreen) {
             this.vtxMatrixTransform = false;
             coder.useVertSpaceMats(true, false, false);
             coder.addDefine("VOX_ALIGN_SCREEN");
@@ -61,9 +65,10 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
             coder.addDefine("VOX_VTX_MAT_TRANSFORM");
             coder.useVertSpaceMats(true, true, true);
         }
-        if(this.mapLodEnabled) {
+        if (this.fragUniformData) {
+            coder.addFragUniform("vec4", "u_fragDatas", Math.floor(this.fragUniformData.length / 4));
         }
-        
+
         coder.mapLodEnabled = false;
         if (this.m_texEnabled) {
             this.m_uniform.addDiffuseMap();
@@ -106,8 +111,8 @@ vec2 getUV(vec2 uv) {
         }
 
         coder.addFragOutput("vec4", "FragColor0");
-        coder.addFragHeadCode( this.fragHeadTailCode );
-        
+        coder.addFragHeadCode(this.fragHeadTailCode);
+
         coder.addFragMainCode(
             `
     FragColor0 = vec4(1.0);
@@ -186,8 +191,8 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     ]);
     private m_uvTrans = new Float32Array([0.0, 0.0, 1.0, 1.0]);
     name = "";
-	fragBodyTailCode = "";
-	fragHeadTailCode = "";
+    fragBodyTailCode = "";
+    fragHeadTailCode = "";
     vertColorEnabled = false;
     premultiplyAlpha = false;
     normalEnabled = false;
@@ -196,6 +201,7 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     alignScreen = false;
     fixAlignScreen = false;
     mapLodEnabled = false;
+    fragUniformData: Float32Array = null;
     constructor() {
         super();
         if (Default3DMaterial.s_shdCodeBuffer == null) {
@@ -213,10 +219,11 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
         buf.normalEnabled = this.normalEnabled;
         buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
         buf.vtxMatrixTransform = this.vtxMatrixTransform;
-        
+
         buf.alignScreen = this.alignScreen;
         buf.fixAlignScreen = this.fixAlignScreen;
         buf.mapLodEnabled = this.mapLodEnabled;
+        buf.fragUniformData = this.fragUniformData;
     }
     /**
      * get a shader code buf instance, for sub class override
@@ -263,7 +270,7 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     getColor(color: Color4): void {
         color.fromArray4(this.m_data);
     }
-    
+
     setOffsetRGB3f(pr: number, pg: number, pb: number): void {
         this.m_data[4] = pr;
         this.m_data[5] = pg;
@@ -280,8 +287,13 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     }
     createSelfUniformData(): ShaderUniformData {
         let oum = new ShaderUniformData();
-        oum.uniformNameList = ["u_fragParams", "u_uvTrans"];
-        oum.dataList = [this.m_data, this.m_uvTrans];
+        if (this.fragUniformData) {
+            oum.uniformNameList = ["u_fragParams", "u_uvTrans", "u_fragDatas"];
+            oum.dataList = [this.m_data, this.m_uvTrans, this.fragUniformData];
+        } else {
+            oum.uniformNameList = ["u_fragParams", "u_uvTrans"];
+            oum.dataList = [this.m_data, this.m_uvTrans];
+        }
         return oum;
     }
 

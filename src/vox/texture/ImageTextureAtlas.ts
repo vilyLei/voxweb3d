@@ -262,7 +262,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		var metrics: any = ctx2D.measureText(chars);
 		let texWidth = metrics.width;
 
-		if (chars.length > 0) {
+		if (chars.length > 1 || fixWidth > 0) {
 			width = Math.round(texWidth + 8);
 			if (fixWidth > 0 && width < fixWidth) {
 				width = fixWidth;
