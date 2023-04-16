@@ -423,7 +423,7 @@ pwin["VoxVerify"] = new VVF();
 /////////////////////////////     event    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
+ import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
 //  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 
@@ -490,7 +490,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoPBRTextureShader as Demo} from "./demo/DemoPBRTextureShader";
 
- import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

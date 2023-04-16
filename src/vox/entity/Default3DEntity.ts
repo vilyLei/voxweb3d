@@ -17,10 +17,13 @@ export default class Default3DEntity extends DisplayEntity {
     protected m_mt: Default3DMaterial = null;
     protected m_polyhedralBoo = true;
 
+    wireframe = false;
+    shape = true;
+    
+    normalScale = 1.0;
+    normalEnabled = false;
 
     mapLodEnabled = false;
-    normalEnabled = false;
-    wireframe = false;
     flipVerticalUV = false;
     vertColorEnabled = false;
     premultiplyAlpha = false;
