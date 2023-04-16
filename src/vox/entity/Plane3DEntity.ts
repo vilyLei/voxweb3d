@@ -133,7 +133,7 @@ export default class Plane3DEntity extends DisplayEntity {
             this.toBrightnessBlend(this.depthAlwaysFalse, this.doubleFace);
         }else if(this.transparentBlend){
             this.toTransparentBlend(this.depthAlwaysFalse, this.doubleFace);
-        }else {
+        }else if(this.doubleFace){
             this.showDoubleFace(this.doubleFace);
         }
     }
