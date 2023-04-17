@@ -43,6 +43,9 @@ class ImageColorSelector {
 	enable(): void {
 		// console.log("ImageColorSelector()::enable() ...");
 	}
+	reset(): void {
+		this.m_colorRectPlane.setRGB3f(0, 0, 0);
+	}
 	selectColor(): Color4 {
 		console.log("ImageColorSelector()::select(), color ...");
 		let st = this.m_uisc.getStage3D();

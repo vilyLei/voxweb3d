@@ -411,6 +411,12 @@ class UISystem {
 		ui.setUIItemFlag("invert_rgb", false);
 		ui.setUIItemFlag("reset_init_img", false);
 		ui.setUIItemFlag("invert_discard", false);
+		
+		if (this.m_currMaterial) {
+			this.m_currMaterial.setDiscardDstRGB(0,0,0);
+			this.m_currMaterial.showInitImg( this.m_showInitImg );
+		}
+		this.imageSelector.reset();
 	}
 	updateLayoutUI(): void {
 		this.updateLayout(this.m_areaRect);
