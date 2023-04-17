@@ -1,4 +1,3 @@
-import ScreenAlignPlaneEntity from "../../../vox/entity/ScreenAlignPlaneEntity";
 import AABB2D from "../../../vox/geom/AABB2D";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 import RendererState from "../../../vox/render/RendererState";
@@ -16,12 +15,12 @@ import Vector3D from "../../../vox/math/Vector3D";
 class ImageFileSystem {
 	private m_rscene: IRendererScene = null;
 
-	private m_savingImg = false;
-	private m_rflag = false;
+	// private m_savingImg = false;
+	// private m_rflag = false;
 	private m_name = "";
 	private m_currEntity: IRenderEntity = null;
 	private m_currTexture: IRenderTexture = null;
-	private m_loadingTex: IRenderTexture = null;
+	// private m_loadingTex: IRenderTexture = null;
 
 	private m_uiSys: UISystem = null;
 	private m_imgBuilder: RenderingImageBuilder = null;
@@ -108,7 +107,7 @@ class ImageFileSystem {
 	setParams(name: string, currEntity: IRenderEntity, currTexture: IRenderTexture): void {
 		this.m_name = name;
 		this.m_currEntity = currEntity;
-		this.m_loadingTex = this.m_currTexture = currTexture;
+		this.m_currTexture = currTexture;
 		this.m_pixelData = null;
 	}
 	private m_pv = new Vector3D();
@@ -148,58 +147,13 @@ class ImageFileSystem {
 			let cr = pixels[i];
 			let cg = pixels[i + 1];
 			let cb = pixels[i + 2];
-			console.log("cr, cg, cb: ", cr, cg, cb, ", pixels[i]: ", pixels[i]);
+			// console.log("cr, cg, cb: ", cr, cg, cb, ", pixels[i]: ", pixels[i]);
 			let hex = (cr << 16) + (cg << 8) + cb;
 			this.m_color.setRGBUint24(hex);
-			console.log("color: ", this.m_color.r, this.m_color.g, this.m_color.b, ", pixels[i]: ", pixels[i]);
-			// const c =
-			// this.m_color.setRGB3Bytes()
+			// console.log("color: ", this.m_color.r, this.m_color.g, this.m_color.b, ", pixels[i]: ", pixels[i]);
 			return this.m_color;
 		}
 		return null;
-		/*
-		let st = this.m_rscene.getStage3D();
-
-		// console.log("st_x: ", st_x, ", st_y: ", st_y);
-		console.log("this.m_entityW: ", this.m_entityW, ", this.m_entityH: ", this.m_entityH);
-		st_x -= st.stageHalfWidth;
-		st_y -= st.stageHalfHeight;
-		// let data = (this.m_currTexture as ImageTextureProxy).getTexData().data;
-		let epv = this.m_currEntity.getPosition();
-		const pv = this.m_pv;
-		pv.setXYZ(st_x, st_y, 0);
-		pv.x -= epv.x;
-		pv.y -= epv.y;
-		pv.x = Math.round(pv.x + 0.5 * this.m_entityW);
-		pv.y = Math.round(0.5 * this.m_entityH - pv.y);
-		// pv.y += this.m_entityH;
-		// pv.y = this.m_entityH - pv.y;
-		// this.m_currEntity.globalToLocal(pv);
-		// console.log("pv: ", pv, ", epv: ", epv);
-		console.log("OOOO pv: ", pv);
-		//m_color
-		let r = Math.round(pv.y);
-		let c = Math.round(pv.x);
-		console.log("OOOO r,c: ", r,c);
-		if (r >= 0 && r < this.m_entityH) {
-			if (c >= 0 && c < this.m_entityW) {
-				// r = this.m_entityH - 1 - r;
-				let pixels = this.m_pixelData;
-				let i = (r * this.m_entityW + c) * 4;
-				let cr = pixels[i];
-				let cg = pixels[i + 1];
-				let cb = pixels[i + 2];
-				console.log("cr, cg, cb: ", cr, cg, cb, ", pixels[i]: ", pixels[i]);
-				let hex = (cr << 16) + (cg << 8) + cb;
-				this.m_color.setRGBUint24(hex);
-				console.log("color: ", this.m_color.r, this.m_color.g, this.m_color.b, ", pixels[i]: ", pixels[i]);
-				// const c =
-				// this.m_color.setRGB3Bytes()
-				return this.m_color;
-			}
-		}
-		return null;
-		//*/
 	}
 
 	private createEntityImgData(): void {
