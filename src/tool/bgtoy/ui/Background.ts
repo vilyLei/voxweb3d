@@ -43,7 +43,7 @@ class Background {
 		fuv = fract(gl_FragCoord.xy/vec2(30.0)) - vec2(0.5);
 		vec2 flagUV = max(sign(fuv), vec2(0.0));
 		float flag = flagUV.y > 0.0 ? flagUV.x : 1.0 - flagUV.x;
-		fc.xyz = vec3(flag) * vec3(1.0);
+		fc.xyz = vec3(flag) * vec3(0.8);
 		FragColor0 = fc;
 		`;
 		this.leftBG.materialFragBodyTailCode = fcode;
@@ -69,7 +69,7 @@ class Background {
 		bg.intoRendererListener = (): void => {
 			this.initWorkSpaceBG(this.leftBG);
 			this.leftBG.initializeXOY(-512, -256, 512, 512);
-			(this.leftBG.getMaterial() as IColorMaterial).setRGBA4f(0.0, 0.0, 0.0, 0.3);
+			(this.leftBG.getMaterial() as IColorMaterial).setRGBA4f(0.0, 0.0, 0.0, 0.6);
 			this.leftBG.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
 			sc.addEntity( this.leftBG, 1 );
 			this.leftBG.setVisible(false);
@@ -83,8 +83,6 @@ class Background {
 
 	}
 	updateLayout(rect: IAABB2D): void {
-		let sc = this.m_rscene;
-		// let st = sc.getStage3D();
 	}
 }
 

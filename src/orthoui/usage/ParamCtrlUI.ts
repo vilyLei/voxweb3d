@@ -509,6 +509,37 @@ export default class ParamCtrlUI {
 
 		this.addItem(param, bparam.style, bparam.layout);
 	}
+	addValueItemWithParam(bparam: ValueItemBuildParam, callback: ItemCallback): void {
+		let param: CtrlItemParam = {
+			type: "number_value",
+			name: bparam.name,
+			uuid: bparam.uuid,
+			value: bparam.value,
+			minValue: bparam.minValue,
+			maxValue: bparam.maxValue,
+			visibleAlways: bparam.visibleAlways,
+			syncEnabled: bparam.syncEnabled,
+			colorPick: bparam.colorPick,
+			values: bparam.values,
+			callback: callback
+		};
+		this.addItem(param, bparam.style, bparam.layout);
+	}
+	
+	addProgressItemWithParam(bparam: ProgressItemBuildParam, callback: ItemCallback): void {
+		let param: CtrlItemParam = {
+			type: "progress",
+			name: bparam.name,
+			uuid: bparam.uuid,
+			progress: bparam.progress,
+			visibleAlways: bparam.visibleAlways,
+			colorPick: bparam.colorPick,
+			syncEnabled: bparam.syncEnabled,
+			callback: callback
+		};
+		this.addItem(param, bparam.style, bparam.layout);
+	}
+
 	addStatusItem(
 		name: string,
 		uuid: string,
@@ -621,6 +652,7 @@ class ValueItemBuildParam extends ItemBuildParam {
 	value: number;
 	minValue: number;
 	maxValue: number;
+	values?: number[];
 
 	constructor(name: string, uuid: string, value: number, minValue: number, maxValue: number, vals = true, syncEnabled = true) {
 		super();
