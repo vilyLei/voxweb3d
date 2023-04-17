@@ -78,7 +78,7 @@ export class ProgressBar {
             this.m_barName = name;
             this.m_btnSize = btnSize;
             this.m_barInitLength = barBgLength;
-
+			this.step = (this.maxValue - this.minValue) * 0.01;
             this.initBody();
         }
     }
@@ -178,7 +178,7 @@ export class ProgressBar {
             style.applyToBtn(this.m_nameBtn);
             style.applyToBodyBtn(subBtn);
             style.applyToBodyBtn(addBtn);
-            
+
             let headAlignType = style.headAlignType;
             let nsBtn = this.m_nameBtn;
             if(nsBtn) {
@@ -189,7 +189,7 @@ export class ProgressBar {
                 switch(headAlignType) {
                     case "left":
                         nsBtn.setXYZ(p, 0.0, 0.0);
-                        break;                    
+                        break;
                     case "right":
                         nsBtn.setXYZ(p - width, 0.0, 0.0);
                         break;
@@ -197,7 +197,7 @@ export class ProgressBar {
                         break;
                 }
             }
-            
+
         }
 		container.update();
 		let bounds = container.getGlobalBounds();

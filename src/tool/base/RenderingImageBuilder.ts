@@ -39,7 +39,7 @@ export class RenderingImageBuilder {
 		}
 	}
 	setClearColor(c: Color4): void {
-		this.rscene.setClearColor( c );
+		this.rscene.setClearColor(c);
 	}
 	private m_entity: IRenderEntity = null;
 	private m_pw = 300;
@@ -49,7 +49,6 @@ export class RenderingImageBuilder {
 	setName(ns: string): void {
 		if (this.isEnabled()) {
 			this.m_name = ns;
-			console.log("CCCCCCCCCCCCCCCC this.m_name: ", this.m_name);
 		}
 	}
 	isEnabled(): boolean {
@@ -105,21 +104,14 @@ export class RenderingImageBuilder {
 		// console.log("RenderingImageBuilder::createCanvasData(), pw, ph: ", pw,ph);
 		// let pos = mapEntity.getPosition();
 		const ctx2d = canvas.getContext("2d");
-		ctx2d.drawImage(
-			srcCanvas,
-			0,0,
-			srcCanvas.width,
-			srcCanvas.height,
-			0,
-			0,
-			canvas.width,
-			canvas.height
-		);
+		ctx2d.drawImage(srcCanvas, 0, 0, srcCanvas.width, srcCanvas.height, 0, 0, canvas.width, canvas.height);
 		// document.body.appendChild(canvas);
-		if(this.m_rparam.getAttriAlpha()) {
-			return canvas.toDataURL('image/png');
+		console.log("this.m_rparam.getAttriAlpha(): ", this.m_rparam.getAttriAlpha());
+		if (this.m_rparam.getAttriAlpha()) {
+			return canvas.toDataURL("image/png");
 		}
-		return canvas.toDataURL('image/jpeg');
+		//canvas.toDataURL("image/jpeg", 0.5)
+		return canvas.toDataURL("image/jpeg");
 
 		return "";
 	}
@@ -140,11 +132,15 @@ export class RenderingImageBuilder {
 		this.downloadSavedImage();
 	}
 	private downloadSavedImage(): void {
-		const a = document.createElement('a');
-		a.href =  this.m_imgData;
-		a.download = this.m_name != "" ? this.m_name + "_new.jpg": "normal.jpg";
+		const a = document.createElement("a");
+		a.href = this.m_imgData;
+		if (this.m_rparam.getAttriAlpha()) {
+			a.download = this.m_name != "" ? this.m_name + "_new.png" : "normal.png";
+		}else {
+			a.download = this.m_name != "" ? this.m_name + "_new.jpg" : "normal.jpg";
+		}
 		document.body.appendChild(a);
-		(a as any).style = 'display: none';
+		(a as any).style = "display: none";
 		a.click();
 		a.remove();
 		this.m_imgData = "";

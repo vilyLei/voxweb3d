@@ -27,6 +27,15 @@ class UIBuilder {
 			this.init();
 		}
 	}
+	hideSpecBtns(): void {
+		let addIntoBtn = this.addIntoBtn;
+		if (addIntoBtn) {
+			addIntoBtn.outColor.setRGBA4f(0.8, 0.8, 0.8, 0.0);
+			addIntoBtn.overColor.setRGBA4f(1.0, 1.0, 1.0, 0.0);
+			addIntoBtn.downColor.setRGBA4f(1.0, 1.0, 0.2, 0.0);
+			addIntoBtn.setColor(addIntoBtn.outColor);
+		}
+	}
 	private init(): void {
 		let url = "static/assets/ui/reset.png";
 		// url = URLFilter.filterUrl(url);
@@ -82,7 +91,7 @@ class UIBuilder {
 		img2.src = url;
 	}
 	private applyBtnColor(btn: ColorRectImgButton): void {
-		btn.outColor.setRGBA4f(0.8, 0.8, 0.8, 0.5);
+		btn.outColor.setRGBA4f(0.8, 0.8, 0.8, 0.8);
 		btn.overColor.setRGBA4f(1.0, 1.0, 1.0, 0.5);
 		btn.downColor.setRGBA4f(1.0, 1.0, 0.2, 0.5);
 		btn.setColor(btn.outColor);

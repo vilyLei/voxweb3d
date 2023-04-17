@@ -88,12 +88,12 @@ export default class ColorRectImgButton extends Plane3DEntity {
         }
     }
     protected mouseOverListener(evt: any): void {
-		// console.log("ColorRectImgButton::mouseOverListener()...");
+		// console.log("ColorRectImgButton::mouseOverListener()..., this.overColor: ", this.overColor);
         this.setColor(this.overColor);
     }
     protected mouseOutListener(evt: any): void {
+		// console.log("ColorRectImgButton::mouseOutListener()..., this.outColor: ", this.outColor);
         this.setColor(this.outColor);
-		// console.log("ColorRectImgButton::mouseOutListener()...");
     }
     protected mouseDownListener(evt: any): void {
         this.setColor(this.downColor);
@@ -102,13 +102,12 @@ export default class ColorRectImgButton extends Plane3DEntity {
         this.setColor(this.overColor);
     }
     setColor(color: Color4): void {
-        let material: any = this.getMaterial();
-        material.setRGBA4f(color.r, color.g, color.b, color.a);
+        this.setRGBA4f(color.r, color.g, color.b, color.a);
     }
-	update(): void {
-		this.setColor(this.outColor);
-		super.update();
-	}
+	// update(): void {
+	// 	this.setColor(this.outColor);
+	// 	super.update();
+	// }
     destory(): void {
         super.destroy();
     }

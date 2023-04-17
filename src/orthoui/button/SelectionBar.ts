@@ -191,9 +191,6 @@ export class SelectionBar {
         if(style) {
             style.applyToBtn(this.nameButton);
             style.applyToBtn(this.selectionButton);
-			// if(this.nameButton) {
-			// 	this.nameButton.mouseEnabled = style.headEnabled;
-			// }
 			if(this.selectionButton) {
 				this.selectionButton.mouseEnabled = style.bodyEnabled;
 			}
@@ -208,7 +205,7 @@ export class SelectionBar {
                 switch(headAlignType) {
                     case "left":
                         nsBtn.setXYZ(p, 0.0, 0.0);
-                        break;                    
+                        break;
                     case "right":
                         nsBtn.setXYZ(p - width, 0.0, 0.0);
                         break;

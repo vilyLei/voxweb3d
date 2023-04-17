@@ -35,7 +35,7 @@ class RemoveBlackBGShaderBuffer extends ShaderCodeBuffer {
             coder.mapLodEnabled = this.mapLodEnabled;
             this.m_uniform.addDiffuseMap();
         }
-        coder.addFragUniform("vec4", "u_params", 3);
+        coder.addFragUniform("vec4", "u_params", 4);
 		if(this.fixScreen) {
 			coder.addDefine("VOX_FIX_SCREEN");
 			coder.useVertSpaceMats(true, false, false);
@@ -57,7 +57,15 @@ void main() {
     c0.xyz *= param.yyy;
     FragColor0 = c0 * param.wwww  + vec4(1.0 - param.w) * color4;
 	FragColor0.xyz = mix(FragColor0.xyz, vec3(1.0) - FragColor0.xyz, u_params[1].www);
-	FragColor0.w = mix(FragColor0.w, 1.0 - FragColor0.w, u_params[1].z);
+	float a = FragColor0.w;
+	a = mix(a, 1.0 - a, u_params[1].z);
+	a *= mix(1.0, initColor4.w, u_params[2].w);
+
+	float sa = pow(u_params[3].w, 2.0);
+	float atv = (a - 0.5);
+	float btv = (0.5 - a);
+	a = a >= 0.5 ? min(atv * sa + 0.5, 1.0) : max(0.5 - btv * sa, 0.0);
+	FragColor0.w = a;
 #else
     FragColor0 = u_param[0];
 #endif
@@ -107,65 +115,78 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase {
     getCodeBuf(): ShaderCodeBuffer {
         return  RemoveBlackBGShaderBuffer.GetInstance();
     }
-    private m_param: Float32Array = new Float32Array(
+    private m_ds: Float32Array = new Float32Array(
         [
             1.0, 1.0, 0.02, 1.0,
 			0, 0.5, 0, 0,
-			0, 0, 0, 0  // 剔除的目标颜色
+			0, 0, 0, 1.0,		// 剔除的目标颜色r,g,b, initAlphaFactor
+			0, 0, 0, 1.0  		// undefined x,y,z,
         ]);
     /**
-     * @param p 透明度强度值
+     * @param p 色彩透明度强度值
      */
-    setParam0(p: number): void {
-        this.m_param[0] = p;
+    setColorAlphaStrength(p: number): void {
+        this.m_ds[0] = p;
     }
     /**
      * @param p 颜色强度值
      */
 	setParam1(p: number): void {
-        this.m_param[1] = p;
+        this.m_ds[1] = p;
     }
     /**
      * @param p 背景剔除比例值
      */
 	setParam2(p: number): void {
-        this.m_param[2] = p;
+        this.m_ds[2] = p;
     }
     /**
-     * @param p 图像处理方式值, 原图 0.0, 剔除结果 1.0
+     * @param boo true 表示显示原图, false 表示显示剔除之后的结果
      */
-	setParam3(p: number): void {
-        this.m_param[3] = p;
+	showInitImg(boo: boolean): void {
+        this.m_ds[3] = boo ? 0.0 : 1.0;
     }
     /**
      * 计算颜色透明情况的阈值
      * @param r 0.0, -> 1.0
      */
     setDiscardRadius(r: number): void {
-        this.m_param[5] = r;
+        this.m_ds[5] = r;
     }
     /**
      * @param boo true or false
      */
     setInvertAlpha(boo: boolean): void {
-        this.m_param[6] = boo ? 1.0 : 0;
+        this.m_ds[6] = boo ? 1.0 : 0;
     }
     /**
      * @param boo true or false
      */
     setInvertRGB(boo: boolean): void {
-        this.m_param[7] = boo ? 1.0 : 0;
+        this.m_ds[7] = boo ? 1.0 : 0;
+    }
+	separateAlpha(v: number): void {
+        this.m_ds[15] = v;
     }
 	setInvertDiscard(boo: boolean): void {
-        this.m_param[4] = boo ? 1.0 : 0.0;
+        this.m_ds[4] = boo ? 1.0 : 0.0;
     }
 	paramCopyFrom(dst: RemoveBlackBGMaterial2): void {
-		this.m_param.set(dst.m_param);
+		this.m_ds.set(dst.m_ds);
+	}
+	setDiscardDstRGB(r: number, g: number, b: number): void {
+		let ds = this.m_ds;
+		ds[8] = r;
+		ds[9] = g;
+		ds[10] = b;
+	}
+	setInitAlphaFactor(f: number): void {
+		this.m_ds[11] = f;
 	}
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_params"];
-        oum.dataList = [this.m_param];
+        oum.dataList = [this.m_ds];
         return oum;
     }
 }

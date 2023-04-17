@@ -11,6 +11,7 @@ import Color4 from "../../../vox/material/Color4";
 import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
 import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
+import Vector3D from "../../../vox/math/Vector3D";
 
 class ImageFileSystem {
 	private m_rscene: IRendererScene = null;
@@ -97,10 +98,111 @@ class ImageFileSystem {
 	private init(): void {
 		let sc = this.m_rscene;
 	}
-
+	private m_entityW = 100;
+	private m_entityH = 100;
+	private m_pixelData: Uint8ClampedArray = null;
+	private m_color = new Color4();
 	updateLayout(rect: AABB2D): void {
 		this.layoutEntity();
 	}
+	setParams(name: string, currEntity: IRenderEntity, currTexture: IRenderTexture): void {
+		this.m_name = name;
+		this.m_currEntity = currEntity;
+		this.m_loadingTex = this.m_currTexture = currTexture;
+		this.m_pixelData = null;
+	}
+	getColorByXY(st_x: number, st_y: number): Color4 {
+		this.createEntityImgData();
+
+		let st = this.m_rscene.getStage3D();
+
+		// console.log("st_x: ", st_x, ", st_y: ", st_y);
+		console.log("this.m_entityW: ", this.m_entityW, ", this.m_entityH: ", this.m_entityH);
+		st_x -= st.stageHalfWidth;
+		st_y -= st.stageHalfHeight;
+		// let data = (this.m_currTexture as ImageTextureProxy).getTexData().data;
+		let epv = this.m_currEntity.getPosition();
+		let pv = new Vector3D(st_x, st_y);
+		pv.x -= epv.x;
+		pv.y -= epv.y;
+		pv.x = Math.round(pv.x + 0.5 * this.m_entityW);
+		pv.y = Math.round(0.5 * this.m_entityH - pv.y);
+		// pv.y += this.m_entityH;
+		// pv.y = this.m_entityH - pv.y;
+		// this.m_currEntity.globalToLocal(pv);
+		// console.log("pv: ", pv, ", epv: ", epv);
+		console.log("OOOO pv: ", pv);
+		//m_color
+		let r = Math.round(pv.y);
+		let c = Math.round(pv.x);
+		console.log("OOOO r,c: ", r,c);
+		if (r >= 0 && r < this.m_entityH) {
+			if (c >= 0 && c < this.m_entityW) {
+				// r = this.m_entityH - 1 - r;
+				let pixels = this.m_pixelData;
+				let i = (r * this.m_entityW + c) * 4;
+				let cr = pixels[i];
+				let cg = pixels[i + 1];
+				let cb = pixels[i + 2];
+				console.log("cr, cg, cb: ", cr, cg, cb, ", pixels[i]: ", pixels[i]);
+				let hex = (cr << 16) + (cg << 8) + cb;
+				this.m_color.setRGBUint24(hex);
+				console.log("color: ", this.m_color.r, this.m_color.g, this.m_color.b, ", pixels[i]: ", pixels[i]);
+				// const c =
+				// this.m_color.setRGB3Bytes()
+				return this.m_color;
+			}
+		}
+		return null;
+	}
+
+	private createEntityImgData(): void {
+		if (this.m_pixelData == null) {
+			let img: HTMLImageElement | HTMLCanvasElement = (this.m_currTexture as ImageTextureProxy).getTexData().data as any;
+			const canvas = document.createElement("canvas");
+			canvas.width = this.m_entityW;
+			canvas.height = this.m_entityH;
+			canvas.style.display = "bolck";
+
+			const ctx2d = canvas.getContext("2d");
+			console.log("createEntityImgData(), img.width, img.height: ", img.width, img.height);
+			ctx2d.drawImage(img, 0, 0, img.width, img.height, 0, 0, this.m_entityW, this.m_entityH);
+			this.m_pixelData = ctx2d.getImageData(0, 0, this.m_entityW, this.m_entityH).data;
+			console.log("this.m_pixelData.length: ", this.m_pixelData.length, ", ", 128 * 128 * 4);
+			// let k = 1;
+			// let ri = 1;
+			// canvas.style.display = "bolck";
+			// canvas.style.zIndex = "9999";
+			// canvas.style.left = `${66 + k * 66}px`;
+			// canvas.style.top = `${200 + ri * 66}px`;
+			// canvas.style.position = "absolute";
+			// document.body.appendChild(canvas);
+		}
+	}
+	private layoutEntity(): void {
+		let pw = this.m_currTexture.getWidth();
+		let ph = this.m_currTexture.getHeight();
+		if (this.m_currEntity) {
+			let k = 1.0;
+			let maxSize = Math.max(pw, ph);
+			let baseSize = 512 - 12;
+			if (maxSize > baseSize) {
+				k = baseSize / maxSize;
+			}
+			pw *= k;
+			ph *= k;
+			// console.log("ooooo k: ", k);
+			pw = Math.round(pw);
+			ph = Math.round(ph);
+			this.m_entityW = pw;
+			this.m_entityH = ph;
+
+			this.m_currEntity.setXYZ(-256, 0, 1.0);
+			this.m_currEntity.setScaleXYZ(pw, ph, 1.0);
+			this.m_currEntity.update();
+		}
+	}
+	/*
 	savingBegin(): void {
 		if (this.m_loadingTex && this.m_loadingTex.isDataEnough()) {
 			this.layoutEntity();
@@ -121,11 +223,6 @@ class ImageFileSystem {
 			this.m_rflag = false;
 			this.saveEnd();
 		}
-	}
-	setParams(name: string, currEntity: IRenderEntity, currTexture: IRenderTexture): void {
-		this.m_name = name;
-		this.m_currEntity = currEntity;
-		this.m_loadingTex = this.m_currTexture = currTexture;
 	}
 	private saveBegin(): void {
 		let pw = this.m_currTexture.getWidth();
@@ -173,24 +270,7 @@ class ImageFileSystem {
 		a.click();
 		a.remove();
 	}
-	private layoutEntity(): void {
-		let pw = this.m_currTexture.getWidth();
-		let ph = this.m_currTexture.getHeight();
-		if (this.m_currEntity) {
-			let k = 1.0;
-			let maxSize = Math.max(pw, ph);
-			let baseSize = 512 - 12;
-			if (maxSize > baseSize) {
-				k = baseSize / maxSize;
-			}
-			pw *= k;
-			ph *= k;
-			let dpr = 1.0;
-			this.m_currEntity.setXYZ(-256 * dpr, 0.1, 0.0);
-			this.m_currEntity.setScaleXYZ(pw, ph, 1.0);
-			this.m_currEntity.update();
-		}
-	}
+	//*/
 }
 
 export { ImageFileSystem };

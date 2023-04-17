@@ -132,6 +132,9 @@ class VoxAwardScene {
 	}
 	private m_delayTime = 0;
 	run(): void {
+		if(this.m_init) {
+			return;
+		}
 		if (this.m_delayTime >= 0) {
 			this.m_delayTime--;
 		}
@@ -161,6 +164,9 @@ class VoxAwardScene {
 		}
 	}
 	updateLayout(rect: IAABB2D): void {
+		if(this.m_init) {
+			return;
+		}
 		this.m_areaRect = rect;
 		let dis = 30;
 		let st = this.m_uisc.getStage3D();

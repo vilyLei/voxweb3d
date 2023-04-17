@@ -130,7 +130,8 @@ export default class ParamCtrlUI {
 		deselectNS: string,
 		flag: boolean,
 		visibleAlways: boolean = false,
-		style: SelectionBarStyle = null
+		style: SelectionBarStyle = null,
+		layout: boolean = true
 	): SelectionBar {
 		let selectBar = new SelectionBar();
 		selectBar.style = style;
@@ -144,15 +145,18 @@ export default class ParamCtrlUI {
 		} else {
 			selectBar.deselect(false);
 		}
-		selectBar.setXY(this.m_btnPX, this.m_btnPY);
-		this.m_btnPY += this.btnSize + this.m_btnYSpace;
+		// selectBar.setXY(this.m_btnPX, this.m_btnPY);
+		// this.m_btnPY += this.btnSize + this.m_btnYSpace;
 		if (!visibleAlways) this.m_visiBtns.push(selectBar);
-		this.m_btns.push(selectBar);
 
-		let minX = this.m_btnPX + selectBar.getRect().x;
-		if (minX < this.m_minBtnX) {
-			this.m_minBtnX = minX;
+		if (layout) {
+			this.m_btns.push(selectBar);
 		}
+
+		// let minX = this.m_btnPX + selectBar.getRect().x;
+		// if (minX < this.m_minBtnX) {
+		// 	this.m_minBtnX = minX;
+		// }
 		return selectBar;
 	}
 	private createProgressBtn(
@@ -160,7 +164,8 @@ export default class ParamCtrlUI {
 		uuid: string,
 		progress: number,
 		visibleAlways: boolean = false,
-		style: ProgressBarStyle = null
+		style: ProgressBarStyle = null,
+		layout: boolean = true
 	): ProgressBar {
 		let proBar = new ProgressBar();
 		proBar.style = style;
@@ -172,15 +177,19 @@ export default class ParamCtrlUI {
 		proBar.initialize(this.ruisc, ns, this.btnSize, this.m_bgLength);
 		proBar.setProgress(progress, false);
 		proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
-		proBar.setXY(this.m_btnPX, this.m_btnPY);
-		this.m_btnPY += this.btnSize + this.m_btnYSpace;
-		if (!visibleAlways) this.m_visiBtns.push(proBar);
-		this.m_btns.push(proBar);
 
-		let minX = this.m_btnPX + proBar.getRect().x;
-		if (minX < this.m_minBtnX) {
-			this.m_minBtnX = minX;
+		// proBar.setXY(this.m_btnPX, this.m_btnPY);
+		// this.m_btnPY += this.btnSize + this.m_btnYSpace;
+
+		if (!visibleAlways) this.m_visiBtns.push(proBar);
+		if (layout) {
+			this.m_btns.push(proBar);
 		}
+
+		// let minX = this.m_btnPX + proBar.getRect().x;
+		// if (minX < this.m_minBtnX) {
+		// 	this.m_minBtnX = minX;
+		// }
 		return proBar;
 	}
 
@@ -191,7 +200,8 @@ export default class ParamCtrlUI {
 		minValue: number,
 		maxValue: number,
 		visibleAlways: boolean = false,
-		style: ProgressBarStyle = null
+		style: ProgressBarStyle = null,
+		layout: boolean = true
 	): ProgressBar {
 		let proBar = new ProgressBar();
 		proBar.style = style;
@@ -206,15 +216,18 @@ export default class ParamCtrlUI {
 		proBar.setValue(value, false);
 
 		proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
-		proBar.setXY(this.m_btnPX, this.m_btnPY);
-		this.m_btnPY += this.btnSize + this.m_btnYSpace;
-		if (!visibleAlways) this.m_visiBtns.push(proBar);
-		this.m_btns.push(proBar);
+		// proBar.setXY(this.m_btnPX, this.m_btnPY);
+		// this.m_btnPY += this.btnSize + this.m_btnYSpace;
 
-		let minX = this.m_btnPX + proBar.getRect().x;
-		if (minX < this.m_minBtnX) {
-			this.m_minBtnX = minX;
+		if (!visibleAlways) this.m_visiBtns.push(proBar);
+		if (layout) {
+			this.m_btns.push(proBar);
 		}
+
+		// let minX = this.m_btnPX + proBar.getRect().x;
+		// if (minX < this.m_minBtnX) {
+		// 	this.m_minBtnX = minX;
+		// }
 		return proBar;
 	}
 	private moveSelectToBtn(btn: ProgressBar | SelectionBar): void {
@@ -263,7 +276,7 @@ export default class ParamCtrlUI {
 	}
 	private m_btnMap: Map<string, CtrlItemObj> = new Map();
 	//"number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
-	addItem(param: CtrlItemParam, style: any = null): void {
+	addItem(param: CtrlItemParam, style: any = null, layout: boolean = true): void {
 		let map = this.m_btnMap;
 		if (!map.has(param.uuid)) {
 			let obj = new CtrlItemObj();
@@ -273,14 +286,14 @@ export default class ParamCtrlUI {
 			let t = param;
 			let visibleAlways = t.visibleAlways ? t.visibleAlways : false;
 			t.colorPick = t.colorPick ? t.colorPick : false;
-
+			style = style ? (style as ProgressBarStyle) : null;
 			switch (param.type) {
 				case "number_value":
 				case "number":
 					t.value = t.value ? t.value : 0.0;
 					t.minValue = t.minValue ? t.minValue : 0.0;
 					t.maxValue = t.maxValue ? t.maxValue : 10.0;
-					obj.btn = this.createValueBtn(t.name, t.uuid, t.value, t.minValue, t.maxValue, false, style ? (style as ProgressBarStyle) : null);
+					obj.btn = this.createValueBtn(t.name, t.uuid, t.value, t.minValue, t.maxValue, false, style, layout);
 					map.set(obj.uuid, obj);
 					if (!t.colorPick) {
 						obj.info = { type: param.type, uuid: param.uuid, values: [t.value], flag: t.flag };
@@ -291,7 +304,7 @@ export default class ParamCtrlUI {
 					break;
 				case "progress":
 					t.progress = t.progress ? t.progress : 0.0;
-					obj.btn = this.createProgressBtn(t.name, t.uuid, t.progress, visibleAlways, style ? (style as ProgressBarStyle) : null);
+					obj.btn = this.createProgressBtn(t.name, t.uuid, t.progress, visibleAlways, style, layout);
 					map.set(obj.uuid, obj);
 					if (!t.colorPick) {
 						obj.info = { type: param.type, uuid: param.uuid, values: [t.progress], flag: t.flag };
@@ -303,15 +316,7 @@ export default class ParamCtrlUI {
 				case "status":
 				case "status_select":
 					t.flag = t.flag ? t.flag : false;
-					obj.btn = this.createSelectBtn(
-						t.name,
-						t.uuid,
-						t.selectNS,
-						t.deselectNS,
-						t.flag,
-						visibleAlways,
-						style ? (style as SelectionBarStyle) : null
-					);
+					obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag, visibleAlways, style, layout);
 					map.set(obj.uuid, obj);
 					obj.info = { type: param.type, uuid: param.uuid, values: [], flag: t.flag };
 					if (param.syncEnabled) {
@@ -374,7 +379,6 @@ export default class ParamCtrlUI {
 		if (this.rgbPanel != null) this.rgbPanel.close();
 	}
 	getBodyHeight(force: boolean = false): number {
-
 		let btns = force ? this.m_btns : this.m_visiBtns;
 		let bodyHeight = 0;
 		for (let i = 0; i < btns.length; ++i) {
@@ -383,7 +387,6 @@ export default class ParamCtrlUI {
 		return bodyHeight;
 	}
 	updateLayout(force: boolean = false, fixPos: Vector3D = null, distance: number = 5, height: number = 0): void {
-
 		let pos = new Vector3D();
 		let offsetV = new Vector3D();
 		if (fixPos == null) {
@@ -491,6 +494,21 @@ export default class ParamCtrlUI {
 		if (this.rgbPanel != null) this.rgbPanel.close();
 	}
 
+	addStatusItemWithParam(bparam: StatusItemBuildParam, callback: ItemCallback): void {
+		let param: CtrlItemParam = {
+			type: "status_select",
+			name: bparam.name,
+			uuid: bparam.uuid,
+			selectNS: bparam.selectNS,
+			deselectNS: bparam.deselectNS,
+			flag: bparam.flag,
+			visibleAlways: bparam.visibleAlways,
+			syncEnabled: bparam.syncEnabled,
+			callback: callback
+		};
+
+		this.addItem(param, bparam.style, bparam.layout);
+	}
 	addStatusItem(
 		name: string,
 		uuid: string,
@@ -533,6 +551,7 @@ export default class ParamCtrlUI {
 			progress: progress,
 			visibleAlways: visibleAlways,
 			colorPick: colorPick,
+			syncEnabled: syncEnabled,
 			callback: callback
 		};
 		this.addItem(param, style);
@@ -567,4 +586,26 @@ export default class ParamCtrlUI {
 		this.addItem(param, style);
 	}
 }
-export { CtrlInfo, ItemCallback, CtrlItemParam, CtrlItemObj, ParamCtrlUI };
+
+class StatusItemBuildParam {
+	name: string;
+	uuid: string;
+	selectNS: string;
+	deselectNS: string;
+	flag: boolean;
+	visibleAlways = true;
+	syncEnabled = true;
+	style: SelectionBarStyle = null;
+	layout = true;
+	constructor(name: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, vals = true, syncEnabled = true) {
+		this.name = name;
+		this.uuid = uuid;
+		this.selectNS = selectNS;
+		this.deselectNS = deselectNS;
+		this.flag = flag;
+		this.visibleAlways = vals;
+		this.syncEnabled = syncEnabled;
+	}
+}
+
+export { StatusItemBuildParam, CtrlInfo, ItemCallback, CtrlItemParam, CtrlItemObj, ParamCtrlUI };

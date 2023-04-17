@@ -8,15 +8,18 @@ import IRendererSceneGraph from "../../../vox/scene/IRendererSceneGraph";
 import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
 
 import SelectionBarStyle from "../../../orthoui/button/SelectionBarStyle";
-import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
+import { StatusItemBuildParam, CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 
 import { Background } from "./Background";
 import Vector3D from "../../../vox/math/Vector3D";
 import ProgressBarStyle from "../../../orthoui/button/ProgressBarStyle";
 import { UIBuilder } from "./UIBuilder";
+import { UIHTMLInfo } from "./UIHTMLInfo";
+import { ImageColorSelector } from "./ImageColorSelector";
 import MouseEvent from "../../../vox/event/MouseEvent";
 import IAABB2D from "../../../vox/geom/IAABB2D";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import ColorRectImgButton from "../../../orthoui/button/ColorRectImgButton";
 
 class UISystem {
 	private m_rscene: IRendererScene = null;
@@ -26,6 +29,8 @@ class UISystem {
 	uiBuilder = new UIBuilder();
 	background = new Background();
 	ctrlui = new ParamCtrlUI(false);
+	imageSelector = new ImageColorSelector();
+	uiHTMLInfo = new UIHTMLInfo();
 	position = new Vector3D(552, 80);
 	processTotal = 3;
 	constructor() {}
@@ -45,6 +50,10 @@ class UISystem {
 		bg.initialize(this.m_rscene, this.m_bgTex);
 
 		this.initUI();
+
+		// this.imageSelector.uiBuilder = this.uiBuilder;
+		// this.imageSelector.initialize(this.ctrlui.ruisc);
+		// return;
 		this.uiBuilder.buildFinishCall = (): void => {
 			this.initUIItems();
 		};
@@ -56,6 +65,7 @@ class UISystem {
 	private m_bgColor = new Color4();
 	private m_savingCall: () => void = null;
 	private m_openingCall: () => void = null;
+	private m_initCall: () => void = null;
 	setCurrMaterial(currMaterial: RemoveBlackBGMaterial2): void {
 		this.m_currMaterial = currMaterial;
 	}
@@ -65,13 +75,20 @@ class UISystem {
 	setOpeningListener(call: () => void): void {
 		this.m_openingCall = call;
 	}
+	setInitListener(call: () => void): void {
+		this.m_initCall = call;
+	}
 	disable(): void {
-		this.ctrlui.ruisc.disable();
-		this.background.disable();
+		if (this.m_uiInited) {
+			this.ctrlui.ruisc.disable();
+			this.background.disable();
+		}
 	}
 	enable(): void {
-		this.ctrlui.ruisc.enable();
-		this.background.enable();
+		if (this.m_uiInited) {
+			this.ctrlui.ruisc.enable();
+			this.background.enable();
+		}
 	}
 	private initUI(): void {
 		if (!this.m_initUI) {
@@ -90,7 +107,13 @@ class UISystem {
 		ui.initialize(this.m_rscene, true);
 		this.m_graph.addScene(ui.ruisc);
 	}
+	private m_uiInited = false;
+	private m_showInitImg = false;
+	isInited(): boolean {
+		return this.m_uiInited;
+	}
 	private initUIItems(): void {
+		this.m_uiInited = true;
 		let ui = this.ctrlui;
 		let selectBarStyle: SelectionBarStyle = null;
 		selectBarStyle = new SelectionBarStyle();
@@ -120,19 +143,11 @@ class UISystem {
 		progressBarStyle.progressBarLength = 250;
 
 		selectBarStyle.headVisible = false;
-		ui.addStatusItem(
-			"切换",
-			"change_bg_color",
-			"切换随机背景",
-			"切换随机背景",
-			false,
-			(info: CtrlInfo): void => {
-				this.changeBGColor();
-			},
-			true,
-			false,
-			selectBarStyle
-		);
+		let bparam = new StatusItemBuildParam("切换", "change_bg_color", "随机切换环境背景", "随机切换环境背景", false);
+		bparam.style = selectBarStyle;
+		ui.addStatusItemWithParam(bparam, (info: CtrlInfo): void => {
+			this.background.changeBGColor();
+		});
 		selectBarStyle.headVisible = true;
 		ui.addStatusItem(
 			"图像处理方式",
@@ -142,7 +157,9 @@ class UISystem {
 			false,
 			(info: CtrlInfo): void => {
 				if (this.m_currMaterial) {
-					this.m_currMaterial.setParam3(info.flag ? 0.0 : 1.0);
+					// this.m_currMaterial.setParam3(info.flag ? 0.0 : 1.0);
+					this.m_showInitImg = info.flag;
+					this.m_currMaterial.showInitImg( info.flag );
 				}
 			},
 			true,
@@ -150,7 +167,7 @@ class UISystem {
 			selectBarStyle
 		);
 		ui.addStatusItem(
-			"剔除方式",
+			"背景剔除方式",
 			"invert_discard",
 			"反相背景剔除",
 			"正常背景剔除",
@@ -164,7 +181,24 @@ class UISystem {
 			false,
 			selectBarStyle
 		);
-		// 
+
+		ui.addValueItem(
+			"输出透明度分离程度",
+			"separate_alpha",
+			1.0,
+			1.0,
+			15,
+			(info: CtrlInfo): void => {
+				if (this.m_currMaterial) {
+					this.m_currMaterial.separateAlpha(info.values[0]);
+				}
+			},
+			false,
+			true,
+			null,
+			false,
+			progressBarStyle
+		);
 		ui.addStatusItem(
 			"输出透明度翻转",
 			"invert_alpha",
@@ -197,14 +231,31 @@ class UISystem {
 		);
 
 		ui.addValueItem(
-			"透明度强度",
-			"alpha_factor",
+			"应用原始透明度",
+			"init_alpha_factor",
+			1.0,
+			0.0,
+			1.0,
+			(info: CtrlInfo): void => {
+				if (this.m_currMaterial) {
+					this.m_currMaterial.setInitAlphaFactor(info.values[0]);
+				}
+			},
+			false,
+			true,
+			null,
+			false,
+			progressBarStyle
+		);
+		ui.addValueItem(
+			"色彩透明度强度",
+			"color_alpha_factor",
 			1.0,
 			0.0,
 			3.0,
 			(info: CtrlInfo): void => {
 				if (this.m_currMaterial) {
-					this.m_currMaterial.setParam0(info.values[0]);
+					this.m_currMaterial.setColorAlphaStrength(info.values[0]);
 				}
 			},
 			false,
@@ -215,7 +266,7 @@ class UISystem {
 		);
 
 		ui.addValueItem(
-			"颜色强度",
+			"色彩强度",
 			"color_factor",
 			1.0,
 			0.0,
@@ -279,53 +330,68 @@ class UISystem {
 				this.m_savingCall();
 			}
 		});
-		addIntoBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, (evt: any): void => {
-			if (this.m_openingCall) {
-				this.m_openingCall();
-			}
-		});
+
+		this.applyAddIntoBtn( addIntoBtn );
+
 		ui.ruisc.addEntity(resetBtn);
 		ui.ruisc.addEntity(saveBtn);
 		ui.ruisc.addEntity(addIntoBtn);
 
-		this.initTextDiv();
+		this.uiHTMLInfo.initialize(ui.ruisc);
 		this.updateLayoutUI();
-		this.changeBGColor();
-	}
-	changeBGColor(color: Color4 = null): void {
-
-		this.m_bgColor.randomRGB(0.25, 0.05);
-		this.m_bgColor.rgbSizeTo(0.3 + Math.random() * 0.3);
-		color = color ? color : this.m_bgColor;
-		this.m_rscene.setClearRGBAColor4f(color.r, color.g, color.b, 0.0);
-		this.background.setBGRGBAColor(color);
-	}
-	hideBtns(): void {
-		let addIntoBtn = this.uiBuilder.addIntoBtn;
-		if(addIntoBtn) {
-			// addIntoBtn.mouseEnabled = false;
-			// addIntoBtn.setVisible(false);
-			addIntoBtn.outColor.setRGBA4f(0.8, 0.8, 0.8, 0.0);
-			addIntoBtn.overColor.setRGBA4f(1.0, 1.0, 1.0, 0.0);
-			addIntoBtn.downColor.setRGBA4f(1.0, 1.0, 0.2, 0.0);
-			if(this.m_infoDiv && this.m_infoDiv.parentElement) {
-				document.body.removeChild(this.m_infoDiv);
-			}
+		this.background.changeBGColor();
+		if (this.m_initCall) {
+			this.m_initCall();
 		}
+		let imgSelector = this.imageSelector;
+		imgSelector.uiBuilder = this.uiBuilder;
+		imgSelector.uiHTMLInfo = this.uiHTMLInfo;
+		imgSelector.uiBackground = this.background;
+		imgSelector.initialize(ui.ruisc);
+	}
+	private applyAddIntoBtn(addIntoBtn: ColorRectImgButton): void {
+
+		addIntoBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, (evt: any): void => {
+			if(this.imageSelector.isSelecting()) {
+				let color = this.imageSelector.selectColor();
+				if(color) {
+					if (this.m_currMaterial) {
+						this.m_currMaterial.setDiscardDstRGB(color.r, color.g, color.b);
+						this.m_currMaterial.showInitImg( false );
+					}
+				}
+			}else {
+				if (this.m_openingCall) {
+					this.m_openingCall();
+				}
+			}
+		});
+
+		addIntoBtn.addEventListener(MouseEvent.MOUSE_OVER, this, (evt: any): void => {
+			if(this.imageSelector.isSelecting()) {
+				if (this.m_currMaterial) {
+					this.m_currMaterial.showInitImg( true );
+				}
+			}
+		});
+		addIntoBtn.addEventListener(MouseEvent.MOUSE_OUT, this, (evt: any): void => {
+			if(this.imageSelector.isSelecting()) {
+				if (this.m_currMaterial) {
+					this.m_currMaterial.showInitImg( this.m_showInitImg );
+				}
+			}
+		});
+	}
+	hideSpecBtns(): void {
+		this.uiBuilder.hideSpecBtns();
+		this.uiHTMLInfo.hideSpecInfos();
 	}
 
 	applyFunction(key: string): void {
-		// this.uiSys.applyFunction(key);
-		switch(key) {
+		switch (key) {
 			case "open_award":
-				if(this.m_infoDiv) {
-					this.m_infoDiv.style.visibility = "hidden";
-				}
-				break;
 			case "close_award":
-				if(this.m_infoDiv) {
-					this.m_infoDiv.style.visibility = "visible";
-				}
+				this.uiHTMLInfo.applyFunction( key );
 				break;
 			default:
 				break;
@@ -335,120 +401,59 @@ class UISystem {
 		let ui = this.ctrlui;
 
 		console.log("resetCtrlValue() ...");
-		ui.setUIItemValue("alpha_factor", 1.0);
+		ui.setUIItemValue("color_alpha_factor", 1.0);
 		ui.setUIItemValue("color_factor", 1.0);
 		ui.setUIItemValue("alpha_discard_factor", 0.02);
 		ui.setUIItemValue("alpha_discard_threshold", 0.5);
+		ui.setUIItemValue("init_alpha_factor", 1.0);
+		ui.setUIItemValue("separate_alpha", 1.0);
 		ui.setUIItemFlag("invert_alpha", false);
 		ui.setUIItemFlag("invert_rgb", false);
 		ui.setUIItemFlag("reset_init_img", false);
 		ui.setUIItemFlag("invert_discard", false);
 	}
 	updateLayoutUI(): void {
-		this.updateLayout( this.m_areaRect );
+		this.updateLayout(this.m_areaRect);
 	}
 	private m_areaRect: IAABB2D = null;
 	updateLayout(rect: IAABB2D = null): void {
-		this.m_areaRect = rect;
-		let ui = this.ctrlui;
-		if (ui) {
-			ui.setYSpace(15);
-			let st = this.m_rscene.getStage3D();
-			let uiBodyH = ui.getBodyHeight(true);
-			let uiAreaH = 400;
-			let pv = this.position;
-			// pv.x = st.stageHalfWidth + 20;
-			// pv.y = st.stageHalfHeight + (-256 + 105);
-			pv.x = st.stageHalfWidth + 25;
-			pv.y = st.stageHalfHeight + 256 - uiAreaH;
-			ui.updateLayout(true, pv, 0, uiAreaH);
+		if (this.m_uiInited) {
+			this.m_areaRect = rect;
+			let ui = this.ctrlui;
+			if (ui) {
+				let st = this.m_rscene.getStage3D();
+				// let uiBodyH = ui.getBodyHeight(true);
+				let uiAreaH = 430;
+				let pv = this.position;
+				// pv.x = st.stageHalfWidth + 20;
+				// pv.y = st.stageHalfHeight + (-256 + 105);
+				pv.x = st.stageHalfWidth + 25;
+				pv.y = st.stageHalfHeight + 256 - uiAreaH;
+				ui.updateLayout(true, pv, 0, uiAreaH);
 
-			let bounds = ui.bounds;
-			let py = st.stageHalfHeight - 256 - 2;
-			let resetBtn = this.uiBuilder.resetBtn;
-			let saveBtn = this.uiBuilder.saveBtn;
-			let addIntoBtn = this.uiBuilder.addIntoBtn;
-			if(resetBtn) {
-				resetBtn.setXY(bounds.x, py);
-				saveBtn.setXY(bounds.getRight() - saveBtn.getWidth(), py);
-				let sx = 512 /addIntoBtn.getWidth();
-				let sy = 512 /addIntoBtn.getHeight();
-				// addIntoBtn.setXY(st.stageHalfWidth - 512 + 128, st.stageHalfHeight - 128);
-				addIntoBtn.setXY(st.stageHalfWidth - 512, st.stageHalfHeight - 256);
-				addIntoBtn.setScaleXYZ(sx, sy, 1.0);
-				addIntoBtn.update();
+				let bounds = ui.bounds;
+				let py = st.stageHalfHeight - 256 - 2;
+				let resetBtn = this.uiBuilder.resetBtn;
+				let saveBtn = this.uiBuilder.saveBtn;
+				let addIntoBtn = this.uiBuilder.addIntoBtn;
+				if (resetBtn) {
+					resetBtn.setXY(bounds.x, py);
+					saveBtn.setXY(bounds.getRight() - saveBtn.getWidth(), py);
+					let sx = 512 / addIntoBtn.getWidth();
+					let sy = 512 / addIntoBtn.getHeight();
+					// addIntoBtn.setXY(st.stageHalfWidth - 512 + 128, st.stageHalfHeight - 128);
+					addIntoBtn.setXY(st.stageHalfWidth - 512, st.stageHalfHeight - 256);
+					addIntoBtn.setScaleXYZ(sx, sy, 1.0);
+					addIntoBtn.update();
+				}
+
+				this.uiHTMLInfo.updateLayout();
+				this.imageSelector.updateLayout(rect);
 			}
-			if(this.m_infoDiv) {
-				let div = this.m_infoDiv;
-				let tx = st.viewWidth * 0.5 - 315;
-				let ty = st.viewHeight * 0.5 + 110;
-				div.style.left = tx + "px";
-				div.style.top = ty + "px";
-			}
-			if(this.m_withMeDiv) {
-				let div = this.m_withMeDiv;
-				let tx = st.viewWidth * 0.5 - 130.0;
-				let ty = st.viewHeight - 30;
-				div.style.left = tx + "px";
-				div.style.top = ty + "px";
+			if (this.background) {
+				this.background.updateLayout(rect);
 			}
 		}
-		if(this.background) {
-			this.background.updateLayout( rect );
-		}
-	}
-	private m_infoDiv: HTMLDivElement = null;
-	private initTextDiv(): void {
-		let div = document.createElement("div");
-		div.style.color = "";
-		let pdiv: any = div;
-		pdiv.width = 300;
-		pdiv.height = 200;
-		let fontColor = "#cccccc"
-		div.style.fontSize = "12pt";
-		div.style.textAlign = "center";
-		div.style.pointerEvents = "none";
-		div.style.left = 10 + "px";
-		div.style.top = 10 + "px";
-		div.style.zIndex = "99999";
-		div.style.position = "absolute";
-		document.body.appendChild(pdiv);
-		pdiv.innerHTML = `<font color='${fontColor}'>将图片拖入任意区域, 或点击选择本地图片</font></br><font color='${fontColor}'>去除黑色或白色背景, 生成透明PNG图</font></br><font color='${fontColor}'>可支持最大的图像尺寸:&nbsp16K</font>`;
-		this.m_infoDiv = pdiv;
-		this.initWithMeDiv();
-	}
-	private m_withMeDiv: HTMLDivElement = null;
-	private initWithMeDiv(): void {
-		let div = document.createElement("div");
-		div.style.color = "";
-		let pdiv: any = div;
-		// pdiv.width = 300;
-		// pdiv.height = 200;
-		let fontColor = "#888888"
-		div.style.fontSize = "12pt";
-		div.style.textAlign = "center";
-		// div.style.pointerEvents = "none";
-		div.style.left = 10 + "px";
-		div.style.top = 10 + "px";
-		div.style.zIndex = "99999";
-		div.style.position = "absolute";
-		document.body.appendChild(pdiv);
-		pdiv.innerHTML = `<font color='${fontColor}'>Contacts with me: vily313@126.com</font>`;
-		this.m_withMeDiv = pdiv;
-	}
-	createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
-		let div = document.createElement("div");
-		div.style.width = pw + "px";
-		div.style.height = ph + "px";
-		document.body.appendChild(div);
-		div.style.display = "bolck";
-		div.style.left = px + "px";
-		div.style.top = py + "px";
-		div.style.pointerEvents = "none";
-		div.style.position = "absolute";
-		div.style.display = "bolck";
-		div.style.position = "absolute";
-		return div;
 	}
 }
 
