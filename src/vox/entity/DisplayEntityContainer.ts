@@ -664,11 +664,13 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 		}
 		this.m_invLocalMat.transformVectorSelf(pv);
 	}
-	localToGlobal(pv: Vector3D): void {
+	localToGlobal(pv: Vector3D): DisplayEntityContainer {
 		this.getMatrix().transformVectorSelf(pv);
+		return this;
 	}
-	globalToLocal(pv: Vector3D): void {
+	globalToLocal(pv: Vector3D): DisplayEntityContainer {
 		this.getInvMatrix().transformVectorSelf(pv);
+		return this;
 	}
 	getInvMatrix(): Matrix4 {
 		if (this.m_invOmat != null) {

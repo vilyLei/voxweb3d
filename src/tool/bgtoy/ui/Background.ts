@@ -36,8 +36,9 @@ class Background {
 	private initWorkSpaceBG(wbg: Plane3DEntity): void {
 		wbg.materialName = "left_bg";
 		let fcode = `
-		vec4 fc = vec4(1.0,1.0,0.0,0.5);
+		vec4 fc = vec4(1.0,1.0,1.0,0.5);
 		vec2 fuv = fract(gl_FragCoord.xy/vec2(512.0, 512.0));
+		fuv = sign(fract(gl_FragCoord.xy / vec2(20.0)) - vec2(0.5));
 		fc.xy *= fuv;
 		FragColor0 = fc;
 		`;

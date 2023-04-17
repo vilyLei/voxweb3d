@@ -24,8 +24,8 @@ interface ITransformEntity extends IDisplayEntity{
     setScaleXYZ(sx: number, sy: number, sz: number): ITransformEntity;
     getRotationXYZ(pv?: IVector3D): IVector3D;
     getScaleXYZ(pv?: IVector3D): IVector3D;
-    localToGlobal(pv: IVector3D): void;
-    globalToLocal(pv: IVector3D): void;
+    localToGlobal(pv: IVector3D): IDisplayEntity;
+    globalToLocal(pv: IVector3D): IDisplayEntity;
 
     getGlobalBounds(): IAABB;
     getLocalBounds(): IAABB;

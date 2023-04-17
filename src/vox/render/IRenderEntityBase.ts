@@ -7,6 +7,7 @@
 
 import IROTransform from "../../vox/display/IROTransform";
 import IAABB from "../../vox/geom/IAABB";
+import IVector3D from "../../vox/math/IVector3D";
 import IMatrix4 from "../math/IMatrix4";
 /**
  * to be used in the renderer runtime
@@ -56,6 +57,8 @@ export default interface IRenderEntityBase {
     getGlobalBounds(): IAABB;
     getLocalBounds(): IAABB;
 
+	localToGlobal(pv: IVector3D): IRenderEntityBase;
+	globalToLocal(pv: IVector3D): IRenderEntityBase;
     /**
      * @returns value < 12 , the instance is a renderable entity instance, otherwise it is a DisplayEntityContainer instance
      */

@@ -568,15 +568,17 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 		this.m_trs.getScaleXYZ(pv);
 		return pv;
 	}
-	localToGlobal(pv: Vector3D): void {
-		if (this.m_trs != null) {
+	localToGlobal(pv: Vector3D): DisplayEntity {
+		if (this.m_trs) {
 			this.m_trs.localToGlobal(pv);
 		}
+		return this;
 	}
-	globalToLocal(pv: Vector3D): void {
-		if (this.m_trs != null) {
+	globalToLocal(pv: Vector3D): DisplayEntity {
+		if (this.m_trs) {
 			this.m_trs.globalToLocal(pv);
 		}
+		return this;
 	}
 	//private static s_boundsInVS: Float32Array = new Float32Array(24);
 	private static s_boundsOutVS: Float32Array = new Float32Array(24);

@@ -226,6 +226,14 @@ export default class PureEntity implements IDisplayEntity {
         }
 
     }
+
+	localToGlobal(pv: Vector3D): PureEntity {
+
+		return this;
+	}
+	globalToLocal(pv: Vector3D): PureEntity {
+		return this;
+	}
     setVisible(boo: boolean): PureEntity {
         if (this.m_visible != boo) {
             this.m_visible = boo;

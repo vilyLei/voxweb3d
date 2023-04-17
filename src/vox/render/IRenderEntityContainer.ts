@@ -64,8 +64,8 @@ export default interface IRenderEntityContainer extends IRenderEntityBase {
     getScaleXYZ(sv?: IVector3D): IVector3D;
     setScale3(sv: IVector3D): void;
 
-    localToGlobal(pv: IVector3D): void;
-    globalToLocal(pv: IVector3D): void;
+    // localToGlobal(pv: IVector3D): void;
+    // globalToLocal(pv: IVector3D): void;
     sphereIntersect(centerV: IVector3D, radius: number): boolean;
 
 	isSpaceEnabled(): boolean;
