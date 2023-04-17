@@ -15,7 +15,11 @@ class WaitingPhase {
 	}
 	start(): void {
 		this.m_t = Date.now();
-		this.autoUpdate();
+        if(this.item && this.item.pay && this.item.pay == "Free") {
+			this.finishCall();
+        }else {
+            this.autoUpdate();
+        }
 	}
 
     private m_gooutId: any = -1;
@@ -49,7 +53,7 @@ class WaitingPhase {
 		t = 1.0 - t;
 		t = Math.round(t * 100.0);
 		let headStr = "私人服务带宽小</br>请稍等两秒:&nbsp";
-		let endStr = "%</br>付费请联系作者</br>email:&nbspvily313@126.com";
+		let endStr = "%</br>加速请联系作者</br>email:&nbspvily313@126.com";
         if(!this.item || !this.item.pay) {
             endStr = "%";
         }
