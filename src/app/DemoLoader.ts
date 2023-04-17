@@ -87,17 +87,6 @@ export class DemoLoader {
         }
         this.showInfo("loading...");
         this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
-
-		// let mp = this.mWP;
-		// mp.setInfoCall = (str: string): void => {
-		// 	this.showInfo(str);
-		// }
-		// mp.finishCall = (): void => {
-		// 	// this.loadInfo(host + "static/voxweb3d/demos/info.json?vtk=" + Math.random() +"uf8"+ Date.now(), demoUrl);
-		// 	console.log("loading main module ...");
-		// 	this.showInfo("loading 1% ");
-		// }
-		// mp.start();
     }
 
     private loadModule(purl: string): void {
