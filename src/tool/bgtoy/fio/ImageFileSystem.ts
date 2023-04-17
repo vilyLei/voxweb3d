@@ -25,7 +25,7 @@ class ImageFileSystem {
 
 	private m_uiSys: UISystem = null;
 	private m_imgBuilder: RenderingImageBuilder = null;
-	constructor() {}
+	constructor() { }
 
 	initialize(sc: IRendererScene, uiSys: UISystem): void {
 		if (this.m_rscene == null && sc != null) {
@@ -111,9 +111,53 @@ class ImageFileSystem {
 		this.m_loadingTex = this.m_currTexture = currTexture;
 		this.m_pixelData = null;
 	}
-	getColorByXY(st_x: number, st_y: number): Color4 {
-		this.createEntityImgData();
+	private m_pv = new Vector3D();
 
+	containsXYByImg(st_x: number, st_y: number): boolean {
+		return this.hitPixelIndexXYFromImg(st_x, st_y) >= 0;
+	}
+	hitPixelIndexXYFromImg(st_x: number, st_y: number): number {
+		let st = this.m_rscene.getStage3D();
+		st_x -= st.stageHalfWidth;
+		st_y -= st.stageHalfHeight;
+		// let data = (this.m_currTexture as ImageTextureProxy).getTexData().data;
+		let epv = this.m_currEntity.getPosition();
+		const pv = this.m_pv;
+		pv.setXYZ(st_x, st_y, 0);
+		pv.x -= epv.x;
+		pv.y -= epv.y;
+		pv.x = Math.round(pv.x + 0.5 * this.m_entityW);
+		pv.y = Math.round(0.5 * this.m_entityH - pv.y);
+
+		let r = Math.round(pv.y);
+		let c = Math.round(pv.x);
+		// console.log("OOOO r,c: ", r, c);
+		if (r >= 0 && r < this.m_entityH) {
+			if (c >= 0 && c < this.m_entityW) {
+				return r * this.m_entityW + c;
+			}
+		}
+		return -1;
+	}
+	getColorByXY(st_x: number, st_y: number): Color4 {
+		let i = this.hitPixelIndexXYFromImg(st_x, st_y);
+		if (i >= 0) {
+			this.createEntityImgData();
+			let pixels = this.m_pixelData;
+			i *= 4;
+			let cr = pixels[i];
+			let cg = pixels[i + 1];
+			let cb = pixels[i + 2];
+			console.log("cr, cg, cb: ", cr, cg, cb, ", pixels[i]: ", pixels[i]);
+			let hex = (cr << 16) + (cg << 8) + cb;
+			this.m_color.setRGBUint24(hex);
+			console.log("color: ", this.m_color.r, this.m_color.g, this.m_color.b, ", pixels[i]: ", pixels[i]);
+			// const c =
+			// this.m_color.setRGB3Bytes()
+			return this.m_color;
+		}
+		return null;
+		/*
 		let st = this.m_rscene.getStage3D();
 
 		// console.log("st_x: ", st_x, ", st_y: ", st_y);
@@ -122,7 +166,8 @@ class ImageFileSystem {
 		st_y -= st.stageHalfHeight;
 		// let data = (this.m_currTexture as ImageTextureProxy).getTexData().data;
 		let epv = this.m_currEntity.getPosition();
-		let pv = new Vector3D(st_x, st_y);
+		const pv = this.m_pv;
+		pv.setXYZ(st_x, st_y, 0);
 		pv.x -= epv.x;
 		pv.y -= epv.y;
 		pv.x = Math.round(pv.x + 0.5 * this.m_entityW);
@@ -154,6 +199,7 @@ class ImageFileSystem {
 			}
 		}
 		return null;
+		//*/
 	}
 
 	private createEntityImgData(): void {
