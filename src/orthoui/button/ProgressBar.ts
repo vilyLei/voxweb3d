@@ -58,6 +58,12 @@ export class ProgressBar {
 	style: ProgressBarStyle = null;
     constructor() { }
 
+    setVisible(v: boolean): void {
+        this.m_container.setVisible(v);
+    }
+    isVisible(): boolean {
+        return this.m_container.isVisible();
+    }
     open(): void {
         this.m_container.setVisible(true);
     }

@@ -340,6 +340,13 @@ export default class ParamCtrlUI {
 		return null;
 	}
 
+	setUIItemVisible(ns: string, visible: boolean): void {
+		let item = this.getItemByUUID(ns);
+		if (item) {
+			item.btn.setVisible(visible);
+			item.updateParamToUI();
+		}
+	}
 	setUIItemValue(ns: string, value: number, syncEnabled: boolean = true): void {
 		let item = this.getItemByUUID(ns);
 		if (item) {

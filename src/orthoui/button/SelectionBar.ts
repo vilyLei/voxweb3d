@@ -46,6 +46,12 @@ export class SelectionBar {
     uuid = "selectionBar";
     style: SelectionBarStyle = null;
     constructor() { }
+    setVisible(v: boolean): void {
+        this.m_container.setVisible(v);
+    }
+    isVisible(): boolean {
+        return this.m_container.isVisible();
+    }
     setOverColor(color: Color4): void {
 
         if (this.nameButton) {
