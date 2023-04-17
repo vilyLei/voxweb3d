@@ -587,17 +587,25 @@ export default class ParamCtrlUI {
 	}
 }
 
-class StatusItemBuildParam {
+
+class ItemBuildParam {
 	name: string;
 	uuid: string;
-	selectNS: string;
-	deselectNS: string;
-	flag: boolean;
 	visibleAlways = true;
 	syncEnabled = true;
 	style: SelectionBarStyle = null;
 	layout = true;
+	colorPick?: boolean;
+	constructor(){}
+}
+
+class StatusItemBuildParam extends ItemBuildParam {
+
+	selectNS: string;
+	deselectNS: string;
+	flag: boolean;
 	constructor(name: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, vals = true, syncEnabled = true) {
+		super();
 		this.name = name;
 		this.uuid = uuid;
 		this.selectNS = selectNS;
@@ -608,4 +616,35 @@ class StatusItemBuildParam {
 	}
 }
 
-export { StatusItemBuildParam, CtrlInfo, ItemCallback, CtrlItemParam, CtrlItemObj, ParamCtrlUI };
+class ValueItemBuildParam extends ItemBuildParam {
+
+	value: number;
+	minValue: number;
+	maxValue: number;
+
+	constructor(name: string, uuid: string, value: number, minValue: number, maxValue: number, vals = true, syncEnabled = true) {
+		super();
+		this.name = name;
+		this.uuid = uuid;
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+		this.value = value;
+		this.visibleAlways = vals;
+		this.syncEnabled = syncEnabled;
+	}
+}
+
+class ProgressItemBuildParam extends ItemBuildParam {
+
+	progress: number;
+	constructor(name: string, uuid: string, progress: number, vals = true, syncEnabled = true) {
+		super();
+		this.name = name;
+		this.uuid = uuid;
+		this.progress = progress;
+		this.visibleAlways = vals;
+		this.syncEnabled = syncEnabled;
+	}
+}
+
+export { ProgressItemBuildParam, ValueItemBuildParam, StatusItemBuildParam, CtrlInfo, ItemCallback, CtrlItemParam, CtrlItemObj, ParamCtrlUI };

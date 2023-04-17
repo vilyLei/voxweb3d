@@ -8,7 +8,7 @@ import IRendererSceneGraph from "../../../vox/scene/IRendererSceneGraph";
 import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
 
 import SelectionBarStyle from "../../../orthoui/button/SelectionBarStyle";
-import { StatusItemBuildParam, CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
+import { ProgressItemBuildParam, ValueItemBuildParam, StatusItemBuildParam, CtrlInfo, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 
 import { Background } from "./Background";
 import Vector3D from "../../../vox/math/Vector3D";
@@ -50,7 +50,7 @@ class UISystem {
 		bg.initialize(this.m_rscene, this.m_bgTex);
 
 		this.initUI();
-
+		// for test
 		// this.imageSelector.uiBuilder = this.uiBuilder;
 		// this.imageSelector.initialize(this.ctrlui.ruisc);
 		// return;
@@ -149,23 +149,30 @@ class UISystem {
 			this.background.changeBGColor();
 		});
 		selectBarStyle.headVisible = true;
-		ui.addStatusItem(
-			"图像处理方式",
-			"reset_init_img",
-			"保持原图",
-			"背景剔除",
-			false,
-			(info: CtrlInfo): void => {
-				if (this.m_currMaterial) {
-					// this.m_currMaterial.setParam3(info.flag ? 0.0 : 1.0);
-					this.m_showInitImg = info.flag;
-					this.m_currMaterial.showInitImg( info.flag );
-				}
-			},
-			true,
-			false,
-			selectBarStyle
-		);
+		
+		bparam = new StatusItemBuildParam("图像处理方式", "reset_init_img", "保持原图", "背景剔除", false);
+		bparam.style = selectBarStyle;
+		ui.addStatusItemWithParam(bparam, (info: CtrlInfo): void => {
+			this.background.changeBGColor();
+		});
+
+		// ui.addStatusItem(
+		// 	"图像处理方式",
+		// 	"reset_init_img",
+		// 	"保持原图",
+		// 	"背景剔除",
+		// 	false,
+		// 	(info: CtrlInfo): void => {
+		// 		if (this.m_currMaterial) {
+		// 			// this.m_currMaterial.setParam3(info.flag ? 0.0 : 1.0);
+		// 			this.m_showInitImg = info.flag;
+		// 			this.m_currMaterial.showInitImg( info.flag );
+		// 		}
+		// 	},
+		// 	true,
+		// 	false,
+		// 	selectBarStyle
+		// );
 		ui.addStatusItem(
 			"背景剔除方式",
 			"invert_discard",
@@ -181,7 +188,7 @@ class UISystem {
 			false,
 			selectBarStyle
 		);
-
+		// ValueItemBuildParam
 		ui.addValueItem(
 			"输出透明度分离程度",
 			"separate_alpha",
@@ -411,7 +418,7 @@ class UISystem {
 		ui.setUIItemFlag("invert_rgb", false);
 		ui.setUIItemFlag("reset_init_img", false);
 		ui.setUIItemFlag("invert_discard", false);
-		
+
 		if (this.m_currMaterial) {
 			this.m_currMaterial.setDiscardDstRGB(0,0,0);
 			this.m_currMaterial.showInitImg( this.m_showInitImg );
