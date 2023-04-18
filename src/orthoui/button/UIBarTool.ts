@@ -17,7 +17,7 @@ export class UIBarTool {
 
     private static s_fontColor = new Color4(1.0,1.0,1.0,1.0);
     private static s_bgColor = new Color4(1.0,1.0,1.0,0.3);
-
+	static TexPool: CanvasTextureTool = CanvasTextureTool.GetInstance();
 	static CreateImageCanvasFixSize(
 		width: number,
 		height: number,
@@ -48,6 +48,7 @@ export class UIBarTool {
 
         if(currBtn == null)currBtn = new ColorRectImgButton();
         currBtn.uvs = texObj.uvs;
+		console.log("XXXX texObj.uvs: ", texObj.uvs);
         currBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
         currBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
         currBtn.downColor.setRGB3f(1.0, 0.0, 1.0);

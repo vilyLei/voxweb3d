@@ -30,6 +30,12 @@ export default class SelectionBarStyle {
 	renderState = 0;
 	bodyFixWidth = 0;
 	headFixWidth = 0;
+
+	trueImageKey = "";
+	falseImageKey = "";
+
+	visible = true;
+	scale = 1.0;
     constructor() { }
 	copyTo(dst: SelectionBarStyle): void {
 		dst.headFontColor.copyFrom(this.headFontColor);

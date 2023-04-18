@@ -76,6 +76,10 @@ export class ProgressBar {
     isClosed(): boolean {
         return !this.m_container.getVisible();
     }
+	setScale(s: number): void {
+		this.m_container.setScale(s);
+		this.m_container.update();
+	}
     initialize(ruisc: IRendererScene, name: string = "prog", btnSize: number = 64.0, barBgLength: number = 200.0): void {
 
         if (this.m_ruisc == null) {
@@ -135,6 +139,7 @@ export class ProgressBar {
         let haveNameBt = this.m_nameBtn == null && this.m_barName != "" && (style == null || style.headVisible);
         if (haveNameBt) {
 
+			// UIBarTool.TexPool.heightOffset = 9;
 			if(style) {
 				fc = style.headFontColor;
 				fbc = style.headFontBgColor;
@@ -152,10 +157,13 @@ export class ProgressBar {
 			fbc = style.progressBtnFontBgColor;
 			this.m_barInitLength = style.progressBarLength;
 		}
+		// UIBarTool.TexPool.heightOffset = 0;
         let subBtn = UIBarTool.CreateBtn("-", size, fc, fbc);
         container.addEntity(subBtn);
+		subBtn.update();
         let addBtn = UIBarTool.CreateBtn("+", size, fc, fbc);
-        addBtn.setXYZ(this.m_barInitLength + addBtn.getWidth(), 0, 0);
+		addBtn.update();
+        addBtn.setXYZ(this.m_barInitLength + subBtn.getLocalBounds().max.x, 0, 0);
         container.addEntity(addBtn);
         this.m_rect.y = 0;
         if (this.m_nameBtn != null) {
@@ -164,13 +172,13 @@ export class ProgressBar {
         else {
             this.m_rect.x = 0;
         }
-        this.m_rect.height = subBtn.getHeight();
-        let pos = new Vector3D();
-        addBtn.getPosition(pos);
-        this.m_rect.width = (pos.x + addBtn.getWidth()) - this.m_rect.x;
-        this.m_rect.update();
-        this.m_barBgX = size;
-        this.initProBg(container, this.m_barBgX, 2.0, this.m_barInitLength, addBtn.getHeight() - 2);
+        // this.m_rect.height = subBtn.getHeight();
+        // let pos = new Vector3D();
+        // addBtn.getPosition(pos);
+        // this.m_rect.width = (pos.x + addBtn.getWidth()) - this.m_rect.x;
+        // this.m_rect.update();
+        this.m_barBgX = subBtn.getLocalBounds().max.x - 0.5;
+        this.initProBg(container, this.m_barBgX, 2.0, this.m_barInitLength + 0.5, addBtn.getHeight() - 2);
 
         this.m_ruisc.addContainer(container, 1);
 
@@ -203,8 +211,10 @@ export class ProgressBar {
                         break;
                 }
             }
-
         }
+		if(style) {
+			container.setScale(style.scale);
+		}
 		container.update();
 		let bounds = container.getGlobalBounds();
 		let minV = bounds.min;

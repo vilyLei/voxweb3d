@@ -45,9 +45,10 @@ export default class ParamCtrlUI {
 			this.m_rscene = rscene;
 
 			this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);
+			let ins = CanvasTextureTool.GetInstance();
+			ins.initialize(this.m_rscene);
+			ins.initializeAtlas(1024, 1024, new Color4(1.0, 1.0, 1.0, 0.0), true);
 
-			CanvasTextureTool.GetInstance().initialize(this.m_rscene);
-			CanvasTextureTool.GetInstance().initializeAtlas(1024, 1024, new Color4(1.0, 1.0, 1.0, 0.0), true);
 			this.initUIScene(buildDisplay);
 		}
 	}
@@ -79,6 +80,17 @@ export default class ParamCtrlUI {
 		subScene.initialize(rparam, this.processTotal);
 		subScene.enableMouseEvent(true);
 		this.ruisc = subScene;
+
+		// let ins = CanvasTextureTool.GetInstance();
+		// let tex = ins.getAtlasAt(0).getTexture();
+		// let pl = new Plane3DEntity();
+		// pl.transparentBlend = true;
+		// pl.doubleFace = true;
+		// pl.initializeXOY(0,-0.5, 1,1, [tex]);
+		// pl.setScaleXYZ(1021.0, -1021.0, 0.0);
+		// pl.setXYZ(20.5, 20.7, 1.0);
+		// // pl.setScaleXYZ(1.0, 1.0, 1.0);
+		// subScene.addEntity(pl, 4);
 
 		this.resize(null);
 
@@ -117,7 +129,8 @@ export default class ParamCtrlUI {
 	private m_selectPlane: Plane3DEntity = null;
 
 	private m_visiBtns: (SelectionBar | ProgressBar)[] = [];
-	private m_btns: (SelectionBar | ProgressBar)[] = [];
+	private m_layoutBtns: (SelectionBar | ProgressBar)[] = [];
+	private m_layoutBtnUUIDs: string[] = [];
 	private m_menuBtn: SelectionBar = null;
 	private m_minBtnX = 10000;
 	setYSpace(dis: number): void {
@@ -140,6 +153,7 @@ export default class ParamCtrlUI {
 		selectBar.uuid = uuid;
 		selectBar.initialize(this.ruisc, ns, selectNS, deselectNS, this.btnSize);
 		selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
+		if (style) selectBar.setVisible(style.visible);
 		if (flag) {
 			selectBar.select(false);
 		} else {
@@ -150,7 +164,8 @@ export default class ParamCtrlUI {
 		if (!visibleAlways) this.m_visiBtns.push(selectBar);
 
 		if (layout) {
-			this.m_btns.push(selectBar);
+			this.m_layoutBtns.push(selectBar);
+			this.m_layoutBtnUUIDs.push(uuid);
 		}
 
 		// let minX = this.m_btnPX + selectBar.getRect().x;
@@ -177,13 +192,15 @@ export default class ParamCtrlUI {
 		proBar.initialize(this.ruisc, ns, this.btnSize, this.m_bgLength);
 		proBar.setProgress(progress, false);
 		proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
+		if (style) proBar.setVisible(style.visible);
 
 		// proBar.setXY(this.m_btnPX, this.m_btnPY);
 		// this.m_btnPY += this.btnSize + this.m_btnYSpace;
 
 		if (!visibleAlways) this.m_visiBtns.push(proBar);
 		if (layout) {
-			this.m_btns.push(proBar);
+			this.m_layoutBtns.push(proBar);
+			this.m_layoutBtnUUIDs.push(uuid);
 		}
 
 		// let minX = this.m_btnPX + proBar.getRect().x;
@@ -214,14 +231,15 @@ export default class ParamCtrlUI {
 		proBar.minValue = minValue;
 		proBar.maxValue = maxValue;
 		proBar.setValue(value, false);
-
 		proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
+		if (style) proBar.setVisible(style.visible);
 		// proBar.setXY(this.m_btnPX, this.m_btnPY);
 		// this.m_btnPY += this.btnSize + this.m_btnYSpace;
 
 		if (!visibleAlways) this.m_visiBtns.push(proBar);
 		if (layout) {
-			this.m_btns.push(proBar);
+			this.m_layoutBtns.push(proBar);
+			this.m_layoutBtnUUIDs.push(uuid);
 		}
 
 		// let minX = this.m_btnPX + proBar.getRect().x;
@@ -328,6 +346,32 @@ export default class ParamCtrlUI {
 			}
 		}
 	}
+	getLayoutBtns(): (SelectionBar | ProgressBar)[] {
+		return this.m_layoutBtns;
+	}
+	getAllLayoutBtnUUIDs(): string[] {
+		return this.m_layoutBtnUUIDs.slice(0);
+	}
+	getVisibleLayoutBtnUUIDs(): string[] {
+		let uuids: string[] = [];
+		let ls = this.m_layoutBtns;
+		for (let i = 0; i < ls.length; ++i) {
+			if (ls[i].isVisible()) {
+				uuids.push(ls[i].uuid);
+			}
+		}
+		return uuids;
+	}
+	getInVisibleLayoutBtnUUIDs(): string[] {
+		let uuids: string[] = [];
+		let ls = this.m_layoutBtns;
+		for (let i = 0; i < ls.length; ++i) {
+			if (!ls[i].isVisible()) {
+				uuids.push(ls[i].uuid);
+			}
+		}
+		return uuids;
+	}
 	addItems(params: CtrlItemParam[]): void {
 		for (let i = 0; i < params.length; ++i) {
 			this.addItem(params[i]);
@@ -336,6 +380,12 @@ export default class ParamCtrlUI {
 	getItemByUUID(uuid: string): CtrlItemObj {
 		if (this.m_btnMap.has(uuid)) {
 			return this.m_btnMap.get(uuid);
+		}
+		return null;
+	}
+	getBtnByUUID(uuid: string): SelectionBar | ProgressBar {
+		if (this.m_btnMap.has(uuid)) {
+			return this.m_btnMap.get(uuid).btn;
 		}
 		return null;
 	}
@@ -386,12 +436,24 @@ export default class ParamCtrlUI {
 		if (this.rgbPanel != null) this.rgbPanel.close();
 	}
 	getBodyHeight(force: boolean = false): number {
-		let btns = force ? this.m_btns : this.m_visiBtns;
+		let btns = force ? this.m_layoutBtns : this.m_visiBtns;
 		let bodyHeight = 0;
 		for (let i = 0; i < btns.length; ++i) {
-			bodyHeight += btns[i].getRect().height;
+			if (btns[i].isVisible()) {
+				bodyHeight += btns[i].getRect().height;
+			}
 		}
 		return bodyHeight;
+	}
+	geVisibleLayoutBtnsTotal(force: boolean = false): number {
+		let btns = force ? this.m_layoutBtns : this.m_visiBtns;
+		let tot = 0;
+		for (let i = 0; i < btns.length; ++i) {
+			if (btns[i].isVisible()) {
+				tot++;
+			}
+		}
+		return tot;
 	}
 	updateLayout(force: boolean = false, fixPos: Vector3D = null, distance: number = 5, height: number = 0): void {
 		let pos = new Vector3D();
@@ -399,27 +461,30 @@ export default class ParamCtrlUI {
 		if (fixPos == null) {
 			fixPos = new Vector3D();
 		}
-		let btns = force ? this.m_btns : this.m_visiBtns;
+		let btns = force ? this.m_layoutBtns : this.m_visiBtns;
 		let bounds = this.bounds;
 		let py = 0;
 
 		if (btns.length > 0) {
-			btns[0].getPosition(pos);
-			pos.y -= this.m_btnYSpace;
 			py = pos.y;
 			if (btns.length > 1 && height > 0) {
 				let bodyH = this.getBodyHeight(force);
-				this.m_btnYSpace = (height - bodyH) / (btns.length - 1);
+				let tot = this.geVisibleLayoutBtnsTotal(force) - 1;
+				this.m_btnYSpace = (height - bodyH) / tot;
 			}
 		}
 		for (let i = 0; i < btns.length; ++i) {
-			btns[i].getPosition(pos);
-			pos.y = py;
-			py += btns[i].getRect().height;
-			btns[i].setPosition(pos);
-			btns[i].update();
-			bounds.union(btns[i].getRect());
-			py += this.m_btnYSpace;
+			let btn = btns[i];
+			if (btn.isVisible()) {
+				btn.getPosition(pos);
+				pos.y = py;
+				// py += btn.getRect().height;
+				btn.setPosition(pos);
+				btn.update();
+				let r = btn.getRect();
+				bounds.union(r);
+				py = r.getTop() + this.m_btnYSpace;
+			}
 		}
 
 		offsetV.x = fixPos.x - bounds.x;
@@ -431,9 +496,13 @@ export default class ParamCtrlUI {
 		for (let i = 0; i < btns.length; ++i) {
 			btns[i].getPosition(pos);
 			pos.addBy(offsetV);
+			// pos.x = Math.round(pos.x);
+			// pos.y = Math.round(pos.y);
 			btns[i].setPosition(pos);
 			btns[i].update();
-			bounds.union(btns[i].getRect());
+			if (btns[i].isVisible()) {
+				bounds.union(btns[i].getRect());
+			}
 		}
 		// bounds.update();
 		if (this.rgbPanel) {
@@ -532,7 +601,7 @@ export default class ParamCtrlUI {
 		};
 		this.addItem(param, bparam.style, bparam.layout);
 	}
-	
+
 	addProgressItemWithParam(bparam: ProgressItemBuildParam, callback: ItemCallback): void {
 		let param: CtrlItemParam = {
 			type: "progress",
@@ -625,7 +694,6 @@ export default class ParamCtrlUI {
 	}
 }
 
-
 class ItemBuildParam {
 	name: string;
 	uuid: string;
@@ -634,11 +702,10 @@ class ItemBuildParam {
 	style: SelectionBarStyle = null;
 	layout = true;
 	colorPick?: boolean;
-	constructor(){}
+	constructor() {}
 }
 
 class StatusItemBuildParam extends ItemBuildParam {
-
 	selectNS: string;
 	deselectNS: string;
 	flag: boolean;
@@ -655,7 +722,6 @@ class StatusItemBuildParam extends ItemBuildParam {
 }
 
 class ValueItemBuildParam extends ItemBuildParam {
-
 	value: number;
 	minValue: number;
 	maxValue: number;
@@ -674,7 +740,6 @@ class ValueItemBuildParam extends ItemBuildParam {
 }
 
 class ProgressItemBuildParam extends ItemBuildParam {
-
 	progress: number;
 	constructor(name: string, uuid: string, progress: number, vals = true, syncEnabled = true) {
 		super();

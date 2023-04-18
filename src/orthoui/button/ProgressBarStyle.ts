@@ -24,7 +24,7 @@ export default class ProgressBarStyle extends SelectionBarStyle {
     readonly progressBarBgOverColor = new Color4(0.8, 0.8, 0.8, 0.5);
     readonly progressBarBgDownColor = new Color4(0.8, 0.8, 0.5, 0.5);
     readonly progressBarBgOutColor = new Color4(0.7, 0.7, 0.7, 0.5);
-
+	bodyScaleY = 1.0;
 	progressBarLength = 200;
     constructor() {
 		super();
