@@ -15,6 +15,7 @@ import ColorRectImgButton from "../../../orthoui/button/ColorRectImgButton";
 import ScreenAlignPlaneEntity from "../../../vox/entity/ScreenAlignPlaneEntity";
 import { UIBuilder } from "./UIBuilder";
 import Color4 from "../../../vox/material/Color4";
+import TextureConst from "../../../vox/texture/TextureConst";
 
 class BGToyAwardSceneParam implements IAwardSceneParam {
 	texLoader: TextureResLoader = null;
@@ -40,7 +41,10 @@ class BGToyAwardSceneParam implements IAwardSceneParam {
 	}
 	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
 		// url = URLFilter.filterUrl(url);
-		return this.texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
+		let tex = this.texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
+		tex.mipmapEnabled = false;
+		tex.minFilter = tex.magFilter = TextureConst.NEAREST;
+		return tex;
 	}
 	createContainer(): IDisplayEntityContainer {
 		return new DisplayEntityContainer(true, true);

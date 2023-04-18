@@ -16,6 +16,7 @@ class UIBuilder {
 	saveBtn: ColorRectImgButton = null;
 	resetBtn: ColorRectImgButton = null;
 	addIntoBtn: ColorRectImgButton = null;
+	expandUIItemBtn: ColorRectImgButton = null;
 	buildFinishCall: () => void = null;
 	constructor() {}
 
@@ -89,6 +90,11 @@ class UIBuilder {
 			this.updateBuildFinish();
 		};
 		img2.src = url;
+
+		let expandTrueBtnImg = UIBarTool.CreateCharsCanvasFixSize(60, 60, ">>", 25, fontColor, bgColor);
+		let expandFalseBtnImg = UIBarTool.CreateCharsCanvasFixSize(60, 60, "<<", 25, fontColor, bgColor);
+		UIBarTool.AddImageToAtlas("expandUIItem_true", expandTrueBtnImg);
+		UIBarTool.AddImageToAtlas("expandUIItem_false", expandFalseBtnImg);
 	}
 	private applyBtnColor(btn: ColorRectImgButton): void {
 		btn.outColor.setRGBA4f(0.8, 0.8, 0.8, 0.8);
@@ -151,13 +157,22 @@ class UIBuilder {
 		// canvas.style.top = `${200 + ri * 66}px`;
 		// canvas.style.position = "absolute";
 		// document.body.appendChild(canvas);
-
+		// >>
 		// let keyStr = "reset_btn";
 		UIBarTool.AddImageToAtlas(keyStr, canvas);
 		let btn = UIBarTool.CreateBtnWithKeyStr(keyStr);
 		btn.setRenderState(RendererState.BACK_ALPHA_ADD_BLENDSORT_STATE);
 		return btn;
 	}
+	/**
+	const centerX = canvas.width / 2;
+	const centerY = canvas.height / 2;
+	const angleInDegrees = 45;
+	const angleInRadians = angleInDegrees * Math.PI / 180;
+	ctx.translate(centerX, centerY);
+	ctx.rotate(angleInRadians);
+	ctx.drawImage(img, -img.width / 2, -img.height / 2);
+	 */
 }
 
 export { UIBuilder };

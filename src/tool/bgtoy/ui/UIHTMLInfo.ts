@@ -55,7 +55,7 @@ class UIHTMLInfo {
 			if (this.m_infoDiv) {
 				let div = this.m_infoDiv;
 				let tx = st.viewWidth * 0.5 - 315;
-				let ty = st.viewHeight * 0.5 + 110;
+				let ty = st.viewHeight * 0.5 + 95;
 				div.style.left = tx + "px";
 				div.style.top = ty + "px";
 			}

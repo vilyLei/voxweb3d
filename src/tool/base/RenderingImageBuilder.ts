@@ -2,6 +2,7 @@ import TextureResLoader from "../../vox/assets/TextureResLoader";
 import Color4 from "../../vox/material/Color4";
 import IColor4 from "../../vox/material/IColor4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
+import RendererDevice from "../../vox/render/RendererDevice";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import IRendererScene from "../../vox/scene/IRendererScene";
@@ -46,6 +47,7 @@ export class RenderingImageBuilder {
 	private m_ph = 200;
 	private m_times = 0;
 	private m_name = "";
+	savingTimes = 0;
 	setName(ns: string): void {
 		if (this.isEnabled()) {
 			this.m_name = ns;
@@ -131,19 +133,46 @@ export class RenderingImageBuilder {
 		this.m_imgData = this.createCanvasData();
 		this.downloadSavedImage();
 	}
+	// /* REGISTER DOWNLOAD HANDLER */
+    // /* Only convert the canvas to Data URL when the user clicks.
+    //    This saves RAM and CPU ressources in case this feature is not required. */
+	//    function dlCanvas() {
+    //     var dt = canvas.toDataURL('image/png');
+    //     /* Change MIME type to trick the browser to downlaod the file instead of displaying it */
+    //     dt = dt.replace(/^data:image\/[^;]*/, 'data:application/octet-stream');
+    //     /* In addition to <a>'s "download" attribute, you can define HTTP-style headers */
+    //     dt = dt.replace(/^data:application\/octet-stream/, 'data:application/octet-stream;headers=Content-Disposition%3A%20attachment%3B%20filename=Canvas.png');
+    //     this.href = dt;
+    // };
 	private downloadSavedImage(): void {
-		const a = document.createElement("a");
-		a.href = this.m_imgData;
+		let fileName = "";
 		if (this.m_rparam.getAttriAlpha()) {
-			a.download = this.m_name != "" ? this.m_name + "_new.png" : "normal.png";
+			fileName = this.m_name != "" ? this.m_name + "_new.png" : "defaultNew.png";
 		}else {
-			a.download = this.m_name != "" ? this.m_name + "_new.jpg" : "normal.jpg";
+			fileName = this.m_name != "" ? this.m_name + "_new.jpg" : "defaultNew.jpg";
 		}
-		document.body.appendChild(a);
-		(a as any).style = "display: none";
-		a.click();
-		a.remove();
+		let iosFlag = RendererDevice.IsSafariWeb() || RendererDevice.IsIOS() || RendererDevice.IsIpadOS();
+		if(iosFlag) {
+			var dt = this.m_imgData;
+			dt = dt.replace(/^data:image\/[^;]*/, 'data:application/octet-stream');
+			dt = dt.replace(/^data:application\/octet-stream/, 'data:application/octet-stream;headers=Content-Disposition%3A%20attachment%3B%20filename='+fileName);
+			const a = document.createElement("a");
+			a.href = dt;
+			document.body.appendChild(a);
+			(a as any).style = "display: none";
+			a.click();
+			a.remove();
+		}else {
+			const a = document.createElement("a");
+			a.href = this.m_imgData;
+			a.download = fileName;
+			document.body.appendChild(a);
+			(a as any).style = "display: none";
+			a.click();
+			a.remove();
+		}
 		this.m_imgData = "";
+		this.savingTimes ++;
 	}
 	run(): void {
 		if (this.m_times > 0) {

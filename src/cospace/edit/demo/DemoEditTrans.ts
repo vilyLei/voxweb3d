@@ -237,18 +237,18 @@ export class DemoEditTrans {
 		///*
 
 		let texAtlas = uiScene.texAtlas;
-
+		let fontSize = 25;
 		let urls: string[] = ["框选", "移动", "缩放", "旋转"];
-		let img = texAtlas.createCharsCanvasFixSize(90, 40, urls[0], 30);
+		let img = texAtlas.createCharsCanvasFixSize(90, 40, urls[0], fontSize);
 		texAtlas.addImageToAtlas(urls[0], img);
-		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[1], 30);
+		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[1], fontSize);
 		texAtlas.addImageToAtlas(urls[1], img);
-		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[2], 30);
+		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[2], fontSize);
 		texAtlas.addImageToAtlas(urls[2], img);
-		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], 30);
+		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], fontSize);
 		texAtlas.addImageToAtlas(urls[3], img);
 
-		///*		
+		///*
 		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 		btnUrls = urls;
 		let csLable = CoUI.createClipLabel();

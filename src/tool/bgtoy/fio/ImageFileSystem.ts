@@ -101,6 +101,7 @@ class ImageFileSystem {
 	private m_entityH = 100;
 	private m_pixelData: Uint8ClampedArray = null;
 	private m_color = new Color4();
+	imageMaxSize = 0;
 	updateLayout(rect: AABB2D): void {
 		this.layoutEntity();
 	}

@@ -23,6 +23,7 @@ import IFBOInstance from "../vox/scene/IFBOInstance";
 import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
 import Cloud01Material from "../pixelToy/cloud/material/Cloud01Material";
 import RemoveBlackBGMaterial2 from "./material/RemoveBlackBGMaterial2";
+import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 
 export class RemoveBlackBG2 {
 	private m_init = true;
@@ -37,7 +38,7 @@ export class RemoveBlackBG2 {
 	private m_uiSys = new UISystem();
 	private m_fileSys = new ImageFileSystem();
 
-	constructor() { }
+	constructor() {}
 
 	getAssetTexByUrl(pns: string): IRenderTexture {
 		return this.getTexByUrl("static/assets/" + pns);
@@ -47,10 +48,9 @@ export class RemoveBlackBG2 {
 		return this.m_texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 	}
 	private cutAlpha(value: number, s: number): void {
-
 		s *= s;
-		let atv = (value - 0.5);
-		let btv = (0.5 - value);
+		let atv = value - 0.5;
+		let btv = 0.5 - value;
 		// atv = Math.pow((value - 0.5), 1.0);
 		// btv = Math.pow((0.5 - value), 1.0);
 		let v = value >= 0.5 ? Math.min(atv * s + 0.5, 1.0) : Math.max(0.5 - btv * s, 0.0);
@@ -69,7 +69,7 @@ export class RemoveBlackBG2 {
 		if (this.m_init) {
 			this.m_init = false;
 
-			document.oncontextmenu = function (e) {
+			document.oncontextmenu = function(e) {
 				e.preventDefault();
 			};
 
@@ -106,7 +106,6 @@ export class RemoveBlackBG2 {
 		this.m_currEntity.setVisible(this.m_uiInited);
 	}
 	private initSystem(): void {
-
 		let rscene = this.m_rscene;
 		this.initScene(rscene);
 		const uiSys = this.m_uiSys;
@@ -175,10 +174,8 @@ export class RemoveBlackBG2 {
 	}
 	private m_areaRect = new AABB2D(0, 0, 1024, 512);
 	private resize(evt: any): void {
-
 		if (this.isSystemEnabled()) {
 			if (this.m_uiSys) {
-
 				let st = this.m_rscene.getStage3D();
 				let r = this.m_areaRect;
 				r.setTo(0, 0, 1024, 512);
@@ -221,7 +218,7 @@ export class RemoveBlackBG2 {
 			name = name.slice(0, name.indexOf("."));
 		}
 		console.log("loadedRes, url: ", url, ", name: ", name);
-		if(this.m_uiSys.isInited()) {
+		if (this.m_uiSys.isInited()) {
 			this.m_name = name;
 			this.m_uiSys.background.enable();
 			this.createAEntityByTexUrl(url);
@@ -252,6 +249,10 @@ export class RemoveBlackBG2 {
 		plane.depthAlwaysFalse = true;
 		plane.setMaterial(material);
 		plane.initializeXOY(-0.5, -0.5, 1.0, 1.0);
+		plane.intoRendererListener = (): void => {
+			let img = (tex as ImageTextureProxy).getTexData().data;
+			this.m_fileSys.imageMaxSize = Math.max(img.width, img.height);
+		};
 		this.m_rscene.addEntity(plane, 2);
 		this.m_uiSys.setCurrMaterial(material);
 		this.m_fileSys.setParams(this.m_name, plane, tex);

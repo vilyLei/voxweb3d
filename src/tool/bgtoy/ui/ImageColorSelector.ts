@@ -31,11 +31,20 @@ class ImageColorSelector {
 	isSelecting(): boolean {
 		return this.m_selecting;
 	}
+	setVisible(v: boolean): void {
+		this.m_colorSelectBtn.setVisible( v );
+		if(!v)this.m_colorRectPlane.setVisible(false);
+	}
+	isVisible(): boolean {
+		return this.m_colorSelectBtn.isVisible();
+	}
 	select(): void {
 		this.m_selecting = true;
 	}
 	deselect(): void {
 		this.m_selecting = false;
+		this.m_colorRectPlane.setVisible( false );
+		this.m_colorSelectBtn.setVisible( false );
 	}
 	disable(): void {
 		// console.log("ImageColorSelector()::disable() ...");
@@ -43,8 +52,16 @@ class ImageColorSelector {
 	enable(): void {
 		// console.log("ImageColorSelector()::enable() ...");
 	}
-	reset(): void {
+	reset(onlyColor: boolean = false): void {
+		if(!onlyColor) {
+			this.deselect();
+		}
 		this.m_colorRectPlane.setRGB3f(0, 0, 0);
+	}
+	isHitImgWithMouseXY(): boolean {
+		let st = this.m_uisc.getStage3D();
+		return this.fileSys.containsXYByImg(st.mouseX, st.mouseY);
+
 	}
 	selectColor(): Color4 {
 		console.log("ImageColorSelector()::select(), color ...");
@@ -106,11 +123,12 @@ class ImageColorSelector {
 			let st = sc.getStage3D();
 			let csBtn = this.m_colorSelectBtn;
 			if (csBtn) {
-				csBtn.setXY(st.stageHalfWidth - 512, st.stageHalfHeight - 256 - 30);
+				let tr = csBtn.getRect();
+				csBtn.setXY(st.stageHalfWidth - 512, st.stageHalfHeight - 256 - tr.height - 2);
 				csBtn.update();
-				let rect = csBtn.getRect();
+				tr = csBtn.getRect();
 				let pl = this.m_colorRectPlane;
-				pl.setXYZ(rect.getRight() + 6 + rect.height * 0.5, rect.y + rect.height * 0.5, 1.0);
+				pl.setXYZ(tr.getRight() + 6 + tr.height * 0.5, tr.y + tr.height * 0.5, 1.0);
 			}
 		}
 	}

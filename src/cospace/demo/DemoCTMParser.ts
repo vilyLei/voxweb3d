@@ -17,6 +17,7 @@ import { UserInteraction } from "../../app/engine/UserInteraction";
 
 import MaterialBase from "../../vox/material/MaterialBase";
 import DivLog from "../../vox/utils/DivLog";
+import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 /**
  * 通过加载到的CTM模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据
  */
@@ -64,8 +65,12 @@ export class DemoCTMParser {
 	private m_vtxTotal: number = 0;
 	private m_trisNumber: number = 0;
 	private loadCTM02(): void {
-		for(let i: number = 0; i < 27; ++i) {
-			let url = "static/private/ctm/sh202/sh202_"+i+".ctm";
+		// for(let i: number = 0; i < 27; ++i) {
+		// 	let url = "static/private/ctm/sh202/sh202_"+i+".ctm";
+		// 	this.initCTMFromBin(url);
+		// }
+		for(let i: number = 0; i < 194; ++i) {
+			let url = "static/private/ctm/sh03/sh03_"+i+".ctm";
 			this.initCTMFromBin(url);
 		}
 	}
@@ -80,7 +85,7 @@ export class DemoCTMParser {
 		urls = [baseUrl + "sh202/sh202_25.ctm"];
 		urls = [baseUrl + "sh202/sh202_26.ctm"];
 		urls = ["static/private/test/tst.ctm"];
-		
+
 		// urls = [baseUrl + "sh202/sh202_5.ctm"];
 		//let ctmUrl: string = "static/assets/ctm/hand.ctm";
 		this.initCTMFromBin(urls[0]);
@@ -101,6 +106,7 @@ export class DemoCTMParser {
 		// let axis = new Axis3DEntity();
 		// axis.initialize(500);
 		// this.m_rscene.addEntity( axis );
+		new RenderStatusDisplay(this.m_rscene, true);
 	}
 
 	// 一份任务数据处理完成后由此侦听器回调函数接收到处理结果
