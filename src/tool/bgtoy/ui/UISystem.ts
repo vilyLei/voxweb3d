@@ -169,24 +169,6 @@ class UISystem {
 			}
 		});
 
-		// ui.addStatusItem(
-		// 	"图像处理方式",
-		// 	"img_operate_mode",
-		// 	"保持原图",
-		// 	"背景剔除",
-		// 	false,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			// this.m_currMaterial.setParam3(info.flag ? 0.0 : 1.0);
-		// 			this.m_showInitImg = info.flag;
-		// 			this.m_currMaterial.showInitImg( info.flag );
-		// 		}
-		// 	},
-		// 	true,
-		// 	false,
-		// 	selectBarStyle
-		// );
-
 		selectBarStyle.visible = false || itemForceVisible;
 		statusp = new StatusItemBuildParam("背景剔除方式", "invert_discard", "反相剔除", "正常剔除", false);
 		statusp.style = selectBarStyle;
@@ -195,22 +177,6 @@ class UISystem {
 				this.m_currMaterial.setInvertDiscard(info.flag);
 			}
 		});
-		// ui.addStatusItem(
-		// 	"背景剔除方式",
-		// 	"invert_discard",
-		// 	"反相背景剔除",
-		// 	"正常背景剔除",
-		// 	false,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			this.m_currMaterial.setInvertDiscard(info.flag);
-		// 		}
-		// 	},
-		// 	true,
-		// 	false,
-		// 	selectBarStyle
-		// );
-		// ValueItemBuildParam
 		selectBarStyle.visible = false || itemForceVisible;
 		statusp = new StatusItemBuildParam("输出透明度翻转", "invert_alpha", "是", "否", false);
 		statusp.style = selectBarStyle;
@@ -219,21 +185,6 @@ class UISystem {
 				this.m_currMaterial.setInvertAlpha(info.flag);
 			}
 		});
-		// ui.addStatusItem(
-		// 	"输出透明度翻转",
-		// 	"invert_alpha",
-		// 	"是",
-		// 	"否",
-		// 	false,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			this.m_currMaterial.setInvertAlpha(info.flag);
-		// 		}
-		// 	},
-		// 	true,
-		// 	false,
-		// 	selectBarStyle
-		// );
 		selectBarStyle.visible = false || itemForceVisible;
 		statusp = new StatusItemBuildParam("输出颜色值翻转", "invert_rgb", "是", "否", false);
 		statusp.style = selectBarStyle;
@@ -242,21 +193,6 @@ class UISystem {
 				this.m_currMaterial.setInvertRGB(info.flag);
 			}
 		});
-		// ui.addStatusItem(
-		// 	"输出颜色值翻转",
-		// 	"invert_rgb",
-		// 	"是",
-		// 	"否",
-		// 	false,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			this.m_currMaterial.setInvertRGB(info.flag);
-		// 		}
-		// 	},
-		// 	true,
-		// 	false,
-		// 	selectBarStyle
-		// );
 		progressBarStyle.visible = false || itemForceVisible;
 		let valuep = new ValueItemBuildParam("透明度分离", "separate_alpha", 1, 1, 15);
 		valuep.style = progressBarStyle;
@@ -265,23 +201,6 @@ class UISystem {
 				this.m_currMaterial.separateAlpha(info.values[0]);
 			}
 		});
-		// ui.addValueItem(
-		// 	"输出透明度分离",
-		// 	"separate_alpha",
-		// 	1.0,
-		// 	1.0,
-		// 	15,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			this.m_currMaterial.separateAlpha(info.values[0]);
-		// 		}
-		// 	},
-		// 	false,
-		// 	true,
-		// 	null,
-		// 	false,
-		// 	progressBarStyle
-		// );
 		progressBarStyle.visible = true || itemForceVisible;
 		valuep = new ValueItemBuildParam("应用原始透明度", "init_alpha_factor", 1, 0, 1);
 		valuep.style = progressBarStyle;
@@ -290,23 +209,6 @@ class UISystem {
 				this.m_currMaterial.setInitAlphaFactor(info.values[0]);
 			}
 		});
-		// ui.addValueItem(
-		// 	"应用原始透明度",
-		// 	"init_alpha_factor",
-		// 	1.0,
-		// 	0.0,
-		// 	1.0,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			this.m_currMaterial.setInitAlphaFactor(info.values[0]);
-		// 		}
-		// 	},
-		// 	false,
-		// 	true,
-		// 	null,
-		// 	false,
-		// 	progressBarStyle
-		// );
 		progressBarStyle.visible = true || itemForceVisible;
 		valuep = new ValueItemBuildParam("色彩透明度强度", "color_alpha_factor", 1, 0, 3);
 		valuep.style = progressBarStyle;
@@ -315,23 +217,6 @@ class UISystem {
 				this.m_currMaterial.setColorAlphaStrength(info.values[0]);
 			}
 		});
-		// ui.addValueItem(
-		// 	"色彩透明度强度",
-		// 	"color_alpha_factor",
-		// 	1.0,
-		// 	0.0,
-		// 	3.0,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			this.m_currMaterial.setColorAlphaStrength(info.values[0]);
-		// 		}
-		// 	},
-		// 	false,
-		// 	true,
-		// 	null,
-		// 	false,
-		// 	progressBarStyle
-		// );
 		progressBarStyle.visible = false || itemForceVisible;
 		valuep = new ValueItemBuildParam("色彩强度", "color_factor", 1, 0, 5);
 		valuep.style = progressBarStyle;
@@ -341,23 +226,6 @@ class UISystem {
 			}
 		});
 
-		// ui.addValueItem(
-		// 	"色彩强度",
-		// 	"color_factor",
-		// 	1.0,
-		// 	0.0,
-		// 	5.0,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			this.m_currMaterial.setParam1(info.values[0]);
-		// 		}
-		// 	},
-		// 	false,
-		// 	true,
-		// 	null,
-		// 	false,
-		// 	progressBarStyle
-		// );
 
 		progressBarStyle.visible = true || itemForceVisible;
 		valuep = new ValueItemBuildParam("背景剔除比例", "alpha_discard_factor", 0.02, 0.0, 0.96);
@@ -367,23 +235,6 @@ class UISystem {
 				this.m_currMaterial.setParam2(info.values[0]);
 			}
 		});
-		// ui.addValueItem(
-		// 	"背景剔除比例",
-		// 	"alpha_discard_factor",
-		// 	0.02,
-		// 	0.0,
-		// 	0.96,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			this.m_currMaterial.setParam2(info.values[0]);
-		// 		}
-		// 	},
-		// 	false,
-		// 	true,
-		// 	null,
-		// 	false,
-		// 	progressBarStyle
-		// );
 		progressBarStyle.visible = true || itemForceVisible;
 		valuep = new ValueItemBuildParam("背景剔除颜色阈值", "alpha_discard_threshold", 0.5, 0.0, 1.0);
 		valuep.style = progressBarStyle;
@@ -392,24 +243,6 @@ class UISystem {
 				this.m_currMaterial.setDiscardRadius(info.values[0]);
 			}
 		});
-		// ui.addValueItem(
-		// 	"背景剔除颜色阈值",
-		// 	"alpha_discard_threshold",
-		// 	0.5,
-		// 	0.0,
-		// 	1.0,
-		// 	(info: CtrlInfo): void => {
-		// 		if (this.m_currMaterial) {
-		// 			this.m_currMaterial.setDiscardRadius(info.values[0]);
-		// 		}
-		// 	},
-		// 	false,
-		// 	true,
-		// 	null,
-		// 	false,
-		// 	progressBarStyle
-		// );
-		// 还可以设置: 更红，更绿，更蓝
 
 		let imgSelector = this.imageSelector;
 		imgSelector.uiBuilder = this.uiBuilder;
@@ -417,6 +250,8 @@ class UISystem {
 		imgSelector.uiBackground = this.background;
 		imgSelector.initialize(ui.ruisc);
 
+		selectBarStyle.bodyFontColor.setRGBA4f(1.0, 1.0, 1.0, 1.0);
+		selectBarStyle.bodyFontBgColor.setRGBA4f(1.0, 1.0, 1.0, 0.3);
 		selectBarStyle.trueImageKey = "expandUIItem_true";
 		selectBarStyle.falseImageKey = "expandUIItem_false";
 		statusp = new StatusItemBuildParam("", "expandUIItem", "-", "-", true);
@@ -458,7 +293,6 @@ class UISystem {
 		this.m_currUIDs = ui.getVisibleLayoutBtnUUIDs();
 		this.m_allUIDs = ui.getAllLayoutBtnUUIDs();
 
-		// this.itemsExpand(true);
 	}
 	private m_currUIDs: string[] = [];
 	private m_allUIDs: string[] = [];
