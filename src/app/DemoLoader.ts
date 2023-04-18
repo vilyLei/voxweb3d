@@ -53,7 +53,7 @@ class WaitingPhase {
 		t = 1.0 - t;
 		t = Math.round(t * 100.0);
 		let headStr = "私人服务带宽小</br>请稍等两秒:&nbsp";
-		let endStr = "%</br>加速请联系作者</br>email:&nbspvily313@126.com";
+		let endStr = "%</br>需要加速请联系作者</br>email:&nbspvily313@126.com";
         if(!this.item || !this.item.pay) {
             endStr = "%";
         }
