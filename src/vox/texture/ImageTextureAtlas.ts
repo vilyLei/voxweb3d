@@ -238,8 +238,8 @@ export default class ImageTextureAtlas extends TextureAtlas {
 			return ImageTextureAtlas.s_imgMap.get(keyStr);
 		}
 
-		let width: number = size;
-		let height: number = size + 2;
+		let width: number = size + 4;
+		let height: number = size + 6;
 		if (chars.length > 1) {
 			width = size * chars.length;
 		}
@@ -305,12 +305,12 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		///*
 		if (RendererDevice.IsMobileWeb()) {
 			if (RendererDevice.IsIOS()) {
-				ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
+				ctx2D.fillText(chars, Math.round((width - texWidth) * 0.5), -4);
 			} else {
-				ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
+				ctx2D.fillText(chars, Math.round((width - texWidth) * 0.5), 4);
 			}
 		} else {
-			ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
+			ctx2D.fillText(chars, Math.round((width - texWidth) * 0.5), 6);
 		}
 		//*/
 		// ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);

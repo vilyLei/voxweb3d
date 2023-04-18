@@ -89,12 +89,14 @@ export default class TextureAtlas {
                 texRect.y += area.offset;
                 texRect.width -= area.offset * 2;
                 texRect.height -= area.offset * 2;
+
+				// console.log("KKKKKKKKKKKK texRect: ", texRect);
                 // texRect.flipY(this.m_height);
 
-                let uMin = texRect.x / this.m_width;
-                let vMin = texRect.y / this.m_height;
-                let uMax = texRect.getRight() / this.m_width;
-                let vMax = texRect.getTop() / this.m_height;
+                const uMin = texRect.x / this.m_width;
+                const vMin = texRect.y / this.m_height;
+                const uMax = texRect.getRight() / this.m_width;
+                const vMax = texRect.getTop() / this.m_height;
 
                 if (this.m_uvFlipY) {
                     area.uvs.set([
