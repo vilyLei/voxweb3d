@@ -64,8 +64,6 @@ export class RemoveBlackBG2 {
 		this.cutAlpha(0.25, s);
 		this.cutAlpha(0.75, s);
 		console.log("RemoveBlackBG2::initialize()......");
-		// console.log("### calc to less: ", Math.pow(0.98, 13));
-		// console.log("### calc to greate: ", Math.pow(1.02, 13));
 		if (this.m_init) {
 			this.m_init = false;
 
@@ -76,12 +74,11 @@ export class RemoveBlackBG2 {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("black");
-			// let rparam = new RendererParam(this.m_uiSys.createDiv(0,0, 1024, 512));
-			let rparam = new RendererParam();
-			rparam.setCamProject(45, 0.1, 3000.0);
-			rparam.setCamPosition(0.0, 0.0, 1500.0);
+			let rparam = this.m_graph.createRendererSceneParam();
+            rparam.setCamProject(45, 0.1, 6000.0);
+            rparam.setCamPosition(1100.0, 1100.0, 1100.0);
 			rparam.setAttriAlpha(true);
-			rparam.cameraPerspectiveEnabled = false;
+			// rparam.cameraPerspectiveEnabled = false;
 			// rparam.autoSyncRenderBufferAndWindowSize = false;
 			rparam.syncBgColor = true;
 
@@ -95,9 +92,9 @@ export class RemoveBlackBG2 {
 			// new MouseInteraction().initialize(rscene, 0, true).setAutoRunning(true);
 			// new RenderStatusDisplay(rscene, true);
 
-			// this.resize(null);
-			this.initFBO();
+			// this.initFBO();
 			let tex = this.getTexByUrl("static/assets/guangyun_40.jpg");
+			document.body.style.overflow = "hidden";
 		}
 	}
 	private m_uiInited = false;
@@ -107,10 +104,10 @@ export class RemoveBlackBG2 {
 	}
 	private initSystem(): void {
 		let rscene = this.m_rscene;
-		this.initScene(rscene);
 		const uiSys = this.m_uiSys;
 		uiSys.processTotal = 6;
-		uiSys.initialize(this.m_graph, this.m_fboIns.getRTTAt(0));
+		// uiSys.initialize(this.m_graph, this.m_fboIns.getRTTAt(0));
+		uiSys.initialize(this.m_graph, null);
 		uiSys.setOpeningListener((): void => {
 			this.openDir();
 		});
@@ -129,8 +126,10 @@ export class RemoveBlackBG2 {
 
 		this.m_vasScene.initialize(uiSys.ctrlui.ruisc, this.m_aspParam);
 
+		this.initScene();
 		this.resize(null);
 	}
+	/*
 	private m_fboIns: IFBOInstance = null;
 	private m_fixPlane = new ScreenAlignPlaneEntity();
 	private m_currFboEntity: IRenderEntity = null;
@@ -138,6 +137,9 @@ export class RemoveBlackBG2 {
 		let rscene = this.m_rscene;
 		let pw = 256;
 		let ph = 256;
+		if(RendererDevice.IsMobileWeb()) {
+			pw = 128;
+		}
 		let fboIns = rscene.createFBOInstance();
 		fboIns.setClearRGBAColor4f(0.3, 0.0, 0.0, 1.0); // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
 		fboIns.createFBOAt(0, pw, ph, false, false);
@@ -172,15 +174,18 @@ export class RemoveBlackBG2 {
 		// viewPlane.setRGB3f(0.3, 0.3, 0.3);
 		// rscene.addEntity(viewPlane, 1);
 	}
+	//*/
 	private m_areaRect = new AABB2D(0, 0, 1024, 512);
 	private resize(evt: any): void {
+		let st = this.m_rscene.getStage3D();
+		console.log("st.stageWidth, st.stageHeight: ", st.stageWidth, st.stageHeight);
 		if (this.isSystemEnabled()) {
 			if (this.m_uiSys) {
-				let st = this.m_rscene.getStage3D();
 				let r = this.m_areaRect;
 				r.setTo(0, 0, 1024, 512);
-				// r.scaleBy(this.m_rscene.getDevicePixelRatio());
+				// // r.scaleBy(this.m_rscene.getDevicePixelRatio());
 				r.moveCenterTo(st.stageHalfWidth, st.stageHalfHeight);
+				// r.setTo(st.stageHalfWidth - 512, st.stageHalfHeight - 256, 1024, 512);
 
 				this.m_vasScene.updateLayout(r);
 				this.m_uiSys.updateLayout(r);
@@ -229,12 +234,13 @@ export class RemoveBlackBG2 {
 	}
 	private m_currMaterial: RemoveBlackBGMaterial2 = null;
 	private m_currEntity: Plane3DEntity = null;
-	private initScene(rscene: IRendererScene): void {
+	private initScene(): void {
 		this.createAEntityByTexUrl("static/assets/guangyun_40.jpg");
 	}
 	private createAEntityByTexUrl(url: string): void {
+		let sc = this.m_uiSys.background.getRScene();
 		if (this.m_currEntity != null) {
-			this.m_rscene.removeEntity(this.m_currEntity);
+			sc.removeEntity(this.m_currEntity);
 		}
 		let tex = this.getTexByUrl(url);
 		let material = new RemoveBlackBGMaterial2();
@@ -253,7 +259,7 @@ export class RemoveBlackBG2 {
 			let img = (tex as ImageTextureProxy).getTexData().data;
 			this.m_fileSys.imageMaxSize = Math.max(img.width, img.height);
 		};
-		this.m_rscene.addEntity(plane, 2);
+		sc.addEntity(plane, 2);
 		this.m_uiSys.setCurrMaterial(material);
 		this.m_fileSys.setParams(this.m_name, plane, tex);
 
@@ -283,16 +289,17 @@ export class RemoveBlackBG2 {
 			this.m_fileSys.run();
 		}
 
-		if (this.m_currFboEntity) {
-			if (this.m_times > 0) {
-				this.m_times--;
-				if (this.m_times == 1) {
-					this.m_currFboEntity = null;
-					this.m_fboIns.setAutoRunning(false);
-					this.m_rscene.removeRenderNode(this.m_fboIns);
-				}
-			}
-		}
+		// if (this.m_currFboEntity) {
+		// 	if (this.m_times > 0) {
+		// 		this.m_times--;
+		// 		if (this.m_times == 1) {
+		// 			this.m_currFboEntity = null;
+		// 			this.m_fboIns.setAutoRunning(false);
+		// 			this.m_rscene.removeRenderNode(this.m_fboIns);
+		// 		}
+		// 	}
+		// }
+		this.m_uiSys.background.run();
 	}
 }
 export default RemoveBlackBG2;

@@ -37,7 +37,7 @@ class BGToyAwardSceneParam implements IAwardSceneParam {
 		return tex;
 	}
 	applyFunction(key: string): void {
-		this.uiSys.applyFunction(key);
+		this.uiSys.uiHTMLInfo.applyFunction(key);
 	}
 	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
 		// url = URLFilter.filterUrl(url);

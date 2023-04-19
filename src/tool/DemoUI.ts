@@ -23,6 +23,7 @@ import { HttpFileLoader } from "../cospace/modules/loaders/HttpFileLoader";
 import { UIBuilder } from "./bgtoy/ui/UIBuilder";
 import Vector3D from "../vox/math/Vector3D";
 import EventBase from "../vox/event/EventBase";
+import RenderableEntityContainer from "../vox/entity/RenderableEntityContainer";
 
 export class DemoUI {
 	private m_init = true;
@@ -88,6 +89,45 @@ export class DemoUI {
 		}
 	}
 	private initScene(): void {
+
+		let builder = new UIBuilder( this.m_rscene );
+
+
+		let uirsc = this.m_rscene;
+		let container0 = new RenderableEntityContainer();
+
+		let bgPlane = new Plane3DEntity();
+		bgPlane.uuid = "bgPlane";
+		bgPlane.depthAlwaysFalse = true;
+		bgPlane.initializeXOY(0, 0, 500, 400);
+		bgPlane.setColor(new Color4(0.3,0.5,0.7));
+		container0.addChild( bgPlane );
+
+		let tex0 = builder.createCharsTexFixSize(170, 50, "plane0",30);
+		tex0.flipY = true;
+		let plane0 = new Plane3DEntity();
+		plane0.uuid = "";
+		// plane0.depthAlwaysFalse = true;
+		plane0.transparentBlend = true;
+		plane0.initializeXOY(0, 0, tex0.getWidth(), tex0.getHeight(), [tex0]);
+		container0.addChild( plane0 );
+
+		let container0_0 = new RenderableEntityContainer();
+		container0.addChild(container0_0);
+
+		let tex1 = builder.createCharsTexFixSize(170, 50, "plane1",30);
+		tex1.flipY = true;
+		let plane1 = new Plane3DEntity();
+		// plane1.depthAlwaysFalse = true;
+		plane1.transparentBlend = true;
+		plane1.initializeXOY(0, 0, tex1.getWidth(), tex1.getHeight(), [tex1]);
+		plane1.setXYZ(100, 100, 0);
+		container0.addChild( plane1 );
+
+		uirsc.addContainer(container0);
+
+	}
+	private initScene2(): void {
 		let uirsc = this.m_rscene;
 		let btn = new SelectionBar();
 		// btn.fontColor.setRGBA4f(0,0,0,1);

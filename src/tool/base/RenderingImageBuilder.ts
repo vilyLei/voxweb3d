@@ -145,12 +145,9 @@ export class RenderingImageBuilder {
     //     this.href = dt;
     // };
 	private downloadSavedImage(): void {
-		let fileName = "";
-		if (this.m_rparam.getAttriAlpha()) {
-			fileName = this.m_name != "" ? this.m_name + "_new.png" : "defaultNew.png";
-		}else {
-			fileName = this.m_name != "" ? this.m_name + "_new.jpg" : "defaultNew.jpg";
-		}
+		let suffix = this.m_rparam.getAttriAlpha() ? "png" : "jpg";
+		let fileName = this.m_name != "" ? this.m_name + "_new." : "defaultNew.";
+		fileName += suffix;
 		let iosFlag = RendererDevice.IsSafariWeb() || RendererDevice.IsIOS() || RendererDevice.IsIpadOS();
 		if(iosFlag) {
 			var dt = this.m_imgData;
@@ -161,6 +158,7 @@ export class RenderingImageBuilder {
 			document.body.appendChild(a);
 			(a as any).style = "display: none";
 			a.click();
+			window.URL.revokeObjectURL(a.href);
 			a.remove();
 		}else {
 			const a = document.createElement("a");
@@ -169,6 +167,7 @@ export class RenderingImageBuilder {
 			document.body.appendChild(a);
 			(a as any).style = "display: none";
 			a.click();
+			window.URL.revokeObjectURL(a.href);
 			a.remove();
 		}
 		this.m_imgData = "";

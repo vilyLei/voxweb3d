@@ -1,113 +1,71 @@
-import AABB2D from "../../../vox/geom/AABB2D";
+import RendererState from "../../../vox/render/RendererState";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRendererSceneGraph from "../../../vox/scene/IRendererSceneGraph";
 
 import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
+
+import SelectionBarStyle from "../../../orthoui/button/SelectionBarStyle";
 import { ProgressItemBuildParam, ValueItemBuildParam, StatusItemBuildParam, CtrlInfo, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 
 import { Background } from "./Background";
 import Vector3D from "../../../vox/math/Vector3D";
+import ProgressBarStyle from "../../../orthoui/button/ProgressBarStyle";
 import { UIBuilder } from "./UIBuilder";
 import { UIHTMLInfo } from "./UIHTMLInfo";
 import { ImageColorSelector } from "./ImageColorSelector";
-import { AlphaOperationUI } from "./AlphaOperationUI";
+import MouseEvent from "../../../vox/event/MouseEvent";
 import IAABB2D from "../../../vox/geom/IAABB2D";
-import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import ColorRectImgButton from "../../../orthoui/button/ColorRectImgButton";
+import SelectionBar from "../../../orthoui/button/SelectionBar";
+import UIBarTool from "../../../orthoui/button/UIBarTool";
+import TextureConst from "../../../vox/texture/TextureConst";
+import AABB2D from "../../../vox/geom/AABB2D";
+import { ILayoutBtn, BtnLayouter } from "./BtnLayouter";
 
-class UISystem {
+class AlphaOperationUI {
 	private m_rscene: IRendererScene = null;
 	private m_graph: IRendererSceneGraph = null;
-	private m_bgTex: IRenderTexture;
 
-	uiBuilder: UIBuilder;
-	ctrlui: ParamCtrlUI;
-	readonly background = new Background();
-	readonly imageSelector = new ImageColorSelector();
-	readonly uiHTMLInfo = new UIHTMLInfo();
-	readonly alphaOpUI = new AlphaOperationUI();
-	processTotal = 3;
-	constructor() {
+	background: Background = null;
+	imageSelector: ImageColorSelector;
+	uiHTMLInfo: UIHTMLInfo;
+	processTotal = 6;
 
-		let aopui = this.alphaOpUI;
-		this.uiBuilder = aopui.uiBuilder;
-		this.background.uiBuilder = this.uiBuilder;
-		aopui.background = this.background;
-		aopui.imageSelector = this.imageSelector;
-		aopui.uiHTMLInfo = this.uiHTMLInfo;
-	}
+	readonly ctrlui = new ParamCtrlUI(false);
+	readonly uiBuilder = new UIBuilder();
 
-	initialize(graph: IRendererSceneGraph, bgTex: IRenderTexture = null): void {
+	buildFinishCall: () => void = null;
+	constructor() {}
+
+	initialize(graph: IRendererSceneGraph): void {
 		if (this.m_graph == null && graph != null) {
 			this.m_graph = graph;
 			this.m_rscene = this.m_graph.getNodeAt(0).getRScene();
-			this.m_bgTex = bgTex;
-			this.init();
+			this.initUI();
+			this.uiBuilder.buildFinishCall = (): void => {
+				this.initUIItems();
+				if (this.buildFinishCall) {
+					this.buildFinishCall();
+				}
+			};
+			this.uiBuilder.initialize(graph);
 		}
 	}
-	private init(): void {
 
-		let aopui = this.alphaOpUI;
-		this.uiBuilder = aopui.uiBuilder;
-		this.ctrlui = aopui.ctrlui;
-
-		let bg = this.background;
-		bg.initialize(this.m_graph, this.m_bgTex);
-
-		aopui.buildFinishCall = (): void =>{
-			this.updateLayout();
-			this.m_initCall();
-		}
-		aopui.initialize( this.m_graph )
-	}
-	private m_initCall: () => void = null;
-	setCurrMaterial(currMaterial: RemoveBlackBGMaterial2): void {
-		// this.m_currMaterial = currMaterial;
-		this.imageSelector.setCurrMaterial(currMaterial);
-
-		this.alphaOpUI.setCurrMaterial(currMaterial);
-	}
-	setSavingListener(call: () => void): void {
-		// this.m_savingCall = call;
-		this.alphaOpUI.setSavingListener( call );
-	}
-	setOpeningListener(call: () => void): void {
-		// this.m_openingCall = call;
-		this.alphaOpUI.setOpeningListener( call );
-	}
-	setInitListener(call: () => void): void {
-		this.m_initCall = call;
-	}
-	isInited(): boolean {
-		return this.alphaOpUI.isInited();
-		// return this.m_uiInited;
-	}
-	hideSpecBtns(): void {
-		this.uiBuilder.hideSpecBtns();
-		this.uiHTMLInfo.hideSpecInfos();
-	}
-	/*
 	private m_currMaterial: RemoveBlackBGMaterial2 = null;
 	private m_initUI = true;
 	private m_savingCall: () => void = null;
 	private m_openingCall: () => void = null;
-	private init2(): void {
-		let graph = this.m_graph;
-
-		let bg = this.background;
-		bg.uiBuilder = this.uiBuilder;
-		bg.initialize(this.m_rscene, this.m_bgTex);
-
-		this.initUI();
-		// for test
-		// this.imageSelector.uiBuilder = this.uiBuilder;
-		// this.imageSelector.initialize(this.ctrlui.ruisc);
-		// return;
-		this.uiBuilder.buildFinishCall = (): void => {
-			this.initUIItems();
-		};
-		this.uiBuilder.initialize(graph);
+	setSavingListener(call: () => void): void {
+		this.m_savingCall = call;
 	}
-
+	setOpeningListener(call: () => void): void {
+		this.m_openingCall = call;
+	}
+	setCurrMaterial(currMaterial: RemoveBlackBGMaterial2): void {
+		this.m_currMaterial = currMaterial;
+		this.imageSelector.setCurrMaterial(currMaterial);
+	}
 	private initUI(): void {
 		if (!this.m_initUI) {
 			return;
@@ -128,10 +86,9 @@ class UISystem {
 	private m_uiInited = false;
 	private m_showInitImg = false;
 	private m_expandUIItemBtn: SelectionBar = null;
-	// isInited(): boolean {
-	// 	return this.alphaOpUI.isInited();
-	// 	return this.m_uiInited;
-	// }
+	isInited(): boolean {
+		return this.m_uiInited;
+	}
 	private initUIItems(): void {
 		this.m_uiInited = true;
 		let ui = this.ctrlui;
@@ -149,7 +106,7 @@ class UISystem {
 		selectBarStyle.headAlignType = "right";
 		selectBarStyle.headAlignPosValue = -20;
 		selectBarStyle.headEnabled = false;
-		selectBarStyle.bodyFixWidth = 70;
+		selectBarStyle.bodyFixWidth = 308;
 
 		let progressBarStyle: ProgressBarStyle = null;
 		progressBarStyle = new ProgressBarStyle();
@@ -169,7 +126,7 @@ class UISystem {
 		selectBarStyle.headVisible = false;
 		selectBarStyle.visible = false || itemForceVisible;
 		let statusp = new StatusItemBuildParam("切换", "change_bg_color", "随机切换环境背景", "随机切换环境背景", false);
-		// statusp
+
 		statusp.style = selectBarStyle;
 		ui.addStatusItemWithParam(statusp, (info: CtrlInfo): void => {
 			this.background.changeBGColor();
@@ -183,6 +140,9 @@ class UISystem {
 			if (this.m_currMaterial) {
 				this.m_showInitImg = info.flag;
 				this.m_currMaterial.showInitImg(info.flag);
+				let tex = UIBarTool.TexPool.getAtlasAt(0).getTexture();
+				// console.log("tex filter A: ",tex.minFilter, tex.magFilter, tex.mipmapEnabled);
+				// console.log("tex filter B: ",TextureConst.NEAREST);
 			}
 		});
 
@@ -260,8 +220,6 @@ class UISystem {
 			}
 		});
 
-		UIBarTool.TexPool.heightOffset = 9;
-
 		let imgSelector = this.imageSelector;
 		imgSelector.uiBuilder = this.uiBuilder;
 		imgSelector.uiHTMLInfo = this.uiHTMLInfo;
@@ -299,23 +257,23 @@ class UISystem {
 		this.m_allUIDs = ui.getAllLayoutBtnUUIDs();
 
 		this.applyAddIntoBtn(addIntoBtn);
-
-		ui.ruisc.addEntity(resetBtn);
-		ui.ruisc.addEntity(saveBtn);
-		ui.ruisc.addEntity(addIntoBtn);
+		let ruisc = ui.ruisc;
+		ruisc.addEntity(resetBtn);
+		ruisc.addEntity(saveBtn);
+		ruisc.addEntity(addIntoBtn);
 
 		this.background.buildInfo();
 		this.uiHTMLInfo.initialize(ui.ruisc);
 		this.updateLayoutUI();
 		this.background.changeBGColor();
-		if (this.m_initCall) {
-			this.m_initCall();
-		}
-
+		// if (this.m_initCall) {
+		// 	this.m_initCall();
+		// }
 	}
 	private m_currUIDs: string[] = [];
 	private m_allUIDs: string[] = [];
 	private m_uiAreaH = 430;
+	private m_uiAreaHK = 0.84;
 	private itemsExpand(flag: boolean): void {
 		let ui = this.ctrlui;
 		let ls = flag ? this.m_allUIDs : this.m_currUIDs;
@@ -325,11 +283,13 @@ class UISystem {
 		if (flag) {
 			this.imageSelector.setVisible(true);
 			this.m_uiAreaH = 430;
+			this.m_uiAreaHK = 0.84;
 			for (let i = 0; i < ls.length; ++i) {
 				ui.getItemByUUID(ls[i]).btn.setVisible(true);
 			}
 		} else {
 			this.m_uiAreaH = 410;
+			this.m_uiAreaHK = 0.8;
 			for (let i = 0; i < ls.length; ++i) {
 				ui.getItemByUUID(ls[i]).btn.setVisible(true);
 			}
@@ -388,17 +348,6 @@ class UISystem {
 			}
 		});
 	}
-
-	// applyFunction(key: string): void {
-	// 	switch (key) {
-	// 		case "open_award":
-	// 		case "close_award":
-	// 			this.uiHTMLInfo.applyFunction(key);
-	// 			break;
-	// 		default:
-	// 			break;
-	// 	}
-	// }
 	private resetCtrlValue(): void {
 		let ui = this.ctrlui;
 
@@ -423,81 +372,53 @@ class UISystem {
 	private updateLayoutUI(): void {
 		this.updateLayout(this.m_areaRect);
 	}
-	private m_rect: AABB2D = null;
-	private updateItemBottomUI(): void {
-		let ui = this.ctrlui;
-		if (ui) {
-			let st = this.m_rscene.getStage3D();
-			let bounds = this.m_rect ? this.m_rect : ui.bounds;
-			// if (this.m_rect == null) {
-			// 	this.m_rect = ui.bounds.clone();
-			// }
-
-			let py = st.stageHalfHeight - 256 - 2;
-			let resetBtn = this.uiBuilder.resetBtn;
-			let saveBtn = this.uiBuilder.saveBtn;
-			let addIntoBtn = this.uiBuilder.addIntoBtn;
-			if (resetBtn) {
-				let expandBtn = this.m_expandUIItemBtn;
-				expandBtn.setXY(bounds.x, py);
-				expandBtn.update();
-
-				resetBtn.setXY(bounds.x + 78, py);
-				saveBtn.setXY(bounds.getRight() - saveBtn.getWidth(), py);
-				let sx = 512 / addIntoBtn.getWidth();
-				let sy = 512 / addIntoBtn.getHeight();
-				// addIntoBtn.setXY(st.stageHalfWidth - 512 + 128, st.stageHalfHeight - 128);
-				addIntoBtn.setXY(st.stageHalfWidth - 512, st.stageHalfHeight - 256);
-				addIntoBtn.setScaleXYZ(sx, sy, 1.0);
-				addIntoBtn.update();
-			}
-		}
-	}
-	//*/
 	private m_areaRect: IAABB2D = null;
-	private m_uiRect = new AABB2D();
+	private m_rect = new AABB2D();
+	private m_layouter = new BtnLayouter();
+	private m_pv = new Vector3D();
 	updateLayout(rect: IAABB2D = null): void {
 		if (rect) {
 			this.m_areaRect = rect;
 		} else {
 			rect = this.m_areaRect;
 		}
-		if (this.isInited()) {
-
-			this.alphaOpUI.updateLayout(rect);
-
-			this.m_uiRect.copyFrom(rect);
-
-			this.m_uiRect.union(this.alphaOpUI.ctrlui.bounds);
-			this.uiHTMLInfo.updateLayout(rect);
-			this.imageSelector.updateLayout(this.m_uiRect);
-		}
-		this.background.updateLayout(rect);
-
-		/*
-		this.m_areaRect = rect;
-		if (this.isInited()) {
+		if (this.m_uiInited && rect) {
 			let ui = this.ctrlui;
 			if (ui) {
-				let st = this.m_rscene.getStage3D();
-
-				let uiAreaH = this.m_uiAreaH;
-				let pv = this.position;
-				pv.x = st.stageHalfWidth + 25;
-				pv.y = st.stageHalfHeight + 256 - uiAreaH;
+				let cx = rect.getCenterX();
+				// let cy = rect.getCenterY();
+				let uiAreaH = Math.round(rect.height * this.m_uiAreaHK);
+				let pv = this.m_pv;
+				pv.x = cx + 25;
+				pv.y = rect.getTop() - uiAreaH;
 				ui.updateLayout(true, pv, 0, uiAreaH);
 
-				this.updateItemBottomUI();
+				let addIntoBtn = this.uiBuilder.addIntoBtn;
+				if (addIntoBtn) {
+					let size = Math.min(rect.width, rect.height);
+					let sx = size / addIntoBtn.getWidth();
+					let sy = size / addIntoBtn.getHeight();
+					addIntoBtn.setXY(rect.x, rect.y);
+					addIntoBtn.setScaleXYZ(sx, sy, 1.0);
+					addIntoBtn.update();
+				}
 
-				this.uiHTMLInfo.updateLayout();
-				this.imageSelector.updateLayout(rect);
-			}
-			if (this.background) {
-				this.background.updateLayout(rect);
+				let bounds = ui.bounds;
+				this.m_rect.copyFrom(bounds);
+				this.m_rect.y = rect.y - 2;
+				this.m_rect.height = rect.height - uiAreaH;
+				this.updateItemBottomUI(this.m_rect);
 			}
 		}
-		//*/
+	}
+	private updateItemBottomUI(rect: IAABB2D): void {
+		let resetBtn = this.uiBuilder.resetBtn;
+		if (resetBtn) {
+			let saveBtn = this.uiBuilder.saveBtn;
+			let expandBtn = this.m_expandUIItemBtn;
+			this.m_layouter.horizontalLayout(rect, [expandBtn, resetBtn, saveBtn] as ILayoutBtn[]);
+		}
 	}
 }
 
-export { UISystem };
+export { AlphaOperationUI };

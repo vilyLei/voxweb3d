@@ -7,6 +7,8 @@ import Vector3D from "../../../vox/math/Vector3D";
 import Color4 from "../../../vox/material/Color4";
 import URLFilter from "../../base/URLFilter";
 import RendererState from "../../../vox/render/RendererState";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import TextureConst from "../../../vox/texture/TextureConst";
 
 class UIBuilder {
 	private m_rscene: IRendererScene = null;
@@ -18,7 +20,9 @@ class UIBuilder {
 	addIntoBtn: ColorRectImgButton = null;
 	expandUIItemBtn: ColorRectImgButton = null;
 	buildFinishCall: () => void = null;
-	constructor() {}
+	constructor(sc: IRendererScene = null) {
+		this.m_rscene = sc;
+	}
 
 	initialize(graph: IRendererSceneGraph): void {
 		if (this.m_graph == null && graph != null) {
@@ -122,6 +126,31 @@ class UIBuilder {
 		fontBgColor: IColor4
 	): HTMLCanvasElement | HTMLImageElement {
 		return UIBarTool.CreateCharsCanvasFixSize(width, height, str, fontSize, fontColor, fontBgColor, textPos);
+	}
+	createCharsTexFixSize(
+		width: number,
+		height: number,
+		str: string,
+		fontSize: number,
+		textPos: Vector3D = null,
+		fontColor: IColor4 = null,
+		fontBgColor: IColor4 = null
+	): IRenderTexture {
+		if(textPos == null) {
+			textPos = new Vector3D();
+		}
+		if(fontColor == null) {
+			fontColor = new Color4();
+		}
+		if(fontBgColor == null) {
+			fontBgColor = new Color4(1,1,1,0);
+		}
+		let img = UIBarTool.CreateCharsCanvasFixSize(width, height, str, fontSize, fontColor, fontBgColor, textPos);
+		let tex = this.m_rscene.textureBlock.createImageTex2D();
+		tex.minFilter = tex.magFilter = TextureConst.NEAREST;
+		tex.mipmapEnabled = false;
+		tex.setDataFromImage(img);
+		return tex;
 	}
 	createBtnWithIcon(
 		keyStr: string,

@@ -15,12 +15,9 @@ import Vector3D from "../../../vox/math/Vector3D";
 class ImageFileSystem {
 	private m_rscene: IRendererScene = null;
 
-	// private m_savingImg = false;
-	// private m_rflag = false;
 	private m_name = "";
 	private m_currEntity: IRenderEntity = null;
 	private m_currTexture: IRenderTexture = null;
-	// private m_loadingTex: IRenderTexture = null;
 
 	private m_uiSys: UISystem = null;
 	private m_imgBuilder: RenderingImageBuilder = null;
@@ -186,7 +183,7 @@ class ImageFileSystem {
 		if (this.m_currEntity) {
 			let k = 1.0;
 			let maxSize = Math.max(pw, ph);
-			let baseSize = 512 - 12;
+			let baseSize = 512 - 20;
 			if (maxSize > baseSize) {
 				k = baseSize / maxSize;
 			}
