@@ -24,6 +24,7 @@ interface IColor4 {
     a: number;
 
     clone(): IColor4;
+	gammaCorrect(): IColor4;
     /**
      * example: [0],[1],[2],[3] => r,g,b,a
      */
@@ -79,6 +80,7 @@ interface IColor4 {
     copyFromRGB(c: IColor4): IColor4;
     scaleBy(s: number): IColor4;
     rgbSizeTo(size: number): IColor4;
+
     inverseRGB(): IColor4;
     /**
      * @param density the default value is 1.0

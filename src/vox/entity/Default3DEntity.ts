@@ -11,6 +11,7 @@ import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import IROTransform from "../../vox/display/IROTransform";
+import Color4 from "../material/Color4";
 
 export default class Default3DEntity extends DisplayEntity {
 
@@ -55,12 +56,18 @@ export default class Default3DEntity extends DisplayEntity {
     constructor(transform: IROTransform = null) {
         super(transform);
     }
-    
+
     setUVScale(scaleU: number, scaleV: number): void {
         if (this.m_mt) this.m_mt.setUVScale(scaleU, scaleV);
     }
     setUVTranslation(offsetU: number, offsetV: number): void {
         if (this.m_mt) this.m_mt.setUVOffset(offsetU, offsetV);
+    }
+    setColor(c: Color4): void {
+        if (this.m_mt) this.m_mt.setRGBA4f(c.r, c.g, c.b, c.a);
+    }
+    setAlpha(a: number, texAlpha: number = 0.0): void {
+        if (this.m_mt) this.m_mt.setAlpha(a);
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
         if (this.m_mt) this.m_mt.setRGB3f(pr, pg, pb);
@@ -106,7 +113,7 @@ export default class Default3DEntity extends DisplayEntity {
             cm.name = this.materialName;
             cm.fragBodyTailCode = this.materialFragBodyTailCode;
             cm.fragHeadTailCode = this.materialFragHeadTailCode;
-            
+
             cm.normalEnabled = this.normalEnabled;
             cm.vertColorEnabled = this.vertColorEnabled;
             cm.premultiplyAlpha = this.premultiplyAlpha;
@@ -122,7 +129,9 @@ export default class Default3DEntity extends DisplayEntity {
             this.toTransparentBlend(this.depthAlwaysFalse, this.doubleFace);
         }else if(this.doubleFace){
             this.showDoubleFace(this.doubleFace);
-        }
+        }else if(this.depthAlwaysFalse){
+            this.showDoubleFace(true, false);
+		}
     }
     showDoubleFace(always: boolean = false, doubleFace: boolean = true): void {
         if (always) {

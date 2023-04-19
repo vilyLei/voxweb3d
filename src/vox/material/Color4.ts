@@ -23,6 +23,13 @@ class Color4 implements IColor4 {
     clone(): Color4 {
         return new Color4(this.r, this.g, this.b, this.a);
     }
+	gammaCorrect(): Color4 {
+		const f = 1.0/2.2;
+		this.r = Math.pow(this.r, f);
+		this.g = Math.pow(this.g, f);
+		this.b = Math.pow(this.b, f);
+		return this;
+	}
     fromArray4(arr: number[] | Float32Array, offset: number = 0): Color4 {
         this.r = arr[offset];
         this.g = arr[offset + 1];

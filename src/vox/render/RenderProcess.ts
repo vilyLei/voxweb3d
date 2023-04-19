@@ -264,7 +264,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 					parent = parent.getParent();
 				}
 				if (disp.__$$runit.getRPROUid() != this.uid) {
-					console.log("RenderProcess(" + this.uid + ")::addDisp(): ", disp.ivsCount, disp, disp.drawMode);
+					// console.log("XX--XX RenderProcess(" + this.uid + ")::addDisp(): ", disp.ivsCount, disp, disp.drawMode);
 					let node = this.m_rpoNodeBuilder.create() as RPONode;
 					node.unit = this.m_rpoUnitBuilder.getNodeByUid(disp.__$ruid) as RPOUnit;
 					// node.unit.shader = this.m_shader;

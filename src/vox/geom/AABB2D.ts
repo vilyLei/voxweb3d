@@ -4,7 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import Vector3D from "../math/Vector3D";
 import IAABB2D from "./IAABB2D";
 
 export default class AABB2D implements IAABB2D {
@@ -28,6 +27,12 @@ export default class AABB2D implements IAABB2D {
 
 		this.update();
 	}
+	getCenterX(): number {
+		return this.m_cx;
+	}
+	getCenterY(): number {
+		return this.m_cy;
+	}
 	moveCenterTo(px: number, py: number): IAABB2D {
 		this.x += px - this.m_cx;
 		this.y += py - this.m_cy;
@@ -41,6 +46,8 @@ export default class AABB2D implements IAABB2D {
 		this.height *= s;
 		this.m_right = this.x + this.width;
 		this.m_top = this.y + this.height;
+		this.m_cx = this.x + this.width * 0.5;
+		this.m_cy = this.y + this.height * 0.5;
 		return this;
 	}
 	union(r: IAABB2D): IAABB2D {
@@ -70,18 +77,18 @@ export default class AABB2D implements IAABB2D {
 		this.m_cy = 0;
 		return this;
 	}
-	copyFrom(src: AABB2D): IAABB2D {
+	copyFrom(src: IAABB2D): IAABB2D {
 
 		this.x = src.x;
 		this.y = src.y;
 		this.width = src.width;
 		this.height = src.height;
 
-		this.m_right = src.m_right;
-		this.m_top = src.m_top;
+		this.m_right = src.getRight();
+		this.m_top = src.getTop();
 
-		this.m_cx = src.m_cx;
-		this.m_cy = src.m_cy;
+		this.m_cx = src.getCenterX();
+		this.m_cy = src.getCenterY();
 
 		return this;
 	}
@@ -104,9 +111,9 @@ export default class AABB2D implements IAABB2D {
 	 * @param src 目标矩形
 	 * @returns 返回当前矩形是否包含目标矩形
 	 */
-	contains(src: AABB2D): boolean {
-		if (src.x >= this.x && src.m_right <= this.m_right) {
-			if (src.y >= this.y && src.m_top <= this.m_top) {
+	contains(src: IAABB2D): boolean {
+		if (src.x >= this.x && src.getRight() <= this.m_right) {
+			if (src.y >= this.y && src.getTop() <= this.m_top) {
 				return true;
 			}
 		}
@@ -117,12 +124,12 @@ export default class AABB2D implements IAABB2D {
 	 * @param src 目标矩形
 	 * @returns 返回当前矩形是否和目标矩形相交
 	 */
-	intersect(src: AABB2D): boolean {
+	intersect(src: IAABB2D): boolean {
 
 		if (src.x > this.m_right) return false;
-		if (src.m_right < this.x) return false;
+		if (src.getRight() < this.x) return false;
 		if (src.y > this.m_top) return false;
-		if (src.m_top < this.y) return false;
+		if (src.getTop() < this.y) return false;
 		return true;
 	}
 	setTo(x: number, y: number, width: number, height: number): IAABB2D {

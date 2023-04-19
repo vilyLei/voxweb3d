@@ -18,7 +18,7 @@ import IRendererParam from "../scene/IRendererParam";
 
 class RAdapterContext implements IRAdapterContext {
 
-    private m_sysEvt: ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
+    private m_sysEvt = new ContextMouseEvtDispatcher();
     private m_div: HTMLDivElement = null;
     private m_canvas: HTMLCanvasElement = null;
     private m_scissorEnabled = false;
@@ -527,8 +527,8 @@ class RAdapterContext implements IRAdapterContext {
 		if(div.parentElement) {
 			let rect = div.getBoundingClientRect();
 			// console.log("updateRenderBufferSize() rect.width, rect.height: ", rect.width, rect.height);
-			this.m_canvas.style.width = Math.floor(rect.width) + 'px';
-			this.m_canvas.style.height = Math.floor(rect.height) + 'px';
+			// this.m_canvas.style.width = Math.floor(rect.width) + 'px';
+			// this.m_canvas.style.height = Math.floor(rect.height) + 'px';
 			rect = div.getBoundingClientRect();
 			this.resizeBufferSize(rect.width, rect.height);
 		}else {
