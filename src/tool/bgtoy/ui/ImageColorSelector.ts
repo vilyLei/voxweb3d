@@ -1,4 +1,3 @@
-// import ColorRectImgButton from "../../../orthoui/button/ColorRectImgButton";
 import SelectionBar from "../../../orthoui/button/SelectionBar";
 import SelectionBarStyle from "../../../orthoui/button/SelectionBarStyle";
 import SelectionEvent from "../../../vox/event/SelectionEvent";
