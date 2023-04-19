@@ -236,9 +236,9 @@ export class ProgressBar {
 		let c = this.fontBgColor;
 		if(style) {
 			c = style.progressBarBgOutColor;
-			(bgPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+			bgPlane.setColor(c);
 		}else {
-			(bgPlane.getMaterial() as any).setAlpha(this.bgPlaneAlpha);
+			bgPlane.setAlpha(this.bgPlaneAlpha);
 		}
         bgPlane.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(bgPlane);
@@ -252,8 +252,7 @@ export class ProgressBar {
 		if(style) {
 			c = style.progressBarOutColor;
 		}
-		(barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
-        (barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha);
+		barPlane.setColor(c);
         barPlane.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(barPlane);
         this.m_barPlane = barPlane;
