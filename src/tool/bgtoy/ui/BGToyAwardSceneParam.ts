@@ -73,7 +73,7 @@ class BGToyAwardSceneParam implements IAwardSceneParam {
 		btn.downColor.setRGBA4f(0.95, 0.8, 0.95, 1.0);
 		btn.initialize(0, 0, tex.getWidth(), tex.getHeight(), [tex]);
 		btn.setSize(tex.getWidth(), tex.getHeight());
-		btn.addEventListener(MouseEvent.MOUSE_DOWN, this, downListener);
+		btn.addEventListener(MouseEvent.MOUSE_UP, this, downListener);
 		btn.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
 		// pl.setRenderState(RendererState.BACK_ALPHA_ADD_BLENDSORT_STATE);
 		return btn;
@@ -96,7 +96,7 @@ class BGToyAwardSceneParam implements IAwardSceneParam {
 			btn.downColor.copyFrom(btn.overColor);
 		}
 		btn.setSize(width, height);
-		btn.addEventListener(MouseEvent.MOUSE_DOWN, this, downListener);
+		btn.addEventListener(MouseEvent.MOUSE_UP, this, downListener);
 		btn.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
 		// pl.setRenderState(RendererState.BACK_ALPHA_ADD_BLENDSORT_STATE);
 		return btn;
