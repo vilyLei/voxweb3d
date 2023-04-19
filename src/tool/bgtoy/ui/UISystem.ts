@@ -5,7 +5,7 @@ import IRendererSceneGraph from "../../../vox/scene/IRendererSceneGraph";
 import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
 import { ProgressItemBuildParam, ValueItemBuildParam, StatusItemBuildParam, CtrlInfo, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 
-import { Background } from "./Background";
+import { Background2D } from "./Background2D";
 import Vector3D from "../../../vox/math/Vector3D";
 import { UIBuilder } from "./UIBuilder";
 import { UIHTMLInfo } from "./UIHTMLInfo";
@@ -21,7 +21,7 @@ class UISystem {
 
 	uiBuilder: UIBuilder;
 	ctrlui: ParamCtrlUI;
-	readonly background = new Background();
+	readonly background = new Background2D();
 	readonly imageSelector = new ImageColorSelector();
 	readonly uiHTMLInfo = new UIHTMLInfo();
 	readonly alphaOpUI = new AlphaOperationUI();

@@ -7,7 +7,7 @@ import RendererState from "../../../vox/render/RendererState";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { UIBuilder } from "./UIBuilder";
 import { UIHTMLInfo } from "./UIHTMLInfo";
-import { Background } from "./Background";
+import { Background2D } from "./Background2D";
 import { ImageFileSystem } from "../fio/ImageFileSystem";
 import Color4 from "../../../vox/material/Color4";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
@@ -20,7 +20,7 @@ class ImageColorSelector {
 	private m_uisc: IRendererScene = null;
 	uiBuilder: UIBuilder = null;
 	uiHTMLInfo: UIHTMLInfo = null;
-	uiBackground: Background = null;
+	uiBackground: Background2D = null;
 	fileSys: ImageFileSystem = null;
 	private m_colorSelectBtn: SelectionBar = null;
 	private m_selecting = false;

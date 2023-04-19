@@ -7,7 +7,7 @@ import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
 import SelectionBarStyle from "../../../orthoui/button/SelectionBarStyle";
 import { ProgressItemBuildParam, ValueItemBuildParam, StatusItemBuildParam, CtrlInfo, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 
-import { Background } from "./Background";
+import { Background2D } from "./Background2D";
 import Vector3D from "../../../vox/math/Vector3D";
 import ProgressBarStyle from "../../../orthoui/button/ProgressBarStyle";
 import { UIBuilder } from "./UIBuilder";
@@ -26,7 +26,7 @@ class AlphaOperationUI {
 	private m_rscene: IRendererScene = null;
 	private m_graph: IRendererSceneGraph = null;
 
-	background: Background = null;
+	background: Background2D = null;
 	imageSelector: ImageColorSelector;
 	uiHTMLInfo: UIHTMLInfo;
 	processTotal = 6;
