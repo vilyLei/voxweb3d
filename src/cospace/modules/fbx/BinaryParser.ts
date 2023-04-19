@@ -23,7 +23,7 @@ class BinaryParser {
 		const version = reader.getUint32();
 
 		if ( version < 6400 ) {
-
+			alert('FBXLoader: FBX version not supported, FileVersion: ' + version);
 			throw new Error( 'FBXLoader: FBX version not supported, FileVersion: ' + version );
 
 		}
@@ -50,6 +50,7 @@ class BinaryParser {
 		const version = reader.getUint32();
 		if ( version < 6400 ) {
 
+			alert('FBXLoader: FBX version not supported, FileVersion: ' + version);
 			throw new Error( 'FBXLoader: FBX version not supported, FileVersion: ' + version );
 
 		}
@@ -61,7 +62,7 @@ class BinaryParser {
 		let allNodes = new FBXTree();
         this.m_allNodes = allNodes;
         this.m_parsing = !this.endOfContent( reader );
-        
+
 		return allNodes;
 
 	}
@@ -83,7 +84,7 @@ class BinaryParser {
 			if ( node !== null ) allNodes.add( node.name, node );
 		}
     }
-    
+
 	isParsing(): boolean {
         return this.m_parsing;
     }

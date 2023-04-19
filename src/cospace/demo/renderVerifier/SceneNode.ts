@@ -138,6 +138,24 @@ class SceneNode implements ISceneNode {
 
 			let vs = model.vertices;
 			let ivs = model.indices;
+			let uvDataFlag = false;
+			let uvDataSpedValue = 0;
+			if(model.uvsList && model.uvsList.length > 0) {
+				let uvs = model.uvsList[0];
+				if((uvs.length / 3) != (vs.length / 3)) {
+					console.error("error uv data length, len:", (uvs.length / 3),(vs.length / 3));
+				}
+				for(let i = 0; i < uvs.length; ++i) {
+					if(Math.abs(uvs[i]) > 1.0) {
+						uvDataFlag = true;
+						uvDataSpedValue = uvs[i];
+						break;
+					}
+				}
+			}
+			if(uvDataFlag) {
+				console.error("error uv data, v:", uvDataSpedValue);
+			}
 			let trisNumber = ivs.length / 3;
 			this.m_trianglesTotal += trisNumber;
 			let nvs2 = new Float32Array(vs.length);

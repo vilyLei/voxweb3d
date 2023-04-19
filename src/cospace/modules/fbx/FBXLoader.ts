@@ -21,13 +21,10 @@ class FBXLoader {
 		onProgress: (evt: ProgressEvent, url: string) => void = null,
 		onError: (status: number, url: string) => void = null
         ): void {
-        
+
         this.m_loader.load(
             url,
             (buf: ArrayBuffer, url: string): void => {
-                // if(onLoad != null) {
-                //     onLoad(null, url);
-                // }
                 this.parse(buf, url);
             },
             null,
@@ -36,7 +33,7 @@ class FBXLoader {
             }
         );
     }
-    
+
     private parse( buffer: ArrayBuffer, path: string ): Group {
 
         console.log("FBXLoader::parse(), isFbxFormatBinary( buffer ): ", isFbxFormatBinary( buffer ));
@@ -55,10 +52,11 @@ class FBXLoader {
 				throw new Error( 'FBXLoader: Unknown format.' );
 
 			}
+			const version = getFbxVersion( FBXText );
+			if ( version < 7000 ) {
 
-			if ( getFbxVersion( FBXText ) < 7000 ) {
-
-				throw new Error( 'FBXLoader: FBX version not supported, FileVersion: ' + getFbxVersion( FBXText ) );
+				alert('FBXLoader: FBX version not supported, FileVersion: ' + version);
+				throw new Error( 'FBXLoader: FBX version not supported, FileVersion: ' + version );
 
 			}
 
@@ -71,23 +69,23 @@ class FBXLoader {
 		// const textureLoader = new TextureLoader( this.manager ).setPath( this.resourcePath || path ).setCrossOrigin( this.crossOrigin );
 
 		// return new FBXTreeParser( textureLoader, this.manager ).parse( fbxTree );
-        
+
         return new FBXTreeParser(null, null).parse( fbxTree );
 	}
-    
+
     loadGeometryBuffer(
         url: string,
         onLoad: (model: Map<number, GeometryModelDataType>, url: string) => void,
 		onProgress: (evt: ProgressEvent, url: string) => void = null,
 		onError: (status: number, url: string) => void = null
         ): void {
-        
+
         this.m_loader.load(
             url,
             (buf: ArrayBuffer, url: string): void => {
 
                 let modelMap: Map<number, GeometryModelDataType> = new Map();
-                
+
                 let bufferMap = this.parseGeometryBuffer(buf, url);
                 // console.log("###XXX bufferMap: ", bufferMap);
                 for(let [key, value] of bufferMap) {
@@ -103,7 +101,7 @@ class FBXLoader {
             }
         );
     }
-    
+
     private parseGeometryBuffer( buffer: ArrayBuffer, path: string ): Map<number, FBXBufferObject> {
 
         console.log("FBXLoader::parseGeomdtry(), isFbxFormatBinary( buffer ): ", isFbxFormatBinary( buffer ));
@@ -124,9 +122,11 @@ class FBXLoader {
 
 			}
 
-			if ( getFbxVersion( FBXText ) < 7000 ) {
+			const version = getFbxVersion( FBXText );
+			if ( version < 7000 ) {
 
-				throw new Error( 'FBXLoader: FBX version not supported, FileVersion: ' + getFbxVersion( FBXText ) );
+				alert('FBXLoader: FBX version not supported, FileVersion: ' + version);
+				throw new Error( 'FBXLoader: FBX version not supported, FileVersion: ' + version );
 
 			}
 
