@@ -57,13 +57,12 @@ export class CanvasTextureTool {
 
 	initializeAtlas(canvasWidth: number, canvasHeight: number, fillColor: Color4, transparent: boolean = false): void {
 		let atlas: ImageTextureAtlas = null;
-		// canvasWidth = 512;
-		// canvasHeight = 512;
 		if (CanvasTextureTool.s_atlasList[0] == null) {
 			atlas = new ImageTextureAtlas(this.m_sc, canvasWidth, canvasHeight, fillColor, transparent);
-			atlas.getTexture().minFilter = TextureConst.NEAREST;
-			atlas.getTexture().magFilter = TextureConst.NEAREST;
-			atlas.getTexture().mipmapEnabled = false;
+			let tex = atlas.getTexture();
+			tex.minFilter = TextureConst.NEAREST;
+			tex.magFilter = TextureConst.NEAREST;
+			tex.mipmapEnabled = false;
 			CanvasTextureTool.s_atlasList[0] = atlas;
 
 			/*

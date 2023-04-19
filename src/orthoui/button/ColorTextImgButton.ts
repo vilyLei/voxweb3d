@@ -41,7 +41,7 @@ export default class ColorTextImgButton extends Plane3DEntity {
         super.setVisible(boo);
         return this;
     }
-    setAlpha(pa: number, texAlpha: number): void {
+    setAlpha(pa: number, texAlpha: number = 0.0): void {
         this.overColor.a = pa;
         this.downColor.a = pa;
         this.outColor.a = pa;

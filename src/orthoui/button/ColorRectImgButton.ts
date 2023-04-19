@@ -4,6 +4,8 @@ import Color4 from "../../vox/material/Color4";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
+import AABB2D from "../../vox/geom/AABB2D";
+import IAABB2D from "../../vox/geom/IAABB2D";
 
 export default class ColorRectImgButton extends Plane3DEntity {
     private m_initFlag = true;
@@ -14,6 +16,7 @@ export default class ColorRectImgButton extends Plane3DEntity {
     readonly overColor = new Color4(1.0, 0.5, 1.1, 1.0);
     readonly downColor = new Color4(1.0, 0.0, 1.0, 1.0);
     readonly outColor = new Color4(1.0, 1.0, 1.0, 1.0);
+	private m_rect = new AABB2D();
     index = 0;
     constructor() {
         super();
@@ -35,6 +38,12 @@ export default class ColorRectImgButton extends Plane3DEntity {
         this.m_width = pwidth;
         this.m_height = pheight;
     }
+	getRect(): IAABB2D {
+		let bounds = this.getGlobalBounds();
+		let min = bounds.min;
+		this.m_rect.setTo(min.x, min.y, bounds.getWidth(), bounds.getHeight());
+		return this.m_rect;
+	}
     updateColor(): void {
         let material: any = this.getMaterial();
         if (material != null) {

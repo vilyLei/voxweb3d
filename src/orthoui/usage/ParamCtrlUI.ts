@@ -496,8 +496,8 @@ export default class ParamCtrlUI {
 		for (let i = 0; i < btns.length; ++i) {
 			btns[i].getPosition(pos);
 			pos.addBy(offsetV);
-			// pos.x = Math.round(pos.x);
-			// pos.y = Math.round(pos.y);
+			pos.x = Math.round(pos.x);
+			pos.y = Math.round(pos.y);
 			btns[i].setPosition(pos);
 			btns[i].update();
 			if (btns[i].isVisible()) {

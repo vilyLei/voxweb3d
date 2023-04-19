@@ -13,13 +13,13 @@ export default class ProgressBarStyle extends SelectionBarStyle {
 
     readonly progressBtnFontColor = new Color4(1.0, 1.0, 1.0, 1.0);
     readonly progressBtnFontBgColor = new Color4(1.0, 1.0, 1.0, 0.5);
-    readonly progressBtnOverColor = new Color4(1.0, 1.0, 1.0, 1.0);
-    readonly progressBtnDownColor = new Color4(1.0, 1.0, 0.6, 1.0);
-    readonly progressBtnOutColor = new Color4(0.8, 0.8, 0.8, 1.0);
+    readonly progressBtnOverColor = new Color4(1.0, 1.0, 1.0, 0.8);
+    readonly progressBtnDownColor = new Color4(1.0, 1.0, 0.6, 0.8);
+    readonly progressBtnOutColor = new Color4(0.8, 0.8, 0.8, 0.8);
 
-    readonly progressBarOverColor = new Color4(1.0, 1.0, 1.0, 1.0);
-    readonly progressBarDownColor = new Color4(1.0, 1.0, 0.6, 1.0);
-    readonly progressBarOutColor = new Color4(0.8, 0.8, 0.8, 1.0);
+    readonly progressBarOverColor = new Color4(1.0, 1.0, 1.0, 0.8);
+    readonly progressBarDownColor = new Color4(1.0, 1.0, 0.6, 0.8);
+    readonly progressBarOutColor = new Color4(0.8, 0.8, 0.8, 0.8);
 
     readonly progressBarBgOverColor = new Color4(0.8, 0.8, 0.8, 0.5);
     readonly progressBarBgDownColor = new Color4(0.8, 0.8, 0.5, 0.5);

@@ -359,21 +359,21 @@ export class ProgressBar {
     private barMouseOver(evt: any): void {
 		if(this.style) {
 			let c = this.style.progressBarOverColor;
-			(this.m_barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+			this.m_barPlane.setColor(c);
 			c = this.style.progressBarBgOverColor;
-			(this.m_barBgPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+			this.m_barBgPlane.setColor(c);
 		}else{
-			(this.m_barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha + 0.1);
+			this.m_barPlane.setAlpha(this.bgBarAlpha + 0.1);
 		}
     }
     private barMouseOut(evt: any): void {
 		if(this.style) {
 			let c = this.style.progressBarOutColor;
-			(this.m_barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+			this.m_barPlane.setColor(c);
 			c = this.style.progressBarBgOutColor;
-			(this.m_barBgPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+			this.m_barBgPlane.setColor(c);
 		}else{
-			(this.m_barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha);
+			this.m_barPlane.setAlpha(this.bgBarAlpha);
 		}
     }
     private btnMouseDown(evt: any): void {
