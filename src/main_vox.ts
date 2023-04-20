@@ -408,7 +408,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
 
-//  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
+ import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
 //  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
@@ -423,7 +423,7 @@ pwin["VoxVerify"] = new VVF();
 /////////////////////////////     event    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
- import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
+//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
 //  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 

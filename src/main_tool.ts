@@ -15,6 +15,8 @@ pwin["VoxVerify"] = new VVF();
 
  import {RemoveBlackBG2 as Demo} from "./tool/RemoveBlackBG2";
 
+//  import {DemoBgRTT as Demo} from "./tool/DemoBgRTT";
+
 //  import {NormalMapVerifier as Demo} from "./tool/NormalMapVerifier";
 
 //  import {NormalMapVerifier2 as Demo} from "./tool/NormalMapVerifier2";

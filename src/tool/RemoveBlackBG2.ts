@@ -17,6 +17,7 @@ import AABB2D from "../vox/geom/AABB2D";
 import EventBase from "../vox/event/EventBase";
 import RemoveBlackBGMaterial2 from "./material/RemoveBlackBGMaterial2";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
+import { Background3D } from "./bgtoy/ui/Background3D";
 
 export class RemoveBlackBG2 {
 	private m_init = true;
@@ -24,13 +25,12 @@ export class RemoveBlackBG2 {
 	private m_graph = new RendererSceneGraph();
 	private m_texLoader: TextureResLoader = null;
 	private m_rscene: IRendererScene = null;
-	private m_div: HTMLDivElement = null;
 	private m_dropController = new DropFileController();
 	private m_aspParam = new BGToyAwardSceneParam();
 	private m_vasScene = new VoxAwardScene();
 	private m_uiSys = new UISystem();
 	private m_fileSys = new ImageFileSystem();
-
+	private m_background = new Background3D();
 	constructor() {}
 
 	getAssetTexByUrl(pns: string): IRenderTexture {
@@ -47,15 +47,12 @@ export class RemoveBlackBG2 {
 		// atv = Math.pow((value - 0.5), 1.0);
 		// btv = Math.pow((0.5 - value), 1.0);
 		let v = value >= 0.5 ? Math.min(atv * s + 0.5, 1.0) : Math.max(0.5 - btv * s, 0.0);
-		console.log("### calc to cutAlpha(), v: ", v);
+		// console.log("### calc to cutAlpha(), v: ", v);
 		// let max = 0;
 		// console.log("### calc to less: ", Math.pow(0.98, 13));
 		// console.log("### calc to greate: ", Math.pow(1.02, 13));
 	}
 	initialize(): void {
-		let s = 2.1;
-		this.cutAlpha(0.25, s);
-		this.cutAlpha(0.75, s);
 		console.log("RemoveBlackBG2::initialize()......");
 		if (this.m_init) {
 			this.m_init = false;
@@ -69,7 +66,7 @@ export class RemoveBlackBG2 {
 			RendererDevice.SetWebBodyColor("black");
 			let rparam = this.m_graph.createRendererSceneParam();
             rparam.setCamProject(45, 0.1, 6000.0);
-            rparam.setCamPosition(1100.0, 1100.0, 1100.0);
+            rparam.setCamPosition(1500.0, 1500.0, 1500.0);
 			rparam.setAttriAlpha(true);
 			// rparam.cameraPerspectiveEnabled = false;
 			// rparam.autoSyncRenderBufferAndWindowSize = false;
@@ -77,7 +74,7 @@ export class RemoveBlackBG2 {
 
 			let rscene = this.m_graph.createScene(rparam);
 			// rscene.initialize(rparam).setAutoRunning(true);
-			rscene.setClearRGBAColor4f(0.1, 0.22, 0.2, 0.0);
+			// rscene.setClearRGBAColor4f(0.1, 0.22, 0.2, 0.0);
 			rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 			rscene.addEventListener(EventBase.RESIZE, this, this.resize);
 			this.m_rscene = rscene;
@@ -87,6 +84,7 @@ export class RemoveBlackBG2 {
 
 			let tex = this.getTexByUrl("static/assets/guangyun_40.jpg");
 			document.body.style.overflow = "hidden";
+			this.m_background.initialize(rscene);
 		}
 	}
 	private m_uiInited = false;
@@ -97,8 +95,9 @@ export class RemoveBlackBG2 {
 	private initSystem(): void {
 		let rscene = this.m_rscene;
 		const uiSys = this.m_uiSys;
+		uiSys.background.bg3d = this.m_background;
 		uiSys.processTotal = 6;
-		uiSys.initialize(this.m_graph, null);
+		uiSys.initialize(this.m_graph);
 		uiSys.setOpeningListener((): void => {
 			this.openDir();
 		});
@@ -233,7 +232,6 @@ export class RemoveBlackBG2 {
 			this.m_vasScene.run();
 			this.m_fileSys.run();
 		}
-		this.m_uiSys.background.run();
 	}
 }
 export default RemoveBlackBG2;

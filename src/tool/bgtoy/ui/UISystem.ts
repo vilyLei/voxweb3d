@@ -17,7 +17,6 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 class UISystem {
 	private m_rscene: IRendererScene = null;
 	private m_graph: IRendererSceneGraph = null;
-	private m_bgTex: IRenderTexture;
 
 	uiBuilder: UIBuilder;
 	ctrlui: ParamCtrlUI;
@@ -36,11 +35,10 @@ class UISystem {
 		aopui.uiHTMLInfo = this.uiHTMLInfo;
 	}
 
-	initialize(graph: IRendererSceneGraph, bgTex: IRenderTexture = null): void {
+	initialize(graph: IRendererSceneGraph): void {
 		if (this.m_graph == null && graph != null) {
 			this.m_graph = graph;
 			this.m_rscene = this.m_graph.getNodeAt(0).getRScene();
-			this.m_bgTex = bgTex;
 			this.init();
 		}
 	}
@@ -51,7 +49,7 @@ class UISystem {
 		this.ctrlui = aopui.ctrlui;
 
 		let bg = this.background;
-		bg.initialize(this.m_graph, this.m_bgTex);
+		bg.initialize(this.m_graph);
 
 		aopui.buildFinishCall = (): void =>{
 			this.updateLayout();
@@ -61,17 +59,14 @@ class UISystem {
 	}
 	private m_initCall: () => void = null;
 	setCurrMaterial(currMaterial: RemoveBlackBGMaterial2): void {
-		// this.m_currMaterial = currMaterial;
 		this.imageSelector.setCurrMaterial(currMaterial);
 
 		this.alphaOpUI.setCurrMaterial(currMaterial);
 	}
 	setSavingListener(call: () => void): void {
-		// this.m_savingCall = call;
 		this.alphaOpUI.setSavingListener( call );
 	}
 	setOpeningListener(call: () => void): void {
-		// this.m_openingCall = call;
 		this.alphaOpUI.setOpeningListener( call );
 	}
 	setInitListener(call: () => void): void {
@@ -79,7 +74,6 @@ class UISystem {
 	}
 	isInited(): boolean {
 		return this.alphaOpUI.isInited();
-		// return this.m_uiInited;
 	}
 	hideSpecBtns(): void {
 		this.uiBuilder.hideSpecBtns();

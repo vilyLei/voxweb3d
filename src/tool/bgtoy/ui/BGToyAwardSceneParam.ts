@@ -95,6 +95,7 @@ class BGToyAwardSceneParam implements IAwardSceneParam {
 			btn.outColor.copyFrom(btn.overColor);
 			btn.downColor.copyFrom(btn.overColor);
 		}
+		btn.setColor( btn.outColor );
 		btn.setSize(width, height);
 		btn.addEventListener(MouseEvent.MOUSE_UP, this, downListener);
 		btn.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
