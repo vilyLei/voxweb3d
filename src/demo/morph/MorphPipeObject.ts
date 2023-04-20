@@ -51,7 +51,7 @@ class MorphPipeObject {
         this.m_scaleChangeFactor = Math.random();
         this.m_scaleChangeAmplitude = Math.random() * 2.0 - 1.0;
         this.morphCalc(this.m_disRotV);
-        this.m_pipeEntity.reinitialize();
+        this.m_pipeEntity.reinitializeMesh();
         this.m_pipeEntity.updateMeshToGpu();
     }
     getEntity(): Tube3DEntity {
@@ -60,7 +60,7 @@ class MorphPipeObject {
     private morphCalc(rotV: Vector3D): void {
 
         this.m_pipeMesh.geometry.copyFrom(this.m_pipeGeometry);
-        
+
         this.m_rotV.copyFrom(rotV);
         this.m_rotV.z = 0.0;
         this.m_scaleV.setXYZ(1.0, 1.0, 1.0);
@@ -70,7 +70,7 @@ class MorphPipeObject {
         if (factor < 0.1) factor = 0.1;
         factor *= factor;
         let dScale: number = 0.0;
-        
+
         let bez2 = this.m_bez2;
         //let bez2VS: number[] = new Array(11);
         bez2.calcCurveChangeYData(total, 1.0, 0.02, this.m_scaleChangeFactor, this.m_scaleChangeAmplitude, this.m_bez2VS);
@@ -86,7 +86,7 @@ class MorphPipeObject {
             this.m_scaleV.z = dScale;
 
             mat4A.identity();
-            mat4A.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);            
+            mat4A.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
             mat4A.appendRotationPivot(this.m_rotV.z, this.m_rotAxis, null);
             this.m_rotV.z += rotV.z * factor;
 
@@ -106,7 +106,7 @@ class MorphPipeObject {
             this.m_disRotV.copyFrom(this.disRotV);
             this.m_disRotV.z *= factor;
             this.morphCalc(this.m_disRotV);
-            this.m_pipeEntity.reinitialize();
+            this.m_pipeEntity.reinitializeMesh();
             this.m_pipeEntity.updateMeshToGpu();
         }
         this.morphTime += 0.02;
