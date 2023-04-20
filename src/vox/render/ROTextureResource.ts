@@ -43,6 +43,7 @@ class GpuTexObect {
      * @param gl system gpu context
      */
     bindToGpu(gl: any): void {
+		// console.log("tex gpu buf bind to gpu ... this.sampler, this.texBuf: ", this.sampler, this.texBuf);
         gl.bindTexture(this.sampler, this.texBuf);
     }
     getAttachCount(): number {

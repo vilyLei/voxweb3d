@@ -9,7 +9,7 @@ import { GLBlendEquation } from "../../../vox/render/RenderConst";
 import { IRODrawState } from "../../../vox/render/rendering/IRODrawState";
 
 export class RenderStateObject {
-    
+
     private static s_uid: number = 0;
     private static s_state: number = -1;
     private static s_states: RenderStateObject[] = [];
@@ -23,7 +23,7 @@ export class RenderStateObject {
     private static s_blendModeIndex: number = 0;
     private static s_blendModes: number[][] = new Array(256);
     private static s_unlocked: boolean = true;
-    
+
     static Rstate: IRODrawState = null;
 
     private m_uid: number = -1;
@@ -54,11 +54,11 @@ export class RenderStateObject {
         return this.m_blendMode;
     }
     use(): void {
-        
+
         if (RenderStateObject.s_state != this.m_uid) {
 
             //console.log("RenderStateObject this.m_uid: ",this.m_uid);
-            
+
             RenderStateObject.Rstate.setCullFaceMode(this.m_cullFaceMode);
             //RenderStateObject.Rstate.setBlendMode(this.m_blendMode);
             let list: number[] = RenderStateObject.s_blendModes[RenderStateObject.m_blendMode];
@@ -78,7 +78,7 @@ export class RenderStateObject {
             RenderStateObject.s_state = this.m_uid;
         }
     }
-    
+
     static CreateBlendModeSeparate(name:string, srcRGB: number, dstRGB: number, srcAlpha: number, dstAlpha: number, equationRGB: number = 0, equationAlpha: number = 0): number {
         if(name != null && name != "") {
 
@@ -117,7 +117,7 @@ export class RenderStateObject {
         }
         return 0;
     }
-    
+
     static CreateBlendMode(name:string, srcColor: number, dstColor: number, blendEquation: number = 0): number {
         if(name != null && name != "") {
 
@@ -149,20 +149,26 @@ export class RenderStateObject {
     }
     static Create(objName: string, cullFaceMode: number, blendMode: number, depthTestMode: number): number {
         if (RenderStateObject.s_stsNameMap.has(objName)) {
-            let po: RenderStateObject = RenderStateObject.s_stsNameMap.get(objName);
+            let po = RenderStateObject.s_stsNameMap.get(objName);
             return po.getUid();
         }
         //let key: number = depthTestMode << 8 | blendMode << 4 | cullFaceMode;
-        let key: number = 31;
+        let key = 31;
         key = key * 131 + depthTestMode;
         key = key * 131 + blendMode;
         key = key * 131 + cullFaceMode;
         if (RenderStateObject.s_stsMap.has(key)) {
             let po = RenderStateObject.s_stsMap.get(key);
             key = po.getUid();
+			if(objName != "") {
+				RenderStateObject.s_stsNameMap.set(objName, po);
+			}
         }
         else {
-            let po: RenderStateObject = new RenderStateObject(cullFaceMode, blendMode, depthTestMode);
+			if(objName == "") {
+				objName = "sys_rst_"+key;
+			}
+            let po = new RenderStateObject(cullFaceMode, blendMode, depthTestMode);
             key = po.getUid();
             RenderStateObject.s_stsMap.set(key, po);
             RenderStateObject.s_stsNameMap.set(objName, po);
@@ -180,7 +186,7 @@ export class RenderStateObject {
     }
     // @param           state come from RODisp::renderState
     static UseRenderState(state: number) {
-        //if(RenderStateObject.s_unlocked && RenderStateObject.Rstate.roState != state)                
+        //if(RenderStateObject.s_unlocked && RenderStateObject.Rstate.roState != state)
         if (RenderStateObject.s_unlocked && RenderStateObject.s_state != state) {
             if (state > -1 && state < RenderStateObject.s_statesLen) {
                 RenderStateObject.s_states[state].use();

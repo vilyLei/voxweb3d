@@ -95,14 +95,14 @@ class TextureRenderObj implements ITextureRenderObj {
     }
     // 注意: 移动端要注意这里的切换机制是符合移动端低带宽的特点
     run(): void {
-        //console.log("this.m_texRes.unlocked: ",this.m_texRes.unlocked,this.m_texRes.texMid != this.m_mid);
+        // console.log("this.m_texRes.unlocked: ",this.m_texRes.unlocked,this.m_texRes.texMid != this.m_mid);
         if (this.m_texRes.unlocked && this.m_texRes.texMid != this.m_mid) {
             this.m_texRes.texMid = this.m_mid;
             // console.log("TextureRenderObj::run(), this.m_mid: ",this.m_mid,this.m_uid, this.m_texList);
-            let gl: any = this.m_texRes.getRC();
+            let gl = this.m_texRes.getRC();
             let texI = gl.TEXTURE0;
             if (this.direct) {
-                //console.log("this.m_gtexList: ",this.m_gtexList,", total: "+this.m_texTotal);
+                // console.log("this.m_gtexList: ",this.m_gtexList,", total: ",this.m_texTotal);
                 for (let i = 0; i < this.m_texTotal; ++i) {
                     gl.activeTexture(texI++);
                     gl.bindTexture(this.m_samplers[i], this.m_gtexList[i]);

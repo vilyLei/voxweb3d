@@ -191,7 +191,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 		}
 	}
 	addContainer(container: IRenderEntityContainer): void {
-		console.log("RenderProcess::addContainer() this.m_sortBlock: ", this.m_sortBlock);
+		// console.log("RenderProcess::addContainer() this.m_sortBlock: ", this.m_sortBlock);
 		this.createSortBlock();
 		if (this.m_sortBlock) {
 			if(this.m_sortBlock.addContainer(container)) {
@@ -421,6 +421,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	run(): void {
 		const total = this.m_nodesLen + this.m_containerBlocks.length + this.m_scTotal;
 		if (this.m_enabled && total > 0) {
+			// console.log("run, proc uid: ", this.uid);
 			const rc = this.m_rc;
 			const linker = this.m_blockLinker;
 			let node = linker.getBegin();
@@ -513,6 +514,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 		this.reset();
 	}
 	setEnabled(boo: boolean): void {
+		// console.log("setEnabled, proc uid: ", this.uid, ", boo: ", boo);
 		this.m_enabled = boo;
 	}
 	isEnabled(): boolean {

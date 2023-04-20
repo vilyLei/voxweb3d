@@ -348,8 +348,8 @@ class RenderAdapter implements IRenderAdapter {
 		let size = this.m_viewPortRect;
 		this.uViewProbe.setVec4Data(size.x, size.y, size.width, size.height);
 		this.uViewProbe.update();
-		//DivLog.ShowLog("reseizeFBOViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
-		//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+		// DivLog.ShowLog("reseizeFBOViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
+		// console.log("reseizeFBOViewPort(), size: ", size.clone());
 		this.m_gl.viewport(size.x, size.y, size.width, size.height);
 	}
 	private checkViewPort(dstSize: AABB2D): void {
@@ -373,7 +373,6 @@ class RenderAdapter implements IRenderAdapter {
 	}
 	private reseizeFBOViewPort(): void {
 		if (this.m_viewportUnlock) {
-
 			this.checkViewPort(this.m_fboViewportRect);
 		}
 	}
@@ -520,9 +519,9 @@ class RenderAdapter implements IRenderAdapter {
 		}
 		return 0;
 	}
-	private m_fboRunning = false;
+	// private m_fboRunning = false;
 	isFBORunning(): boolean {
-		return this.m_fboRunning;
+		return FrameBufferObject.IsFBORunning(this.m_rcuid);
 	}
 	/**
 	 * bind a texture to fbo attachment by attachment index
@@ -574,8 +573,8 @@ class RenderAdapter implements IRenderAdapter {
 					}
 				}
 			}
-			if (this.m_fboBuf != null) {
-				this.m_fboRunning = true;
+			if (this.m_fboBuf) {
+				// this.m_fboRunning = true;
 				this.m_fboBuf.renderToTexAt(this.m_gl, texProxy, attachmentIndex);
 				//console.log("RenderProxy::setRenderToTexture(), fbo: ",this.m_fboBuf.getFBO());
 			}
@@ -661,9 +660,9 @@ class RenderAdapter implements IRenderAdapter {
 		}
 	}
 	setRenderToBackBuffer(frameBufferType = FrameBufferType.FRAMEBUFFER): void {
-		this.m_fboRunning = false;
+		// this.m_fboRunning = false;
 		this.m_activeAttachmentTotal = 1;
-		FrameBufferObject.BindToBackbuffer(this.m_gl, frameBufferType);
+		FrameBufferObject.BindToBackbuffer(this.m_gl, frameBufferType, this.m_rcuid);
 		this.reseizeViewPort();
 	}
 
@@ -703,13 +702,13 @@ class RenderAdapter implements IRenderAdapter {
 			this.m_fboBufList[readFBOIndex].bind(FrameBufferType.READ_FRAMEBUFFER);
 		}
 		else {
-			FrameBufferObject.BindToBackbuffer(this.m_gl, FrameBufferType.READ_FRAMEBUFFER);
+			FrameBufferObject.BindToBackbuffer(this.m_gl, FrameBufferType.READ_FRAMEBUFFER, this.m_rcuid);
 		}
 		if (writeFBOIndex >= 0 && this.m_fboBufList[writeFBOIndex] != null) {
 			this.m_fboBufList[writeFBOIndex].bind(FrameBufferType.DRAW_FRAMEBUFFER);
 		}
 		else {
-			FrameBufferObject.BindToBackbuffer(this.m_gl, FrameBufferType.DRAW_FRAMEBUFFER);
+			FrameBufferObject.BindToBackbuffer(this.m_gl, FrameBufferType.DRAW_FRAMEBUFFER, this.m_rcuid);
 		}
 		if (clearType > 0) {
 			if (clearIndex < 0) {

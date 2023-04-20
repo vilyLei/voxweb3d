@@ -176,7 +176,6 @@ export default class RPOUnit implements IRPOUnit {
 	__$$drawThis(rc: IRenderProxy): void {
 		const st = rc.status;
 		st.drawCallTimes++;
-
 		const gl = rc.RContext;
 		const rd = this.rdp.rd;
 		st.drawTrisNumber += rd.trisNumber;
@@ -185,7 +184,7 @@ export default class RPOUnit implements IRPOUnit {
 		// let ivsCount = ir.getVTCount();
 		let ivsCount = rd.ivsSize;
 		// if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
-		// console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), rd.getUid());
+		// console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), rd.getUid(), ",fbo: ",rc.adapter.isFBORunning());
 		// if (DebugFlag.Flag_0 > 0) {
 		// 	console.log("runit::drawThis(), gl: ", gl);
 		// 	console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), ", rd.getUid(): ", rd.getUid());

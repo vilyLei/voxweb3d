@@ -9,23 +9,35 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import FrameBufferType from "../../vox/render/FrameBufferType";
 import TextureFormat from "../../vox/texture/TextureFormat";
 import TextureTarget from "../../vox/texture/TextureTarget";
-import IRenderResource from '../../vox/render/IRenderResource';
+import IRenderResource from "../../vox/render/IRenderResource";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RenderFBOProxy from "../../vox/render/RenderFBOProxy";
 
 class FrameBufferObject {
-	private m_uid: number = -1;
-	private static s_uid: number = 0;
+	private m_uid = -1;
+	private static s_uid = 0;
 	// renderer context unique id
-	private m_rcuid: number = 0;
-	private m_texRes: IRenderResource;
+	private m_rcuid = 0;
+	private m_texRes: IRenderResource = null;
+	private static s_bindFT: Int16Array[] = null;
 	constructor(rcuid: number, texResource: IRenderResource, frameBufType: number) {
+		let fs = FrameBufferObject.s_bindFT;
+		if (fs == null) {
+			fs = new Array(128);
+			fs.fill(null);
+		}
+		if (fs[rcuid] == null) {
+			fs[rcuid] = new Int16Array(4);
+			fs[rcuid].fill(-9);
+		}
+		FrameBufferObject.s_bindFT = fs;
+
 		this.m_rcuid = rcuid;
 		this.m_texRes = texResource;
 		this.m_bufferLType = frameBufType;
 		this.m_uid = FrameBufferObject.s_uid++;
 	}
-	private m_COLOR_ATTACHMENT0: number = 0x0;
+	private m_COLOR_ATTACHMENT0 = 0x0;
 	private m_fbo: any = null;
 	private m_depthStencilRBO: any = null;
 	private m_depthRBO: any = null;
@@ -72,46 +84,44 @@ class FrameBufferObject {
 	getAttachmentTotal(): number {
 		return this.m_attachmentMaskList.length;
 	}
-	bindToBackbuffer(frameBufferType: number): void {
-		switch (frameBufferType) {
-			case FrameBufferType.DRAW_FRAMEBUFFER:
-				this.m_gl.bindFramebuffer(this.m_gl.DRAW_FRAMEBUFFER, null);
-				break;
-			case FrameBufferType.READ_FRAMEBUFFER:
-				this.m_gl.indFramebuffer(this.m_gl.READ_FRAMEBUFFER, null);
-				break;
-			default:
-				this.m_gl.bindFramebuffer(this.m_gl.FRAMEBUFFER, null);
-		}
-	}
-	bind(frameBufferType: number): void {
-		if (this.m_fbo != null) {
-			switch (frameBufferType) {
-				case FrameBufferType.DRAW_FRAMEBUFFER:
-					this.m_gl.bindFramebuffer(this.m_gl.DRAW_FRAMEBUFFER, this.m_fbo);
-					break;
-				case FrameBufferType.READ_FRAMEBUFFER:
-					this.m_gl.bindFramebuffer(this.m_gl.READ_FRAMEBUFFER, this.m_fbo);
-					break;
-				default:
-					this.m_gl.bindFramebuffer(this.m_gl.FRAMEBUFFER, this.m_fbo);
-			}
-		}
-	}
+	// bindToBackbuffer(frameBufferType: number): void {
+	// 	switch (frameBufferType) {
+	// 		case FrameBufferType.DRAW_FRAMEBUFFER:
+	// 			this.m_gl.bindFramebuffer(this.m_gl.DRAW_FRAMEBUFFER, null);
+	// 			break;
+	// 		case FrameBufferType.READ_FRAMEBUFFER:
+	// 			this.m_gl.indFramebuffer(this.m_gl.READ_FRAMEBUFFER, null);
+	// 			break;
+	// 		default:
+	// 			this.m_gl.bindFramebuffer(this.m_gl.FRAMEBUFFER, null);
+	// 	}
+	// }
 
-	getFBO(): object { return this.m_fbo; }
-	getDepthStencilRBO(): object { return this.m_depthStencilRBO; }
-	getDepthRBO(): object { return this.m_depthRBO; }
-	getWidth(): number { return this.m_width; }
-	getHeight(): number { return this.m_height; }
-	getFramebufferType(): number { return this.m_bufferLType; }
-    /**
-     * bind a texture to fbo attachment by attachment index
-     * @param texProxy  IRenderTexture instance
-     * @param enableDepth  enable depth buffer yes or no
-     * @param enableStencil  enable stencil buffer yes or no
-     * @param attachmentIndex  fbo attachment index
-     */
+	getFBO(): object {
+		return this.m_fbo;
+	}
+	getDepthStencilRBO(): object {
+		return this.m_depthStencilRBO;
+	}
+	getDepthRBO(): object {
+		return this.m_depthRBO;
+	}
+	getWidth(): number {
+		return this.m_width;
+	}
+	getHeight(): number {
+		return this.m_height;
+	}
+	getFramebufferType(): number {
+		return this.m_bufferLType;
+	}
+	/**
+	 * bind a texture to fbo attachment by attachment index
+	 * @param texProxy  IRenderTexture instance
+	 * @param enableDepth  enable depth buffer yes or no
+	 * @param enableStencil  enable stencil buffer yes or no
+	 * @param attachmentIndex  fbo attachment index
+	 */
 	renderToTexAt(rgl: any, texProxy: IRenderTexture, attachmentIndex: number): void {
 		let inFormat: number = texProxy != null ? texProxy.internalFormat : -1;
 		this.m_gl = rgl;
@@ -120,7 +130,8 @@ class FrameBufferObject {
 			this.m_preFTIndex = 0;
 			this.m_haveDepthTex = false;
 			// 注意, 防止多次重复调用的没必要重设
-			this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
+			// this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
+			this.bind(this.m_bufferLType);
 			if (inFormat != TextureFormat.DEPTH_COMPONENT && inFormat != TextureFormat.DEPTH_STENCIL) {
 				this.m_activeAttachmentTotal = 0;
 				this.m_attachmentIndex = 0;
@@ -128,22 +139,22 @@ class FrameBufferObject {
 		}
 		let targetType: number = -1;
 		let rTex: any = null;
-		//trace("FrameBufferObject::use(), texProxy != null: "+(texProxy != null));
+		// console.log("$$$$$ FrameBufferObject::use(), texProxy != null: ",(texProxy != null));
 		if (texProxy != null) {
 			targetType = texProxy.getTargetType();
-			rTex = this.m_texRes.getGpuBuffer(texProxy.getResUid());
 			texProxy.uploadFromFbo(this.m_texRes, this.m_width, this.m_height);
-		}
-		else {
+			rTex = this.m_texRes.getGpuBuffer(texProxy.getResUid());
+		} else {
 			targetType = this.m_texTargetTypes[this.m_activeAttachmentTotal];
 		}
+		// console.log("$$$$$ renderToTexAt() rTex: ", rTex);
 		this.framebufferTextureBind(rgl, targetType, inFormat, rTex);
 	}
-	private m_preAttachments: Uint32Array = new Uint32Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-	private m_preTragets: Uint32Array = new Uint32Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-	private m_preFTIndex: number = 0;
+	private m_preAttachments = new Uint32Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+	private m_preTragets = new Uint32Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+	private m_preFTIndex = 0;
 	private glFramebufferTex2D(attachment: number, rTex: any): void {
-		let rgl: any = this.m_gl;
+		let rgl = this.m_gl;
 		rgl.framebufferTexture2D(this.m_fboTarget, attachment, rgl.TEXTURE_2D, rTex, 0);
 
 		this.m_preAttachments[this.m_preFTIndex] = attachment;
@@ -208,12 +219,10 @@ class FrameBufferObject {
 				++this.m_attachmentIndex;
 				if (rTex != null) {
 					this.m_texTargetTypes[this.m_activeAttachmentTotal] = targetType;
-				}
-				else {
+				} else {
 					this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
 				}
-			}
-			else {
+			} else {
 				this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
 			}
 			++this.m_activeAttachmentTotal;
@@ -234,13 +243,11 @@ class FrameBufferObject {
 						++this.m_attachmentIndex;
 						if (rTex != null) {
 							this.m_texTargetTypes[this.m_activeAttachmentTotal + i] = targetType;
-						}
-						else {
+						} else {
 							this.m_texTargetTypes[this.m_activeAttachmentTotal + i] = 0;
 						}
 						cubeAttachmentTot++;
-					}
-					else {
+					} else {
 						this.m_texTargetTypes[this.m_activeAttachmentTotal + i] = 0;
 					}
 				}
@@ -253,12 +260,10 @@ class FrameBufferObject {
 					this.glFramebufferTex2D(this.m_gl.DEPTH_ATTACHMENT, rTex);
 					if (rTex != null) {
 						this.m_texTargetTypes[this.m_activeAttachmentTotal] = targetType;
-					}
-					else {
+					} else {
 						this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
 					}
-				}
-				else {
+				} else {
 					this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
 				}
 				++this.m_activeAttachmentTotal;
@@ -273,7 +278,7 @@ class FrameBufferObject {
 	}
 	use(rgl: any): void {
 		this.m_gl = rgl;
-		if (this.m_fbo != null) {
+		if (this.m_fbo) {
 			//console.log("this.m_preAttachIndex,this.m_attachmentIndex: ",this.m_preAttachIndex,this.m_attachmentIndex,this.m_activeAttachmentTotal);
 			if (this.m_activeAttachmentTotal > 1) {
 				if (this.m_preAttachIndex != this.m_attachmentIndex) {
@@ -288,19 +293,19 @@ class FrameBufferObject {
 						}
 					}
 					// support webgl2 and webgl1
-					//console.log("AAA attachments 0: ",attachments);
+					// console.log("AAA attachments 0: ",attachments);
 					RenderFBOProxy.DrawBuffers(attachments);
 					this.m_preAttachIndex = this.m_attachmentIndex;
 				}
-			}
-			else if (this.m_preAttachIndex != this.m_attachmentIndex) {
+			} else if (this.m_preAttachIndex != this.m_attachmentIndex) {
 				if (this.m_preAttachIndex > this.m_attachmentIndex) {
-					for (let i: number = 1; i < this.m_preAttachIndex; ++i) {
+					for (let i = 1; i < this.m_preAttachIndex; ++i) {
+						// console.log( "AAA attachments 1 a: ",this.m_preAttachments[i], this.m_preTragets[i] );
 						this.m_gl.framebufferTexture2D(this.m_fboTarget, this.m_preAttachments[i], this.m_preTragets[i], null, 0);
 					}
 				}
-				let attachments: number[] = [this.m_COLOR_ATTACHMENT0];
-				//console.log("AAA attachments 1: ",attachments);
+				let attachments = [this.m_COLOR_ATTACHMENT0];
+				// console.log( "AAA attachments 1: ",attachments );
 				RenderFBOProxy.DrawBuffers(attachments);
 				this.m_preAttachIndex = this.m_attachmentIndex;
 			}
@@ -318,12 +323,10 @@ class FrameBufferObject {
 					for (let i = 0; i < this.m_preAttachTotal; ++i) {
 						this.m_gl.clearBufferfv(this.m_gl.COLOR, i, this.m_clearColorArr);
 					}
-				}
-				else {
+				} else {
 					this.m_gl.clearBufferfv(this.m_gl.COLOR, 0, this.m_clearColorArr);
 				}
-			}
-			else {
+			} else {
 				this.m_gl.clearColor(color4[0], color4[1], color4[2], color4[3]);
 			}
 		}
@@ -331,12 +334,10 @@ class FrameBufferObject {
 	}
 
 	clearOnlyDepth(depth: number = 1.0): void {
-
 		if (RendererDevice.IsWebGL2()) {
 			this.m_clearDepthArr[0] = depth;
 			this.m_gl.clearBufferfv(this.m_gl.DEPTH, 0, this.m_clearDepthArr);
-		}
-		else {
+		} else {
 			this.m_gl.clearDepth(depth);
 		}
 	}
@@ -347,15 +348,12 @@ class FrameBufferObject {
 	clearOnlyDepthAndStencil(depth: number, stencil: number): void {
 		this.m_gl.clearBufferfi(this.m_gl.DEPTH_STENCIL, 0, depth, stencil);
 	}
-	invalidateFramebuffer(): void {
-
-	}
+	invalidateFramebuffer(): void {}
 	//invalidateFramebuffer(target, attachments)
 	private m_resizeW: number = 2;
 	private m_resizeH: number = 2;
 	// 一旦这个函数调用，则size的控制权以后都会由这个resize决定
 	resize(pw: number, ph: number): void {
-
 		if (this.m_resizeW != pw || this.m_resizeH != ph) {
 			this.m_fboSizeChanged = true;
 			this.m_resizeW = pw;
@@ -373,11 +371,10 @@ class FrameBufferObject {
 		if (this.m_fbo == null) {
 			this.createNewFBO(rgl, pw, ph);
 			console.log("FrameBufferObject create a new fbo: ", this);
-		}
-		else if (this.m_width != pw || this.m_height != ph) {
+		} else if (this.m_width != pw || this.m_height != ph) {
 			// ready rebuild some new fbo's Renderbuffers.
 			this.createNewFBO(rgl, pw, ph);
-			console.log("FrameBufferObject ready rebuild another new fbo("+pw+","+ph+"): ", this);
+			console.log("FrameBufferObject ready rebuild another new fbo(" + pw + "," + ph + "): ", this);
 		}
 		this.m_fboSizeChanged = false;
 	}
@@ -430,8 +427,7 @@ class FrameBufferObject {
 			rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
 			rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
 			rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-		}
-		else {
+		} else {
 			rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
 			rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.DEPTH_STENCIL, pw, ph);
 			rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
@@ -447,13 +443,11 @@ class FrameBufferObject {
 			rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
 			rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
 			rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-		}
-		else {
+		} else {
 			rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthRBO);
 			if (RendererDevice.IsWebGL2()) {
 				rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.DEPTH_COMPONENT24, pw, ph);
-			}
-			else {
+			} else {
 				console.log("Only use webgl1 depth fbo buffer.");
 				rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.DEPTH_COMPONENT16, pw, ph);
 			}
@@ -472,8 +466,7 @@ class FrameBufferObject {
 				rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
 				rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
 				rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-			}
-			else {
+			} else {
 				rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
 				rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.STENCIL_INDEX8, pw, ph);
 				rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
@@ -485,16 +478,20 @@ class FrameBufferObject {
 		rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
 		if (this.multisampleEnabled) {
 			rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
-		}else {
+		} else {
 			rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.RGBA8, pw, ph);
 		}
-		rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-
-		console.log("FrameBufferObject create only color buf...this.multisampleEnabled: " + this.multisampleEnabled + ",this.multisampleLevel:" + this.multisampleLevel);
+		rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
+		// console.log("this.m_COLOR_ATTACHMENT0: ", this.m_COLOR_ATTACHMENT0);
+		console.log(
+			"FrameBufferObject create only color buf...this.multisampleEnabled: " +
+				this.multisampleEnabled +
+				",this.multisampleLevel:" +
+				this.multisampleLevel
+		);
 	}
 	private createNewFBO(rgl: any, pw: number, ph: number): void {
-
-		let boo: boolean = this.m_fbo == null;
+		let boo = this.m_fbo == null;
 
 		this.m_preAttachTotal = this.m_activeAttachmentTotal = 0;
 		this.m_preAttachIndex = this.m_attachmentIndex = 0;
@@ -505,21 +502,22 @@ class FrameBufferObject {
 		//trace("XXXXXXXXXXXXXX ready create framebuf, m_fbo: ", m_fbo);
 		if (boo) this.m_fbo = rgl.createFramebuffer();
 		//trace("XXXXXXXXXXXXXX doing create framebuf, m_fbo: ", m_fbo);
-		switch (this.m_bufferLType) {
-			case FrameBufferType.DRAW_FRAMEBUFFER:
-				this.m_fboTarget = rgl.DRAW_FRAMEBUFFER;
-				//console.log("create FrameBufferType is DRAW_FRAMEBUFFER.");
-				break;
-			case FrameBufferType.READ_FRAMEBUFFER:
-				this.m_fboTarget = rgl.READ_FRAMEBUFFER;
-				//console.log("create FrameBufferType is READ_FRAMEBUFFER.");
-				break;
-			default:
-				this.m_fboTarget = rgl.FRAMEBUFFER;
-				//console.log("create FrameBufferType is FRAMEBUFFER.");
-				break;
-		}
-		rgl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
+		// switch (this.m_bufferLType) {
+		// 	case FrameBufferType.DRAW_FRAMEBUFFER:
+		// 		this.m_fboTarget = rgl.DRAW_FRAMEBUFFER;
+		// 		//console.log("create FrameBufferType is DRAW_FRAMEBUFFER.");
+		// 		break;
+		// 	case FrameBufferType.READ_FRAMEBUFFER:
+		// 		this.m_fboTarget = rgl.READ_FRAMEBUFFER;
+		// 		//console.log("create FrameBufferType is READ_FRAMEBUFFER.");
+		// 		break;
+		// 	default:
+		// 		this.m_fboTarget = rgl.FRAMEBUFFER;
+		// 		//console.log("create FrameBufferType is FRAMEBUFFER.");
+		// 		break;
+		// }
+		// rgl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
+		this.m_fboTarget = this.bind(this.m_bufferLType);
 		//console.log("FrameBufferObject::initialize() writeDepthEnabled: "+this.writeDepthEnabled+", writeDepthEnabled: " , this.writeDepthEnabled+" ,size("+pw + "," ,ph+")");
 		if (this.writeDepthEnabled) {
 			//trace("FrameBufferObject writeStencilEnabled: " ,this.writeStencilEnabled);
@@ -528,41 +526,76 @@ class FrameBufferObject {
 					//trace("FrameBufferObject create depth and stencil buf...this.multisampleEnabled: "+this.multisampleEnabled+",this.multisampleLevel:"+this.multisampleLevel);
 					this.buildDepthStencilRBO(rgl, pw, ph);
 				}
-			}
-			else {
+			} else {
 				this.buildDepthRBO(rgl, pw, ph);
 			}
-		}
-		else if (this.writeStencilEnabled) {
+		} else if (this.writeStencilEnabled) {
 			this.buildStencilRBO(rgl, pw, ph);
-		}
-		else {
+		} else {
 			this.buildColorRBO(rgl, pw, ph);
 		}
 		if (boo) {
 			let e = rgl.checkFramebufferStatus(this.m_fboTarget);
-			//trace("XXXXX   XXXXXXXXx Err: "+e+", rgl.FRAMEBUFFER_COMPLETE: "+rgl.FRAMEBUFFER_COMPLETE);
 			if (e !== rgl.FRAMEBUFFER_COMPLETE) {
 				console.error("FrameBufferObject::createNewFBO(), Error: create failure!!!!");
-			}
-			else {
+			} else {
 				console.log("FrameBufferObject::createNewFBO(), create success...,size: " + pw + "," + ph);
 			}
 		}
-		FrameBufferObject.BindToBackbuffer(rgl, this.m_bufferLType);
+		FrameBufferObject.BindToBackbuffer(rgl, this.m_bufferLType, this.m_rcuid);
 	}
-	static BindToBackbuffer(rc: any, frameBufferType: number): void {
+	bind(frameBufferType: number): number {
+		if (this.m_fbo) {
+			// console.log("bind fbo to ..., frameBufferType: ", frameBufferType);
+			const fs = FrameBufferObject.s_bindFT[this.m_rcuid];
+			const gl = this.m_gl;
+			let type = gl.FRAMEBUFFER;
+			let i = 1;
+			switch (frameBufferType) {
+				case FrameBufferType.DRAW_FRAMEBUFFER:
+					i = 2;
+					type = gl.DRAW_FRAMEBUFFER;
+					break;
+				case FrameBufferType.READ_FRAMEBUFFER:
+					i = 3;
+					type = gl.READ_FRAMEBUFFER;
+					break;
+				default:
+					break;
+			}
+			if (fs[i] != this.m_uid) {
+				fs[i] = this.m_uid;
+				// console.log("bind fbo to OK..., gl.FRAMEBUFFER: ", gl.FRAMEBUFFER, type);
+				gl.bindFramebuffer(type, this.m_fbo);
+			}
+			return type;
+		}
+		return 0;
+	}
+	static BindToBackbuffer(rc: any, frameBufferType: number, rcuid: number): void {
+		const fs = FrameBufferObject.s_bindFT[rcuid];
+		// console.log("bind fbo to BindToBackbuffer:(), frameBufferType: ", frameBufferType);
 		switch (frameBufferType) {
 			case FrameBufferType.DRAW_FRAMEBUFFER:
+				fs[2] = -9;
 				rc.bindFramebuffer(rc.DRAW_FRAMEBUFFER, null);
 				break;
 			case FrameBufferType.READ_FRAMEBUFFER:
+				fs[3] = -9;
 				rc.indFramebuffer(rc.READ_FRAMEBUFFER, null);
 				break;
 			default:
+				fs[1] = -9;
 				rc.bindFramebuffer(rc.FRAMEBUFFER, null);
 				break;
 		}
+	}
+	static IsFBORunning(rcuid: number): boolean {
+		if(FrameBufferObject.s_bindFT) {
+			const fs = FrameBufferObject.s_bindFT[rcuid];
+			return fs[1] >=0 || fs[2] >= 0 || fs[3] >= 0;
+		}
+		return false;
 	}
 }
 export default FrameBufferObject;
