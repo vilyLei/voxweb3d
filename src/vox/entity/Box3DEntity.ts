@@ -58,12 +58,6 @@ export default class Box3DEntity extends Default3DEntity {
         }
         this.m_initFlag = false;
     }
-    // showBackFace(): void {
-    //     this.setRenderState(RendererState.BACK_CULLFACE_NORMAL_STATE);
-    // }
-    // showFrontFace(): void {
-    //     this.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
-    // }
     scaleUVFaceAt(faceI: number, u: number, v: number, du: number, dv: number): void {
         let mesh: Box3DMesh = this.getMesh() as Box3DMesh;
         if (mesh != null) {

@@ -22,8 +22,6 @@ export default class Torus3DEntity extends Default3DEntity {
     private m_transMatrix: Matrix4 = null;
     uScale = 1.0;
     vScale = 1.0;
-    // wireframe = false;
-    // normalEnabled = false;
     /**
      * axisType = 0 is XOY plane,
      * axisType = 1 is XOZ plane,

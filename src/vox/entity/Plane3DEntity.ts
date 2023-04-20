@@ -4,12 +4,8 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-// import RendererState from "../../vox/render/RendererState";
-// import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Default3DEntity from "../../vox/entity/Default3DEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-// import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import IROTransform from "../../vox/display/IROTransform";
@@ -17,14 +13,11 @@ import Color4 from "../material/Color4";
 
 export default class Plane3DEntity extends Default3DEntity {
 
-    // private m_mt: Default3DMaterial = null;
     private m_startX = 0;
     private m_startZ = 0;
     private m_pwidth = 0;
     private m_plong = 0;
     private m_flag = 0;
-    // private m_polyhedralBoo = true;
-    // private m_screenAlignEnabled = false;
 
     readonly color0 = new Color4();
     readonly color1 = new Color4();

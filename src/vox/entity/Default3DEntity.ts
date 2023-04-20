@@ -124,16 +124,6 @@ export default class Default3DEntity extends DisplayEntity {
         else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
         }
-
-        // if(this.brightnessBlend){
-        //     this.toBrightnessBlend(this.depthAlwaysFalse, this.doubleFace);
-        // }else if(this.transparentBlend){
-        //     this.toTransparentBlend(this.depthAlwaysFalse, this.doubleFace);
-        // }else if(this.doubleFace){
-        //     this.showDoubleFace(this.doubleFace);
-        // }else if(this.depthAlwaysFalse){
-        //     this.showDoubleFace(true, false);
-		// }
 		this.updateRenderState();
     }
 	updateRenderState(): void {
@@ -173,59 +163,18 @@ export default class Default3DEntity extends DisplayEntity {
 	private m_faceType = -1;
     showBackFace(): void {
 		this.m_faceType = -1;
-        // this.setRenderState(RendererState.NORMAL_STATE);
     }
     showFrontFace(): void {
 		this.m_faceType = 1;
-        // this.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
     }
     showDoubleFace(always: boolean = false, doubleFace: boolean = true): void {
 
 		this.m_faceType = 2;
-        // if (always) {
-        //     if (doubleFace) {
-        //         this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
-        //     }
-        //     else this.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
-        // }
-        // else {
-        //     if (doubleFace) {
-        //         this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        //     }
-        //     else this.setRenderState(RendererState.NORMAL_STATE);
-        // }
     }
     toTransparentBlend(always: boolean = false, doubleFace: boolean = false): void {
 		this.transparentBlend = true;
-        // if(this.premultiplyAlpha) {
-        //     if (always) {
-        //         if (doubleFace) this.setRenderState(RendererState.NONE_ALPHA_ADD_ALWAYS_STATE);
-        //         else this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
-        //     }
-        //     else {
-        //         if (doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
-        //         else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
-        //     }
-        // }else {
-        //     if (always) {
-        //         if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
-        //         else this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
-        //     }
-        //     else {
-        //         if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-        //         else this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-        //     }
-        // }
     }
     toBrightnessBlend(always: boolean = false, doubleFace: boolean = false): void {
-        // if (always) {
-        //     if (doubleFace) this.setRenderState(RendererState.NONE_ADD_ALWAYS_STATE);
-        //     else this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
-        // }
-        // else {
-        //     if (doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
-        //     else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
-        // }
 		this.brightnessBlend = true;
     }
     reinitializeMesh(): void {
