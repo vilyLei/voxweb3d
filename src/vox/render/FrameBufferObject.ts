@@ -593,7 +593,9 @@ class FrameBufferObject {
 	static IsFBORunning(rcuid: number): boolean {
 		if(FrameBufferObject.s_bindFT) {
 			const fs = FrameBufferObject.s_bindFT[rcuid];
-			return fs[1] >=0 || fs[2] >= 0 || fs[3] >= 0;
+			if(fs) {
+				return fs[1] >=0 || fs[2] >= 0 || fs[3] >= 0;
+			}
 		}
 		return false;
 	}
