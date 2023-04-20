@@ -12,6 +12,7 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import IROTransform from "../../vox/display/IROTransform";
 import Color4 from "../material/Color4";
+import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
 
 export default class Default3DEntity extends DisplayEntity {
 
@@ -123,60 +124,109 @@ export default class Default3DEntity extends DisplayEntity {
         else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
         }
-        if(this.brightnessBlend){
-            this.toBrightnessBlend(this.depthAlwaysFalse, this.doubleFace);
-        }else if(this.transparentBlend){
-            this.toTransparentBlend(this.depthAlwaysFalse, this.doubleFace);
-        }else if(this.doubleFace){
-            this.showDoubleFace(this.doubleFace);
-        }else if(this.depthAlwaysFalse){
-            this.showDoubleFace(true, false);
+
+        // if(this.brightnessBlend){
+        //     this.toBrightnessBlend(this.depthAlwaysFalse, this.doubleFace);
+        // }else if(this.transparentBlend){
+        //     this.toTransparentBlend(this.depthAlwaysFalse, this.doubleFace);
+        // }else if(this.doubleFace){
+        //     this.showDoubleFace(this.doubleFace);
+        // }else if(this.depthAlwaysFalse){
+        //     this.showDoubleFace(true, false);
+		// }
+		this.updateRenderState();
+    }
+	updateRenderState(): void {
+
+		let cullMode = 0;
+		switch(this.m_faceType) {
+			case -1:
+				cullMode = CullFaceMode.BACK;
+				break;
+			case 1:
+				cullMode = CullFaceMode.FRONT;
+				break;
+			default:
+				cullMode = CullFaceMode.NONE;
+				break;
 		}
+		let blendMode = RenderBlendMode.OPAQUE;
+		if(this.brightnessBlend){
+			blendMode = RenderBlendMode.ADD;
+		}else if(this.transparentBlend) {
+			if(this.premultiplyAlpha) {
+				blendMode = RenderBlendMode.ALPHA_ADD;
+			}else {
+				blendMode = RenderBlendMode.TRANSPARENT;
+			}
+		}
+		let depthMode = DepthTestMode.OPAQUE;
+		if(this.depthAlwaysFalse){
+			depthMode = DepthTestMode.ALWAYS;
+		}else if(this.transparentBlend) {
+			depthMode = DepthTestMode.BLEND_SORT;
+		}
+
+		let st = RendererState.CreateRenderState("", cullMode, blendMode, depthMode);
+		this.setRenderState(st);
+	}
+	private m_faceType = -1;
+    showBackFace(): void {
+		this.m_faceType = -1;
+        // this.setRenderState(RendererState.NORMAL_STATE);
+    }
+    showFrontFace(): void {
+		this.m_faceType = 1;
+        // this.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
     }
     showDoubleFace(always: boolean = false, doubleFace: boolean = true): void {
-        if (always) {
-            if (doubleFace) {
-                this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
-            }
-            else this.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
-        }
-        else {
-            if (doubleFace) {
-                this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-            }
-            else this.setRenderState(RendererState.NORMAL_STATE);
-        }
+
+		this.m_faceType = 2;
+        // if (always) {
+        //     if (doubleFace) {
+        //         this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        //     }
+        //     else this.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
+        // }
+        // else {
+        //     if (doubleFace) {
+        //         this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        //     }
+        //     else this.setRenderState(RendererState.NORMAL_STATE);
+        // }
     }
     toTransparentBlend(always: boolean = false, doubleFace: boolean = false): void {
-        if(this.premultiplyAlpha) {
-            if (always) {
-                if (doubleFace) this.setRenderState(RendererState.NONE_ALPHA_ADD_ALWAYS_STATE);
-                else this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
-            }
-            else {
-                if (doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
-                else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
-            }
-        }else {
-            if (always) {
-                if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
-                else this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
-            }
-            else {
-                if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-                else this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-            }
-        }
+		this.transparentBlend = true;
+        // if(this.premultiplyAlpha) {
+        //     if (always) {
+        //         if (doubleFace) this.setRenderState(RendererState.NONE_ALPHA_ADD_ALWAYS_STATE);
+        //         else this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+        //     }
+        //     else {
+        //         if (doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
+        //         else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+        //     }
+        // }else {
+        //     if (always) {
+        //         if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
+        //         else this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+        //     }
+        //     else {
+        //         if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
+        //         else this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        //     }
+        // }
     }
     toBrightnessBlend(always: boolean = false, doubleFace: boolean = false): void {
-        if (always) {
-            if (doubleFace) this.setRenderState(RendererState.NONE_ADD_ALWAYS_STATE);
-            else this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
-        }
-        else {
-            if (doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
-            else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
-        }
+        // if (always) {
+        //     if (doubleFace) this.setRenderState(RendererState.NONE_ADD_ALWAYS_STATE);
+        //     else this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+        // }
+        // else {
+        //     if (doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
+        //     else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+        // }
+		this.brightnessBlend = true;
     }
     reinitializeMesh(): void {
         let mesh = this.getMesh() as RectPlaneMesh;

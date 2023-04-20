@@ -8,75 +8,35 @@
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 import IROTransform from "../../vox/display/IROTransform";
-import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Default3DEntity from "../../vox/entity/Default3DEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import RendererState from "../../vox/render/RendererState";
-import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import Tube3DMesh from "../../vox/mesh/Tube3DMesh";
 
-export default class Tube3DEntity extends DisplayEntity {
-    private m_longitudeNum: number = 10;
-    private m_latitudeNum: number = 1;
-    private m_uvType: number = 1;
-    private m_alignYRatio: number = -0.5;
+export default class Tube3DEntity extends Default3DEntity {
+    private m_longitudeNum = 10;
+    private m_latitudeNum = 1;
+    private m_uvType = 1;
+    private m_alignYRatio = -0.5;
     private m_transMatrix: Matrix4 = null;
     private m_currMesh: Tube3DMesh = null;
+    private m_radius = 50.0;
+    private m_height = 100.0;
 
-    uScale: number = 1.0;
-    vScale: number = 1.0;
-    wireframe: boolean = false;
+    uScale = 1.0;
+    vScale = 1.0;
+    // wireframe: boolean = false;
     /**
      * axisType = 0 is XOY plane,
      * axisType = 1 is XOZ plane,
      * axisType = 2 is YOZ plane
      */
     axisType = 0;
-    private m_radius: number = 50.0;
-    private m_height: number = 100.0;
     constructor(transform: IROTransform = null) {
         super(transform);
     }
     setVtxTransformMatrix(matrix: Matrix4): void {
         this.m_transMatrix = matrix;
-    }
-    createMaterial(texList: IRenderTexture[]): void {
-        if (this.getMaterial() == null) {
-            let cm: Default3DMaterial = new Default3DMaterial();
-            cm.setTextureList(texList);
-            this.setMaterial(cm);
-        }
-        else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
-            this.getMaterial().setTextureList(texList);
-        }
-    }
-    showDoubleFace(doubleFace: boolean = true): void {
-        if (doubleFace) {
-            this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        }
-        else {
-            this.setRenderState(RendererState.NORMAL_STATE);
-        }
-    }
-    toTransparentBlend(always: boolean = false, doubleFace: boolean = false): void {
-        if (always) {
-            if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
-            else this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
-        }
-        else {
-            if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-            else this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-        }
-    }
-    toBrightnessBlend(always: boolean = false, doubleFace: boolean = false): void {
-        if (always) {
-            if (doubleFace) this.setRenderState(RendererState.NONE_ADD_ALWAYS_STATE);
-            else this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
-        }
-        else {
-            if (doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
-            else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
-        }
     }
     initialize(radius: number, height: number, longitudeNum: number, latitudeNum: number, texList: IRenderTexture[] = null, uvType: number = 1, alignYRatio: number = -0.5): void {
         this.m_radius = radius;
@@ -91,7 +51,7 @@ export default class Tube3DEntity extends DisplayEntity {
     }
 
     protected __activeMesh(material: IRenderMaterial): void {
-        
+
         this.m_currMesh = this.getMesh() as Tube3DMesh;
 
         let mesh = this.m_currMesh;
@@ -113,11 +73,11 @@ export default class Tube3DEntity extends DisplayEntity {
         }
         this.m_transMatrix = null;
     }
-    reinitialize(): void {
-        if (this.m_currMesh != null) {
-            this.m_currMesh.reinitialize();
-        }
-    }
+    // reinitializeMesh(): void {
+    //     if (this.m_currMesh != null) {
+    //         this.m_currMesh.reinitialize();
+    //     }
+    // }
     getCircleCenterAt(i: number, outV: Vector3D): void {
         if (this.m_currMesh != null) {
             this.m_currMesh.getCircleCenterAt(i, outV);
@@ -128,4 +88,8 @@ export default class Tube3DEntity extends DisplayEntity {
             this.m_currMesh.transformCircleAt(i, mat4);
         }
     }
+	destroy(): void {
+        this.m_transMatrix = null;
+		super.destroy();
+	}
 }

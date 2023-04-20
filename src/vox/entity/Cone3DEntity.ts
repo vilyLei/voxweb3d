@@ -6,14 +6,13 @@
 /***************************************************************************/
 
 import IROTransform from "../../vox/display/IROTransform";
-import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Default3DEntity from "../../vox/entity/Default3DEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import Cone3DMesh from "../../vox/mesh/Cone3DMesh";
 import Matrix4 from "../math/Matrix4";
 
-export default class Cone3DEntity extends DisplayEntity {
+export default class Cone3DEntity extends Default3DEntity {
     private m_radius = 50.0;
     private m_height = 100.0;
     private m_plongitudeNumSegments = 10.0;
@@ -22,25 +21,14 @@ export default class Cone3DEntity extends DisplayEntity {
     private m_transMatrix: Matrix4 = null;
     uScale = 1.0;
     vScale = 1.0;
-    wireframe = false;
-    normalEnabled = false;
+    // wireframe = false;
+    // normalEnabled = false;
 
     constructor(transform: IROTransform = null) {
         super(transform);
     }
     setVtxTransformMatrix(matrix: Matrix4): void {
         this.m_transMatrix = matrix;
-    }
-    private createMaterial(texList: IRenderTexture[]): void {
-        if (this.getMaterial() == null) {
-            let cm = new Default3DMaterial();
-            cm.normalEnabled = this.normalEnabled;
-            cm.setTextureList(texList);
-            this.setMaterial(cm);
-        }
-        else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
-            this.getMaterial().setTextureList(texList);
-        }
     }
     /**
      * @param radius radius
@@ -76,4 +64,8 @@ export default class Cone3DEntity extends DisplayEntity {
             this.setMesh(mesh);
         }
     }
+	destroy(): void {
+        this.m_transMatrix = null;
+		super.destroy();
+	}
 }

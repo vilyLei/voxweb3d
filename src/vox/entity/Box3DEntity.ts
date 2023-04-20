@@ -18,19 +18,19 @@ import Color4 from "../material/Color4";
 
 export default class Box3DEntity extends Default3DEntity {
 
-    private m_normalType: number = VtxNormalType.FLAT;
-    private m_minV: Vector3D = new Vector3D(-50.0, -50.0, -50.0);
-    private m_maxV: Vector3D = new Vector3D(50.0, 50.0, 50.0);
+    private m_normalType = VtxNormalType.FLAT;
+    private m_minV = new Vector3D(-50.0, -50.0, -50.0);
+    private m_maxV = new Vector3D(50.0, 50.0, 50.0);
     private m_transMatrix: Matrix4 = null;
     private m_mh: Box3DMesh = null;
-    private m_initFlag: boolean = true;
+    private m_initFlag = true;
     vtxColor: Color4 = null;
     uScale = 1.0;
     vScale = 1.0;
     /**
      * uvPartsNumber value is 4 or 6
      */
-    uvPartsNumber: number = 0;
+    uvPartsNumber = 0;
 
     constructor(transform: IROTransform = null) {
         super(transform);
@@ -58,12 +58,12 @@ export default class Box3DEntity extends Default3DEntity {
         }
         this.m_initFlag = false;
     }
-    showBackFace(): void {
-        this.setRenderState(RendererState.BACK_CULLFACE_NORMAL_STATE);
-    }
-    showFrontFace(): void {
-        this.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
-    }
+    // showBackFace(): void {
+    //     this.setRenderState(RendererState.BACK_CULLFACE_NORMAL_STATE);
+    // }
+    // showFrontFace(): void {
+    //     this.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
+    // }
     scaleUVFaceAt(faceI: number, u: number, v: number, du: number, dv: number): void {
         let mesh: Box3DMesh = this.getMesh() as Box3DMesh;
         if (mesh != null) {

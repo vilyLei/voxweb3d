@@ -7,40 +7,39 @@
 
 import Matrix4 from "../../vox/math/Matrix4";
 import IROTransform from "../../vox/display/IROTransform";
-import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Default3DEntity from "../../vox/entity/Default3DEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import Cylinder3DMesh from "../../vox/mesh/Cylinder3DMesh";
 
-export default class Cylinder3DEntity extends DisplayEntity {
-    private m_plongitudeNumSegments: number = 10.0;
-    private m_uvType: number = 1;
-    private m_alignYRatio: number = -0.5;
+export default class Cylinder3DEntity extends Default3DEntity {
+    private m_plongitudeNumSegments = 10.0;
+    private m_uvType = 1;
+    private m_alignYRatio = -0.5;
     private m_transMatrix: Matrix4 = null;
-    uScale: number = 1.0;
-    vScale: number = 1.0;
-    normalEnabled: boolean = false;
-    wireframe: boolean = false;
-    private m_radius: number = 50.0;
-    private m_height: number = 100.0;
+    // normalEnabled: boolean = false;
+    // wireframe: boolean = false;
+    private m_radius = 50.0;
+    private m_height = 100.0;
+    uScale = 1.0;
+    vScale = 1.0;
     constructor(transform: IROTransform = null) {
         super(transform);
     }
     setVtxTransformMatrix(matrix: Matrix4): void {
         this.m_transMatrix = matrix;
     }
-    createMaterial(texList: IRenderTexture[]): void {
-        if (this.getMaterial() == null) {
-            let cm: Default3DMaterial = new Default3DMaterial();
-            cm.normalEnabled = this.normalEnabled;
-            cm.setTextureList(texList);
-            this.setMaterial(cm);
-        }
-        else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
-            this.getMaterial().setTextureList(texList);
-        }
-    }
+    // createMaterial(texList: IRenderTexture[]): void {
+    //     if (this.getMaterial() == null) {
+    //         let cm: Default3DMaterial = new Default3DMaterial();
+    //         cm.normalEnabled = this.normalEnabled;
+    //         cm.setTextureList(texList);
+    //         this.setMaterial(cm);
+    //     }
+    //     else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
+    //         this.getMaterial().setTextureList(texList);
+    //     }
+    // }
     /**
      * @param radius radius
      * @param height height
@@ -78,8 +77,8 @@ export default class Cylinder3DEntity extends DisplayEntity {
         }
         this.m_transMatrix = null;
     }
-
-    toString(): string {
-        return "[Cylinder3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")]";
-    }
+	destroy(): void {
+        this.m_transMatrix = null;
+		super.destroy();
+	}
 }
