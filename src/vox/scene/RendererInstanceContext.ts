@@ -247,7 +247,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
     }
 
     setRenderToBackBuffer(): void {
-        if (this.m_adapter != null) {
+        if (this.m_adapter) {
             this.m_adapter.setRenderToBackBuffer(FrameBufferType.FRAMEBUFFER);
             this.m_renderProxy.rshader.resetRenderState();
             this.m_materialProxy.renderBegin();
@@ -342,7 +342,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
             this.m_adapter.update();
             this.m_adapter.setClearMaskClearAll();
             this.m_adapter.renderBegin();
-            
+
             this.m_renderProxy.status.reset();
             RendererState.Reset(this.m_renderProxy.getRenderContext());
             if (cameraDataUpdate) {

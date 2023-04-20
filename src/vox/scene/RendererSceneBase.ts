@@ -58,6 +58,7 @@ import IRenderEntityBase from "../render/IRenderEntityBase";
 import EntityTransUpdater from "./EntityTransUpdater";
 import EntityFency from "./mana/EntityFence";
 import VoxSystemVerify from "../base/VoxSystemVerify";
+import DebugFlag from "../debug/DebugFlag";
 
 export default class RendererSceneBase {
 	private ___$$$$$$$Author = "VilyLei(vily313@126.com)";
@@ -863,6 +864,7 @@ export default class RendererSceneBase {
 	}
 	setProcessEnabledAt(i: number, enabled: boolean): void {
 		if (i >= 0 && i < this.m_processids.length) {
+			// console.log("rbase this.m_processids[i], enabled: ", i, this.m_processids[i], enabled);
 			this.m_renderer.setProcessEnabledAt(this.m_processids[i], enabled);
 			this.m_penableds[i] = enabled;
 		}

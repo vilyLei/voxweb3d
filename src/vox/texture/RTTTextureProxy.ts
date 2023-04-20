@@ -32,7 +32,7 @@ class RTTTextureProxy extends TextureProxy implements IRTTTexture {
         }else {
             this.internalFormat = TextureFormat.RED;
         }
-        
+
         // this.srcFormat = TextureFormat.RED;
         // this.internalFormat = TextureFormat.R16F;
     }
@@ -57,8 +57,8 @@ class RTTTextureProxy extends TextureProxy implements IRTTTexture {
         this.mipmapEnabled = false;
     }
     uploadFromFbo(texResource: IRenderResource, fboWidth: number, fboHeight: number): void {
-        let gl: any = texResource.getRC();
-        let mEnabled: boolean = this.mipmapEnabled;
+        let gl = texResource.getRC();
+        let mEnabled = this.mipmapEnabled;
         this.mipmapEnabled = false;
         if (!texResource.hasResUid(this.getResUid())) {
             this.m_sampler = TextureTarget.GetValue(gl, this.m_texTarget);
@@ -70,6 +70,7 @@ class RTTTextureProxy extends TextureProxy implements IRTTTexture {
             this.m_texWidth = fboWidth;
             this.m_texHeight = fboHeight;
             this.__$buildParam(gl);
+			// console.log(">>>>>>>>>>>>> uploadFromFbo() A ...");
         }
         else if (this.getBufWidth() != fboWidth || this.getBufHeight() != fboHeight) {
             texResource.bindToGpu(this.getResUid());
@@ -78,20 +79,22 @@ class RTTTextureProxy extends TextureProxy implements IRTTTexture {
             this.m_texWidth = fboWidth;
             this.m_texHeight = fboHeight;
             this.__$buildParam(gl);
+			// console.log(">>>>>>>>>>>>> uploadFromFbo() B ...");
         }
         this.mipmapEnabled = mEnabled;
-
+		this.testDataEnough();
     }
 
     private bindTexture(rgl: any, fboWidth: number, fboHeight: number): void {
-        
-        let interType = TextureFormat.ToGL(rgl, this.internalFormat);
-        let format = TextureFormat.ToGL(rgl, this.srcFormat);
-        let type = TextureDataType.ToGL(rgl, this.dataType);
 
-        //console.log(this,", fboWidth, fboHeight: ",fboWidth, fboHeight, interType,format);
+        const interType = TextureFormat.ToGL(rgl, this.internalFormat);
+        const format = TextureFormat.ToGL(rgl, this.srcFormat);
+        const type = TextureDataType.ToGL(rgl, this.dataType);
+
+        console.log("RTT Tex, fboWidth, fboHeight: ",fboWidth, fboHeight, interType,format);
         switch (this.m_texTarget) {
             case TextureTarget.TEXTURE_2D:
+				console.log("RTT tex 2d, fboWidth, fboHeight: ",fboWidth, fboHeight, interType,format,type);
                 rgl.texImage2D(rgl.TEXTURE_2D, 0, interType, fboWidth, fboHeight, 0, format, type, null);
                 break;
             case TextureTarget.TEXTURE_CUBE:

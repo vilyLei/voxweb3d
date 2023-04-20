@@ -92,8 +92,8 @@ export default class FBOInstance implements IFBOInstance {
 				throw Error("processIDlist.length < 1, but it must: processIDlist.length >= 1");
 			}
 			this.m_rindexs = processIDlist.slice(0);
-			if(!processShared) {
-				for(let i = 0; i < this.m_rindexs.length; ++i) {
+			if (!processShared) {
+				for (let i = 0; i < this.m_rindexs.length; ++i) {
 					this.m_renderer.setProcessEnabledAt(i, processShared);
 				}
 			}
@@ -719,8 +719,15 @@ export default class FBOInstance implements IFBOInstance {
 			this.m_renderer.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
 		}
 	}
+	runBeginCall: () => void = null;
+	runEndCall: () => void = null;
 	runBegin(): void {
 		if (this.m_fboIndex >= 0 && this.m_rindexs != null) {
+			if (this.runBeginCall) {
+				let cf = this.runBeginCall;
+				this.runBeginCall = null;
+				cf();
+			}
 			this.m_runFlag = true;
 			this.runBeginDo();
 		}
@@ -730,6 +737,11 @@ export default class FBOInstance implements IFBOInstance {
 		this.m_runFlag = true;
 		if (this.m_viewportLock) {
 			this.m_adapter.unlockViewport();
+		}
+		if (this.runEndCall) {
+			let cf = this.runEndCall;
+			this.runEndCall = null;
+			cf();
 		}
 	}
 
@@ -788,24 +800,23 @@ export default class FBOInstance implements IFBOInstance {
 	private m_autoRunBegin = true;
 
 	setRenderingState(lockRenderState: boolean = false, lockMaterial: boolean = false, autoEnd: boolean = true, autoRunBegin: boolean = true): void {
-
 		this.m_lockRenderState = lockRenderState;
 		this.m_lockMaterial = lockMaterial;
 		this.m_autoEnd = autoEnd;
 		this.m_autoRunBegin = autoRunBegin;
 	}
 	render(): void {
-		if(!this.m_lockRenderState) {
+		if (!this.m_lockRenderState) {
 			this.unlockRenderState();
 		}
-		if(!this.m_lockMaterial) {
+		if (!this.m_lockMaterial) {
 			this.unlockMaterial();
 		}
 		this.run(this.m_lockRenderState, this.m_lockMaterial, this.m_autoEnd, this.m_autoRunBegin);
 	}
 
 	private m_autoRRun = false;
-    /**
+	/**
 	 * @param auto enable auto runnning this instance, the default value is true
 	 * @param prepend perpend this into the renderer rendering process or append, the default value is true
 	 * @returns instance self

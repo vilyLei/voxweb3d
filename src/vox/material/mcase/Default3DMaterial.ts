@@ -158,7 +158,7 @@ vec2 getUV(vec2 uv) {
         #endif
     #else
         #ifdef VOX_ALIGN_SCREEN
-            gl_Position = u_projMat * localPosition;
+            gl_Position = u_objMat * localPosition;
         #else
             gl_Position = localPosition;
         #endif

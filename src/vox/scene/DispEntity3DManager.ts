@@ -159,10 +159,11 @@ export default class DispEntity3DManager {
 		return false;
 	}
 	testValidData(entity: IRenderEntity): boolean {
-		if (entity.getMaterial() != null && entity.hasMesh()) {
-			if (entity.getMaterial().hasShaderData()) {
+		let mt = entity.getMaterial();
+		if (mt != null && entity.hasMesh()) {
+			if (mt.hasShaderData()) {
 				return true;
-			} else if (entity.getMaterial().getCodeBuf() != null) {
+			} else if (mt.getCodeBuf() != null) {
 				entity.activeDisplay();
 			}
 		}

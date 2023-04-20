@@ -237,8 +237,8 @@ export class TextureProxy implements IRenderTexture {
      * 这个函数不能被子类覆盖
      */
     updateDataToGpu(rc: IRenderProxy = null, deferred: boolean = true): void {
-        if (rc != null) this.m_renderProxy = rc;
-        if (this.m_renderProxy != null) {
+        if (rc) this.m_renderProxy = rc;
+        if (this.m_renderProxy) {
             this.m_renderProxy.MaterialUpdater.updateTextureData(this, deferred);
         }
     }

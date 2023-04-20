@@ -17,10 +17,7 @@ import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
-// import { IStencil } from "../../vox/render/rendering/IStencil";
-import { Stencil } from "../../vox/render/rendering/Stencil";
 import IVtxDrawingInfo from "../render/vtx/IVtxDrawingInfo";
-import VtxDrawingInfo from "../render/vtx/VtxDrawingInfo";
 import IPassGraph from "../render/pass/IPassGraph";
 
 export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData {
@@ -33,6 +30,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     protected m_shaderUniformData: IShaderUniformData = null;
     protected m_pipeLine: IMaterialPipeline = null;
     protected m_uniqueShaderName = "";
+	uuid = "";
     // sub rendering pass
     private m_cases: IRenderMaterial[] = null;
     // tex list unique hash value
@@ -260,6 +258,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                 }
             }
             this.m_texDataEnabled = boo;
+			// console.log("material tex test, texDataEnabled: ", boo, ", uuid: ", this.uuid);
             return boo;
         }
         else {

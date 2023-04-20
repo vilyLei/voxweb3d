@@ -366,6 +366,7 @@ export class RendererInstance implements IRendererInstance {
     }
 	setProcessEnabledAt(i: number, enabled: boolean): void {
 		if (i > -1 && i < this.m_processesLen) {
+			// console.log("r ins, setProcessEnabledAt, i: ", i, enabled, ", uid: ", this.m_processes[i].uid);
             this.m_processes[i].setEnabled(enabled);
         }
 	}
