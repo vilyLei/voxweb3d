@@ -397,6 +397,11 @@ export default class ParamCtrlUI {
 			item.updateParamToUI();
 		}
 	}
+	/**
+	 * @param ns uuid
+	 * @param value number value
+	 * @param syncEnabled the default value is true
+	 */
 	setUIItemValue(ns: string, value: number, syncEnabled: boolean = true): void {
 		let item = this.getItemByUUID(ns);
 		if (item) {
@@ -405,6 +410,11 @@ export default class ParamCtrlUI {
 			item.updateParamToUI();
 		}
 	}
+	/**
+	 * @param ns uuid
+	 * @param flag boolean flag value
+	 * @param syncEnabled the default value is true
+	 */
 	setUIItemFlag(ns: string, flag: boolean, syncEnabled: boolean = true): void {
 		let item = this.getItemByUUID(ns);
 		if (item) {
@@ -548,6 +558,7 @@ export default class ParamCtrlUI {
 		if (map.has(uuid)) {
 			let obj = map.get(uuid);
 			let param = obj.param;
+			// console.log("progEvt.status: ", progEvt.status);
 			if (progEvt.status == 2) {
 				obj.sendValueOut(value);
 

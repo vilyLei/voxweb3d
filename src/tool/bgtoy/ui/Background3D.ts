@@ -113,8 +113,8 @@ class Background3D {
 			// sph.setRotationXYZ(Math.random() * 300, Math.random() * 300, Math.random() * 300);
 			// this.m_bgContainer.addChild(sph);
 			// this.m_sph = sph;
-			// this.changeBGColor();
 
+			this.changeBGColor();
 			sc.addEntity(this.m_bgContainer, 0);
 		}
 	}

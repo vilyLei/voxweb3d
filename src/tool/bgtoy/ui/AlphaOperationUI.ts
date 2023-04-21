@@ -21,6 +21,8 @@ import UIBarTool from "../../../orthoui/button/UIBarTool";
 import TextureConst from "../../../vox/texture/TextureConst";
 import AABB2D from "../../../vox/geom/AABB2D";
 import { ILayoutBtn, BtnLayouter } from "./BtnLayouter";
+import { ToyBrushDataRecorder } from "../edit/ToyBrushDataRecorder";
+import { ToyTransparentBrush } from "../edit/ToyTransparentBrush";
 
 class AlphaOperationUI {
 	private m_rscene: IRendererScene = null;
@@ -31,6 +33,8 @@ class AlphaOperationUI {
 	uiHTMLInfo: UIHTMLInfo;
 	processTotal = 6;
 
+	// brushRecorder: ToyBrushDataRecorder = null;
+	readonly transparentBrush = new ToyTransparentBrush();
 	readonly ctrlui = new ParamCtrlUI(false);
 	readonly uiBuilder = new UIBuilder();
 
@@ -41,7 +45,10 @@ class AlphaOperationUI {
 		if (this.m_graph == null && graph != null) {
 			this.m_graph = graph;
 			this.m_rscene = this.m_graph.getNodeAt(0).getRScene();
+			// this.brushRecorder = this.transparentBrush.brushRecorder;
 			this.initUI();
+			this.transparentBrush.initialize( this.ctrlui.ruisc );
+
 			this.uiBuilder.buildFinishCall = (): void => {
 				this.initUIItems();
 				if (this.buildFinishCall) {
@@ -65,6 +72,7 @@ class AlphaOperationUI {
 	setCurrMaterial(currMaterial: RemoveBlackBGMaterial2): void {
 		this.m_currMaterial = currMaterial;
 		this.imageSelector.setCurrMaterial(currMaterial);
+		this.transparentBrush.setCtrlParams(this.ctrlui, currMaterial);
 	}
 	private initUI(): void {
 		if (!this.m_initUI) {
@@ -84,12 +92,16 @@ class AlphaOperationUI {
 		this.m_graph.addScene(ui.ruisc);
 	}
 	private m_uiInited = false;
-	private m_showInitImg = false;
+	// private m_showInitImg = false;
 	private m_expandUIItemBtn: SelectionBar = null;
 	isInited(): boolean {
 		return this.m_uiInited;
 	}
 	private initUIItems(): void {
+
+		// let brd = this.brushRecorder;
+		let brush = this.transparentBrush;
+
 		this.m_uiInited = true;
 		let ui = this.ctrlui;
 		UIBarTool.TexPool.heightOffset = 9;
@@ -125,8 +137,9 @@ class AlphaOperationUI {
 
 		selectBarStyle.headVisible = false;
 		selectBarStyle.visible = false || itemForceVisible;
-		let statusp = new StatusItemBuildParam("切换", "change_bg_color", "随机切换环境背景", "随机切换环境背景", false);
 
+		let str = "随机切换环境背景";
+		let statusp = new StatusItemBuildParam("切换", "change_bg_color", str, str, false);
 		statusp.style = selectBarStyle;
 		ui.addStatusItemWithParam(statusp, (info: CtrlInfo): void => {
 			this.background.changeBGColor();
@@ -134,90 +147,107 @@ class AlphaOperationUI {
 		selectBarStyle.headVisible = true;
 
 		selectBarStyle.visible = true || itemForceVisible;
-		statusp = new StatusItemBuildParam("图像处理方式", "img_operate_mode", "保持原图", "去除背景", false);
+		// statusp = new StatusItemBuildParam("图像处理方式", "img_operate_mode", "保持原图", "去除背景", brush.imgOperateMode.flag);
+		statusp = brush.imgOperateMode.createUIItemParam() as StatusItemBuildParam;
 		statusp.style = selectBarStyle;
 		ui.addStatusItemWithParam(statusp, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_showInitImg = info.flag;
-				this.m_currMaterial.showInitImg(info.flag);
-				let tex = UIBarTool.TexPool.getAtlasAt(0).getTexture();
-				// console.log("tex filter A: ",tex.minFilter, tex.magFilter, tex.mipmapEnabled);
-				// console.log("tex filter B: ",TextureConst.NEAREST);
-			}
+			// this.m_showInitImg = info.flag;
+			// this.m_currMaterial.setShowInitImg(info.flag);
+			brush.imgOperateMode.setFlag(info.flag);
 		});
 
 		selectBarStyle.visible = false || itemForceVisible;
-		statusp = new StatusItemBuildParam("背景去除方式", "invert_discard", "反相去除", "正常去除", false);
+		// statusp = new StatusItemBuildParam("背景去除方式", "invert_discard", "反相去除", "正常去除", brush.invertDiscard.flag);
+		statusp = brush.invertDiscard.createUIItemParam() as StatusItemBuildParam;
 		statusp.style = selectBarStyle;
 		ui.addStatusItemWithParam(statusp, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_currMaterial.setInvertDiscard(info.flag);
-			}
+			brush.invertDiscard.setFlag(info.flag);
+			// if (this.m_currMaterial) {
+			// 	this.m_currMaterial.setInvertDiscard(info.flag);
+			// }
 		});
 		selectBarStyle.visible = false || itemForceVisible;
-		statusp = new StatusItemBuildParam("输出透明度翻转", "invert_alpha", "是", "否", false);
+		// statusp = new StatusItemBuildParam("输出透明度翻转", "invert_alpha", "是", "否", false);
+		statusp = brush.invertAlpha.createUIItemParam() as StatusItemBuildParam;
 		statusp.style = selectBarStyle;
 		ui.addStatusItemWithParam(statusp, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_currMaterial.setInvertAlpha(info.flag);
-			}
+			// if (this.m_currMaterial) {
+			// 	this.m_currMaterial.setInvertAlpha(info.flag);
+			// }
+			brush.invertAlpha.setFlag(info.flag);
 		});
 		selectBarStyle.visible = false || itemForceVisible;
-		statusp = new StatusItemBuildParam("输出颜色值翻转", "invert_rgb", "是", "否", false);
+		// statusp = new StatusItemBuildParam("输出颜色值翻转", "invert_rgb", "是", "否", false);
+		statusp = brush.invertRGB.createUIItemParam() as StatusItemBuildParam;
 		statusp.style = selectBarStyle;
 		ui.addStatusItemWithParam(statusp, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_currMaterial.setInvertRGB(info.flag);
-			}
+			// if (this.m_currMaterial) {
+			// 	this.m_currMaterial.setInvertRGB(info.flag);
+			// }
+			brush.invertRGB.setFlag(info.flag);
 		});
 		progressBarStyle.visible = false || itemForceVisible;
-		let valuep = new ValueItemBuildParam("透明度分离", "separate_alpha", 1, 1, 15);
+		// let valuep = new ValueItemBuildParam("透明度分离", "separate_alpha", 1, 1, 15);
+		let valuep = brush.separateAlpha.createUIItemParam() as ValueItemBuildParam;
 		valuep.style = progressBarStyle;
 		ui.addValueItemWithParam(valuep, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_currMaterial.separateAlpha(info.values[0]);
-			}
+			// if (this.m_currMaterial) {
+			// 	this.m_currMaterial.setSeparateAlpha(info.values[0]);
+			// }
+			brush.separateAlpha.setValue( info.values[0] );
+		});
+
+		progressBarStyle.visible = false || itemForceVisible;
+		// valuep = new ValueItemBuildParam("应用原始透明度", "init_alpha_factor", 1, 0, 1);
+		valuep = brush.initAlphaFactor.createUIItemParam() as ValueItemBuildParam;
+		valuep.style = progressBarStyle;
+		ui.addValueItemWithParam(valuep, (info: CtrlInfo): void => {
+			// if (this.m_currMaterial) {
+			// 	this.m_currMaterial.setInitAlphaFactor(info.values[0]);
+			// }
+			brush.initAlphaFactor.setValue( info.values[0] );
 		});
 		progressBarStyle.visible = true || itemForceVisible;
-		valuep = new ValueItemBuildParam("应用原始透明度", "init_alpha_factor", 1, 0, 1);
+		// valuep = new ValueItemBuildParam("透明度强度", "color_alpha_strength", 1, 0, 3);
+		valuep = brush.colorAlphaStrength.createUIItemParam() as ValueItemBuildParam;
 		valuep.style = progressBarStyle;
 		ui.addValueItemWithParam(valuep, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_currMaterial.setInitAlphaFactor(info.values[0]);
-			}
-		});
-		progressBarStyle.visible = true || itemForceVisible;
-		valuep = new ValueItemBuildParam("色彩透明度强度", "color_alpha_factor", 1, 0, 3);
-		valuep.style = progressBarStyle;
-		ui.addValueItemWithParam(valuep, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_currMaterial.setColorAlphaStrength(info.values[0]);
-			}
+			// if (this.m_currMaterial) {
+			// 	this.m_currMaterial.setColorAlphaStrength(info.values[0]);
+			// }
+			brush.colorAlphaStrength.setValue(info.values[0]);
 		});
 		progressBarStyle.visible = false || itemForceVisible;
-		valuep = new ValueItemBuildParam("色彩强度", "color_factor", 1, 0, 5);
+		// valuep = new ValueItemBuildParam("色彩强度", "color_strength", 1, 0, 5);
+		valuep = brush.colorStrength.createUIItemParam() as ValueItemBuildParam;
 		valuep.style = progressBarStyle;
 		ui.addValueItemWithParam(valuep, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_currMaterial.setParam1(info.values[0]);
-			}
+			// if (this.m_currMaterial) {
+			// 	this.m_currMaterial.setColorStrength(info.values[0]);
+			// }
+			brush.colorStrength.setValue( info.values[0] );
 		});
 
 		progressBarStyle.visible = true || itemForceVisible;
-		valuep = new ValueItemBuildParam("背景去除比例", "alpha_discard_factor", 0.02, 0.0, 0.96);
+		// valuep = new ValueItemBuildParam("背景去除比例", "alpha_discard_factor", 0.02, 0.0, 0.96);
+		valuep = brush.alphaDiscardFactor.createUIItemParam() as ValueItemBuildParam;
 		valuep.style = progressBarStyle;
 		ui.addValueItemWithParam(valuep, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_currMaterial.setParam2(info.values[0]);
-			}
+			// if (this.m_currMaterial) {
+			// 	this.m_currMaterial.setAlphaDiscardFactor(info.values[0]);
+			// }
+			brush.alphaDiscardFactor.setValue( info.values[0] );
 		});
 		progressBarStyle.visible = true || itemForceVisible;
-		valuep = new ValueItemBuildParam("背景去除颜色阈值", "alpha_discard_threshold", 0.5, 0.0, 1.0);
+		// valuep = new ValueItemBuildParam("背景去除颜色阈值", "alpha_discard_threshold", 0.5, 0.0, 1.0);
+		valuep = brush.alphaDiscardThreshold.createUIItemParam() as ValueItemBuildParam;
 		valuep.style = progressBarStyle;
 		ui.addValueItemWithParam(valuep, (info: CtrlInfo): void => {
-			if (this.m_currMaterial) {
-				this.m_currMaterial.setDiscardRadius(info.values[0]);
-			}
+			// if (this.m_currMaterial) {
+			// 	this.m_currMaterial.setDiscardRadius(info.values[0]);
+			// }
+			// console.log("alpha_discard_threshold, info: ", info);
+			brush.alphaDiscardThreshold.setValue( info.values[0] );
 		});
 
 		let imgSelector = this.imageSelector;
@@ -296,7 +326,7 @@ class AlphaOperationUI {
 			this.m_selectColor = false;
 			this.imageSelector.reset();
 			if (this.m_currMaterial) {
-				this.m_currMaterial.showInitImg(this.m_showInitImg);
+				this.m_currMaterial.setShowInitImg(this.transparentBrush.imgOperateMode.flag);
 			}
 		}
 		this.uiHTMLInfo.hideSpecInfos();
@@ -309,9 +339,9 @@ class AlphaOperationUI {
 			if (tar.isSelecting()) {
 				if (this.m_currMaterial) {
 					if (tar.isHitImgWithMouseXY() && this.m_selectColor) {
-						this.m_currMaterial.showInitImg(false);
+						this.m_currMaterial.setShowInitImg(false);
 					} else {
-						this.m_currMaterial.showInitImg(this.m_showInitImg);
+						this.m_currMaterial.setShowInitImg(this.transparentBrush.imgOperateMode.flag);
 					}
 				}
 			}
@@ -323,7 +353,7 @@ class AlphaOperationUI {
 				if (color) {
 					this.m_selectColor = true;
 					mt.setDiscardDstRGB(color.r, color.g, color.b);
-					mt.showInitImg(false);
+					mt.setShowInitImg(false);
 					return;
 				}
 			}
@@ -335,7 +365,7 @@ class AlphaOperationUI {
 		addIntoBtn.addEventListener(MouseEvent.MOUSE_OVER, this, (evt: any): void => {
 			if (tar.isSelecting() && tar.isHitImgWithMouseXY()) {
 				if (this.m_currMaterial) {
-					this.m_currMaterial.showInitImg(true);
+					this.m_currMaterial.setShowInitImg(true);
 				}
 			}
 		});
@@ -343,7 +373,7 @@ class AlphaOperationUI {
 			this.m_selectColor = false;
 			if (this.imageSelector.isSelecting()) {
 				if (this.m_currMaterial) {
-					this.m_currMaterial.showInitImg(this.m_showInitImg);
+					this.m_currMaterial.setShowInitImg(this.transparentBrush.imgOperateMode.flag);
 				}
 			}
 		});
@@ -352,8 +382,8 @@ class AlphaOperationUI {
 		let ui = this.ctrlui;
 
 		console.log("resetCtrlValue() ...");
-		ui.setUIItemValue("color_alpha_factor", 1.0);
-		ui.setUIItemValue("color_factor", 1.0);
+		ui.setUIItemValue("color_alpha_strength", 1.0);
+		ui.setUIItemValue("color_strength", 1.0);
 		ui.setUIItemValue("alpha_discard_factor", 0.02);
 		ui.setUIItemValue("alpha_discard_threshold", 0.5);
 		ui.setUIItemValue("init_alpha_factor", 1.0);
@@ -365,7 +395,7 @@ class AlphaOperationUI {
 
 		if (this.m_currMaterial) {
 			this.m_currMaterial.setDiscardDstRGB(0, 0, 0);
-			this.m_currMaterial.showInitImg(this.m_showInitImg);
+			// this.m_currMaterial.setShowInitImg( this.transparentBrush.imgOperateMode.flag );
 		}
 		this.imageSelector.reset(true);
 	}

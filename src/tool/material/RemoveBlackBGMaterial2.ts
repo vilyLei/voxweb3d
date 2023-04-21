@@ -8,6 +8,8 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
+import IToTransparentPNG from "./IToTransparentPNG";
+import Color4 from "../../vox/material/Color4";
 
 class RemoveBlackBGShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -100,7 +102,7 @@ void main() {
     }
 }
 
-export default class RemoveBlackBGMaterial2 extends MaterialBase {
+export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToTransparentPNG {
     mapLodEnabled: boolean = false;
 	fixScreen = true;
     constructor() {
@@ -128,23 +130,35 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase {
     setColorAlphaStrength(p: number): void {
         this.m_ds[0] = p;
     }
+    getColorAlphaStrength(): number {
+        return this.m_ds[0];
+    }
     /**
      * @param p 颜色强度值
      */
-	setParam1(p: number): void {
+	setColorStrength(p: number): void {
         this.m_ds[1] = p;
+    }
+	getColorStrength(): number {
+        return this.m_ds[1];
     }
     /**
      * @param p 背景剔除比例值
      */
-	setParam2(p: number): void {
+	setAlphaDiscardFactor(p: number): void {
         this.m_ds[2] = p;
+    }
+	getAlphaDiscardFactor(): number {
+        return this.m_ds[2];
     }
     /**
      * @param boo true 表示显示原图, false 表示显示剔除之后的结果
      */
-	showInitImg(boo: boolean): void {
+	setShowInitImg(boo: boolean): void {
         this.m_ds[3] = boo ? 0.0 : 1.0;
+    }
+	getShowInitImg(): boolean {
+        return this.m_ds[3] < 1.0;
     }
     /**
      * 计算颜色透明情况的阈值
@@ -153,11 +167,17 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase {
     setDiscardRadius(r: number): void {
         this.m_ds[5] = r;
     }
+    getDiscardRadius(): number {
+        return this.m_ds[5];
+    }
     /**
      * @param boo true or false
      */
     setInvertAlpha(boo: boolean): void {
         this.m_ds[6] = boo ? 1.0 : 0;
+    }
+    getInvertAlpha(): boolean {
+        return this.m_ds[6] > 0;
     }
     /**
      * @param boo true or false
@@ -165,23 +185,61 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase {
     setInvertRGB(boo: boolean): void {
         this.m_ds[7] = boo ? 1.0 : 0;
     }
-	separateAlpha(v: number): void {
+    getInvertRGB(): boolean {
+        return this.m_ds[7] > 0;
+    }
+	setSeparateAlpha(v: number): void {
         this.m_ds[15] = v;
+    }
+	getSeparateAlpha(): number {
+        return this.m_ds[15];
     }
 	setInvertDiscard(boo: boolean): void {
         this.m_ds[4] = boo ? 1.0 : 0.0;
     }
-	paramCopyFrom(dst: RemoveBlackBGMaterial2): void {
-		this.m_ds.set(dst.m_ds);
-	}
+	getInvertDiscard(): boolean {
+        return this.m_ds[4] > 0.0;
+    }
 	setDiscardDstRGB(r: number, g: number, b: number): void {
 		let ds = this.m_ds;
 		ds[8] = r;
 		ds[9] = g;
 		ds[10] = b;
 	}
+	getDiscardDstRGB(c: Color4): void {
+		let ds = this.m_ds;
+		c.r = ds[8];
+		c.g = ds[9];
+		c.b = ds[10];
+	}
 	setInitAlphaFactor(f: number): void {
 		this.m_ds[11] = f;
+	}
+	getInitAlphaFactor(): number {
+		return this.m_ds[11];
+	}
+	paramCopyFrom(dst: RemoveBlackBGMaterial2): void {
+		this.m_ds.set(dst.m_ds);
+	}
+	cloneData(): Float32Array {
+		return this.m_ds.slice(0);
+	}
+	/**
+	 * @param clone the default value is false
+	 * @returns Float32Array type data
+	 */
+	getData(clone: boolean = false): Float32Array {
+		if(clone) {
+			return this.cloneData();
+		}
+		return this.m_ds;
+	}
+	/**
+	 * @param ds Float32Array type data
+	 * @param i the default value is 0
+	 */
+	setData(ds: Float32Array, i: number = 0): void {
+		return this.m_ds.set(ds, i);
 	}
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();

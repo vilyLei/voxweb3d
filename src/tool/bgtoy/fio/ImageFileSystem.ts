@@ -11,6 +11,7 @@ import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
 import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import Vector3D from "../../../vox/math/Vector3D";
+import { IFileUrlObj, IDropFileListerner, DropFileController } from "../../base/DropFileController";
 
 class ImageFileSystem {
 	private m_rscene: IRendererScene = null;
@@ -21,6 +22,7 @@ class ImageFileSystem {
 
 	private m_uiSys: UISystem = null;
 	private m_imgBuilder: RenderingImageBuilder = null;
+	private m_dropController = new DropFileController();
 	constructor() { }
 
 	initialize(sc: IRendererScene, uiSys: UISystem): void {

@@ -13,17 +13,21 @@ import { ImageColorSelector } from "./ImageColorSelector";
 import { AlphaOperationUI } from "./AlphaOperationUI";
 import IAABB2D from "../../../vox/geom/IAABB2D";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import { KeyboardInteraction } from "../../../vox/ui/KeyboardInteraction";
+import Keyboard from "../../../vox/ui/Keyboard";
 
 class UISystem {
 	private m_rscene: IRendererScene = null;
 	private m_graph: IRendererSceneGraph = null;
 
-	uiBuilder: UIBuilder;
-	ctrlui: ParamCtrlUI;
+	readonly keyInteraction = new KeyboardInteraction();
 	readonly background = new Background2D();
 	readonly imageSelector = new ImageColorSelector();
 	readonly uiHTMLInfo = new UIHTMLInfo();
 	readonly alphaOpUI = new AlphaOperationUI();
+
+	uiBuilder: UIBuilder;
+	ctrlui: ParamCtrlUI;
 	processTotal = 3;
 	constructor() {
 
@@ -55,7 +59,22 @@ class UISystem {
 			this.updateLayout();
 			this.m_initCall();
 		}
-		aopui.initialize( this.m_graph )
+		aopui.initialize( this.m_graph );
+
+		const keyIt = this.keyInteraction;
+		keyIt.initialize(this.m_rscene);
+
+		let Key = Keyboard;
+		let type = keyIt.createKeysEventType([Key.CTRL, Key.Y]);
+		keyIt.addKeysDownListener(type, this, this.keyCtrlYDown);
+		type = keyIt.createKeysEventType([Key.CTRL, Key.Z]);
+		keyIt.addKeysDownListener(type, this, this.keyCtrlZDown);
+	}
+	private keyCtrlYDown(evt: any): void {
+		this.alphaOpUI.transparentBrush.redo();
+	}
+	private keyCtrlZDown(evt: any): void {
+		this.alphaOpUI.transparentBrush.undo();
 	}
 	private m_initCall: () => void = null;
 	setCurrMaterial(currMaterial: RemoveBlackBGMaterial2): void {
@@ -87,17 +106,19 @@ class UISystem {
 		} else {
 			rect = this.m_areaRect;
 		}
-		if (this.isInited()) {
+		if(rect) {
+			if (this.isInited()) {
 
-			this.alphaOpUI.updateLayout(rect);
+				this.alphaOpUI.updateLayout(rect);
 
-			this.m_uiRect.copyFrom(rect);
+				this.m_uiRect.copyFrom(rect);
 
-			this.m_uiRect.union(this.alphaOpUI.ctrlui.bounds);
-			this.uiHTMLInfo.updateLayout(rect);
-			this.imageSelector.updateLayout(this.m_uiRect);
+				this.m_uiRect.union(this.alphaOpUI.ctrlui.bounds);
+				this.uiHTMLInfo.updateLayout(rect);
+				this.imageSelector.updateLayout(this.m_uiRect);
+			}
+			this.background.updateLayout(rect);
 		}
-		this.background.updateLayout(rect);
 	}
 }
 

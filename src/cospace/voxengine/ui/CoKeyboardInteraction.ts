@@ -164,7 +164,7 @@ class CoKeyboardInteraction implements ICoKeyboardInteraction {
 
 		if (this.m_rscene == null) {
 			this.m_rscene = rscene;
-			let KE = CoRScene.KeyboardEvent
+			let KE = CoRScene.KeyboardEvent;
 			this.m_rscene.addEventListener(KE.KEY_DOWN, this, this.keyDown);
 			this.m_rscene.addEventListener(KE.KEY_UP, this, this.keyUp);
 
@@ -212,7 +212,7 @@ class CoKeyboardInteraction implements ICoKeyboardInteraction {
 		this.m_downMana.reset();
 	}
 	/**
-	 * 
+	 *
 	 * @param keyTypes example: [Keyboard.CTRL, Keyboard.Z]
 	 * @returns combination keys event type
 	 */
