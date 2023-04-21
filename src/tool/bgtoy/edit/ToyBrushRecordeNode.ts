@@ -1,4 +1,4 @@
-import { IRecordeNodeFactory, IRecordeDataUnit, IRecordeTarget, IRecordeNode } from "./RecordeNodeImpl";
+import { IRecordeNodeFactory, IRecordeDataUnit, IRecordeTarget, IRecordeNode } from "../../../voxeditor/data/RecordeNodeImpl";
 
 interface IRecordeNodeTarget extends IRecordeTarget {
 	useRecordeNodeData(data: KeyValueNode, imgUrl: string): void;

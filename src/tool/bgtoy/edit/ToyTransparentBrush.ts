@@ -1,6 +1,5 @@
 import { RecordeNodeFactory } from "../edit/ToyBrushRecordeNode";
-import { ToyBrushDataRecorder } from "../edit/ToyBrushDataRecorder";
-import { CommonDataRecorder } from "../edit/CommonDataRecorder";
+import { CommonDataRecorder } from "../../../voxeditor/data/CommonDataRecorder";
 import { ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 import IToTransparentPNG from "../../material/IToTransparentPNG";
 import {

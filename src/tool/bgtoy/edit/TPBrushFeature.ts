@@ -1,7 +1,6 @@
-import { IRecordeDataUnit, IRecordeTarget, IRecordeNode } from "./RecordeNodeImpl";
+import { IRecordeDataUnit, IRecordeTarget, IRecordeNode } from "../../../voxeditor/data/RecordeNodeImpl";
 import { RecordeNodeData, KeyBooleanValueNode, KeyNumberValueNode, KeyValueNode, IRecordeNodeTarget, RecordeNode } from "../edit/ToyBrushRecordeNode";
-import { ToyBrushDataRecorder } from "../edit/ToyBrushDataRecorder";
-import { CommonDataRecorder } from "../edit/CommonDataRecorder";
+import { CommonDataRecorder } from "../../../voxeditor/data/CommonDataRecorder";
 import { ProgressItemBuildParam, ValueItemBuildParam, StatusItemBuildParam, CtrlInfo, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 import IToTransparentPNG from "../../material/IToTransparentPNG";
 import Color4 from "../../../vox/material/Color4";
