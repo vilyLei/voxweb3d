@@ -166,7 +166,9 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoParticleFollowGroup2 as Demo} from "./demo/DemoParticleFollowGroup2";
 
- import {DemoParticleFollowGroup3 as Demo} from "./demo/DemoParticleFollowGroup3";
+//  import {DemoParticleFollowGroup3 as Demo} from "./demo/DemoParticleFollowGroup3";
+
+ import {DemoParticleFollowMultiGroups as Demo} from "./demo/DemoParticleFollowMultiGroups";
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 

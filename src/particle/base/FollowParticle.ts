@@ -143,7 +143,6 @@ class FollowParticle {
 	initialize(total: number, param: FollowParticleParam): void {
 		this.m_total = total;
 		this.m_param = param;
-		// this.initTest();
 
 		const p = this.m_param;
 		const ts = p.textures;
