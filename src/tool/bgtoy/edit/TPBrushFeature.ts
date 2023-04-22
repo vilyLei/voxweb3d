@@ -18,12 +18,9 @@ class TPBrushFeature {
 
 	mouseFlag = -1;
 
-	// recorder: ToyBrushDataRecorder = null;
 	recorder: CommonDataRecorder = null;
 	materialSetFlag: (f: boolean) => void;
-	// materialGetFlag: () => boolean;
 	materialSetValue: (f: number) => void;
-	// materialGetValue: () => number;
 	constructor(){}
 	createUIItemParam(): StatusItemBuildParam | ValueItemBuildParam {
 		return null;

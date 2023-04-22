@@ -58,8 +58,6 @@ export class RemoveBlackBG2 {
 			rparam.syncBgColor = true;
 
 			let rscene = this.m_graph.createScene(rparam);
-			// rscene.initialize(rparam).setAutoRunning(true);
-			// rscene.setClearRGBAColor4f(0.1, 0.22, 0.2, 0.0);
 			rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 			rscene.addEventListener(EventBase.RESIZE, this, this.resize);
 			this.m_rscene = rscene;

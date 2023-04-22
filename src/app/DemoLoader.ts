@@ -52,7 +52,7 @@ class WaitingPhase {
 		}
 		t = 1.0 - t;
 		t = Math.round(t * 100.0);
-		let headStr = "私人服务带宽小</br>请稍等两秒:&nbsp";
+		let headStr = "定制服务带宽小</br>请稍等两秒:&nbsp";
 		let endStr = "%</br>需要加速请联系作者</br>email:&nbspvily313@126.com";
         if(!this.item || !this.item.pay) {
             endStr = "%";
@@ -79,7 +79,6 @@ export class DemoLoader {
         demoUrl = this.parseUrl( demoUrl );
         console.log("demoUrl: ",demoUrl);
         this.initUI();
-        // this.loadModule( url );
         let hurl = location.href + "";
         let host = "";
         if(hurl.indexOf("artvily.") > 0) {

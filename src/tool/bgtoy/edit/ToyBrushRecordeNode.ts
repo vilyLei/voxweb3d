@@ -42,7 +42,6 @@ class RecordeNode implements IRecordeNode {
 	imgUrl = "";
 	data: RecordeNodeData = null;
 	apply(): void {
-		console.log("apply ......");
 		this.target.useRecordeNodeData(this.keyValueData, this.imgUrl);
 	}
 	constructor() { }

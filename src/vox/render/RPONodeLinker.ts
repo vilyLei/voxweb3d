@@ -9,9 +9,8 @@ import RPONode from "../../vox/render/RPONode";
 
 export default class RPONodeLinker {
 	private static s_uid = 0;
-	private m_uid = -1;                          // 用于唯一记录运行时的自己唯一id
+	private m_uid = RPONodeLinker.s_uid++;                          // 用于唯一记录运行时的自己唯一id
 	constructor() {
-		this.m_uid = RPONodeLinker.s_uid++;
 	}
 
 	private m_begin: RPONode = null;

@@ -81,11 +81,11 @@ export default class VertexRenderObj extends VROBase {
 
 	private static s_FLAG_BUSY: number = 1;
 	private static s_FLAG_FREE: number = 0;
-	private static s_unitFlagList: number[] = [];
+	private static s_flags: number[] = [];
 	private static s_unitListLen: number = 0;
 	private static s_unitList: VertexRenderObj[] = [];
 	private static s_freeIdList: number[] = [];
-	//  private static s_midMap:Map<number,VertexRenderObj> = new Map();
+	
 	static HasMid(mid: number): boolean {
 		return VROBase.s_midMap.has(mid);
 	}
@@ -104,13 +104,13 @@ export default class VertexRenderObj extends VROBase {
 		//console.log("VertexRenderObj::Create(), VertexRenderObj.s_unitList.length: "+VertexRenderObj.s_unitList.length);
 		if (index >= 0) {
 			unit = VertexRenderObj.s_unitList[index];
-			VertexRenderObj.s_unitFlagList[index] = VertexRenderObj.s_FLAG_BUSY;
+			VertexRenderObj.s_flags[index] = VertexRenderObj.s_FLAG_BUSY;
 			unit.setMidAndBufUid(mid, pvtxUid);
 		} else {
 			unit = new VertexRenderObj();
 			unit.setMidAndBufUid(mid, pvtxUid);
 			VertexRenderObj.s_unitList.push(unit);
-			VertexRenderObj.s_unitFlagList.push(VertexRenderObj.s_FLAG_BUSY);
+			VertexRenderObj.s_flags.push(VertexRenderObj.s_FLAG_BUSY);
 			VertexRenderObj.s_unitListLen++;
 		}
 		unit.setRC(rc);
@@ -119,10 +119,10 @@ export default class VertexRenderObj extends VROBase {
 	}
 
 	private static Restore(pobj: VertexRenderObj): void {
-		if (pobj != null && pobj.m_attachCount < 1 && VertexRenderObj.s_unitFlagList[pobj.getUid()] == VertexRenderObj.s_FLAG_BUSY) {
+		if (pobj != null && pobj.m_attachCount < 1 && VertexRenderObj.s_flags[pobj.getUid()] == VertexRenderObj.s_FLAG_BUSY) {
 			let uid: number = pobj.getUid();
 			VertexRenderObj.s_freeIdList.push(uid);
-			VertexRenderObj.s_unitFlagList[uid] = VertexRenderObj.s_FLAG_FREE;
+			VertexRenderObj.s_flags[uid] = VertexRenderObj.s_FLAG_FREE;
 			pobj.__$destroy();
 		}
 	}

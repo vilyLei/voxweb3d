@@ -74,9 +74,6 @@ export default class VROBase implements IVRO, IVertexRenderObj {
     static GetByMid(mid: number): IVertexRenderObj {
         return VROBase.s_midMap.get(mid);
     }
-    // static Reset(): void {
-    //     VROBase.s_mid = -1;
-    // }
     __$resetVRO(): void {
         VROBase.s_mid = -1;
     }
