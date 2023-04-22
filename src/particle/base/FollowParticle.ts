@@ -162,6 +162,11 @@ class FollowParticle {
 	 */
 	addPosition(pv: Vector3D, total: number = 1, spaceRadius: number = 20, accelerationScale: number = -1.0, stepDis: number = 30): void {
 	}
+	/**
+	 * 实际上这里可以发射多个轨迹的跟随粒子效果，因为发射只和当前的发射位置有关，而轨迹就是若干位置连起来的视角效果
+	 * @param pv 
+	 * @param param 
+	 */
 	shoot(pv: Vector3D, param: ParticleShootParam): void {
 		// const total = Math.random() * 2 + 1;
 		// const spaceRange = Math.random() * 15 + 15;
