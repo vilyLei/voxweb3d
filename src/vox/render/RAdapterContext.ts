@@ -50,13 +50,7 @@ class RAdapterContext implements IRAdapterContext {
         console.log(evt);
     }
     syncHtmlBodyColor(r: number, g: number, b: number): void {
-        // if(document) {
-            this.bodyBgColor = this.m_viewEle.getCSSHEXRGB(r, g, b);
-            // let value = this.m_viewEle.getCSSHEXRGB(r, g, b);
-            // const body = document.body;
-            // body.style.background = value;
-            // console.log("syncHtmlBodyColor(), this.bodyBgColor: ", this.bodyBgColor);
-        // }
+        this.bodyBgColor = this.m_viewEle.getCSSHEXRGB(r, g, b);
     }
     setWebGLMaxVersion(webgl_ver: number): void {
         if (webgl_ver == 1 || webgl_ver == 2) {
@@ -70,7 +64,7 @@ class RAdapterContext implements IRAdapterContext {
         return this.m_div;
     }
     getCanvas(): HTMLCanvasElement {
-		return this.m_offcanvas ? this.m_offcanvas : this.m_canvas;
+        return this.m_offcanvas ? this.m_offcanvas : this.m_canvas;
     }
     setDivStyleLeftAndTop(px: number, py: number): void {
         this.m_viewEle.setDivStyleLeftAndTop(px, py);
@@ -84,58 +78,58 @@ class RAdapterContext implements IRAdapterContext {
     isStencilTestEnabled(): boolean {
         return this.m_stencilTestEnabled;
     }
-	private m_ctxAttri: any = null;
-	private m_glVersion = 0;
-	private buildGLCtx(canvas: any, attr: any): void {
+    private m_ctxAttri: any = null;
+    private m_glVersion = 0;
+    private buildGLCtx(canvas: any, attr: any): void {
 
-		this.m_gl = null;
-		let offscreen: any = null;
-		if (this.offscreenRenderEnabled) {
-			if(!(canvas instanceof OffscreenCanvas)) {
-				offscreen = canvas.transferControlToOffscreen();
-				canvas = offscreen;
-			}
-		}
-		this.m_offcanvas = offscreen = canvas;
-		if (this.m_maxWebGLVersion == 2) {
-			this.m_gl = offscreen == null ? canvas.getContext('webgl2', attr) : offscreen.getContext('webgl2', attr);
-			if (this.m_gl) {
-				console.log("Use WebGL2 success!");
-				this.m_webGLVersion = 2;
-			}
-			else {
-				console.log("WebGL2 can not support!");
-			}
-		}
-		if (this.m_gl == null) {
-			if (offscreen == null) {
-				this.m_gl = canvas.getContext('webgl', attr) || canvas.getContext("experimental-webgl", attr);
-			}
-			else {
-				this.m_gl = offscreen.getContext('webgl', attr) || offscreen.getContext("experimental-webgl", attr);
-			}
-			if (this.m_gl != null) {
-				console.log("Use WebGL1 success!");
-				this.m_webGLVersion = 1;
-			}
-			else {
-				console.log("WebGL1 can not support!");
-			}
-		}
-		if (!this.m_gl) {
-			this.m_webGLVersion = -1;
-			alert('Unable to initialize WebGL. Your browser or machine may not support it.');
-			throw Error("WebGL initialization failure.");
-		}
-		(this.m_gl as any).version = this.m_glVersion;
-		canvas.version = this.m_glVersion;
-		this.m_glVersion ++;
-		canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
-		canvas.addEventListener('webglcontextlost', this.contextlostHandler, false);
+        this.m_gl = null;
+        let offscreen: any = null;
+        if (this.offscreenRenderEnabled) {
+            if (!(canvas instanceof OffscreenCanvas)) {
+                offscreen = canvas.transferControlToOffscreen();
+                canvas = offscreen;
+            }
+        }
+        this.m_offcanvas = offscreen = canvas;
+        if (this.m_maxWebGLVersion == 2) {
+            this.m_gl = offscreen == null ? canvas.getContext('webgl2', attr) : offscreen.getContext('webgl2', attr);
+            if (this.m_gl) {
+                console.log("Use WebGL2 success!");
+                this.m_webGLVersion = 2;
+            }
+            else {
+                console.log("WebGL2 can not support!");
+            }
+        }
+        if (this.m_gl == null) {
+            if (offscreen == null) {
+                this.m_gl = canvas.getContext('webgl', attr) || canvas.getContext("experimental-webgl", attr);
+            }
+            else {
+                this.m_gl = offscreen.getContext('webgl', attr) || offscreen.getContext("experimental-webgl", attr);
+            }
+            if (this.m_gl != null) {
+                console.log("Use WebGL1 success!");
+                this.m_webGLVersion = 1;
+            }
+            else {
+                console.log("WebGL1 can not support!");
+            }
+        }
+        if (!this.m_gl) {
+            this.m_webGLVersion = -1;
+            alert('Unable to initialize WebGL. Your browser or machine may not support it.');
+            throw Error("WebGL initialization failure.");
+        }
+        (this.m_gl as any).version = this.m_glVersion;
+        canvas.version = this.m_glVersion;
+        this.m_glVersion++;
+        canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
+        canvas.addEventListener('webglcontextlost', this.contextlostHandler, false);
 
-		RCExtension.Initialize(this.m_webGLVersion, this.m_gl);
-	}
-	private m_param: IRendererParam = null;
+        RCExtension.Initialize(this.m_webGLVersion, this.m_gl);
+    }
+    private m_param: IRendererParam = null;
     initialize(rcuid: number, stage: IRenderStage3D, param: IRendererParam): void {
         this.m_stage = stage;
         var pdocument: any = null;
@@ -149,7 +143,7 @@ class RAdapterContext implements IRAdapterContext {
         catch (err) {
             console.log("RAdapterContext::initialize(), document is undefined.");
         }
-		this.m_param = param;
+        this.m_param = param;
         if (pdocument != null) {
             this.m_dpr = window.devicePixelRatio;
             let div = param.getDiv();
@@ -172,7 +166,7 @@ class RAdapterContext implements IRAdapterContext {
                 this.m_depthTestEnabled = attr.depth;
                 this.m_stencilTestEnabled = attr.stencil;
             }
-			this.m_ctxAttri = attr;
+            this.m_ctxAttri = attr;
 
             console.log("offscreenRenderEnabled: ", this.offscreenRenderEnabled);
             console.log("this.m_dpr: ", this.m_dpr, ",rattr == null: ", (rattr == null));
@@ -181,13 +175,13 @@ class RAdapterContext implements IRAdapterContext {
             console.log("antialiasEnabled: ", attr.antialias);
             console.log("alphaEnabled: ", attr.alpha);
 
-			this.buildGLCtx(canvas, attr);
-			/*
+            this.buildGLCtx(canvas, attr);
+            /*
             let offscreen: any = null;
             if (this.offscreenRenderEnabled) {
-				if(!(canvas instanceof OffscreenCanvas)) {
-					offscreen = canvas.transferControlToOffscreen();
-				}
+                if(!(canvas instanceof OffscreenCanvas)) {
+                    offscreen = canvas.transferControlToOffscreen();
+                }
             }
             this.m_offcanvas = offscreen;
             if (this.m_maxWebGLVersion == 2) {
@@ -223,7 +217,7 @@ class RAdapterContext implements IRAdapterContext {
             }
             canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
             canvas.addEventListener('webglcontextlost', this.contextlostHandler, false);
-			//*/
+            //*/
 
             let gl: any = this.m_gl;
             gl.rcuid = rcuid;
@@ -312,22 +306,22 @@ class RAdapterContext implements IRAdapterContext {
                 // DivLog.ShowLog("webgl_vendor: " + webgl_vendor);
                 // DivLog.ShowLog("webgl_renderer: " + webgl_renderer);
             }
-			this.initEvt();
-			// if(param.sysEvtReceived) {
-			// 	// if (stage) this.m_sysEvt.initialize(canvas, div, stage);
-			// 	// pwindow.onresize = (evt: any): void => {
-			// 	// 	if (this.autoSyncRenderBufferAndWindowSize) {
-			// 	// 		this.m_resizeFlag = true;
-			// 	// 		this.updateRenderBufferSize();
-			// 	// 	}
-			// 	// }
-			// 	let winOnresize = (evt: any): void => {
-			// 		if (this.autoSyncRenderBufferAndWindowSize) {
-			// 			this.m_resizeFlag = true;
-			// 			this.updateRenderBufferSize();
-			// 		}
-			// 	}
-			// }
+            this.initEvt();
+            // if(param.sysEvtReceived) {
+            // 	// if (stage) this.m_sysEvt.initialize(canvas, div, stage);
+            // 	// pwindow.onresize = (evt: any): void => {
+            // 	// 	if (this.autoSyncRenderBufferAndWindowSize) {
+            // 	// 		this.m_resizeFlag = true;
+            // 	// 		this.updateRenderBufferSize();
+            // 	// 	}
+            // 	// }
+            // 	let winOnresize = (evt: any): void => {
+            // 		if (this.autoSyncRenderBufferAndWindowSize) {
+            // 			this.m_resizeFlag = true;
+            // 			this.updateRenderBufferSize();
+            // 		}
+            // 	}
+            // }
             this.updateRenderBufferSize();
         }
         else {
@@ -337,32 +331,32 @@ class RAdapterContext implements IRAdapterContext {
     private m_resizeFlag = true;
     private m_glLoseCtx: any = null;
 
-	setCanvas(canvas: HTMLCanvasElement): boolean {
-		let c0 = this.m_canvas;
-		this.m_viewEle.setCanvas(canvas);
-		let c1 = this.m_viewEle.getCanvas();
-		if(c0 != c1) {
-			this.m_offcanvas = null;
-			this.m_canvas = c1;
-			this.buildGLCtx(c1, this.m_ctxAttri);
-			this.m_glLoseCtx = null;
-			this.initEvt();
+    setCanvas(canvas: HTMLCanvasElement): boolean {
+        let c0 = this.m_canvas;
+        this.m_viewEle.setCanvas(canvas);
+        let c1 = this.m_viewEle.getCanvas();
+        if (c0 != c1) {
+            this.m_offcanvas = null;
+            this.m_canvas = c1;
+            this.buildGLCtx(c1, this.m_ctxAttri);
+            this.m_glLoseCtx = null;
+            this.initEvt();
 
-		}
-		return c0 != c1;
-	}
-	private initEvt(): void {
-		if(this.m_param.sysEvtReceived) {
-			this.m_sysEvt.initialize(this.m_canvas, this.m_div, this.m_stage);
-			let winOnresize = (evt: any): void => {
-				if (this.autoSyncRenderBufferAndWindowSize) {
-					this.m_resizeFlag = true;
-					this.updateRenderBufferSize();
-				}
-			}
-			this.m_sysEvt.sysEvt.addWindowResizeEvt(this, winOnresize);
-		}
-	}
+        }
+        return c0 != c1;
+    }
+    private initEvt(): void {
+        if (this.m_param.sysEvtReceived) {
+            this.m_sysEvt.initialize(this.m_canvas, this.m_div, this.m_stage);
+            let winOnresize = (evt: any): void => {
+                if (this.autoSyncRenderBufferAndWindowSize) {
+                    this.m_resizeFlag = true;
+                    this.updateRenderBufferSize();
+                }
+            }
+            this.m_sysEvt.sysEvt.addWindowResizeEvt(this, winOnresize);
+        }
+    }
     loseContext(): void {
 
         if (!this.m_glLoseCtx) {
@@ -409,11 +403,11 @@ class RAdapterContext implements IRAdapterContext {
     getDevicePixelRatio(): number {
         return this.m_dpr;
     }
-	/**
-	 * @param pw buffer div width
-	 * @param ph buffer div height
-	 * @param sync the default value is true
-	 */
+    /**
+     * @param pw buffer div width
+     * @param ph buffer div height
+     * @param sync the default value is true
+     */
     resizeBufferSize(pw: number, ph: number, sync: boolean = true): void {
         pw = Math.floor(pw);
         ph = Math.floor(ph);
@@ -519,22 +513,22 @@ class RAdapterContext implements IRAdapterContext {
     getRCanvasHeight(): number {
         return this.m_rcanvasHeight;
     }
-	/**
-	 * @param sync the default value is true
-	 */
+    /**
+     * @param sync the default value is true
+     */
     updateRenderBufferSize(sync: boolean = true): void {
-		const div = this.m_div;
-		if(div.parentElement) {
-			let rect = div.getBoundingClientRect();
-			// console.log("updateRenderBufferSize() rect.width, rect.height: ", rect.width, rect.height);
-			// this.m_canvas.style.width = Math.floor(rect.width) + 'px';
-			// this.m_canvas.style.height = Math.floor(rect.height) + 'px';
-			rect = div.getBoundingClientRect();
-			this.resizeBufferSize(rect.width, rect.height);
-		}else {
-			const canvas = this.m_offcanvas ? this.m_offcanvas : this.m_canvas;
-			this.resizeBufferSize(canvas.width, canvas.height, false);
-		}
+        const div = this.m_div;
+        if (div.parentElement) {
+            let rect = div.getBoundingClientRect();
+            // console.log("updateRenderBufferSize() rect.width, rect.height: ", rect.width, rect.height);
+            // this.m_canvas.style.width = Math.floor(rect.width) + 'px';
+            // this.m_canvas.style.height = Math.floor(rect.height) + 'px';
+            rect = div.getBoundingClientRect();
+            this.resizeBufferSize(rect.width, rect.height);
+        } else {
+            const canvas = this.m_offcanvas ? this.m_offcanvas : this.m_canvas;
+            this.resizeBufferSize(canvas.width, canvas.height, false);
+        }
     }
 }
 export default RAdapterContext;

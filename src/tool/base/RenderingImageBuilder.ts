@@ -133,17 +133,6 @@ export class RenderingImageBuilder {
 		this.m_imgData = this.createCanvasData();
 		this.downloadSavedImage();
 	}
-	// /* REGISTER DOWNLOAD HANDLER */
-    // /* Only convert the canvas to Data URL when the user clicks.
-    //    This saves RAM and CPU ressources in case this feature is not required. */
-	//    function dlCanvas() {
-    //     var dt = canvas.toDataURL('image/png');
-    //     /* Change MIME type to trick the browser to downlaod the file instead of displaying it */
-    //     dt = dt.replace(/^data:image\/[^;]*/, 'data:application/octet-stream');
-    //     /* In addition to <a>'s "download" attribute, you can define HTTP-style headers */
-    //     dt = dt.replace(/^data:application\/octet-stream/, 'data:application/octet-stream;headers=Content-Disposition%3A%20attachment%3B%20filename=Canvas.png');
-    //     this.href = dt;
-    // };
 	private downloadSavedImage(): void {
 		let suffix = this.m_rparam.getAttriAlpha() ? "png" : "jpg";
 		let fileName = this.m_name != "" ? this.m_name + "_new." : "defaultNew.";
@@ -175,13 +164,9 @@ export class RenderingImageBuilder {
 	}
 	run(): void {
 		if (this.m_times > 0) {
-			// console.log("#### this.m_entity.isInRenderer(): ", this.m_entity.isInRenderer());
-			// this.rscene.updateCamera();
-			// this.rscene.useMainCamera();
 			this.m_graph.run();
 			this.m_times--;
 			if (this.m_times == 1) {
-				// this.m_graph.setAutoRunning(false);
 				this.saveImage();
 			}
 		}

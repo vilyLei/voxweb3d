@@ -16,38 +16,12 @@ export default class ROVtxBuilder implements IROVtxBuilder {
     private m_rcuid: number = 0;
     private m_glVer: number = 2;
     private m_rc: any = null;
-    // readonly RGBA: number = 0;
-    // readonly UNSIGNED_BYTE: number = 0;
-    // readonly TRIANGLE_STRIP: number = 0;
-    // readonly TRIANGLE_FAN: number = 0;
-    // readonly TRIANGLES: number = 0;
-    // readonly LINES: number = 0;
-    // readonly LINE_STRIP: number = 0;
-    // readonly UNSIGNED_SHORT: number = 0;
-    // readonly UNSIGNED_INT: number = 0;
-    // readonly COLOR: number = 0;
-    // readonly DEPTH: number = 0;
-    // readonly STENCIL: number = 0;
-    // readonly DEPTH_STENCIL: number = 0;
-
-    // readonly MAX: number = 0;
-    // readonly MIN: number = 0;
     vroUid: number = 0;
     rioUid: number = 0;
     constructor() {
     }
 	setGLCtx(gl: any): void {
 		this.m_rc = gl;
-
-        // let selfT: any = this;
-        // if (this.m_glVer > 1) {
-        //     selfT.MIN = gl.MIN;
-        //     selfT.MAX = gl.MAX;
-        // }
-        // else {
-        //     selfT.MIN = RCExtension.EXT_blend_minmax.MIN_EXT;
-        //     selfT.MAX = RCExtension.EXT_blend_minmax.MAX_EXT;
-        // }
 	}
     /**
      * @returns return system gpu context
@@ -115,9 +89,6 @@ export default class ROVtxBuilder implements IROVtxBuilder {
         return vao;
     }
     bindVertexArray(vao: any): any {
-		// if(DebugFlag.Flag_0 > 0) {
-		// 	console.log("ROVtxBuilder::bindVertexArray(), gl: ", this.m_rc);
-		// }
         if (this.m_glVer == 2) {
             this.m_rc.bindVertexArray(vao);
         }
@@ -167,17 +138,6 @@ export default class ROVtxBuilder implements IROVtxBuilder {
         selfT.DEPTH = gl.DEPTH;
         selfT.STENCIL = gl.STENCIL;
         selfT.DEPTH_STENCIL = gl.DEPTH_STENCIL;
-
-        // if (this.m_glVer > 1) {
-        //     selfT.MIN = gl.MIN;
-        //     selfT.MAX = gl.MAX;
-        // }
-        // else {
-        //     selfT.MIN = RCExtension.EXT_blend_minmax.MIN_EXT;
-        //     selfT.MAX = RCExtension.EXT_blend_minmax.MAX_EXT;
-        // }
-
-        // selfT.RContext = gl;
 		this.setGLCtx(gl);
     }
     renderBegin(): void {
