@@ -176,48 +176,6 @@ class RAdapterContext implements IRAdapterContext {
             console.log("alphaEnabled: ", attr.alpha);
 
             this.buildGLCtx(canvas, attr);
-            /*
-            let offscreen: any = null;
-            if (this.offscreenRenderEnabled) {
-                if(!(canvas instanceof OffscreenCanvas)) {
-                    offscreen = canvas.transferControlToOffscreen();
-                }
-            }
-            this.m_offcanvas = offscreen;
-            if (this.m_maxWebGLVersion == 2) {
-                this.m_gl = offscreen == null ? canvas.getContext('webgl2', attr) : offscreen.getContext('webgl2', attr);
-                if (this.m_gl) {
-                    console.log("Use WebGL2 success!");
-                    this.m_webGLVersion = 2;
-                }
-                else {
-                    console.log("WebGL2 can not support!");
-                }
-            }
-            if (this.m_gl == null) {
-                if (offscreen == null) {
-                    this.m_gl = canvas.getContext('webgl', attr) || canvas.getContext("experimental-webgl", attr);
-                }
-                else {
-                    this.m_gl = offscreen.getContext('webgl', attr) || offscreen.getContext("experimental-webgl", attr);
-                }
-                if (this.m_gl != null) {
-                    console.log("Use WebGL1 success!");
-                    this.m_webGLVersion = 1;
-                }
-                else {
-                    console.log("WebGL1 can not support!");
-                }
-            }
-            if (!this.m_gl) {
-                this.m_webGLVersion = -1;
-                alert('Unable to initialize WebGL. Your browser or machine may not support it.');
-                throw Error("WebGL initialization failure.");
-                return;
-            }
-            canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
-            canvas.addEventListener('webglcontextlost', this.contextlostHandler, false);
-            //*/
 
             let gl: any = this.m_gl;
             gl.rcuid = rcuid;
@@ -307,21 +265,6 @@ class RAdapterContext implements IRAdapterContext {
                 // DivLog.ShowLog("webgl_renderer: " + webgl_renderer);
             }
             this.initEvt();
-            // if(param.sysEvtReceived) {
-            // 	// if (stage) this.m_sysEvt.initialize(canvas, div, stage);
-            // 	// pwindow.onresize = (evt: any): void => {
-            // 	// 	if (this.autoSyncRenderBufferAndWindowSize) {
-            // 	// 		this.m_resizeFlag = true;
-            // 	// 		this.updateRenderBufferSize();
-            // 	// 	}
-            // 	// }
-            // 	let winOnresize = (evt: any): void => {
-            // 		if (this.autoSyncRenderBufferAndWindowSize) {
-            // 			this.m_resizeFlag = true;
-            // 			this.updateRenderBufferSize();
-            // 		}
-            // 	}
-            // }
             this.updateRenderBufferSize();
         }
         else {
@@ -435,16 +378,16 @@ class RAdapterContext implements IRAdapterContext {
             }
             this.m_canvas.style.width = this.m_displayWidth + 'px';
             this.m_canvas.style.height = this.m_displayHeight + 'px';
+            const st = this.m_stage;
+            if (st) {
+                st.stageWidth = this.m_rcanvasWidth;
+                st.stageHeight = this.m_rcanvasHeight;
+                st.viewWidth = this.m_displayWidth;
+                st.viewHeight = this.m_displayHeight;
+                st.pixelRatio = k;
 
-            if (this.m_stage != null) {
-                this.m_stage.stageWidth = this.m_rcanvasWidth;
-                this.m_stage.stageHeight = this.m_rcanvasHeight;
-                this.m_stage.viewWidth = this.m_displayWidth;
-                this.m_stage.viewHeight = this.m_displayHeight;
-                this.m_stage.pixelRatio = k;
-
-                console.log("size to stage size: ", this.m_stage.stageWidth, this.m_stage.stageHeight);
-                console.log("size to view size: ", this.m_stage.viewWidth, this.m_stage.viewHeight);
+                console.log("size to stage size: ", st.stageWidth, st.stageHeight);
+                console.log("size to view size: ", st.viewWidth, st.viewHeight);
                 //  DivLog.ShowLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
                 //  DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
                 //  DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
@@ -454,7 +397,7 @@ class RAdapterContext implements IRAdapterContext {
                 //  console.log("RAdapterContext::resize(), stageWidth:"+this.m_stage.stageWidth+", stageHeight:"+this.m_stage.stageHeight);
                 //  console.log("RAdapterContext::resize(), m_rcanvasWidth:"+this.m_rcanvasWidth+", m_rcanvasHeight:"+this.m_rcanvasHeight);
                 //  console.log("RAdapterContext::resize(), stw:"+this.m_stage.stageWidth+", sth:"+this.m_stage.stageHeight);
-                this.m_stage.update();
+                st.update();
             }
             if (this.m_resizeCallback != null) {
                 this.m_resizeCallback();
