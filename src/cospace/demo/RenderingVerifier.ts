@@ -16,11 +16,11 @@ import Color4 from "../../vox/material/Color4";
 export class RenderingVerifier {
 
 	private m_rscene: RendererScene = null;
-	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+	private m_stageDragSwinger = new CameraStageDragSwinger();
+	private m_cameraZoomController = new CameraZoomController();
 	private m_profileInstance: ProfileInstance = null;
 
-	private m_verifierScene: VerifierScene = new VerifierScene();
+	private m_verifierScene = new VerifierScene();
 	private m_cameraUPY: boolean = false;
 
 	constructor() { }

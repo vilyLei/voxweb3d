@@ -352,8 +352,13 @@ class RAdapterContext implements IRAdapterContext {
      * @param sync the default value is true
      */
     resizeBufferSize(pw: number, ph: number, sync: boolean = true): void {
-        pw = Math.floor(pw);
-        ph = Math.floor(ph);
+		if(sync) {
+			pw = Math.round(pw * 0.5) * 2;
+			ph = Math.round(ph * 0.5) * 2;
+		}else {
+			pw = Math.round(pw);
+			ph = Math.round(ph);
+		}
         let k = sync ? window.devicePixelRatio : 1.0;
         let dprChanged = Math.abs(k - this.m_dpr) > 0.01 || this.m_resizeFlag;
         this.m_dpr = k;
@@ -365,8 +370,13 @@ class RAdapterContext implements IRAdapterContext {
 
             this.m_displayWidth = pw;
             this.m_displayHeight = ph;
-            this.m_rcanvasWidth = Math.floor(pw * k)
-            this.m_rcanvasHeight = Math.floor(ph * k);
+			if(sync) {
+            this.m_rcanvasWidth = Math.round(pw * k * 0.5) * 2;
+            this.m_rcanvasHeight = Math.round(ph * k * 0.5) * 2;
+			}else {
+				this.m_rcanvasWidth = Math.round(pw * k);
+				this.m_rcanvasHeight = Math.round(ph * k);
+			}
 
             if (this.m_offcanvas == null) {
                 this.m_canvas.width = this.m_rcanvasWidth;

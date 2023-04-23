@@ -28,6 +28,9 @@ export default class PoolNodeBuilder implements IPoolNodeBuilder {
      */
     protected restoreUid(uid: number): void {
     }
+    getFreeTotal(): number {
+        return this.m_freeIdList.length;
+    }
     hasFreeNode(): boolean {
         return this.m_freeIdList.length > 0;
     }

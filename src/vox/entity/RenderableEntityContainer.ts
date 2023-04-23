@@ -13,7 +13,7 @@ export default class RenderableEntityContainer extends DisplayEntityContainer {
 	/**
 	 * @param renderingFlow the defaule value is true
 	 */
-	constructor(renderingFlow: boolean = true) {
-		super(true, true, renderingFlow);;
+	constructor(renderingFlow: boolean = true, spaceEnabled = true) {
+		super(true, spaceEnabled, renderingFlow);;
 	}
 }

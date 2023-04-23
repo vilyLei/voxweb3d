@@ -114,29 +114,40 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 	}
 
 	setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
-		if (this.m_mt != null) {
+		if (this.m_mt) {
 			this.m_mt.setRGBA4f(pr, pg, pb, pa);
 		}
 	}
 	setRGB3f(pr: number, pg: number, pb: number): void {
-		if (this.m_mt != null) {
+		if (this.m_mt) {
 			this.m_mt.setRGB3f(pr, pg, pb);
 		}
 	}
 
+    getColor(c: Color4 = null): Color4 {
+		if (this.m_mt) {
+			return this.m_mt.getColor( c );
+		}
+        return c;
+    }
+    setColor(c: Color4): void {
+		if (this.m_mt) {
+			this.m_mt.setColor(c);
+		}
+    }
 	setRGBAOffset4f(pr: number, pg: number, pb: number, pa: number): void {
-		if (this.m_mt != null) {
+		if (this.m_mt) {
 			this.m_mt.setRGBAOffset4f(pr, pg, pb, pa);
 		}
 	}
 	setRGBOffset3f(pr: number, pg: number, pb: number): void {
-		if (this.m_mt != null) {
+		if (this.m_mt) {
 			this.m_mt.setRGBOffset3f(pr, pg, pb);
 		}
 	}
 
 	setAlpha(pa: number): void {
-		if (this.m_mt != null) {
+		if (this.m_mt) {
 			this.m_mt.setAlpha(pa);
 		}
 	}
@@ -151,17 +162,17 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 	}
 
 	setAcceleration(accX: number, accY: number, accZ: number): void {
-		if (this.m_mt != null) {
+		if (this.m_mt) {
 			this.m_mt.setAcceleration(accX, accY, accZ);
 		}
 	}
 	setSpdScaleMax(spdScaleMax: number, factor: number = 1.0): void {
-		if (this.m_mt != null) {
+		if (this.m_mt) {
 			this.m_mt.setSpdScaleMax(spdScaleMax, factor);
 		}
 	}
 	setClipUVParam(cn: number, total: number, du: number, dv: number): void {
-		if (this.m_clipEnabled && this.m_mt != null) {
+		if (this.m_clipEnabled && this.m_mt) {
 			this.m_mt.setClipUVParam(cn, total, du, dv);
 		}
 	}

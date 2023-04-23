@@ -88,11 +88,10 @@ export default class BillboardFlowMaterial extends MaterialBase {
     private m_time = 0;
     private m_ds: Float32Array = null;
     private m_color = new Color4(1.0, 1.0, 1.0, 1.0);
-    private m_brightness = 1.0;
+    private m_brn = 1.0;
 	private m_clipRectIndex = -1;
 	private m_paramsTotal = 0;
     premultiplyAlpha = false;
-	// clipRectEnabled = false;
 	brnToAlpha = false;
 	vtxClipUVRectEnabled = false;
     constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, clipEnabled: boolean = false, vtxColorEnabled: boolean = false, clipRectEnabled: boolean = false) {
@@ -144,7 +143,6 @@ export default class BillboardFlowMaterial extends MaterialBase {
 			ds[i + 1] = v;
 			ds[i + 2] = du;
 			ds[i + 3] = dv;
-			console.log("setClipAreaUVRect(), ds: ", ds);
 		}
 
 	}
@@ -155,7 +153,7 @@ export default class BillboardFlowMaterial extends MaterialBase {
         this.m_spdScaleEnabled = spdScaleEnabled;
     }
     protected buildBuf(): void {
-        let buf: BillboardFlowShaderBuffer = BillboardFlowShaderBuffer.GetInstance();
+        let buf = BillboardFlowShaderBuffer.GetInstance();
         buf.playOnce = this.m_playOnce;
         buf.direcEnabled = this.m_direcEnabled;
         buf.clipMixEnabled = this.m_clipMixEnabled;
@@ -174,28 +172,32 @@ export default class BillboardFlowMaterial extends MaterialBase {
         return BillboardFlowShaderBuffer.GetInstance();
     }
     createSelfUniformData(): ShaderUniformData {
-        let oum: ShaderUniformData = new ShaderUniformData();
+        let oum = new ShaderUniformData();
         oum.uniformNameList = ["u_billParam"];
         oum.dataList = [this.m_ds];
         return oum;
     }
 
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
-        this.m_color.r = pr;
-        this.m_color.g = pg;
-        this.m_color.b = pb;
-        this.m_color.a = pa;
-        this.m_ds[4] = pr * this.m_brightness;
-        this.m_ds[5] = pg * this.m_brightness;
-        this.m_ds[6] = pb * this.m_brightness;
+        this.m_color.setRGBA4f(pr, pg, pb, pa);
+        this.m_ds[4] = pr * this.m_brn;
+        this.m_ds[5] = pg * this.m_brn;
+        this.m_ds[6] = pb * this.m_brn;
+    }
+    setColor(c: Color4): void {
+		this.setRGBA4f(c.r, c.g, c.b, c.a);
+    }
+    getColor(c: Color4 = null): Color4 {
+		if(c) {
+			return c.copyFrom(this.m_color);
+		}
+        return this.m_color;
     }
     setRGB3f(pr: number, pg: number, pb: number) {
-        this.m_color.r = pr;
-        this.m_color.g = pg;
-        this.m_color.b = pb;
-        this.m_ds[4] = pr * this.m_brightness;
-        this.m_ds[5] = pg * this.m_brightness;
-        this.m_ds[6] = pb * this.m_brightness;
+        this.m_color.setRGB3f(pr, pg, pb);
+        this.m_ds[4] = pr * this.m_brn;
+        this.m_ds[5] = pg * this.m_brn;
+        this.m_ds[6] = pb * this.m_brn;
     }
     setAlpha(pa: number): void {
         this.m_ds[7] = pa;
@@ -204,13 +206,14 @@ export default class BillboardFlowMaterial extends MaterialBase {
         return this.m_ds[6];
     }
     setBrightness(brighness: number): void {
-        this.m_brightness = brighness;
-        this.m_ds[4] = this.m_color.r * brighness;
-        this.m_ds[5] = this.m_color.g * brighness;
-        this.m_ds[6] = this.m_color.b * brighness;
+        this.m_brn = brighness;
+		const c = this.m_color;
+        this.m_ds[4] = c.r * brighness;
+        this.m_ds[5] = c.g * brighness;
+        this.m_ds[6] = c.b * brighness;
     }
     getBrightness(): number {
-        return this.m_brightness;
+        return this.m_brn;
     }
 
     setRGBAOffset4f(pr: number, pg: number, pb: number, pa: number): void {

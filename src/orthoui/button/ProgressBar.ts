@@ -23,6 +23,7 @@ import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
 import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 import ProgressBarStyle from "./ProgressBarStyle";
+import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 
 export class ProgressBar {
     private m_ruisc: IRendererScene = null;
@@ -56,6 +57,7 @@ export class ProgressBar {
     maxValue: number = 1.0;
     step: number = 0.1;
 	style: ProgressBarStyle = null;
+	parentContainer: IDisplayEntityContainer = null;
     constructor() { }
 
     setVisible(v: boolean): void {
@@ -180,7 +182,6 @@ export class ProgressBar {
         this.m_barBgX = subBtn.getLocalBounds().max.x - 0.5;
         this.initProBg(container, this.m_barBgX, 2.0, this.m_barInitLength + 0.5, addBtn.getHeight() - 2);
 
-        this.m_ruisc.addContainer(container, 1);
 
         this.m_subBtn = subBtn;
         this.m_addBtn = addBtn;
@@ -221,6 +222,12 @@ export class ProgressBar {
         this.m_rect.setTo(minV.x, minV.y, bounds.getWidth(), bounds.getHeight());
         this.setProgress(this.m_progress);
 
+		if(this.parentContainer) {
+			this.parentContainer.addChild(container);
+			this.parentContainer.update();
+		}else {
+			this.m_ruisc.addContainer(container, 1);
+		}
 		if(rst > 0) {
 			container.setRenderState(rst);
 		}
@@ -314,7 +321,7 @@ export class ProgressBar {
             this.sendEvt(2);
         }
     }
-    private m_moveMin: number = 0;
+    private m_moveMin = 0;
     private nameBtnMouseDown(evt: any): void {
         this.sendEvt(0);
     }
@@ -389,7 +396,7 @@ export class ProgressBar {
     }
 
     update(): void {
-        if (this.m_container != null) {
+        if (this.m_container) {
             this.m_container.update();
 			let bounds = this.m_container.getGlobalBounds();
 			let minV = bounds.min;
@@ -397,7 +404,10 @@ export class ProgressBar {
         }
     }
     destroy(): void {
-
+		if(this.parentContainer) {
+			this.parentContainer.removeChild(this.m_container);
+			this.parentContainer = null;
+		}
     }
 }
 export default ProgressBar;

@@ -133,6 +133,43 @@ class PNodeBuilder extends PoolNodeBuilder {
 		super.destroy();
 	}
 }
+
+class FollowParticleShooter {
+	protected m_parTarget: FollowParticle;
+	protected m_param: FollowParticleParam = null;
+	protected m_sparam: ParticleShootParam = null;
+	constructor(parTarget: FollowParticle){
+		this.m_parTarget = parTarget;
+		this.m_param = parTarget.getParam();
+	}
+	getPosition(pv: Vector3D = null): Vector3D {
+		pv = pv ? pv : new Vector3D();
+		this.m_parTarget.particleEntity.getPosition(pv);
+		return pv;
+	}
+	setShootParam(param: ParticleShootParam): void {
+		this.m_sparam = param;
+	}
+	/**
+	 * 单个发射器的发射, 而一个 FollowParticle 实例可以有多个发射器
+	 * @param pv
+	 * @param param
+	 */
+	shoot(pv: Vector3D, param: ParticleShootParam = null): void {
+
+		param = param ? param : this.m_sparam;
+		this.m_sparam = param;
+
+		pv = param.getPosition(pv);
+		let total = param.getTotalValue();
+		let spaceRaduis = param.getSpaceRadiusValue();
+		this.m_param.lifetimeScale = param.getLifeTimeStaleValue();
+		this.addPosition(pv, total, spaceRaduis, param.getAccelerationScale(), param.stepDistance);
+	}
+	addPosition(pv: Vector3D, total: number = 1, spaceRange: number = 20, accelerationScale: number = -1.0, stepDis: number = 30): void {
+		this.m_parTarget.createParticles(pv, total, spaceRange, accelerationScale);
+	}
+}
 class FollowParticle {
 	private m_nodeBuilder = new PNodeBuilder();
 	private m_total = 0;
@@ -152,6 +189,9 @@ class FollowParticle {
 	getParam(): FollowParticleParam {
 		return this.m_param;
 	}
+	createShooter(): FollowParticleShooter{
+		return new FollowParticleShooter( this );
+	}
 	/**
 	 * @param pv the base position
 	 * @param total current shooting particles total, the defualt value 1
@@ -160,11 +200,12 @@ class FollowParticle {
 	 * @param stepDis the defualt value 30
 	 */
 	addPosition(pv: Vector3D, total: number = 1, spaceRadius: number = 20, accelerationScale: number = -1.0, stepDis: number = 30): void {
+		this.createParticles(pv, total, spaceRadius, accelerationScale);
 	}
 	/**
 	 * 实际上这里可以发射多个轨迹的跟随粒子效果，因为发射只和当前的发射位置有关，而轨迹就是若干位置连起来的视角效果
-	 * @param pv 
-	 * @param param 
+	 * @param pv
+	 * @param param
 	 */
 	shoot(pv: Vector3D, param: ParticleShootParam): void {
 		// const total = Math.random() * 2 + 1;
@@ -207,6 +248,8 @@ class FollowParticle {
 	}
 	run(): void {
 		this.particleEntity.updateTime(1.0);
+		// let freeTotal = this.m_nodeBuilder.getFreeTotal();
+		// console.log("freeTotal: ", freeTotal);
 	}
 	private initfollowBill(
 		tex: IRenderTexture,
@@ -310,4 +353,4 @@ class FollowParticle {
 	}
 }
 
-export {ParticleShootParam, FollowParticleParam, FollowParticle }
+export {ParticleShootParam, FollowParticleParam, FollowParticleShooter, FollowParticle }

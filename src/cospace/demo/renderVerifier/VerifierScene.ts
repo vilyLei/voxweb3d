@@ -17,14 +17,14 @@ class VerifierScene implements IDropFileListerner {
 	/**
 	 * (引擎)数据协同中心实例
 	 */
-	private m_cospace: CoSpace = new CoSpace();
-	private m_vfParam: VerifierParam = new VerifierParam();
+	private m_cospace = new CoSpace();
+	private m_vfParam = new VerifierParam();
 
 	private m_rscene: RendererScene = null;
 
 	private m_waitSceneNodes: ISceneNode[] = [];
 	private m_sceneNodes: ISceneNode[] = [];
-	private m_dropController: DropFileController = new DropFileController();
+	private m_dropController = new DropFileController();
 
 	constructor() { }
 
@@ -34,7 +34,7 @@ class VerifierScene implements IDropFileListerner {
 
 			this.m_rscene = rscene;
 
-			let axis: Axis3DEntity = new Axis3DEntity();
+			let axis = new Axis3DEntity();
 			axis.initialize(300);
 			this.m_rscene.addEntity(axis);
 
@@ -62,7 +62,7 @@ class VerifierScene implements IDropFileListerner {
 		// 	new Vector3D(50), new Vector3D(100,100)
 		// ], true);
 
-		
+
 		line.initializeBySegmentLines([
 			new Vector3D(), new Vector3D(0,100, 0),
 			new Vector3D(50), new Vector3D(100,100)
@@ -84,7 +84,7 @@ class VerifierScene implements IDropFileListerner {
 
 		console.log("this.m_vfParam: ",this.m_vfParam);
 		if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
-			
+
 			let preUrl: string = "http://www.artvily.com:9090/static/publish/";
 			let modules: TaskCodeModuleParam[] = [
 				new TaskCodeModuleParam(preUrl + "renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),

@@ -56,7 +56,7 @@ class NVNavigationUI {
 	private initNavigationUI(): void {
 
 		let uiScene = this.m_coUIScene;
-		let cfg = uiScene.uiConfig;	
+		let cfg = uiScene.uiConfig;
 		let uimodule = uiScene.uiConfig.getUIPanelCfgByName("navigation");
 		console.log("NVNavigationUI::initNavigationUI(), uimodule: ", uimodule);
 
@@ -150,10 +150,12 @@ class NVNavigationUI {
 
 		// console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
 		let uuid = evt.uuid;
-		
+
 		switch (uuid) {
 
 			case "file":
+				this.viewer.normalScene.entityScene.openDir();
+				break;
 			case "edit":
 			case "model":
 			case "texture":

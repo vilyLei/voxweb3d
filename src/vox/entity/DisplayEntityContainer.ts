@@ -252,7 +252,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 						parent = parent.getParent();
 					}
 					if(flag != child.isSpaceEnabled()) {
-						throw Error("illegal operation !!!");
+						throw Error("flag != child.isSpaceEnabled(), illegal operation !!!");
 					}
 
 					if (this.m_cbvers != null) {

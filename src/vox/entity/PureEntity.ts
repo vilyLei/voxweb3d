@@ -29,6 +29,7 @@ import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import IROTransform from "../../vox/display/IROTransform";
+import IRenderEntity from '../render/IRenderEntity';
 
 
 // for multi threads
@@ -265,22 +266,22 @@ export default class PureEntity implements IDisplayEntity {
     getScaleXYZ(pv: Vector3D = null): Vector3D {return null;}
     getRotationXYZ(pv: Vector3D = null): Vector3D {return null;}
 
-    copyMeshFrom(entity: IDisplayEntity): PureEntity {
+    copyMeshFrom(entity: IRenderEntity): PureEntity {
         if (entity != null) {
             this.setMesh(entity.getMesh());
         }
         return this;
     }
-    copyMaterialFrom(entity: IDisplayEntity): PureEntity {
+    copyMaterialFrom(entity: IRenderEntity): PureEntity {
         if (entity != null) {
             this.setMaterial(entity.getMaterial());
         }
         return this;
     }
-    copyPositionFrom(entity: PureEntity): PureEntity {
+    copyPositionFrom(entity: IRenderEntity): PureEntity {
         return this;
     }
-    copyTransformFrom(entity: PureEntity): PureEntity {
+    copyTransformFrom(entity: IRenderEntity): PureEntity {
         return this;
     }
     private initDisplay(m: IMeshBase): void {

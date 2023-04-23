@@ -30,12 +30,12 @@ class NormalEntityGroup extends NVEntityGroup {
 	}
 
 	initialize(rscene: IRendererScene, transUI: NVTransUI): void {}
-	loadModels(urls: string[], typeNS: string = ""): void {
+	loadModels(urls: string[], typeList: string[] = null): void {
 		if (urls != null && urls.length > 0) {
 			let purls = urls.slice(0);
 			this.m_coapp.deferredInit((): void => {
 				for (let i = 0; i < purls.length; ++i) {
-					this.loadModel(purls[i], typeNS);
+					this.loadModel(purls[i], typeList ? typeList[i] : "");
 				}
 			});
 		}
@@ -187,7 +187,7 @@ class NormalEntityGroup extends NVEntityGroup {
 		this.rsc = null;
 		if(this.m_coapp != null) {
 			// todo
-			
+
 			this.m_coapp = null;
 		}
 	}

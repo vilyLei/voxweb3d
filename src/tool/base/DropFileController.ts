@@ -12,6 +12,8 @@ interface IDropFileListerner {
 class DropFileController {
 	private m_htmlObj: HTMLElement = null;
 	private m_listener: IDropFileListerner = null;
+	static readonly Image_File = "image";
+	static readonly Geometry_Model_File = "geometryModel";
 	constructor() {}
 
 	initialize(htmlObj: HTMLElement, listener: IDropFileListerner): void {
@@ -143,9 +145,9 @@ class DropFileController {
 			console.log("suffixNS: ", suffixNS);
 		}
 		if (this.imgKeys.includes(suffixNS)) {
-			return { name: name, type: suffixNS, resType: "image", url: "" };
+			return { name: name, type: suffixNS, resType: DropFileController.Image_File, url: "" };
 		}else if (this.geomModelKeys.includes(suffixNS)) {
-			return { name: name, type: suffixNS, resType: "geometryModel", url: "" };
+			return { name: name, type: suffixNS, resType: DropFileController.Geometry_Model_File, url: "" };
 		}
 		return null;
 	}

@@ -11,13 +11,14 @@ import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraViewRay from "../vox/view/CameraViewRay";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
-import { FollowParticleParam, ParticleShootParam, PathFollowParticle } from "../particle/base/PathFollowParticle";
+import { PathFollowParticleShooter, FollowParticleParam, ParticleShootParam, PathFollowParticle } from "../particle/base/PathFollowParticle";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import RendererState from "../vox/render/RendererState";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import IDefault3DMaterial from "../vox/material/mcase/IDefault3DMaterial";
 import IRenderEntity from "../vox/render/IRenderEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import IDisplayEntity from "../vox/entity/IDisplayEntity";
 
 export class DemoParticleFollowMultiGroups {
 	constructor() {}
@@ -90,6 +91,16 @@ export class DemoParticleFollowMultiGroups {
 			let entity = this.m_pathFollowEntity.particleEntity;
 			this.m_rscene.addEntity(entity, 1);
 			entity.setRGB3f(0.5,1.2,0.3);
+			this.m_shooter0 = this.m_pathFollowEntity.createShooter();
+			this.m_shooter0.setShootParam(this.m_shootParam0);
+
+			this.m_shootParam1.setlifetimeScaleRange(0.2, 1.0);
+			this.m_shooter1 = this.m_pathFollowEntity.createShooter();
+			this.m_shooter1.setShootParam(this.m_shootParam1);
+
+			this.m_shooter2 = this.m_pathFollowEntity.createShooter();
+			this.m_shooter2.setShootParam(this.m_shootParam1);
+
 			// entity.setRGBOffset3f(0.2,-0.2,-0.5);
 			// this.m_pathFollowEntity.particleEntity.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
 			// let plane = new Plane3DEntity();
@@ -112,31 +123,52 @@ export class DemoParticleFollowMultiGroups {
 			let envBox = new Box3DEntity();
 			envBox.showFrontFace();
 			envBox.initializeCube(3000, [this.getTexByUrl("static/assets/brickwall_big.jpg")]);
-			(envBox.getMaterial() as IDefault3DMaterial).setUVScale(5.0, 5.0);
+			envBox.setUVScale(5.0, 5.0);
 			this.m_rscene.addEntity(envBox, 0);
-			//color_01
+
 			let sph = new Sphere3DEntity();
 			sph.initialize(10, 20, 20, [this.getTexByUrl("static/assets/color_01.jpg")]);
-			(sph.getMaterial() as IDefault3DMaterial).setRGB3f(0.5, 1.0, 0.5);
+			sph.setRGB3f(0.5, 1.0, 0.5);
 			this.m_rscene.addEntity(sph, 1);
-			this.m_followEntity = sph;
+			this.m_followEntity0 = sph;
+
+			sph = new Sphere3DEntity();
+			sph.copyMeshFrom(this.m_followEntity0 );
+			sph.initialize(10, 20, 20, [this.getTexByUrl("static/assets/color_01.jpg")]);
+			sph.setRGB3f(0.5, 1.0, 0.5);
+			this.m_rscene.addEntity(sph, 1);
+			this.m_followEntity1 = sph;
+
+			sph = new Sphere3DEntity();
+			sph.copyMeshFrom(this.m_followEntity0);
+			sph.initialize(10, 20, 20, [this.getTexByUrl("static/assets/color_01.jpg")]);
+			sph.setRGB3f(0.5, 1.0, 0.5);
+			this.m_rscene.addEntity(sph, 1);
+			this.m_followEntity2 = sph;
 			this.update();
 		}
 	}
-	private m_followEntity: IRenderEntity = null;
+	private m_followEntity0: IRenderEntity = null;
+	private m_followEntity1: IRenderEntity = null;
+	private m_followEntity2: IRenderEntity = null;
+	private m_shootParam0 = new ParticleShootParam();
+	private m_shootParam1 = new ParticleShootParam();
+	private m_shooter0: PathFollowParticleShooter = null;
+	private m_shooter1: PathFollowParticleShooter = null;
+	private m_shooter2: PathFollowParticleShooter = null;
+
 	private m_container: DisplayEntityContainer = null;
 	private m_containerMain: DisplayEntityContainer = null;
-	private m_pathFollowEntity: PathFollowParticle = new PathFollowParticle();
+	private m_pathFollowEntity = new PathFollowParticle();
 	private m_timeoutId: any = -1;
 	private m_time = 0.0;
-	private m_shootParam = new ParticleShootParam();
 	position = new Vector3D();
 	mouseDownListener(evt: any): void {
 		console.log("mouseDownListener(), call ...");
 		this.m_viewRay.intersectPlane();
-		let pv = this.m_viewRay.position;
-		// this.m_pathFollowEntity.addPosition(pv, 1, 20);
 	}
+	private m_rTime = 0.0;
+	private m_gTime = 0.0;
 	private update(): void {
 		if (this.m_timeoutId > -1) {
 			clearTimeout(this.m_timeoutId);
@@ -152,18 +184,31 @@ export class DemoParticleFollowMultiGroups {
 		cmain.update();
 
 		let pv = this.position;
+		// shooter 0
 		pv.setXYZ(300.0, 10.0, 300.0);
 		this.m_container.localToGlobal(pv);
-		this.m_followEntity.setPosition( pv );
-		this.m_pathFollowEntity.shoot(pv, this.m_shootParam);
+		this.m_followEntity0.setPosition( pv );
+		this.m_shooter0.shoot(pv);
+
+		// shooter 1
+		pv.setXYZ(-200.0, 100.0, 300.0);
+		this.m_container.localToGlobal(pv);
+		this.m_followEntity1.setPosition( pv.scaleBy(-1.0) );
+		this.m_shooter1.shoot(pv);
+
+		// shooter 2
+		pv.setXYZ(200.0, 100.0, -300.0);
+		this.m_container.localToGlobal(pv);
+		this.m_followEntity2.setPosition( pv );
+		this.m_shooter2.shoot(pv);
+
 		this.m_pathFollowEntity.run();
 
-		// pv = this.position;
-		// pv.setXYZ(-300.0, 10.0, 300.0);
-		// this.m_container.localToGlobal(pv);
-		// this.m_followEntity.setPosition( pv );
-		// this.m_pathFollowEntity.shoot(pv, this.m_shootParam);
-		// this.m_pathFollowEntity.run();
+		let entity = this.m_pathFollowEntity.particleEntity;
+		let c = entity.getColor();
+		c.r = Math.abs(Math.cos(this.m_rTime += 0.002));
+		c.g = Math.abs(Math.sin(100 + (this.m_gTime += 0.0025)));
+		entity.setColor(c);
 	}
 	run(): void {
 		this.m_rscene.run();

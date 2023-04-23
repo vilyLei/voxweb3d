@@ -32,6 +32,7 @@ import DebugFlag from "../debug/DebugFlag";
 
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
+import IRenderEntity from "../render/IRenderEntity";
 
 export default class DisplayEntity implements IDisplayEntity, IEntityTransform, ITransformEntity {
 	private static s_uid = 0;
@@ -293,25 +294,25 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 	getTransform(): IROTransform {
 		return this.m_trs;
 	}
-	copyPositionFrom(entity: DisplayEntity): DisplayEntity {
+	copyPositionFrom(entity: IRenderEntity): DisplayEntity {
 		if (entity != null) {
 			this.m_trs.copyPositionFrom(entity.getTransform());
 		}
 		return this;
 	}
-	copyMeshFrom(entity: IDisplayEntity): DisplayEntity {
+	copyMeshFrom(entity: IRenderEntity): DisplayEntity {
 		if (entity != null) {
 			this.setMesh(entity.getMesh());
 		}
 		return this;
 	}
-	copyMaterialFrom(entity: IDisplayEntity): DisplayEntity {
+	copyMaterialFrom(entity: IRenderEntity): DisplayEntity {
 		if (entity != null) {
 			this.setMaterial(entity.getMaterial());
 		}
 		return this;
 	}
-	copyTransformFrom(entity: IDisplayEntity): DisplayEntity {
+	copyTransformFrom(entity: IRenderEntity): DisplayEntity {
 		let pe = entity as DisplayEntity;
 		if (pe != null) {
 			this.m_trs.copyFrom(pe.m_trs);
