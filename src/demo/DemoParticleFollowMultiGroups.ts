@@ -18,7 +18,6 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import IDefault3DMaterial from "../vox/material/mcase/IDefault3DMaterial";
 import IRenderEntity from "../vox/render/IRenderEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
-import IDisplayEntity from "../vox/entity/IDisplayEntity";
 
 export class DemoParticleFollowMultiGroups {
 	constructor() {}
@@ -120,6 +119,7 @@ export class DemoParticleFollowMultiGroups {
 			this.m_containerMain.setRotationX(Math.random() * 200);
 			this.m_containerMain.update();
 
+			let texUrl0 = "static/assets/color_01.jpg";
 			let envBox = new Box3DEntity();
 			envBox.showFrontFace();
 			envBox.initializeCube(3000, [this.getTexByUrl("static/assets/brickwall_big512.jpg")]);
@@ -127,22 +127,25 @@ export class DemoParticleFollowMultiGroups {
 			this.m_rscene.addEntity(envBox, 0);
 
 			let sph = new Sphere3DEntity();
-			sph.initialize(10, 20, 20, [this.getTexByUrl("static/assets/color_01.jpg")]);
+			sph.initialize(10, 20, 20, [this.getTexByUrl(texUrl0)]);
 			sph.setRGB3f(0.5, 1.0, 0.5);
+			sph.setRotationXYZ(Math.random() * 360, Math.random() * 360, Math.random() * 360);
 			this.m_rscene.addEntity(sph, 1);
 			this.m_followEntity0 = sph;
 
 			sph = new Sphere3DEntity();
 			sph.copyMeshFrom(this.m_followEntity0 );
-			sph.initialize(10, 20, 20, [this.getTexByUrl("static/assets/color_01.jpg")]);
+			sph.initialize(10, 20, 20, [this.getTexByUrl(texUrl0)]);
 			sph.setRGB3f(0.5, 1.0, 0.5);
+			sph.setRotationXYZ(Math.random() * 360, Math.random() * 360, Math.random() * 360);
 			this.m_rscene.addEntity(sph, 1);
 			this.m_followEntity1 = sph;
 
 			sph = new Sphere3DEntity();
 			sph.copyMeshFrom(this.m_followEntity0);
-			sph.initialize(10, 20, 20, [this.getTexByUrl("static/assets/color_01.jpg")]);
+			sph.initialize(10, 20, 20, [this.getTexByUrl(texUrl0)]);
 			sph.setRGB3f(0.5, 1.0, 0.5);
+			sph.setRotationXYZ(Math.random() * 360, Math.random() * 360, Math.random() * 360);
 			this.m_rscene.addEntity(sph, 1);
 			this.m_followEntity2 = sph;
 			this.update();
