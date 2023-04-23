@@ -122,7 +122,7 @@ export class DemoParticleFollowMultiGroups {
 
 			let envBox = new Box3DEntity();
 			envBox.showFrontFace();
-			envBox.initializeCube(3000, [this.getTexByUrl("static/assets/brickwall_big.jpg")]);
+			envBox.initializeCube(3000, [this.getTexByUrl("static/assets/brickwall_big512.jpg")]);
 			envBox.setUVScale(5.0, 5.0);
 			this.m_rscene.addEntity(envBox, 0);
 
@@ -146,6 +146,7 @@ export class DemoParticleFollowMultiGroups {
 			this.m_rscene.addEntity(sph, 1);
 			this.m_followEntity2 = sph;
 			this.update();
+			document.body.style.overflow = "hidden";
 		}
 	}
 	private m_followEntity0: IRenderEntity = null;

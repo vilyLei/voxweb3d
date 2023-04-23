@@ -271,6 +271,7 @@ export class DemoVox3DEditor {
 			this.m_graph.addScene(this.m_editUIRenderer);
 			this.m_outline = new CoPostOutline(rscene);
 
+			document.body.style.overflow = "hidden";
 		}
 	}
 	private mouseUpListener(evt: any): void {
