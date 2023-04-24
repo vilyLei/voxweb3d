@@ -129,7 +129,6 @@ export class DemoVox3DEditor {
 
 		this.m_loadingUI.initUI();
 		this.m_loadingUI.showInfo("initializing rendering engine...");
-		// this.initEngineModule();
 		this.loadInfo();
 	}
 	private loadInfo(): void {
@@ -146,12 +145,6 @@ export class DemoVox3DEditor {
 		null,
 		"json"
 		);
-		// let fileName = URLFilter.getFileName( url );
-		// let fileNameAll = URLFilter.getFileNameAndSuffixName( url );
-		// let suffixName = URLFilter.getFileSuffixName( url );
-		// console.log("fileName: ", fileName);
-		// console.log("fileNameAll: ", fileNameAll);
-		// console.log("suffixName: ", suffixName);
 	}
 	private initEngineModule(): void {
 
@@ -174,15 +167,15 @@ export class DemoVox3DEditor {
 		let url11 = "static/cospace/cotext/CoText.umd.js";
 
 		new CoModuleLoader(2, (): void => {
+
 			if (this.isEngineEnabled()) {
 				console.log("engine modules loaded ...");
+
 				this.initRenderer();
 
 				this.init3DScene();
 				this.m_loadingUI.showInfo("initializing editor system...");
 				new CoModuleLoader(3, (): void => {
-
-					console.log("math module loaded ...");
 
 					new CoModuleLoader(7, (): void => {
 						console.log("ageom module loaded ...");
@@ -214,11 +207,8 @@ export class DemoVox3DEditor {
 
 			this.m_coUIScene = CoUI.createUIScene( uiConfig, this.m_rsc, 512, 5 );
 			let coui = this.m_coUIScene;
-			// coui.initialize(this.m_rsc, 512, 5);
 			this.m_uirsc = coui.rscene;
 			this.m_graph.addScene(this.m_uirsc);
-
-			// coui.uiConfig = uiConfig;
 			this.initEditSceneSys();
 		});
 
@@ -280,11 +270,7 @@ export class DemoVox3DEditor {
 			let rscene = CoRScene.createRendererScene(rparam, 3);
 			rscene.setClearRGBColor3f(0.23, 0.23, 0.23);
 
-			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-
-			// rscene.addEventListener(CoRScene.KeyboardEvent.KEY_DOWN, this, this.keyDown);
-			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseClickListener);
-			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_RIGHT_UP, this, this.mouseUpListener, true, true);
+			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
 			this.m_rsc = rscene;
 
@@ -301,12 +287,9 @@ export class DemoVox3DEditor {
 			document.body.style.overflow = "hidden";
 		}
 	}
-	private mouseUpListener(evt: any): void {
-		console.log("mouse up action...");
-	}
-	private mouseDownListener(evt: any): void {
-		console.log("DemoVox3DEditor::mouseDownListener() ...");
-	}
+	// private mouseDownListener(evt: any): void {
+	// 	console.log("DemoVox3DEditor::mouseDownListener() ...");
+	// }
 	private keyDown(evt: any): void {
 
 		console.log("DemoVox3DEditor::keyDown() ..., evt.keyCode: ", evt.keyCode);
@@ -316,6 +299,7 @@ export class DemoVox3DEditor {
 			case KEY.S:
 
 				break;
+			
 			default:
 				break;
 		}

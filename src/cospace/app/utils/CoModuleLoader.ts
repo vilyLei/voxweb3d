@@ -11,7 +11,6 @@ class CoModuleVersion {
 		const versionInfo = this.m_infoObj;
 		const versionInfoMap = this.m_verMap;
 		let items = versionInfo.items;
-		// console.log("A items.length: ", items.length);
 		for (let i = 0; i < items.length; ++i) {
 			const ia = items[i];
 			versionInfoMap.set(ia.name, ia);

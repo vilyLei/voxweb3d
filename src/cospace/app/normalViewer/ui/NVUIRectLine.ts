@@ -1,6 +1,5 @@
 import IAABB from "../../../../vox/geom/IAABB";
 import IVector3D from "../../../../vox/math/IVector3D";
-import IRenderEntity from "../../../../vox/render/IRenderEntity";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
 
 import { ICoMesh } from "../../../voxmesh/ICoMesh";

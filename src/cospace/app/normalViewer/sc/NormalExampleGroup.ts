@@ -186,12 +186,6 @@ class NormalExampleGroup extends NVEntityGroup implements IRunnable {
 		}
 		return entities;
 	}
-	// setVisible(v: boolean): void {
-	// 	this.m_visible = v;
-	// }
-	// isVisible(): boolean {
-	// 	return this.m_visible;
-	// }
 	update(): void {
 	}
 	destroy(): void {
