@@ -12,6 +12,7 @@ import IVector3D from "../../../../vox/math/IVector3D";
 import { IH5Text } from "../../../voxtext/base/IH5Text";
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import IRunnable from "../../../../vox/base/IRunnable";
+import IRenderEntity from "../../../../vox/render/IRenderEntity";
 
 declare var CoRScene: ICoRScene;
 declare var CoText: ICoText;
@@ -173,6 +174,17 @@ class NormalExampleGroup extends NVEntityGroup implements IRunnable {
 
 			this.m_enabled = enabled;
 		}
+	}
+	
+	getAllEntities(): IRenderEntity[] {
+		let nodes = this.m_nodes;
+		let entities: IRenderEntity[] = [];
+		for(let i = 0; i < nodes.length; ++i) {
+			if(nodes[i].entity.isVisible()) {
+				entities.push(nodes[i].entity);
+			}
+		}
+		return entities;
 	}
 	// setVisible(v: boolean): void {
 	// 	this.m_visible = v;

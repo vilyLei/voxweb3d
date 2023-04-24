@@ -1,15 +1,10 @@
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
-// import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NVTransUI } from "../ui/NVTransUI";
-// import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
 import { NormalEntityGroup } from "./NormalEntityGroup";
 import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
-// import { DropModelFileController } from "./DropModelFileController";
-import { NormalEntityNode } from "./NormalEntityNode";
 import { NormalEntityManager } from "./NormalEntityManager";
-import { BoxLine3D } from "../../../edit/entity/BoxLine3D";
 import { NormalExampleGroup } from "./NormalExampleGroup";
 import { IFileUrlObj, IDropFileListerner, DropFileController } from "../../../../tool/base/DropFileController";
 import IRenderEntity from "../../../../vox/render/IRenderEntity";
@@ -18,7 +13,6 @@ class NormalEntityScene {
 
 	private m_uiscene: ICoUIScene = null;
 	private m_coapp: CoDataModule;
-	// private m_dropController = new DropModelFileController();
 	private m_dropController = new DropFileController();
 	private m_groups: NormalEntityGroup[] = [];
 
@@ -102,57 +96,11 @@ class NormalEntityScene {
 		let gs = this.m_groups;
 		let entities: IRenderEntity[] = [];
 		for(let i = 0; i < gs.length; ++i) {
-			//entities.push(nodes[i].entity);
 			entities = entities.concat(gs[i].getAllEntities());
 		}
+		entities = entities.concat(this.exampleGroup.getAllEntities());
 		return entities;
 	}
-	/*
-	isDropEnabled(): boolean {
-		return true;
-	}
-	initFileLoad(files: any[]): void {
-		console.log("initFileLoad(), files.length: ", files.length);
-		let flag: number = 1;
-		if (files.length > 0) {
-			let name: string = "";
-			let urls: string[] = [];
-			for (let i = 0; i < files.length; i++) {
-				if (i == 0) name = files[i].name;
-				const urlObj = window.URL.createObjectURL(files[i]);
-				urls.push(urlObj);
-			}
-
-			console.log("initFileLoad(), name: ", name);
-			if (name != "") {
-				name.toLocaleLowerCase();
-				let typeNS = "";
-				if (name.indexOf(".ctm") > 1) {
-					typeNS = "ctm";
-				} else if (name.indexOf(".fbx") > 1) {
-					typeNS = "fbx";
-				} else if (name.indexOf(".obj") > 1) {
-					typeNS = "obj";
-				} else if (name.indexOf(".drc") > 1) {
-					typeNS = "drc";
-				} else {
-					flag = 31;
-				}
-				if (flag == 1) {
-					let sc = this;
-					// sc.resetScene();
-					sc.loadModels(urls, typeNS);
-				}
-			} else {
-				flag = 31;
-			}
-		} else {
-			flag = 31;
-		}
-		this.m_dropController.alertShow(flag);
-	}
-	//*/
-
 	private m_dropEnabled = true;
 	initFileLoad(files: IFileUrlObj[]): void {
 		console.log("initFileLoad(), files: ", files);
@@ -160,7 +108,7 @@ class NormalEntityScene {
 		let types: string[] = [];
 		for (let i = 0; i < files.length; ++i) {
 			if (files[i].resType == DropFileController.Geometry_Model_File) {
-				console.log("files[i]: ", files[i].url, files[i].type);
+				// console.log("files[i]: ", files[i].url, files[i].type);
 				// this.loadModels(urls, typeNS);
 				// this.loadedRes(files[i].url, files[i].name);
 				// break;

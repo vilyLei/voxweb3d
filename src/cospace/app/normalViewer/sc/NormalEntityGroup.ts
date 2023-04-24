@@ -128,7 +128,9 @@ class NormalEntityGroup extends NVEntityGroup {
 		let nodes = this.m_nodes;
 		let entities: IRenderEntity[] = [];
 		for(let i = 0; i < nodes.length; ++i) {
-			entities.push(nodes[i].entity);
+			if(nodes[i].entity.isVisible()) {
+				entities.push(nodes[i].entity);
+			}
 		}
 		return entities;
 	}
