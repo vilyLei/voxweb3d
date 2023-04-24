@@ -17,8 +17,10 @@ import { NVTransUI } from "../app/normalViewer/ui/NVTransUI";
 import { NVNavigationUI } from "../app/normalViewer/ui/NVNavigationUI";
 import { NormalViewer } from "../app/normalViewer/sc/NormalViewer";
 import { ICoText } from "../voxtext/ICoText";
-import { CoModuleLoader } from "../app/utils/CoModuleLoader";
+import { CoModuleVersion, CoModuleLoader } from "../app/utils/CoModuleLoader";
 import { UIConfig } from "../voxui/system/UIConfig";
+import URLFilter from "../../tool/base/URLFilter";
+import { HttpFileLoader } from "../modules/loaders/HttpFileLoader";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -115,6 +117,7 @@ export class DemoVox3DEditor {
 	private m_outline: CoPostOutline;
 	private m_loadingUI = new LoadingUI();
 	private m_viewer: NormalViewer = null;
+	private m_verTool: CoModuleVersion = null;
 	constructor() { }
 
 	initialize(): void {
@@ -124,16 +127,38 @@ export class DemoVox3DEditor {
 		}
 		console.log("DemoVox3DEditor::initialize() ...");
 
-		this.initEngineModule();
 		this.m_loadingUI.initUI();
 		this.m_loadingUI.showInfo("initializing rendering engine...");
+		// this.initEngineModule();
+		this.loadInfo();
+	}
+	private loadInfo(): void {
+
+		let url = "static/cospace/info.json";
+		url = URLFilter.filterUrl(url);
+		let httpLoader = new HttpFileLoader();
+		httpLoader.load(url, (data: object, url: string): void => {
+			console.log("loadInfo loaded data: ", data);
+			this.m_verTool = new CoModuleVersion( data );
+			this.initEngineModule();
+		},
+		null,
+		null,
+		"json"
+		);
+		// let fileName = URLFilter.getFileName( url );
+		// let fileNameAll = URLFilter.getFileNameAndSuffixName( url );
+		// let suffixName = URLFilter.getFileSuffixName( url );
+		// console.log("fileName: ", fileName);
+		// console.log("fileNameAll: ", fileNameAll);
+		// console.log("suffixName: ", suffixName);
 	}
 	private initEngineModule(): void {
 
 		let url = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let uiInteractML = new CoModuleLoader(2, (): void => {
 			this.initInteract();
-		});
+		}, this.m_verTool);
 
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
@@ -163,11 +188,11 @@ export class DemoVox3DEditor {
 						console.log("ageom module loaded ...");
 						this.initEditUI();
 						this.m_loadingUI.loadFinish(0);
-					}).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10).load(url11);
+					}, this.m_verTool).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10).load(url11);
 
-				}).load(url2).load(url5).load(url8);
+				}, this.m_verTool).load(url2).load(url5).load(url8);
 			}
-		}).addLoader(uiInteractML)
+		}, this.m_verTool).addLoader(uiInteractML)
 			.load(url0)
 			.load(url1);
 
@@ -177,10 +202,12 @@ export class DemoVox3DEditor {
 
 
 		let uiConfig = new UIConfig();
-		let cfgUrl = "static/apps/normalViewer/ui/zh-CN/uicfg.json";
+		let cfgUrl = "";
 		let language = CoRScene.RendererDevice.GetLanguage();
 		console.log("XXX language: ", language);
-		if (language != "zh-CN") {
+		if (CoRScene.RendererDevice.IsChineseLanguage()) {
+			cfgUrl = "static/apps/normalViewer/ui/zh-CN/uicfg.json";
+		}else {
 			cfgUrl = "static/apps/normalViewer/ui/en-US/uicfg.json";
 		}
 		uiConfig.initialize(cfgUrl, (): void => {
@@ -269,7 +296,7 @@ export class DemoVox3DEditor {
 			this.m_graph = CoRScene.createRendererSceneGraph();
 			this.m_graph.addScene(this.m_rsc);
 			this.m_graph.addScene(this.m_editUIRenderer);
-			this.m_outline = new CoPostOutline(rscene);
+			this.m_outline = new CoPostOutline(rscene, this.m_verTool);
 
 			document.body.style.overflow = "hidden";
 		}

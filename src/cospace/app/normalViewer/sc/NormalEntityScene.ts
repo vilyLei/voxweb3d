@@ -12,6 +12,7 @@ import { NormalEntityManager } from "./NormalEntityManager";
 import { BoxLine3D } from "../../../edit/entity/BoxLine3D";
 import { NormalExampleGroup } from "./NormalExampleGroup";
 import { IFileUrlObj, IDropFileListerner, DropFileController } from "../../../../tool/base/DropFileController";
+import IRenderEntity from "../../../../vox/render/IRenderEntity";
 
 class NormalEntityScene {
 
@@ -96,6 +97,15 @@ class NormalEntityScene {
 
 		this.transUI.deselect();
 		this.exampleGroup.setEnabled(false);
+	}
+	getAllEntities(): IRenderEntity[] {
+		let gs = this.m_groups;
+		let entities: IRenderEntity[] = [];
+		for(let i = 0; i < gs.length; ++i) {
+			//entities.push(nodes[i].entity);
+			entities = entities.concat(gs[i].getAllEntities());
+		}
+		return entities;
 	}
 	/*
 	isDropEnabled(): boolean {

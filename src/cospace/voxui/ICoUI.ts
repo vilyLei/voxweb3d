@@ -16,6 +16,7 @@ import ICanvasTexAtlas from "../voxtexture/atlas/ICanvasTexAtlas";
 import IColor4 from "../../vox/material/IColor4";
 import { IUIConfig } from "./system/IUIConfig";
 import IRendererScene from "../../vox/scene/IRendererScene";
+import { IUIEntityContainer } from "./entity/IUIEntityContainer";
 
 interface ITextParam {
 
@@ -34,12 +35,13 @@ interface ICoUI {
 	createClipColorLabel(): IClipColorLabel;
 	createColorClipLabel(): IColorClipLabel;
 	createTextLabel(): ITextLabel;
-	
+
 	createButton(): IButton;
 	createFlagButton(): IFlagButton;
 	createSelectButtonGroup(): ISelectButtonGroup;
 	createTextButton(width: number, height: number, idns: string, texAtlas: ICanvasTexAtlas, textParam: ITextParam, colors: IColor4[]): IButton;
 
+	creatUIEntityContainer(): IUIEntityContainer;
 	createUIPanel(): IUIPanel;
 	createPromptPanel(): IPromptPanel;
 	/**

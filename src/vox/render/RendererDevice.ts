@@ -50,6 +50,10 @@ class RendererDevice {
     static SetLanguage(language: string): void {
         RendererDevice.s_language = language;
     }
+	static IsChineseLanguage(): boolean {
+		let lg = RendererDevice.GetLanguage();
+		return lg == "zh-CN";
+	}
     static GetLanguage(): string {
         if (RendererDevice.s_language != "") {
             return RendererDevice.s_language;

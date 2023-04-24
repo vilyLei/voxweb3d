@@ -2,7 +2,7 @@ import IRenderEntity from "../../../vox/render/IRenderEntity";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRenderNode from "../../../vox/scene/IRenderNode";
 import IOcclusionPostOutline from "../../../renderingtoy/mcase/outline/IOcclusionPostOutline";
-import { CoModuleLoader } from "..//utils/CoModuleLoader";
+import { CoModuleVersion, CoModuleLoader } from "..//utils/CoModuleLoader";
 
 import { IOccPostOutlineModule } from "../../renderEffect/outline/IOccPostOutlineModule";
 declare var OccPostOutlineModule: IOccPostOutlineModule;
@@ -12,7 +12,7 @@ class CoPostOutline implements IRenderNode {
 	private m_rscene: IRendererScene;
 	private m_postOutline: IOcclusionPostOutline;
 
-	constructor(rscene: IRendererScene) {
+	constructor(rscene: IRendererScene, verTool: CoModuleVersion = null) {
 
 		this.m_rscene = rscene;
 
@@ -24,7 +24,7 @@ class CoPostOutline implements IRenderNode {
 			this.initOutline();
 
 			this.m_rscene.appendRenderNode(this);
-		}).load(url);
+		}, verTool).load(url);
 	}
 
 	private initOutline(): void {

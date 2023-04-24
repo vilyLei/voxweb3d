@@ -12,6 +12,7 @@ import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NVEntityGroup } from "./NVEntityGroup";
 import { BoxLine3D } from "../../../edit/entity/BoxLine3D";
 import { CoEntityLayouter } from "../../common/CoEntityLayouter";
+import IRenderEntity from "../../../../vox/render/IRenderEntity";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -122,6 +123,14 @@ class NormalEntityGroup extends NVEntityGroup {
 		}
 
 		this.updateLayout(false);
+	}
+	getAllEntities(): IRenderEntity[] {
+		let nodes = this.m_nodes;
+		let entities: IRenderEntity[] = [];
+		for(let i = 0; i < nodes.length; ++i) {
+			entities.push(nodes[i].entity);
+		}
+		return entities;
 	}
 	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
 		this.m_loadedTotal++;

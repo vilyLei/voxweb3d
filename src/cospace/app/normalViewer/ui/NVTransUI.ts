@@ -20,6 +20,7 @@ import { ICoKeyboardInteraction } from "../../../voxengine/ui/ICoKeyboardInterac
 import { ICoTransformRecorder } from "../../../edit/recorde/ICoTransformRecorder";
 import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
+import { NormalEntityScene } from "../sc/NormalEntityScene";
 // import { CoTransformRecorder } from "../../../edit/recorde/CoTransformRecorder";
 
 declare var CoRScene: ICoRScene;
@@ -32,7 +33,6 @@ declare var CoUI: ICoUI;
  * NVTransUI
  */
 class NVTransUI {
-
 	private m_rsc: IRendererScene = null;
 	private m_editUIRenderer: IRendererScene = null;
 	private m_uirsc: IRendererScene = null;
@@ -45,17 +45,15 @@ class NVTransUI {
 	private m_entityQuery: NVRectFrameQuery = null;
 	private m_selectList: IRenderEntity[] = null;
 	private m_transBtns: IButton[] = [];
-
-	constructor() { }
+	entityScene: NormalEntityScene = null;
+	constructor() {}
 
 	setOutline(outline: CoPostOutline): void {
 		this.m_outline = outline;
 	}
 
 	initialize(rsc: IRendererScene, editUIRenderer: IRendererScene, coUIScene: ICoUIScene): void {
-
 		if (this.m_coUIScene == null) {
-
 			this.m_rsc = rsc;
 			this.m_editUIRenderer = editUIRenderer;
 			this.m_coUIScene = coUIScene;
@@ -70,7 +68,6 @@ class NVTransUI {
 		return this.m_coUIScene;
 	}
 	private init(): void {
-
 		this.m_rsc.addEventListener(CoRScene.KeyboardEvent.KEY_DOWN, this, this.keyDown);
 		this.m_rsc.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseClickListener);
 		this.m_rsc.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
@@ -104,14 +101,14 @@ class NVTransUI {
 		// console.log("ctrl-z, undo() begin.");
 		this.m_recoder.undo();
 		let list = this.m_recoder.getCurrList();
-		if(list != null) {
+		if (list != null) {
 			let flag = true;
-			for(let i = 0; i < list.length; ++i) {
-				if(!list[i].getVisible()) {
+			for (let i = 0; i < list.length; ++i) {
+				if (!list[i].getVisible()) {
 					flag = false;
 				}
 			}
-			if(flag) {
+			if (flag) {
 				this.selectEntities(list);
 			}
 		}
@@ -140,13 +137,11 @@ class NVTransUI {
 			let list = evt.currentTarget.getTargetEntities();
 			// console.log("editEnd(), save list: ", list);
 			this.m_recoder.saveEnd(list);
-
-		}else {
+		} else {
 			this.m_recoder.saveEnd(null);
 		}
 	}
 	private initUI(): void {
-
 		this.m_uirsc = this.m_coUIScene.rscene;
 
 		this.m_entityQuery = new NVRectFrameQuery();
@@ -169,7 +164,6 @@ class NVTransUI {
 
 	private m_btnGroup: ISelectButtonGroup;
 	private initTransUI(): void {
-
 		let uiScene = this.m_coUIScene;
 		let cfg = uiScene.uiConfig;
 		let uiCfg = cfg.getUIPanelCfgByName("transformCtrl");
@@ -180,7 +174,7 @@ class NVTransUI {
 		let btnNames = uiCfg.btnNames;
 		let keys = uiCfg.btnKeys;
 		let btnTypes = uiCfg.btnTypes!;
-		if(!btnTypes) {
+		if (!btnTypes) {
 			btnTypes = new Array(keys.length);
 			btnTypes.fill(0);
 		}
@@ -189,19 +183,30 @@ class NVTransUI {
 		let px = 5;
 		pw = uiCfg.btnSize[0];
 		ph = uiCfg.btnSize[1];
-		let py = uiScene.getStage().stageHeight - ph * 5 - 200;
+		// let py = uiScene.getStage().stageHeight - ph * 5 - 200;
+		let py = 0;
 		let defaultKey = "";
+		let uiContainer = CoUI.creatUIEntityContainer();
+		uiContainer.initContainer();
 		for (let i = 0; i < btnNames.length; ++i) {
 			const btn = ButtonBuilder.createPanelBtnWithCfg(uiScene, px, py - ph * i, i, uiCfg);
-			this.m_coUIScene.addEntity(btn, 1);
+			console.log("XXXXXXXXX uiContainer: ", uiContainer);
+			// this.m_coUIScene.addEntity(btn, 1);
+			uiContainer.addEntity(btn);
 			this.m_transBtns.push(btn);
 			if (btnTypes[i] == 1) {
-				if(defaultKey == "") {
+				if (defaultKey == "") {
 					defaultKey = keys[i];
 				}
 				this.m_btnGroup.addButton(btn);
+			} else {
+				btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
 			}
 		}
+		this.m_coUIScene.addEntity(uiContainer, 1);
+		let layouter = uiScene.layout.createLeftTopLayouter();
+		uiContainer.setY(uiScene.getStage().stageHeight - ph * 5);
+		layouter.addUIEntity(uiContainer);
 
 		this.m_btnGroup.setSelectedFunction(
 			(btn: IButton): void => {
@@ -212,22 +217,34 @@ class NVTransUI {
 				cfg.applyButtonGlobalColor(btn, "common");
 			}
 		);
-		if(defaultKey != "") {
+		if (defaultKey != "") {
 			this.m_btnGroup.select(defaultKey);
 		}
 	}
+	private btnMouseUpListener(evt: any): void {
+		console.log("evt.uuid: ", evt.uuid);
+		switch (evt.uuid) {
+			case "select_all":
+				console.log("select all...");
+				let list = this.entityScene.getAllEntities();
+				this.selectEntities( list );
+				break;
+			case "select":
+				console.log("select...");
+				break;
+			default:
+				break;
+		}
+	}
 	private uiMouseDownListener(evt: any): void {
-
 		this.m_selectFrame.begin(evt.mouseX, evt.mouseY);
 		// console.log("NVTransUI::uiMouseDownListener(), evt: ", evt);
 		// console.log("ui down (x, y): ", evt.mouseX, evt.mouseY);
 	}
 	private uiMouseUpListener(evt: any): void {
-
 		// console.log("NVTransUI::uiMouseUpListener(), evt: ", evt);
 
 		if (this.m_selectFrame.isSelectEnabled()) {
-
 			let b = this.m_selectFrame.bounds;
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
 			this.selectEntities(list);
@@ -240,12 +257,8 @@ class NVTransUI {
 		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
 	}
 	private selectTrans(uuid: string): void {
+		console.log("selectTrans(), uuid: ", uuid);
 		switch (uuid) {
-
-			case "select_all":
-				// this.m_transCtr.toTranslation();
-
-				break;
 			case "move":
 				this.m_transCtr.toTranslation();
 				break;
@@ -265,7 +278,6 @@ class NVTransUI {
 		}
 	}
 	private keyDown(evt: any): void {
-
 		// console.log("NVTransUI::keyDown() ..., evt.keyCode: ", evt.keyCode);
 
 		let KEY = CoRScene.Keyboard;
@@ -284,7 +296,7 @@ class NVTransUI {
 		}
 	}
 	private m_selectListeners: ((list: IRenderEntity[]) => void)[] = [];
-	private m_selectFilter: ((list: IRenderEntity[]) => IRenderEntity[]) = null;
+	private m_selectFilter: (list: IRenderEntity[]) => IRenderEntity[] = null;
 	addSelectFilter(filter: (list: IRenderEntity[]) => IRenderEntity[]): void {
 		this.m_selectFilter = filter;
 	}
@@ -303,8 +315,7 @@ class NVTransUI {
 	selectEntities(list: IRenderEntity[]): void {
 		this.m_selectList = list;
 		if (list != null && list.length > 0) {
-
-			if(this.m_selectFilter != null) {
+			if (this.m_selectFilter != null) {
 				list = this.m_selectFilter(list);
 				this.m_selectList = list;
 				if (list == null || list.length < 1) {
@@ -332,7 +343,6 @@ class NVTransUI {
 		}
 	}
 	private mouseUpListener(evt: any): void {
-
 		// console.log("NVTransUI::mouseUpListener() ...");
 		if (this.m_transCtr != null) {
 			this.m_transCtr.decontrol();
@@ -342,7 +352,6 @@ class NVTransUI {
 		this.deselect();
 	}
 	deselect(): void {
-
 		this.m_selectList = null;
 		if (this.m_transCtr != null) {
 			this.m_transCtr.disable();
@@ -352,12 +361,10 @@ class NVTransUI {
 		this.sendSelectList(null);
 	}
 	run(): void {
-
 		if (this.m_transCtr != null) {
 			this.m_transCtr.run();
 		}
 	}
-
 }
 
 export { NVTransUI };

@@ -28,6 +28,7 @@ import { TipsSystem } from "./system/TipsSystem";
 import { IUIConfig } from "./system/IUIConfig";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import { PanelSystem } from "./system/PanelSystem";
+import { UIEntityContainer } from "./entity/UIEntityContainer";
 declare var CoMaterial: ICoMaterial;
 
 function createColorLabel(): ColorLabel {
@@ -64,7 +65,9 @@ function createTextButton(width: number, height: number, idns: string, texAtlas:
 	return ButtonBuilder.createTextButton(width, height, idns, texAtlas, textParam, colors);
 }
 
-
+function creatUIEntityContainer(): UIEntityContainer {
+	return new UIEntityContainer();
+}
 function createUIPanel(): UIPanel {
 	return new UIPanel();
 }
@@ -112,7 +115,7 @@ export {
 	createFlagButton,
 	createSelectButtonGroup,
 	createTextButton,
-
+	creatUIEntityContainer,
 	createUIPanel,
 	createPromptPanel,
 	createUIScene

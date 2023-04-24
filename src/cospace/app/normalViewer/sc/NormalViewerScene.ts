@@ -37,6 +37,7 @@ class NormalViewerScene {
 			this.m_transUI = transUI;
 
 			this.entityScene = new NormalEntityScene(uiscene, coapp);
+			transUI.entityScene = this.entityScene;
 			this.m_entityManager = this.entityScene.entityManager;
 			this.initUI();
 			this.entityScene.transUI = transUI;
@@ -55,7 +56,7 @@ class NormalViewerScene {
 		panel.initialize(this.m_uiscene, 0, plSize[0], plSize[1], btnSize[0], btnSize[1]);
 		// panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 		panel.setBGColor( cfg.createColorByData(uimodule.bgColor) );
-		
+
 		panel.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectDisplay);
 		panel.addEventListener(CoRScene.ProgressDataEvent.PROGRESS, this, this.normalScale);
 		this.normalCtrPanel = panel;

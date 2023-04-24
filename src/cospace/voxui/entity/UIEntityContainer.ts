@@ -17,6 +17,9 @@ class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 			this.m_rcontainer = CoRScene.createDisplayEntityContainer();
 		}
 	}
+	initContainer(): void {
+		this.init();
+	}
 	protected addedEntity(entity: IUIEntity): void {
 
 	}
@@ -81,7 +84,7 @@ class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 	localToGlobal(pv: IVector3D): void {
 		this.m_rcontainer.localToGlobal(pv);
 	}
-	getEneitysTotal(): number {
+	getEntitiesTotal(): number {
 		return this.m_uientities.length;
 	}
 }

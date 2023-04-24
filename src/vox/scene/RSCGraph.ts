@@ -57,6 +57,10 @@ export default class RSCGraph implements IRendererSceneGraph {
 		if (i >= 0 && i < this.m_nodes.length) return this.m_nodes[i].getRScene();
 		return null;
 	}
+	getMainRendererScene(): IRendererScene {
+		if (this.m_nodes.length > 0) return this.m_nodes[0].getRScene();
+		return null;
+	}
 	createRendererParam(div: HTMLDivElement = null): IRendererParam {
 		return new RendererParam(div);
 	}
