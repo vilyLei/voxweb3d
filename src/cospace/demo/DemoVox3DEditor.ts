@@ -210,7 +210,7 @@ export class DemoVox3DEditor {
 		}else {
 			cfgUrl = "static/apps/normalViewer/ui/en-US/uicfg.json";
 		}
-		uiConfig.initialize(cfgUrl, (): void => {
+		uiConfig.initialize(cfgUrl + "?ver="+Date.now(), (): void => {
 
 			this.m_coUIScene = CoUI.createUIScene( uiConfig, this.m_rsc, 512, 5 );
 			let coui = this.m_coUIScene;
