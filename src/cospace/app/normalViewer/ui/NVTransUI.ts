@@ -46,7 +46,7 @@ class NVTransUI {
 	private m_selectList: IRenderEntity[] = null;
 	private m_transBtns: IButton[] = [];
 	entityScene: NormalEntityScene = null;
-	constructor() {}
+	constructor() { }
 
 	setOutline(outline: CoPostOutline): void {
 		this.m_outline = outline;
@@ -90,13 +90,21 @@ class NVTransUI {
 		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlYDown);
 		type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Z]);
 		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlZDown);
+		type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.A]);
+		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlADown);
 
 		this.m_recoder = CoEdit.createTransformRecorder();
 		// this.m_recoder = new CoTransformRecorder();
 
 		this.initUI();
 	}
-
+	selectAll(): void {
+		let list = this.entityScene.getAllEntities();
+		this.selectEntities(list);
+	}
+	private keyCtrlADown(evt: any): void {
+		this.selectAll();
+	}
 	private keyCtrlZDown(evt: any): void {
 		// console.log("ctrl-z, undo() begin.");
 		this.m_recoder.undo();
@@ -226,8 +234,7 @@ class NVTransUI {
 		switch (evt.uuid) {
 			case "select_all":
 				console.log("select all...");
-				let list = this.entityScene.getAllEntities();
-				this.selectEntities( list );
+				this.selectAll();
 				break;
 			case "select":
 				console.log("select...");
