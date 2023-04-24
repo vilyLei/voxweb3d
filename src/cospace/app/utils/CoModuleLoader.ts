@@ -71,6 +71,9 @@ class CoModuleLoader extends ModuleLoader {
 				}
 				console.log("urlChecker(), fileName:-"+fileName+"-");
 				console.log("urlChecker(), new url: ", url);
+				if(versionFilter) {
+					url = versionFilter.filterUrl( url );
+				}
 				return url;
 			}
 			if(versionFilter) {
