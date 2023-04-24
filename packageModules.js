@@ -67,7 +67,7 @@ function packageCoSpaceApp() {
 	}
 }
 
-let cospaceModules = ["coMath", "coAGeom", "coMaterial", "coText","coMesh","coTexture","coEntity","coEdit","coParticle"];
+let cospaceModules = ["coMath", "coAGeom", "coMaterial", "coText","coMesh","coTexture","coEntity","coEdit","coParticle", "coUI"];
 if(!isAll) {
 	cospaceModules = ["coMesh","coMaterial","coEntity"];
 }
