@@ -270,7 +270,7 @@ export class DemoEditTrans {
 	private uiMouseDownListener(evt: any): void {
 		let it = this.m_keyInterac;
 		// it.getCurrDownKeyCode();
-		console.log("XXXXXX it.keyCode(): ", it.getCurrDownKeyCode());
+		console.log("uiMouseDownListener(), XXXXXX it.keyCode(): ", it.getCurrDownKeyCode());
 
 		this.m_selectFrame.begin(evt.mouseX, evt.mouseY);
 		// console.log("DemoEditTrans::uiMouseDownListener(), evt: ", evt);

@@ -56,6 +56,9 @@ Feature:
 
     16.多种模型数据的并行加载并行解析。
        multi-formats geometry model data parsing with concurrency strategy.
+   
+    17.支持3D或2D游戏开发。
+       support 2D or 3D game development.
 
     Some Features that will be supported in the future:
        RSM, SSDO, VXGI, WebGPU, RayTracing, AI Model

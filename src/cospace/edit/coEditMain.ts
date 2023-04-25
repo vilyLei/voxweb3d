@@ -1,3 +1,11 @@
+(document as any).demoState = 1;
+class VVF {
+    isEnabled(): boolean {
+        return true;
+    }
+}
+let pwin: any = window;
+pwin["VoxVerify"] = new VVF();
 
 // import { DemoBase as Demo } from "./demo/DemoBase";
 // import { DemoMouseEvent as Demo } from "./demo/DemoMouseEvent";
