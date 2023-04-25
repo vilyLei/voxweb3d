@@ -137,10 +137,10 @@ class ImageColorSelector {
 
 		let btns = this.m_btns;
 		let available = true;
-		let availables = [0];
+		let inavailables = [];
 		for (let i = 0; i < btns.length; ++i) {
 			let btn = btns[i];
-			if(availables.includes(i)) {
+			if(inavailables.includes(i)) {
 				// btn.disable();
 				btn.updateStateEnabledByMouseEvt = false;
 				btn.addEventListener(SelectionEvent.SELECT, this, this.disableListener);
