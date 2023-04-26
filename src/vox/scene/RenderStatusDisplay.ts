@@ -3,12 +3,11 @@
 /*  Copyright 2018-2022 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
+/***************************************************************************/
 
 import EventBase from "../event/EventBase";
 import IEventBase from "../event/IEventBase";
 import IRendererScene from "./IRendererScene";
-
-/***************************************************************************/
 
 class RenderStatusDisplay {
     private m_rsc: IRendererScene;
