@@ -45,21 +45,18 @@ import {
 	IGLStencilOp,
 	IGLBlendMode,
 	IGLBlendEquation,
-
 	ICoRenderer
  } from "./ICoRenderer";
 
 import { CoMaterialPipeType, CoMaterialContextParam, CoShaderCodeUUID, CoProgressDataEvent, CoSelectionEvent, COEventBase, CoVec3, CoTextureConst, CoRenderDrawMode, ICoRScene } from "./ICoRScene";
 import { VoxRenderer } from "./VoxRenderer";
 import IVtxDrawingInfo from "../../vox/render/vtx/IVtxDrawingInfo";
-import IRenderer from "../../vox/scene/IRenderer";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 
 interface I_CoRScene {
 }
-
 
 var RendererDevice: CoRendererDevice = null;
 var SelectionEvent: CoSelectionEvent = null;
@@ -68,6 +65,8 @@ var MouseEvent: ICoMouseEvent = null;
 var EventBase: COEventBase = null;
 var RendererState: CoRendererState = null;
 var TextureConst: CoTextureConst = null;
+var Keyboard: ICoKeyboard = null;
+var KeyboardEvent: ICoKeyboardEvent = null;
 
 var RenderDrawMode: IRenderDrawMode = null;
 var CullFaceMode: ICullFaceMode = null;
@@ -81,24 +80,29 @@ var GLBlendEquation: IGLBlendEquation = null;
 class T_CoRScene {
 	private m_init = true;
 	private init(): void {
+		const RC = CoRScene;
+		const RD = CoRenderer;
 
-		if (typeof CoRScene !== "undefined") {
-			RendererDevice = CoRScene.RendererDevice;
-			SelectionEvent = CoRScene.SelectionEvent;
-			ProgressDataEvent = CoRScene.ProgressDataEvent;
-			EventBase = CoRScene.EventBase;
-			MouseEvent = CoRScene.MouseEvent;
-			RendererState = CoRScene.RendererState;
-			TextureConst = CoRScene.TextureConst;
+		if (typeof RC !== "undefined") {
 
-			RenderDrawMode = CoRenderer.RenderDrawMode;
-			CullFaceMode = CoRenderer.CullFaceMode;
-			DepthTestMode = CoRenderer.DepthTestMode;
-			RenderBlendMode = CoRenderer.RenderBlendMode;
-			GLStencilFunc = CoRenderer.GLStencilFunc;
-			GLStencilOp = CoRenderer.GLStencilOp;
-			GLBlendMode = CoRenderer.GLBlendMode;
-			GLBlendEquation = CoRenderer.GLBlendEquation;
+			RendererDevice = RC.RendererDevice;
+			SelectionEvent = RC.SelectionEvent;
+			ProgressDataEvent = RC.ProgressDataEvent;
+			EventBase = RC.EventBase;
+			MouseEvent = RC.MouseEvent;
+			RendererState = RC.RendererState;
+			TextureConst = RC.TextureConst;
+			Keyboard = RC.Keyboard;
+			KeyboardEvent = RC.KeyboardEvent;
+
+			RenderDrawMode = RD.RenderDrawMode;
+			CullFaceMode = RD.CullFaceMode;
+			DepthTestMode = RD.DepthTestMode;
+			RenderBlendMode = RD.RenderBlendMode;
+			GLStencilFunc = RD.GLStencilFunc;
+			GLStencilOp = RD.GLStencilOp;
+			GLBlendMode = RD.GLBlendMode;
+			GLBlendEquation = RD.GLBlendEquation;
 		}
 	}
 	initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
@@ -413,6 +417,8 @@ export {
 	GLBlendMode,
 	GLBlendEquation,
 
+	Keyboard,
+	KeyboardEvent,
 	RendererState,
 	TextureConst,
 	MouseEvent, EventBase, ProgressDataEvent, SelectionEvent, RendererDevice, VoxRScene };
