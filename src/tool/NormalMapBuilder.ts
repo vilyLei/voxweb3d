@@ -127,6 +127,8 @@ export class NormalMapBuilder {
 
 			this.buildMapFBO();
 			this.initMaterialCtx();
+			
+			document.body.style.overflow = "hidden";
 		}
 	}
 
