@@ -24,6 +24,7 @@ interface IEntityTransform {
     getLocalBounds(): IAABB;
     update(): void;
     destroy(): void;
+	transFlag?: number;
 }
 
 export default IEntityTransform;
