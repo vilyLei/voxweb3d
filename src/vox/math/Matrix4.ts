@@ -25,9 +25,6 @@ class Matrix4 implements IMatrix4 {
 	private static s_isolatedUid: number = 0x4ffff;
 	private m_uid: number = -1;
 	private static s_tMat4: Matrix4 = new Matrix4();
-	private _mvx = new Vector3D();
-	private _mvy = new Vector3D();
-	private _mvz = new Vector3D();
 	private m_index: number = 0;
 	private m_fs32: Float32Array = null;
 	private m_localFS32: Float32Array = null;
@@ -759,7 +756,7 @@ class Matrix4 implements IMatrix4 {
 	 * @param orientationStyle the value example: OrientationType.EULER_ANGLES
 	 * @returns [position, rotation, scale]
 	 */
-	decompose(orientationStyle: number): Vector3D[] {
+	decompose(orientationStyle: number = OrientationType.EULER_ANGLES): Vector3D[] {
 		// TODO: optimize after 4 lines
 		let vec = [];
 		let mr = Matrix4.s_tMat4;
