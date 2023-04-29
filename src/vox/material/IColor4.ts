@@ -61,6 +61,11 @@ interface IColor4 {
      */
     setRGBUint24(rgbUint24: number): IColor4;
     /**
+     * @param argbUint32 example: 0xFFFF88cc
+     */
+    setARGBUint32(argbUint32: number): IColor4;
+    getARGBUint32(): number;
+    /**
      * @param r example: 40
      * @param g example: 50
      * @param b example: 60

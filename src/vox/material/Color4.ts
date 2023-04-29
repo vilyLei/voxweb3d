@@ -89,13 +89,29 @@ class Color4 implements IColor4 {
     //     return this;
     // }
     setRGBUint24(rgbUint24: number): Color4 {
-        this.r = ((rgbUint24 >> 16) & 0x0000ff) / 255.0;
-        this.g = ((rgbUint24 >> 8) & 0x0000ff) / 255.0;
-        this.b = (rgbUint24 & 0x0000ff) / 255.0;
+        const bit = 0xff;
+        this.r = ((rgbUint24 >> 16) & bit) / 255.0;
+        this.g = ((rgbUint24 >> 8) & bit) / 255.0;
+        this.b = (rgbUint24 & bit) / 255.0;
         return this;
     }
     getRGBUint24(): number {
         return (Math.round(this.r * 255) << 16) + (Math.round(this.g * 255) << 8) + Math.round(this.b * 255);
+    }
+    
+    /**
+     * @param argbUint32 example: 0xFFFF88cc
+     */
+    setARGBUint32(argbUint32: number): IColor4 {
+        const bit = 0xff;
+        this.r = ((argbUint32 >> 16) & bit) / 255.0;
+        this.g = ((argbUint32 >> 8) & bit) / 255.0;
+        this.b = (argbUint32 & bit) / 255.0;
+        this.a = ((argbUint32 >> 24) & bit) / 255.0;
+        return this;
+    }
+    getARGBUint32(): number {
+        return (Math.round(this.a * 255) << 24) + (Math.round(this.r * 255) << 16) + (Math.round(this.g * 255) << 8) + Math.round(this.b * 255);
     }
     setRGBA4f(r: number, g: number, b: number, a: number): Color4 {
         this.r = r;
