@@ -16,6 +16,7 @@ import AABB2D from "../geom/AABB2D";
 import { IRAdapterContext } from "./IRAdapterContext";
 import IRendererParam from "../scene/IRendererParam";
 
+declare var OffscreenCanvas : any;
 class RAdapterContext implements IRAdapterContext {
 
     private m_sysEvt = new ContextMouseEvtDispatcher();
@@ -476,7 +477,7 @@ class RAdapterContext implements IRAdapterContext {
             // console.log("updateRenderBufferSize() rect.width, rect.height: ", rect.width, rect.height);
             // this.m_canvas.style.width = Math.floor(rect.width) + 'px';
             // this.m_canvas.style.height = Math.floor(rect.height) + 'px';
-            rect = div.getBoundingClientRect();
+            // rect = div.getBoundingClientRect();
             this.resizeBufferSize(rect.width, rect.height);
         } else {
             const canvas = this.m_offcanvas ? this.m_offcanvas : this.m_canvas;

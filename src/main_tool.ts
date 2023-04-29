@@ -13,7 +13,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {RemoveBlackBG as Demo} from "./tool/RemoveBlackBG";
 
-//  import {RemoveBlackBG2 as Demo} from "./tool/RemoveBlackBG2";
+ import {RemoveBlackBG2 as Demo} from "./tool/RemoveBlackBG2";
 
 //  import {DemoBgRTT as Demo} from "./tool/DemoBgRTT";
 
@@ -21,7 +21,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {NormalMapVerifier2 as Demo} from "./tool/NormalMapVerifier2";
 
- import {NormalMapBuilder as Demo} from "./tool/NormalMapBuilder";
+//  import {NormalMapBuilder as Demo} from "./tool/NormalMapBuilder";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////     html    //////////////////////////////////
