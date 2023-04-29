@@ -23,7 +23,7 @@ class ImgBtn {
     }
     getRect(): DOMRect {
 
-        let rect = this.m_div.getBoundingClientRect();
+        let rect = this.m_div.getBoundingClientRect() as DOMRect;
         return rect;
 
     }
