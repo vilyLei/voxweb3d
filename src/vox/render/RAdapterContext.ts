@@ -473,11 +473,12 @@ class RAdapterContext implements IRAdapterContext {
     updateRenderBufferSize(sync: boolean = true): void {
         const div = this.m_div;
         if (div.parentElement) {
-            let rect = div.getBoundingClientRect();
+            // let rect = div.getBoundingClientRect();
             // console.log("updateRenderBufferSize() rect.width, rect.height: ", rect.width, rect.height);
             // this.m_canvas.style.width = Math.floor(rect.width) + 'px';
             // this.m_canvas.style.height = Math.floor(rect.height) + 'px';
             // rect = div.getBoundingClientRect();
+            let rect = div.getBoundingClientRect();
             this.resizeBufferSize(rect.width, rect.height);
         } else {
             const canvas = this.m_offcanvas ? this.m_offcanvas : this.m_canvas;

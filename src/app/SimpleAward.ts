@@ -7,8 +7,8 @@ export class SimpleAward {
     initialize(): void {
         console.log("SimpleAward::initialize()......");
         let url: string = location.href + "";
-        
-        if(url.indexOf("artvily.") > 0) {
+
+        if (url.indexOf("artvily.") > 0) {
             this.m_host = "http://www.artvily.com:9090/";
         }
         this.initUI();
@@ -16,46 +16,96 @@ export class SimpleAward {
     private createDiv(): HTMLDivElement {
         let div = document.createElement("div");
         const style = div.style;
-		style.display = "bolck";
-		style.position = "absolute";
+        style.display = "bolck";
+        style.position = "absolute";
 
-		if (style.left == "") {
-			style.left = "0px";
-			style.top = "0px";
-		}
+        if (style.left == "") {
+            style.left = "0px";
+            style.top = "0px";
+        }
         style.width = "100%";
         style.height = "100%";
         return div;
     }
+    private m_div: HTMLDivElement = null;
+    private m_voxImg: HTMLImageElement = null;
+    private m_awardImg: HTMLImageElement = null;
     private initUI(): void {
 
         let div = this.createDiv();
-        htmlBody.appendChild( div );
-        
-		var pdocument: any = null;
+        this.m_div = div;
+        htmlBody.appendChild(div);
+
+        var pdocument: any = null;
         var pwindow: any = null;
         if (document) {
-			pdocument = document;
-			pwindow = window;
-			pdocument.onmouseup = (evt: any): void => {
-			}
-		}
-		if(pwindow) {
-			pwindow.onresize = (evt: any): void => {
-                let rect = div.getBoundingClientRect();
-                this.upateLayout( rect );
-			}
-		}
+            pdocument = document;
+            pwindow = window;
+            pdocument.onmouseup = (evt: any): void => {
+            }
+        }
+        if (pwindow) {
+            pwindow.onresize = (evt: any): void => {
+                this.upateLayout();
+            }
+        }
+        htmlBody.style.background = "#555555";
+        // let voxImg = new Image();
+        // voxImg.onload = (evt: any): void => {
+        //     this.upateLayout();
+        // }
+        // voxImg.src = "static/assets/ui/vox.png";
+        // this.m_voxImg = voxImg;
 
+        // div.appendChild(voxImg);
+        this.m_voxImg = this.createImg("static/assets/ui/vox.png");
+        this.m_awardImg = this.createImg("static/assets/ui/award.png");
+    }
+    private createImg(url: string): HTMLImageElement {
         let voxImg = new Image();
         voxImg.onload = (evt: any): void => {
-
+            this.upateLayout();
         }
-        voxImg.src = "static/assets/ui/vox.png";
-        div.appendChild(voxImg);
-    }
-    private upateLayout(rect: any): void {
+        // voxImg.src = "static/assets/ui/vox.png";
+        voxImg.src = url;
 
+        this.m_div.appendChild(voxImg);
+        return voxImg;
+    }
+    //"static/assets/ui/award.png"
+    private upateLayout(): void {
+        let rect = this.m_div.getBoundingClientRect();
+        let viewWidth = rect.width;
+        let viewHeight = rect.height;
+        // this.m_voxImg
+        console.log("rect: ", rect);
+        console.log("viewWidth: ", viewWidth);
+        
+        let tx = 0;
+        let ty = 0;
+        if (this.m_voxImg) {
+            let img = this.m_voxImg;
+            tx = viewWidth - img.width - 20;
+            ty = 20;
+            let style = img.style;
+            style.position = "absolute";
+            style.left = tx + "px";
+            style.top = ty + "px";
+        }
+        if (this.m_awardImg) {
+            let img = this.m_awardImg;
+            if(this.m_voxImg) {
+                tx = tx + 0.5 * this.m_voxImg.width - 0.5 * img.width;
+                ty = 20 + this.m_voxImg.height + 20;
+            }else {
+                tx = viewWidth - img.width - 20;
+                ty = 20;
+            }
+            let style = img.style;
+            style.position = "absolute";
+            style.left = tx + "px";
+            style.top = ty + "px";
+        }
     }
     private m_demoBodyDiv: HTMLDivElement = null;
     private m_infoDiv: HTMLDivElement = null;
