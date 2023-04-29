@@ -30,6 +30,7 @@ export class SimpleAward {
     private m_div: HTMLDivElement = null;
     private m_voxImg: HTMLImageElement = null;
     private m_awardImg: HTMLImageElement = null;
+    private m_backImg: HTMLImageElement = null;
     private initUI(): void {
 
         let div = this.createDiv();
@@ -60,11 +61,15 @@ export class SimpleAward {
         // div.appendChild(voxImg);
         this.m_voxImg = this.createImg("static/assets/ui/vox.png");
         this.m_awardImg = this.createImg("static/assets/ui/award.png");
+        this.m_backImg = this.createImg("static/assets/ui/back.png");
     }
     private createImg(url: string): HTMLImageElement {
         let voxImg = new Image();
         voxImg.onload = (evt: any): void => {
             this.upateLayout();
+        }
+        voxImg.onclick = (evt: any): void => {
+            console.log("img click() ...");
         }
         // voxImg.src = "static/assets/ui/vox.png";
         voxImg.src = url;
@@ -72,7 +77,6 @@ export class SimpleAward {
         this.m_div.appendChild(voxImg);
         return voxImg;
     }
-    //"static/assets/ui/award.png"
     private upateLayout(): void {
         let rect = this.m_div.getBoundingClientRect();
         let viewWidth = rect.width;
@@ -80,32 +84,39 @@ export class SimpleAward {
         // this.m_voxImg
         console.log("rect: ", rect);
         console.log("viewWidth: ", viewWidth);
-        
+
         let tx = 0;
         let ty = 0;
         if (this.m_voxImg) {
             let img = this.m_voxImg;
             tx = viewWidth - img.width - 20;
             ty = 20;
-            let style = img.style;
-            style.position = "absolute";
-            style.left = tx + "px";
-            style.top = ty + "px";
+            this.setImgXY(img, tx, ty);
         }
         if (this.m_awardImg) {
             let img = this.m_awardImg;
-            if(this.m_voxImg) {
+            if (this.m_voxImg) {
                 tx = tx + 0.5 * this.m_voxImg.width - 0.5 * img.width;
                 ty = 20 + this.m_voxImg.height + 20;
-            }else {
+            } else {
                 tx = viewWidth - img.width - 20;
                 ty = 20;
             }
-            let style = img.style;
-            style.position = "absolute";
-            style.left = tx + "px";
-            style.top = ty + "px";
+            this.setImgXY(img, tx, ty);
         }
+        if (this.m_backImg) {
+            let img = this.m_backImg;
+            tx = 20;
+            ty = 20;
+            this.setImgXY(img, tx, ty);
+        }
+    }
+    private setImgXY(img: HTMLImageElement, px: number, py: number): void {
+
+        let style = img.style;
+        style.position = "absolute";
+        style.left = px + "px";
+        style.top = py + "px";
     }
     private m_demoBodyDiv: HTMLDivElement = null;
     private m_infoDiv: HTMLDivElement = null;
