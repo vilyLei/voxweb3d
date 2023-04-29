@@ -76,6 +76,14 @@ class UIHTMLInfo {
 				div.style.left = tx + "px";
 				div.style.top = ty + "px";
 			}
+			if (this.m_versionDiv) {
+				let div = this.m_versionDiv;
+				let docrect = div.getBoundingClientRect();
+				let tx = (st.viewWidth - docrect.width) * 0.5;
+				let ty = st.viewHeight - docrect.height * 2.0;
+				div.style.left = tx + "px";
+				div.style.top = ty + "px";
+			}
 			if(this.m_areaInfoDiv) {
 				let div = this.m_areaInfoDiv;
 				let docrect = div.getBoundingClientRect();
@@ -118,6 +126,7 @@ class UIHTMLInfo {
 			this.m_introDiv = pdiv;
 		}
 		this.initWithMeDiv();
+		this.initVersionDiv();
 	}
 	private initWorkAreaInfoDiv(): void {
 
@@ -158,6 +167,7 @@ class UIHTMLInfo {
 		return pstr;
 	}
 	private m_contactWithMeDiv: HTMLDivElement = null;
+	private m_versionDiv: HTMLDivElement = null;
 	private initWithMeDiv(): void {
 		let div = document.createElement("div");
 		div.style.color = "";
@@ -175,6 +185,21 @@ class UIHTMLInfo {
 		document.body.appendChild(pdiv);
 		pdiv.innerHTML = `<font color='${fontColor}'>Contacts with me: vily313@126.com</font>`;
 		this.m_contactWithMeDiv = pdiv;
+	}
+	private initVersionDiv(): void {
+		let div = document.createElement("div");
+		div.style.color = "";
+		let pdiv: any = div;
+		let fontColor = "#888888";
+		div.style.fontSize = "10pt";
+		div.style.textAlign = "center";
+		div.style.left = 10 + "px";
+		div.style.top = 10 + "px";
+		div.style.zIndex = "99999";
+		div.style.position = "absolute";
+		document.body.appendChild(pdiv);
+		pdiv.innerHTML = `<font color='${fontColor}'>试用版 1.01</font>`;
+		this.m_versionDiv = pdiv;
 	}
 	createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
 		let div = document.createElement("div");
