@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -17,6 +17,7 @@ interface IUniformComp {
     reset(): void;
     destroy(): void;
     getUniqueNSKeyString(): string;
+	dataCopyFrom(src: IUniformComp): void;
     clone(): IUniformComp;
     getParams(): Float32Array;
     getParamsTotal(): number;

@@ -1,7 +1,7 @@
 
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -93,6 +93,10 @@ interface IShaderCodeUniform {
      * add ao, roughness, metalness map uniform code
      */
     addARMMap(): void;
+    /**
+     * add Index of Refraction values map uniform code
+     */
+    addIORMap(): void;
     /**
      * add sampler2d texture uniform code
      * @param macroName shader code macro define name, the default vaule is empty string

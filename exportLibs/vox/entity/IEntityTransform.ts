@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -24,6 +24,7 @@ interface IEntityTransform {
     getLocalBounds(): IAABB;
     update(): void;
     destroy(): void;
+	transFlag?: number;
 }
 
 export default IEntityTransform;

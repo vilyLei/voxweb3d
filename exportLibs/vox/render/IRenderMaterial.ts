@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -19,6 +19,7 @@ import IPassGraph from "./pass/IPassGraph";
 
 interface IRenderMaterial {
 
+	uuid: string;
     __$troMid: number;
     __$uniform: IRenderShaderUniform;
     /**
@@ -47,10 +48,10 @@ interface IRenderMaterial {
      * @param texEnabled the default value is false
      */
     initializeByCodeBuf(texEnabled: boolean): void;
-    
+
     setCases(ls: IRenderMaterial[]): void;
     getCases(): IRenderMaterial[];
-    
+
     getPolygonOffset(): number[];
     createSharedUniforms(): IRenderShaderUniform[];
     createSelfUniformData(): IShaderUniformData;

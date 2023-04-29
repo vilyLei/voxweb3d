@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -24,8 +24,8 @@ interface ITransformEntity extends IDisplayEntity{
     setScaleXYZ(sx: number, sy: number, sz: number): ITransformEntity;
     getRotationXYZ(pv?: IVector3D): IVector3D;
     getScaleXYZ(pv?: IVector3D): IVector3D;
-    localToGlobal(pv: IVector3D): void;
-    globalToLocal(pv: IVector3D): void;
+    localToGlobal(pv: IVector3D): IDisplayEntity;
+    globalToLocal(pv: IVector3D): IDisplayEntity;
 
     getGlobalBounds(): IAABB;
     getLocalBounds(): IAABB;

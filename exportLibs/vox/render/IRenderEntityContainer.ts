@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -64,8 +64,8 @@ export default interface IRenderEntityContainer extends IRenderEntityBase {
     getScaleXYZ(sv?: IVector3D): IVector3D;
     setScale3(sv: IVector3D): void;
 
-    localToGlobal(pv: IVector3D): void;
-    globalToLocal(pv: IVector3D): void;
+    // localToGlobal(pv: IVector3D): void;
+    // globalToLocal(pv: IVector3D): void;
     sphereIntersect(centerV: IVector3D, radius: number): boolean;
 
 	isSpaceEnabled(): boolean;

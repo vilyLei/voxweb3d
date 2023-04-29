@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -27,7 +27,10 @@ interface IShaderCodeBuffer {
     envAmbientLightEnabled: boolean;
     brightnessOverlayEnabeld: boolean;
     glossinessEnabeld: boolean;
-
+    /**
+     * the default value is true;
+     */
+    codeBuilderEnabled: boolean;
     pipeTypes: MaterialPipeType[];
     keysString: string;
 

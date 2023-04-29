@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -44,6 +44,7 @@ interface IRendererParam {
     batchEnabled: boolean;
     processFixedState: boolean;
 
+	sysEvtReceived: boolean;
     /**
      * @param   tickUpdateTime default value 50 ms delay
      */
@@ -59,6 +60,7 @@ interface IRendererParam {
     setAttriDepth(boo: boolean): void;
     setAttriStencil(boo: boolean): void;
     setAttriAlpha(boo: boolean): void;
+	getAttriAlpha(): boolean;
     setAttriPremultipliedAlpha(boo: boolean): void;
     setAttriAntialias(boo: boolean): void;
     setAttripreserveDrawingBuffer(boo: boolean): void;

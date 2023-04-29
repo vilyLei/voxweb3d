@@ -24,5 +24,6 @@ interface CoRendererDevice {
 	IsAndroidOS(): boolean;
 	SetLanguage(language: string): void;
     GetLanguage(): string;
+    IsChineseLanguage(): string;
 }
 export { CoRendererDevice };

@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -36,7 +36,7 @@ export default interface IAABB2D {
 	setTo(x: number, y: number, width: number, height: number): void;
 
 	setSize(width: number, height: number): void;
-	
+
     testEqual(dst: IAABB2D): boolean;
     testEqualWithParams(px: number, py: number, pw: number, ph: number): boolean;
 	update(): void;
@@ -45,4 +45,6 @@ export default interface IAABB2D {
 	getY(): number;
 	getRight(): number;
 	getTop(): number;
+	getCenterX(): number;
+	getCenterY(): number;
 }

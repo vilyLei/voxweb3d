@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -30,6 +30,7 @@ interface IRenderTexture extends IRenderBuffer {
     setWrap(wrap: number): void;
     isGpuEnabled(): boolean;
     isDataEnough(): boolean;
+	dataEnoughListener: () => void;
     isDirect(): boolean;
     getUid(): number;
     getResUid(): number;
@@ -53,10 +54,11 @@ interface IRenderTexture extends IRenderBuffer {
      * @param rc the default value is null
      * @param deferred the default value is true
      */
-    updateDataToGpu(rc?: IRenderProxy, deferred?: boolean): void;/**
-    * @returns This textureProxy instance has been destroyed.
-    */
-   isDestroyed(): boolean;
+    updateDataToGpu(rc?: IRenderProxy, deferred?: boolean): void;
+	/**
+     * @returns This textureProxy instance has been destroyed.
+     */
+   	isDestroyed(): boolean;
 
     __$setRenderProxy(rc: IRenderProxy): void
     __$attachThis(): void;

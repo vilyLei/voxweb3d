@@ -9,6 +9,8 @@ import EventBase from "../event/EventBase";
 import IEventBase from "../event/IEventBase";
 import IRendererScene from "./IRendererScene";
 
+// import { ICoRScene } from "../../cospace/voxengine/ICoRScene";
+// declare var CoRScene: ICoRScene;
 class RenderStatusDisplay {
     private m_rsc: IRendererScene;
     private m_lastTime = 0;

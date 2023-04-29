@@ -1,12 +1,11 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
 
 import IVector3D from "../../vox/math/IVector3D";
-// import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderProxy from "../../vox/render/IRenderProxy";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
