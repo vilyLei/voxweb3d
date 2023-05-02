@@ -43,7 +43,41 @@ class ImageFileReader {
 			});
 			this.createAEntityByTexUrl("static/assets/guangyun_40.jpg");
 			this.m_dropController.initialize(document.body, this);
+			this.initPaste();
 		}
+	}
+	private initPaste(): void {
+		let pwin: any = window;
+		// const el = document.getElementById('past-contener');
+		let div = document.createElement("div");
+		div.style.zIndex = "99999";
+		div.style.position = "absolute";
+		div.style.background = "#bbbbbb";
+		div.innerHTML = "点击粘贴图片:";
+		document.body.appendChild(div);
+		let el = div;
+		el.contentEditable = "true";
+		console.log("##### pwin.clipboardData: ", pwin.clipboardData);
+		// 此事件监听也可以添加在document上，该事件会有冒泡行为，则本页面上任何地方的粘贴操作都会触发
+		el.addEventListener('paste', (e: any) : void => {
+
+			console.log("##### ImageFileReader::initPaste(), e: ", e);
+
+			let file = null;
+			const items = (e.clipboardData || pwin.clipboardData).items;
+			if (items && items.length) {
+				for (var i = 0; i < items.length; i++) {
+					if (items[i].type.indexOf('image') !== -1) {
+						file = items[i].getAsFile();
+						break;
+					}
+				}
+			}
+			if (file) {
+				console.log(file);
+				// 此时获取到file文件对象，即可处理上传相关处理
+			}
+		});
 	}
 
 	private openDir(): void {
@@ -114,7 +148,7 @@ class ImageFileReader {
 		this.m_currMaterial = material;
 	}
 	private uiInited(): void {
-		if(this.m_currEntity) {
+		if (this.m_currEntity) {
 			this.m_currEntity.setVisible(true);
 		}
 	}
