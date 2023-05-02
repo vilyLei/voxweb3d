@@ -59,9 +59,6 @@ class UIHTMLInfo {
 				let div = this.m_introDiv;
 				let docrect = div.getBoundingClientRect();
 
-				// let tx = (st.viewWidth - docrect.width) * 0.5 - drpK * 0.5 * 512;
-				// let ty = (st.viewHeight - docrect.height) * 0.5 + drpK * 0.5 * 512 + 0.5 * docrect.height;
-
 				let tx = pr.getCenterX() - (docrect.width + pr.height) * 0.5;
 				let ty = pr.getCenterY() + pr.height * 0.5;
 
