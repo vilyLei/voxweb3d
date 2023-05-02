@@ -58,7 +58,11 @@ class AlphaOperationUI {
 			this.uiBuilder.initialize(graph);
 		}
 	}
-
+	saveImage(): void {
+		if (this.m_savingCall) {
+			this.m_savingCall();
+		}
+	}
 	private m_currMaterial: RemoveBlackBGMaterial2 = null;
 	private m_initUI = true;
 	private m_savingCall: () => void = null;
@@ -274,13 +278,11 @@ class AlphaOperationUI {
 		let resetBtn = this.uiBuilder.resetBtn;
 		let saveBtn = this.uiBuilder.saveBtn;
 		let addIntoBtn = this.uiBuilder.addIntoBtn;
-		resetBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, (evt: any): void => {
+		resetBtn.addEventListener(MouseEvent.MOUSE_UP, this, (evt: any): void => {
 			this.resetCtrlValue();
 		});
-		saveBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, (evt: any): void => {
-			if (this.m_savingCall) {
-				this.m_savingCall();
-			}
+		saveBtn.addEventListener(MouseEvent.MOUSE_UP, this, (evt: any): void => {
+			this.saveImage();
 		});
 
 		this.m_currUIDs = ui.getVisibleLayoutBtnUUIDs();

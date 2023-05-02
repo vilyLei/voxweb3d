@@ -78,7 +78,6 @@ class ImageFileReader {
 				console.log("eles: ", eles);
 				console.log("##### file: ", file);
 				this.m_dropController.initFilesLoad([file]);
-				// 此时获取到file文件对象，即可处理上传相关处理
 			}
 		});
 	}
