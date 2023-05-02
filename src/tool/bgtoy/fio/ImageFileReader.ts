@@ -48,18 +48,18 @@ class ImageFileReader {
 	}
 	private initPaste(): void {
 		let pwin: any = window;
-		// const el = document.getElementById('past-contener');
+		// let div = this.m_rscene.getRenderProxy().getDiv();
 		let div = document.createElement("div");
-		div.style.zIndex = "99999";
+		// div.style.zIndex = "99999";
 		div.style.position = "absolute";
-		div.style.background = "#bbbbbb";
-		div.innerHTML = "点击粘贴图片:";
+		// div.style.background = "#bbbbbb";
+		div.innerHTML = "...";
 		document.body.appendChild(div);
-		let el = div;
-		el.contentEditable = "true";
+		// let el = div;
+		// div.contentEditable = "true";
 		console.log("##### pwin.clipboardData: ", pwin.clipboardData);
 		// 此事件监听也可以添加在document上，该事件会有冒泡行为，则本页面上任何地方的粘贴操作都会触发
-		el.addEventListener('paste', (e: any) : void => {
+		div.addEventListener('paste', (e: any) : void => {
 
 			console.log("##### ImageFileReader::initPaste(), e: ", e);
 
@@ -74,7 +74,10 @@ class ImageFileReader {
 				}
 			}
 			if (file) {
-				console.log(file);
+				let eles = div.children;
+				console.log("eles: ", eles);
+				console.log("##### file: ", file);
+				this.m_dropController.initFilesLoad([file]);
 				// 此时获取到file文件对象，即可处理上传相关处理
 			}
 		});
