@@ -118,7 +118,7 @@ class UIHTMLInfo {
 				pdiv.innerHTML += this.createHtmlInfo("最大可处理16K图片", fontColor, true);
 				pdiv.innerHTML += this.createHtmlInfo("暂不支持苹果系统", fontColor);
 			} else {
-				pdiv.innerHTML = `<font color='${fontColor}'>将图片拖入窗口任意区域, 或点击上图选择本地图片</font></br><font color='${fontColor}'>去除黑色或其他颜色背景, 生成透明背景PNG图</font></br><font color='${fontColor}'>最大可处理16K图片</font></br><font color='${fontColor}'>暂不支持苹果系统</font>`;
+				pdiv.innerHTML = `<font color='${fontColor}'>将图片拖入窗口任意区域, 或点击上图选择本地图片</font></br><font color='${fontColor}'>去除黑色或其他颜色背景, 生成透明背景PNG图</font></br><font color='${fontColor}'>最大可处理16K图片</font></br><font color='${fontColor}'>暂不支持苹果系统</font></br><font color='${fontColor}'>图片不会存放服务器，杜绝信息泄露</font>`;
 			}
 			this.m_introDiv = pdiv;
 		}
