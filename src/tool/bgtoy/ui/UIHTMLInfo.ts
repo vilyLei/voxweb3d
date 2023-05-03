@@ -195,7 +195,7 @@ class UIHTMLInfo {
 		div.style.zIndex = "99999";
 		div.style.position = "absolute";
 		document.body.appendChild(pdiv);
-		pdiv.innerHTML = `<font color='${fontColor}'>试用版 1.01</font>`;
+		pdiv.innerHTML = `<font color='${fontColor}'>试用版 1.02</font>`;
 		this.m_versionDiv = pdiv;
 	}
 	createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
