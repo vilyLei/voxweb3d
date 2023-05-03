@@ -138,27 +138,29 @@ export class RenderingImageBuilder {
 		let fileName = this.m_name != "" ? this.m_name + "_new." : "defaultNew.";
 		fileName += suffix;
 		let iosFlag = RendererDevice.IsSafariWeb() || RendererDevice.IsIOS() || RendererDevice.IsIpadOS();
-		if(iosFlag) {
-			var dt = this.m_imgData;
-			dt = dt.replace(/^data:image\/[^;]*/, 'data:application/octet-stream');
-			dt = dt.replace(/^data:application\/octet-stream/, 'data:application/octet-stream;headers=Content-Disposition%3A%20attachment%3B%20filename='+fileName);
-			const a = document.createElement("a");
-			a.href = dt;
-			document.body.appendChild(a);
-			(a as any).style = "display: none";
-			a.click();
-			window.URL.revokeObjectURL(a.href);
-			a.remove();
-		}else {
-			const a = document.createElement("a");
-			a.href = this.m_imgData;
-			a.download = fileName;
-			document.body.appendChild(a);
-			(a as any).style = "display: none";
-			a.click();
-			window.URL.revokeObjectURL(a.href);
-			a.remove();
-		}
+		// if(iosFlag) {
+		// 	var dt = this.m_imgData;
+		// 	dt = dt.replace(/^data:image\/[^;]*/, 'data:application/octet-stream');
+		// 	dt = dt.replace(/^data:application\/octet-stream/, 'data:application/octet-stream;headers=Content-Disposition%3A%20attachment%3B%20filename='+fileName);
+		// 	const a = document.createElement("a");
+		// 	a.href = dt;
+		// 	document.body.appendChild(a);
+		// 	(a as any).style = "display: none";
+		// 	a.click();
+		// 	window.URL.revokeObjectURL(a.href);
+		// 	a.remove();
+		// }else {
+
+		const a = document.createElement("a");
+		a.href = this.m_imgData;
+		a.download = fileName;
+		document.body.appendChild(a);
+		(a as any).style = "display: none";
+		a.click();
+		window.URL.revokeObjectURL(a.href);
+		a.remove();
+		
+		// }
 		this.m_imgData = "";
 		this.savingTimes ++;
 	}
