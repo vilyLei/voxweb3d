@@ -103,12 +103,13 @@ void main() {
 }
 
 export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToTransparentPNG {
+    private m_uid = -1;
     mapLodEnabled: boolean = false;
 	fixScreen = true;
+    version = -1;
     constructor() {
         super();
     }
-
     protected buildBuf(): void {
         let buf = RemoveBlackBGShaderBuffer.GetInstance();
 		buf.fixScreen = this.fixScreen;
@@ -129,6 +130,7 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToT
      */
     setColorAlphaStrength(p: number): void {
         this.m_ds[0] = p;
+        this.version++;
     }
     getColorAlphaStrength(): number {
         return this.m_ds[0];
@@ -138,6 +140,7 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToT
      */
 	setColorStrength(p: number): void {
         this.m_ds[1] = p;
+        this.version++;
     }
 	getColorStrength(): number {
         return this.m_ds[1];
@@ -147,6 +150,7 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToT
      */
 	setAlphaDiscardFactor(p: number): void {
         this.m_ds[2] = p;
+        this.version++;
     }
 	getAlphaDiscardFactor(): number {
         return this.m_ds[2];
@@ -156,6 +160,7 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToT
      */
 	setShowInitImg(boo: boolean): void {
         this.m_ds[3] = boo ? 0.0 : 1.0;
+        this.version++;
     }
 	getShowInitImg(): boolean {
         return this.m_ds[3] < 1.0;
@@ -166,6 +171,7 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToT
      */
     setDiscardRadius(r: number): void {
         this.m_ds[5] = r;
+        this.version++;
     }
     getDiscardRadius(): number {
         return this.m_ds[5];
@@ -175,6 +181,7 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToT
      */
     setInvertAlpha(boo: boolean): void {
         this.m_ds[6] = boo ? 1.0 : 0;
+        this.version++;
     }
     getInvertAlpha(): boolean {
         return this.m_ds[6] > 0;
@@ -184,18 +191,21 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToT
      */
     setInvertRGB(boo: boolean): void {
         this.m_ds[7] = boo ? 1.0 : 0;
+        this.version++;
     }
     getInvertRGB(): boolean {
         return this.m_ds[7] > 0;
     }
 	setSeparateAlpha(v: number): void {
         this.m_ds[15] = v;
+        this.version++;
     }
 	getSeparateAlpha(): number {
         return this.m_ds[15];
     }
 	setInvertDiscard(boo: boolean): void {
         this.m_ds[4] = boo ? 1.0 : 0.0;
+        this.version++;
     }
 	getInvertDiscard(): boolean {
         return this.m_ds[4] > 0.0;
@@ -205,21 +215,25 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToT
 		ds[8] = r;
 		ds[9] = g;
 		ds[10] = b;
+        this.version++;
 	}
 	getDiscardDstRGB(c: Color4): void {
 		let ds = this.m_ds;
 		c.r = ds[8];
 		c.g = ds[9];
 		c.b = ds[10];
+        this.version++;
 	}
 	setInitAlphaFactor(f: number): void {
 		this.m_ds[11] = f;
+        this.version++;
 	}
 	getInitAlphaFactor(): number {
 		return this.m_ds[11];
 	}
 	paramCopyFrom(dst: RemoveBlackBGMaterial2): void {
 		this.m_ds.set(dst.m_ds);
+        this.version++;
 	}
 	cloneData(): Float32Array {
 		return this.m_ds.slice(0);
@@ -239,6 +253,7 @@ export default class RemoveBlackBGMaterial2 extends MaterialBase implements IToT
 	 * @param i the default value is 0
 	 */
 	setData(ds: Float32Array, i: number = 0): void {
+        this.version++;
 		return this.m_ds.set(ds, i);
 	}
     createSelfUniformData(): ShaderUniformData {

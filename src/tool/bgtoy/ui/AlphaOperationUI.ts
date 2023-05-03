@@ -33,7 +33,6 @@ class AlphaOperationUI {
 	uiHTMLInfo: UIHTMLInfo;
 	processTotal = 6;
 
-	// brushRecorder: ToyBrushDataRecorder = null;
 	readonly transparentBrush = new ToyTransparentBrush();
 	readonly ctrlui = new ParamCtrlUI(false);
 	readonly uiBuilder = new UIBuilder();
@@ -45,7 +44,6 @@ class AlphaOperationUI {
 		if (this.m_graph == null && graph != null) {
 			this.m_graph = graph;
 			this.m_rscene = this.m_graph.getNodeAt(0).getRScene();
-			// this.brushRecorder = this.transparentBrush.brushRecorder;
 			this.initUI();
 			this.transparentBrush.initialize( this.ctrlui.ruisc );
 
