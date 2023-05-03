@@ -164,27 +164,27 @@ export class RenderingImageBuilder {
 		document.body.removeChild(img);
 		*/
 
-		var img = new Image();
-		img.crossOrigin = "Anonymous";
-		img.id = "getshot";
-		img.src = this.m_imgData;
-		document.body.appendChild(img);
-		var a = document.createElement("a");
-		a.href = img.src;
-		a.download = fileName;
-		a.click();
-		document.body.removeChild(img);
-		// window.URL.revokeObjectURL(a.href);
-		// a.remove();
-
-		// const a = document.createElement("a");
-		// a.href = this.m_imgData;
+		// var img = new Image();
+		// img.crossOrigin = "Anonymous";
+		// img.id = "getshot";
+		// img.src = this.m_imgData;
+		// document.body.appendChild(img);
+		// var a = document.createElement("a");
+		// a.href = img.src;
 		// a.download = fileName;
-		// document.body.appendChild(a);
-		// (a as any).style = "display: none";
 		// a.click();
-		// window.URL.revokeObjectURL(a.href);
-		// a.remove();
+		// document.body.removeChild(img);
+		// // window.URL.revokeObjectURL(a.href);
+		// // a.remove();
+
+		const a = document.createElement("a");
+		a.href = this.m_imgData;
+		a.download = fileName;
+		document.body.appendChild(a);
+		(a as any).style = "display: none";
+		a.click();
+		window.URL.revokeObjectURL(a.href);
+		a.remove();
 
 		// }
 		this.m_imgData = "";
