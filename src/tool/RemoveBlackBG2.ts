@@ -94,6 +94,34 @@ export class RemoveBlackBG2 {
 		fReader.initialize(this.m_uiSys.background.getRScene());
 		this.initScene();
 		this.resize(null);
+
+		
+		let platform = navigator.platform as any;
+		window.addEventListener("keydown", (e: any): void => {
+			if ((platform && platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+				let prevent = false;
+				switch(e.keyCode) {
+					case 83:
+						prevent = true;
+						uiSys.saveImage();
+						break;
+					case 17:
+						// ctrl + N
+						prevent = true;
+						break;
+					case 79:
+						// ctrl + O
+						this.m_fileReader.openDir();
+						prevent = true;
+						break;
+					default:
+						break;
+				}
+				if(prevent) {
+					e.preventDefault();
+				}
+			}
+		}, false);
 	}
 	private initScene(): void {
 	}

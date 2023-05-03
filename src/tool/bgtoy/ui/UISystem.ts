@@ -61,14 +61,6 @@ class UISystem {
 		}
 		aopui.initialize( this.m_graph );
 
-		let platform = navigator.platform as any;
-		window.addEventListener("keydown", (e: any): void => {
-			if (e.keyCode == 83 && (navigator.platform && navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
-				this.saveImage();
-				e.preventDefault();
-			}
-		}, false);
-
 		const keyIt = this.keyInteraction;
 		keyIt.initialize(this.m_rscene);
 
@@ -78,7 +70,7 @@ class UISystem {
 		type = keyIt.createKeysEventType([Key.CTRL, Key.Z]);
 		keyIt.addKeysDownListener(type, this, this.keyCtrlZDown);
 	}
-	private saveImage(): void {
+	saveImage(): void {
 		this.alphaOpUI.saveImage();
 	}
 	private keyCtrlYDown(evt: any): void {

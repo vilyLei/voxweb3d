@@ -82,7 +82,7 @@ class ImageFileReader {
 		});
 	}
 
-	private openDir(): void {
+	openDir(): void {
 		const input = document.createElement("input");
 		input.type = "file";
 		// input.accept = "image/png, image/jpeg";
