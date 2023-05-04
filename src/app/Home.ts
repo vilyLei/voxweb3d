@@ -1,6 +1,7 @@
 interface DemoItem {
     name: string;
     info: string;
+    url?: string;
 }
 interface DemoData {
     demos: DemoItem[];
@@ -39,7 +40,6 @@ export class Home {
 			console.error("load error: ", err);
 		}
 
-		// codeLoader.onprogress = e => {};
 		codeLoader.onload = evt => {
 			console.log("module js file loaded.");
 			let scriptEle: HTMLScriptElement = document.createElement("script");
@@ -65,7 +65,7 @@ export class Home {
         let list: DemoItem[] = data.demos;
         for (let i: number = 0; i < list.length; ++i) {
             po = list[i];
-            this.addLinkHtmlLine(po.name, po.info);
+            this.addLinkHtmlLine(po.name, po.info, po.url);
         }
 
         this.m_demoBodyDiv.innerHTML = this.m_htmlText;
@@ -79,11 +79,12 @@ export class Home {
             divBody.style.height = (height + 50) + "px";
         }
     }
-    private addLinkHtmlLine(demoName: string, info: string): void {
+    private addLinkHtmlLine(demoName: string, info: string, url?: string): void {
         this.m_htmlText += "<br/>";
         // this.m_htmlText += '<a id="link_demo" href="http://www.artvily.com/renderCase?sample=demoLoader&demo=' + demoName + '" target="_blank">' + info + '</a>';
-        let url = "";
-        if(url == "") {
+        // let url = "";
+        if(url !== undefined && url != "") {
+        }else {
             url = `http://www.artvily.com/renderCase?sample=demoLoader&demo=${demoName}`;
         }
         this.m_htmlText += `<a id="link_demo" href="${url}" target="_blank">${info}</a>`;
