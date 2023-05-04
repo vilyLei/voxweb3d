@@ -15,7 +15,7 @@ export class Home {
     initialize(): void {
         console.log("Home::initialize()......");
         let url: string = location.href + "";
-        
+        document.title = "Rendering & Art";
         if(url.indexOf("artvily.") > 0) {
             this.m_host = "http://www.artvily.com:9090/";
         }
@@ -81,7 +81,12 @@ export class Home {
     }
     private addLinkHtmlLine(demoName: string, info: string): void {
         this.m_htmlText += "<br/>";
-        this.m_htmlText += '<a id="link_demo" href="http://www.artvily.com/renderCase?sample=demoLoader&demo=' + demoName + '" target="_blank">' + info + '</a>';
+        // this.m_htmlText += '<a id="link_demo" href="http://www.artvily.com/renderCase?sample=demoLoader&demo=' + demoName + '" target="_blank">' + info + '</a>';
+        let url = "";
+        if(url == "") {
+            url = `http://www.artvily.com/renderCase?sample=demoLoader&demo=${demoName}`;
+        }
+        this.m_htmlText += `<a id="link_demo" href="${url}" target="_blank">${info}</a>`;
     }
 
     private loadData(purl: string): void {
