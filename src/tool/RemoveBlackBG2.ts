@@ -95,7 +95,7 @@ export class RemoveBlackBG2 {
 		this.initScene();
 		this.resize(null);
 
-		
+
 		let platform = navigator.platform as any;
 		window.addEventListener("keydown", (e: any): void => {
 			if ((platform && platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
@@ -158,12 +158,18 @@ export class RemoveBlackBG2 {
 			}
 		}
 	}
+	private m_recordeVersion = -1;
 	run(): void {
 		this.m_graph.run();
 		this.systemRun();
 		if (this.isSystemEnabled()) {
 			this.m_vasScene.run();
 			this.m_fileSys.run();
+			let brushRec = this.m_uiSys.alphaOpUI.transparentBrush.brushRecorder;
+			if(this.m_recordeVersion != brushRec.version) {
+				console.log("brushRecorder changed now !!!");
+				this.m_recordeVersion = brushRec.version;
+			}
 		}
 	}
 }

@@ -23,7 +23,6 @@ class ToyTransparentBrush {
 	private m_list: TPBrushFeature[];
 	private m_ruisc: IRendererScene = null;
 
-	// readonly brushRecorder = new ToyBrushDataRecorder();
 	readonly brushRecorder = new CommonDataRecorder();
 
 	readonly imgOperateMode = new ImgOperateMode();

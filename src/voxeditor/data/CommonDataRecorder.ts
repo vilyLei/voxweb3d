@@ -3,12 +3,10 @@ import { IRecordeNodeFactory, IRecordeDataUnit, IRecordeTarget, IRecordeNode } f
 let s_saveTimes_save = 0;
 
 class RecordeNodeGroup {
-
 	list: IRecordeNode[] = [];
 	factory: IRecordeNodeFactory;
-	constructor() { }
+	constructor() {}
 	add(data: IRecordeDataUnit): void {
-
 		let node = this.createRecordeNode(data);
 		node.target = data.target;
 		node.data = data;
@@ -23,7 +21,7 @@ class RecordeNodeGroup {
 		for (let i = 0; i < ls.length; ++i) {
 			const tar = ls[i].target;
 			ls[i].apply();
-			list.push( tar );
+			list.push(tar);
 		}
 		return list;
 	}
@@ -38,14 +36,13 @@ class RecordeNodeGroup {
  * renderable space transforming history recorder
  */
 class CommonDataRecorder {
-
 	private m_undoList: RecordeNodeGroup[] = [];
 	private m_redoList: RecordeNodeGroup[] = [];
 	private m_currList: IRecordeTarget[] = null;
 	private m_beginGroup: RecordeNodeGroup = null;
 	private m_factory: IRecordeNodeFactory = null;
-
-	constructor() { }
+	version = -1;
+	constructor() {}
 	private createGroup(dataNodes: IRecordeDataUnit[]): RecordeNodeGroup {
 		if (dataNodes != null) {
 			let group = new RecordeNodeGroup();
@@ -64,7 +61,6 @@ class CommonDataRecorder {
 	 * @param tars IRenderEntity instance list
 	 */
 	saveBegin(nodes: IRecordeDataUnit[]): void {
-
 		this.m_currList = null;
 		this.m_beginGroup = this.createGroup(nodes);
 	}
@@ -73,15 +69,15 @@ class CommonDataRecorder {
 	 * @param tars IRenderEntity instance list
 	 */
 	saveEnd(dataNodes: IRecordeDataUnit[]): void {
-
 		this.m_currList = null;
 		let begin = this.m_beginGroup;
 		this.m_beginGroup = null;
 
 		if (begin != null) {
-
 			let group = this.createGroup(dataNodes);
 			if (group != null) {
+				console.log("XXX CommonDataRecorder::saveEnd().");
+				this.version++;
 				this.m_undoList.push(begin);
 				this.m_undoList.push(group);
 				s_saveTimes_save++;
@@ -95,13 +91,13 @@ class CommonDataRecorder {
 
 	// Ctrl + Z
 	undo(): void {
-
 		this.m_currList = null;
 
 		let ls = this.m_undoList;
 		let len = ls.length;
 		if (len > 1) {
-			// console.log("XXXX$$$$ CommonDataRecorder::undo().");
+			console.log("XXXX$$$$ CommonDataRecorder::undo().");
+			this.version++;
 			let node0 = ls.pop();
 			let node1 = ls.pop();
 			this.m_redoList.push(node1);
@@ -111,14 +107,12 @@ class CommonDataRecorder {
 	}
 	// Ctrl + Y
 	redo(): void {
-
 		this.m_currList = null;
 		let ls = this.m_redoList;
 		let len = ls.length;
 		if (len > 1) {
-
-			// console.log("XXX redo().");
-
+			console.log("XXX CommonDataRecorder::redo().");
+			this.version++;
 			let node0 = ls.pop();
 			let node1 = ls.pop();
 			this.m_currList = node0.apply();
@@ -133,4 +127,4 @@ class CommonDataRecorder {
 	}
 }
 
-export { CommonDataRecorder }
+export { CommonDataRecorder };

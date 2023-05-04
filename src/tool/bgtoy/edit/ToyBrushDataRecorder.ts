@@ -41,7 +41,7 @@ class ToyBrushDataRecorder {
 	private m_redoList: RecordeNodeGroup[] = [];
 	private m_currList: IRecordeNodeTarget[] = null;
 	private m_beginGroup: RecordeNodeGroup = null;
-
+	version = -1;
 	constructor() { }
 	private createGroup(dataNodes: RecordeNodeData[]): RecordeNodeGroup {
 		if (dataNodes != null) {
@@ -75,6 +75,9 @@ class ToyBrushDataRecorder {
 
 			let group = this.createGroup(dataNodes);
 			if (group != null) {
+				console.log("ToyBrushDataRecorder::saveEnd(), recorde a new status.");
+				this.version ++;
+
 				this.m_undoList.push(begin);
 				this.m_undoList.push(group);
 				s_saveTimes_save++;
@@ -94,7 +97,8 @@ class ToyBrushDataRecorder {
 		let ls = this.m_undoList;
 		let len = ls.length;
 		if (len > 1) {
-			// console.log("XXXX$$$$ ToyBrushDataRecorder::undo().");
+			console.log("XXXX$$$$ ToyBrushDataRecorder::undo().");
+			this.version ++;
 			let node0 = ls.pop();
 			let node1 = ls.pop();
 			this.m_redoList.push(node1);
@@ -110,8 +114,8 @@ class ToyBrushDataRecorder {
 		let len = ls.length;
 		if (len > 1) {
 
-			// console.log("XXX redo().");
-
+			console.log("XXX ToyBrushDataRecorder::redo().");
+			this.version ++;
 			let node0 = ls.pop();
 			let node1 = ls.pop();
 			this.m_currList = node0.use();
@@ -126,5 +130,4 @@ class ToyBrushDataRecorder {
 	}
 }
 
-// export { KeyNumberValueNode, KeyBooleanValueNode, KeyValueNode, RecordeNodeData, IRecordeNodeTarget, ToyBrushDataRecorder }
 export { ToyBrushDataRecorder }
