@@ -410,25 +410,6 @@ export default class Color4 implements IColor4 {
 		str += getHexStr(this.r);
 		str += getHexStr(this.g);
 		str += getHexStr(this.b);
-
-		// let t = Math.floor(this.r * 255.0);
-		// if (t < 0xf) {
-		// 	str += "0" + t.toString(16);
-		// } else {
-		// 	str += "" + t.toString(16);
-		// }
-		// t = Math.floor(this.g * 255.0);
-		// if (t < 0xf) {
-		// 	str += "0" + t.toString(16);
-		// } else {
-		// 	str += "" + t.toString(16);
-		// }
-		// t = Math.floor(this.b * 255.0);
-		// if (t < 0xf) {
-		// 	str += "0" + t.toString(16);
-		// } else {
-		// 	str += "" + t.toString(16);
-		// }
 		return str;
 	}
 	toString(): string {

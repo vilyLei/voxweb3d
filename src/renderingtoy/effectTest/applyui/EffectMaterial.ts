@@ -18,52 +18,15 @@ class EffectShaderBuffer extends ShaderCodeBuffer {
     private static s_instance = new EffectShaderBuffer();
     private m_uniqueName = "";
     initialize(texEnabled: boolean): void {
-        //console.log("EffectShaderBuffer::initialize()...");
         this.m_uniqueName = "EffectShd";
     }
     getFragShaderCode(): string {
-        //         let fragCode: string =
-        //             `#version 300 es
-        // precision mediump float;
-        // uniform sampler2D u_sampler0;
-        // uniform vec4 u_color;
-        // in vec3 v_nv;
-        // in vec2 v_uvs;
-        // layout(location = 0) out vec4 FragColor0;
-        // void main()
-        // {
-        //     FragColor0 = texture(u_sampler0, v_uvs.xy) * u_color;
-        // }
-        // `;
-        //         return fragCode;
-
         return ShaderCode.frag_body;
     }
     getVertShaderCode(): string {
-        //         let vtxCode: string =
-        //             `#version 300 es
-        // precision mediump float;
-        // layout(location = 0) in vec3 a_vs;
-        // layout(location = 1) in vec2 a_uvs;
-        // layout(location = 2) in vec3 a_nvs;
-        // uniform mat4 u_objMat;
-        // uniform mat4 u_viewMat;
-        // uniform mat4 u_projMat;
-        // out vec3 v_nv;
-        // out vec2 v_uvs;
-        // void main()
-        // {
-        //     gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
-        //     v_nv = a_nvs;
-        //     v_uvs = a_uvs;
-        // }
-        // `;
-        //         return vtxCode;
-
         return ShaderCode.vert_body;
     }
     getUniqueShaderName(): string {
-        //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
 

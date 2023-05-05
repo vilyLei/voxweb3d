@@ -81,8 +81,6 @@ export class Home {
     }
     private addLinkHtmlLine(demoName: string, info: string, url?: string): void {
         this.m_htmlText += "<br/>";
-        // this.m_htmlText += '<a id="link_demo" href="http://www.artvily.com/renderCase?sample=demoLoader&demo=' + demoName + '" target="_blank">' + info + '</a>';
-        // let url = "";
         if(url !== undefined && url != "") {
         }else {
             url = `http://www.artvily.com/renderCase?sample=demoLoader&demo=${demoName}`;
