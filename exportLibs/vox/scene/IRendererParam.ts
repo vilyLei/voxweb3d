@@ -31,6 +31,19 @@ interface IRendererParam {
     cameraPerspectiveEnabled: boolean;
     // event flow control enable
     evtFlowEnabled: boolean;
+	/**
+	 * the default value is true
+	 */
+	hideWindowFrame: boolean;
+	/**
+	 * the default value is true
+	 */
+	viewSizeWithTwo: boolean;
+	/**
+	 * the default value is true
+	 */
+	viewSizeToBigger: boolean;
+
     // x: fov, y: near, z: far
     readonly camProjParam: IVector3D;
 
