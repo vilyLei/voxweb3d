@@ -14,25 +14,16 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import RendererSubScene from "../vox/scene/RendererSubScene";
-import ProfileInstance from "../voxprofile/entity/ProfileInstance";
-
-import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import DebugFlag from "../vox/debug/DebugFlag";
-import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
-import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../thread/ThreadSystem";
-import DracoMesh from "../voxmesh/draco/DracoMesh";
-import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
-import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
-import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 
 import IRendererScene from "../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../vox/scene/IRendererSceneAccessor";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import { PostOutline } from "./effect/PostOutline";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 class SceneAccessor implements IRendererSceneAccessor {
     constructor() { }
@@ -46,19 +37,16 @@ class SceneAccessor implements IRendererSceneAccessor {
 export class DemoOutline2 {
     constructor() { }
 
-    private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
+    private m_postOutline = new OcclusionPostOutline();
     private m_rscene: RendererScene = null;
     private m_editScene: RendererSubScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_profileInstance: ProfileInstance = new ProfileInstance();
-    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+    
 	private m_outline: PostOutline;
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+        let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
@@ -88,32 +76,19 @@ export class DemoOutline2 {
             axis0.initialize(500);
             this.m_editScene.addEntity(axis0);
 
-            let rscene = this.m_rscene;
-            let materialBlock = new RenderableMaterialBlock();
-            materialBlock.initialize();
-            //rscene.materialBlock = materialBlock;
-            let entityBlock = new RenderableEntityBlock();
-            entityBlock.initialize();
-            //rscene.entityBlock = entityBlock;
-
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
-            this.m_rscene.enableMouseEvent(true);
-            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            this.m_statusDisp.initialize();
 
             // this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             // this.m_editScene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.editMouseDown);            
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown, true, true);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.editMouseBgDown, true, true);
 
+			new MouseInteraction().initialize( this.m_rscene, 0, true).setAutoRunning(true);
+			new RenderStatusDisplay(this.m_rscene, true);
 
 			// this.m_outline = new PostOutline(rscene);
 
@@ -126,7 +101,7 @@ export class DemoOutline2 {
 
             this.initScene();
 
-            this.update();
+            // this.update();
         }
     }
     private initScene(): void {
@@ -181,27 +156,11 @@ export class DemoOutline2 {
         console.log("mouse down...");
         DebugFlag.Flag_0 = 1;
     }
-    private m_timeoutId: any = -1;
-    private update(): void {
 
-        if (this.m_timeoutId > -1) {
-            clearTimeout(this.m_timeoutId);
-        }
-
-        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
-        this.m_timeoutId = setTimeout(this.update.bind(this), 40);// 20 fps
-
-        this.m_statusDisp.render();
-
-    }
     run(): void {
 
         ThreadSystem.Run();
         //  console.log("run begin...");
-
-        this.m_statusDisp.update(false);
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
         this.m_rscene.run();
 

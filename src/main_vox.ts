@@ -440,7 +440,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
-//  import {DemoOutline2 as Demo} from "./demo/DemoOutline2";
+ import {DemoOutline2 as Demo} from "./demo/DemoOutline2";
 
 //  import {DemoFix3DSize as Demo} from "./demo/DemoFix3DSize";
 
@@ -538,7 +538,7 @@ pwin["VoxVerify"] = new VVF();
 /////////////////////////////     gltf    /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
- import {DemoGLTF as Demo} from "./gltf/DemoGLTF";
+//  import {DemoGLTF as Demo} from "./gltf/DemoGLTF";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     UI     ////////////////////////////////////
