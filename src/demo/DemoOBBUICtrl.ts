@@ -5,30 +5,37 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import TextureProxy from "../vox/texture/TextureProxy";
 import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import RendererScene from "../vox/scene/RendererScene";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
-import Box3DEntity from "../vox/entity/Box3DEntity";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
-import OBB from "../vox/geom/OBB";
-import IColorMaterial from "../vox/material/mcase/IColorMaterial";
-import BoxFrame3D from "../vox/entity/BoxFrame3D";
 import Vector3D from "../vox/math/Vector3D";
-import IOBB from "../vox/geom/IOBB";
-import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
-import Line3DEntity from "../vox/entity/Line3DEntity";
 
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../orthoui/usage/ParamCtrlUI";
 import RendererSceneGraph from "../vox/scene/RendererSceneGraph";
 import IRendererScene from "../vox/scene/IRendererScene";
-import IRendererSceneGraphStatus from "../vox/scene/IRendererSceneGraphStatus";
-import DisplayEntity from "../vox/entity/DisplayEntity";
 import { OBBTestEntity } from "./base/ObbTestEntity";
 import Color4 from "../vox/material/Color4";
 import DivLog from "../vox/utils/DivLog";
 
+import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
+import IRendererNode from "../vox/scene/IRenderNode";
+
+class OutlineRenderer implements IRendererNode {
+	postOutline: OcclusionPostOutline = null;
+	constructor() {
+
+	}
+	render(): void {
+
+		this.postOutline.drawBegin();
+		this.postOutline.draw();
+		this.postOutline.drawEnd();
+	}
+}
 export class DemoOBBUICtrl {
+
+	private m_postOutline = new OcclusionPostOutline();
+	private m_outlineRenderer = new OutlineRenderer();
 	private m_graph = new RendererSceneGraph();
 	private m_rscene: IRendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
@@ -36,7 +43,7 @@ export class DemoOBBUICtrl {
 	private m_profileInstance = new ProfileInstance();
 	private m_ctrlui = new ParamCtrlUI(false);
 
-	constructor() {}
+	constructor() { }
 
 	private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
 		let ptex = this.m_texLoader.getImageTexByUrl(purl);
@@ -67,12 +74,21 @@ export class DemoOBBUICtrl {
 
 			this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-			let color = new Color4(0.3,0.5,0.7);
+			let color = new Color4(0.3, 0.5, 0.7);
 			console.log("color.getCSSHeXRGBColor(): ", color.getCSSHeXRGBColor());
+
+
+			this.m_postOutline.initialize(this.m_rscene, 1, [0, 1]);
+			this.m_postOutline.setFBOSizeScaleRatio(0.5);
+			this.m_postOutline.setRGB3f(2.0, 0.0, 0.0);
+			this.m_postOutline.setOutlineDensity(2.5);
+			this.m_postOutline.setOcclusionDensity(0.2);
 
 			this.initDiv();
 			this.init3DScene();
 			this.initUI();
+
+			this.m_rscene.appendRenderNode( this.m_outlineRenderer );
 		}
 	}
 	private m_obbEntity0 = new OBBTestEntity();
@@ -80,7 +96,7 @@ export class DemoOBBUICtrl {
 	private m_obbEntity: OBBTestEntity = null;
 	private m_initUI = true;
 	private m_initData = false;
-    private m_infoDiv: HTMLDivElement = null;
+	private m_infoDiv: HTMLDivElement = null;
 	private initDiv(): void {
 		let div: HTMLDivElement = document.createElement("div");
 		div.style.color = "";
@@ -205,8 +221,8 @@ export class DemoOBBUICtrl {
 	private testSpecObb(): void {
 		let oe0 = this.m_obbEntity0;
 		let oe1 = this.m_obbEntity1;
-		oe0.updateWithParams(new Vector3D(1,1,1), new Vector3D(0, 28.8,84.6), new Vector3D(-22.799, 33.0, -15.0));
-		oe1.updateWithParams(new Vector3D(1,1,1), new Vector3D(34.2, 5.399, 43.1), new Vector3D(134, 0.0, 0.0));
+		oe0.updateWithParams(new Vector3D(1, 1, 1), new Vector3D(0, 28.8, 84.6), new Vector3D(-22.799, 33.0, -15.0));
+		oe1.updateWithParams(new Vector3D(1, 1, 1), new Vector3D(34.2, 5.399, 43.1), new Vector3D(134, 0.0, 0.0));
 		this.obbTest();
 	}
 
@@ -223,10 +239,16 @@ export class DemoOBBUICtrl {
 		// let intersection = obb0.intersect(obb1);
 		// let intersection = obb1.intersect(obb0);
 
-		if(intersection) {
+		if (intersection) {
+			if (this.m_postOutline) {
+				this.m_postOutline.setTargetList([this.m_obbEntity0.entity, this.m_obbEntity1.entity]);
+			}
 			this.m_infoDiv.innerHTML = "<font color='#ee0000'>OBB相交测试结果: (" + intersection + ")</font>";
-		}else {
+		} else {
 			this.m_infoDiv.innerHTML = "OBB相交测试结果: (" + intersection + ")";
+			if (this.m_postOutline) {
+				this.m_postOutline.setTargetList(null);
+			}
 		}
 	}
 	private init3DScene(): void {
@@ -238,6 +260,10 @@ export class DemoOBBUICtrl {
 		this.m_obbEntity1.name = "obbEntity1";
 		this.m_obbEntity0.initialize(this.m_rscene, 150, new Color4(1.0, 1.0, 1.0), new Color4(0.0, 0.0, 0.0));
 		this.m_obbEntity1.initialize(this.m_rscene, 100, new Color4(0.0, 0.5, 0.8), new Color4(0.0, 0.0, 0.0), new Vector3D(150, 0.0, 0.0));
+
+
+		
+		this.m_outlineRenderer.postOutline = this.m_postOutline;
 	}
 	mouseDownListener(evt: any): void {
 		console.log("mouseDownListener call, this.m_rscene: ", this.m_rscene.toString());
