@@ -11,7 +11,7 @@ if (url.indexOf("artvily.") > 0) {
     codeHost = host + "static/publish/apple/";
 }
 class AppShell {
-    readonly viewer: LightViewer = new LightViewer();
+    readonly viewer = new LightViewer();
     constructor() { }
 
     loadedWithIndex(index: number): void {
