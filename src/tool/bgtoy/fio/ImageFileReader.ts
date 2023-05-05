@@ -48,36 +48,30 @@ class ImageFileReader {
 	}
 	private initPaste(): void {
 		let pwin: any = window;
-		// let div = this.m_rscene.getRenderProxy().getDiv();
-		let div = document.createElement("div");
-		// div.style.zIndex = "99999";
-		div.style.position = "absolute";
-		// div.style.background = "#bbbbbb";
-		div.innerHTML = "...";
-		document.body.appendChild(div);
-		// let el = div;
-		// div.contentEditable = "true";
-		console.log("##### pwin.clipboardData: ", pwin.clipboardData);
-		// 此事件监听也可以添加在document上，该事件会有冒泡行为，则本页面上任何地方的粘贴操作都会触发
-		div.addEventListener('paste', (e: any) : void => {
+		// let div = document.createElement("div");
+		// div.style.position = "absolute";
+		// div.innerHTML = "...";
+		// document.body.appendChild(div);
+		// console.log("##### pwin.clipboardData: ", pwin.clipboardData);
+		// div.addEventListener('paste', (e: any) : void => {
+		// 此事件监听添加在document上，该事件会有冒泡行为，则本页面上任何地方的粘贴操作都会触发
+		document.addEventListener('paste', (e: any) : void => {
 
 			console.log("##### ImageFileReader::initPaste(), e: ", e);
 
-			let file = null;
+			let files = [];
 			const items = (e.clipboardData || pwin.clipboardData).items;
 			if (items && items.length) {
 				for (var i = 0; i < items.length; i++) {
-					if (items[i].type.indexOf('image') !== -1) {
-						file = items[i].getAsFile();
-						break;
+					const file = items[i].getAsFile();
+					if(file) {
+						files.push(file);
 					}
 				}
 			}
-			if (file) {
-				let eles = div.children;
-				console.log("eles: ", eles);
-				console.log("##### file: ", file);
-				this.m_dropController.initFilesLoad([file]);
+			if (files) {
+				console.log("##### pasting files: ", files);
+				this.m_dropController.initFilesLoad(files);
 			}
 		});
 	}

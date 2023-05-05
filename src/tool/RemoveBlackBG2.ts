@@ -46,7 +46,7 @@ export class RemoveBlackBG2 {
 				e.preventDefault();
 			};
 
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("black");
 			let rparam = this.m_graph.createRendererSceneParam();

@@ -168,7 +168,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoParticleFollowGroup3 as Demo} from "./demo/DemoParticleFollowGroup3";
 
- import {DemoParticleFollowMultiGroups as Demo} from "./demo/DemoParticleFollowMultiGroups";
+//  import {DemoParticleFollowMultiGroups as Demo} from "./demo/DemoParticleFollowMultiGroups";
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
@@ -538,7 +538,7 @@ pwin["VoxVerify"] = new VVF();
 /////////////////////////////     gltf    /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoGLTF as Demo} from "./gltf/DemoGLTF";
+ import {DemoGLTF as Demo} from "./gltf/DemoGLTF";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     UI     ////////////////////////////////////

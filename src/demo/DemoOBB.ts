@@ -65,13 +65,13 @@ export class DemoOBB {
 	}
 	private buildByOBB(obb: IOBB, scale: number = 1.0): void {
 		let pv = new Vector3D();
-		// bottom frame plane wit "-y axis"
+		// bottom frame plane wit "-y axes"
 		let et = obb.extent.clone().scaleBy(scale);
 
 		let cv = obb.center.clone();
-		let max_vx = obb.axis[0].clone().scaleBy(et.x);
-		let max_vy = obb.axis[1].clone().scaleBy(et.y);
-		let max_vz = obb.axis[2].clone().scaleBy(et.z);
+		let max_vx = obb.axes[0].clone().scaleBy(et.x);
+		let max_vy = obb.axes[1].clone().scaleBy(et.y);
+		let max_vz = obb.axes[2].clone().scaleBy(et.z);
 		let min_vx = max_vx.clone().scaleBy(-1);//.addBy(cv);
 		let min_vy = max_vy.clone().scaleBy(-1);//.addBy(cv);
 		let min_vz = max_vz.clone().scaleBy(-1);//.addBy(cv);
@@ -110,19 +110,19 @@ export class DemoOBB {
 		let size = 150;
 		let axis_x = new Line3DEntity();
 		axis_x.dynColorEnabled = true;
-		axis_x.initialize(cv, obb.axis[0].clone().scaleBy(150).addBy(cv));
+		axis_x.initialize(cv, obb.axes[0].clone().scaleBy(150).addBy(cv));
 		axis_x.setRGB3f(1.0, 0, 0);
 		this.m_rscene.addEntity( axis_x );
 
 		let axis_y = new Line3DEntity();
 		axis_y.dynColorEnabled = true;
-		axis_y.initialize(cv, obb.axis[1].clone().scaleBy(150).addBy(cv));
+		axis_y.initialize(cv, obb.axes[1].clone().scaleBy(150).addBy(cv));
 		axis_y.setRGB3f(0, 1.0, 0);
 		this.m_rscene.addEntity( axis_y );
 
 		let axis_z = new Line3DEntity();
 		axis_z.dynColorEnabled = true;
-		axis_z.initialize(cv, obb.axis[2].clone().scaleBy(150).addBy(cv));
+		axis_z.initialize(cv, obb.axes[2].clone().scaleBy(150).addBy(cv));
 		axis_z.setRGB3f(0, 0, 1.0);
 		this.m_rscene.addEntity( axis_z );
 
@@ -130,9 +130,9 @@ export class DemoOBB {
 	private test02(): void{
 
 		console.log("test02() ------------------------------------- >>>>>>>>");
-		let axis = new Axis3DEntity();
-		axis.initialize(300);
-		this.m_rscene.addEntity(axis);
+		let axes = new Axis3DEntity();
+		axes.initialize(300);
+		this.m_rscene.addEntity(axes);
 
 		let box0 = new Box3DEntity();
 		box0.normalEnabled = true;
@@ -201,7 +201,7 @@ export class DemoOBB {
 		console.log("obb0: ", obb0);
 		console.log("obb1: ", obb1);
 		// let intersection = obb0.intersect(obb1);
-		let intersection = obb0.obbIntersect(obb0, obb1);
+		let intersection = obb0.intersect(obb0, obb1);
 		console.log("intersection: ", intersection);
 	}
 	mouseDownListener(evt: any): void {

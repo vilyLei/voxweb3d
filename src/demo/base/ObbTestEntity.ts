@@ -157,9 +157,9 @@ class OBBTestEntity {
 		et.update();
 		obb.fromEntity(et);
 
-		const xPv = obb.axis[0].clone().scaleBy(this.m_size);
-		const yPv = obb.axis[1].clone().scaleBy(this.m_size);
-		const zPv = obb.axis[2].clone().scaleBy(this.m_size);
+		const xPv = obb.axes[0].clone().scaleBy(this.m_size);
+		const yPv = obb.axes[1].clone().scaleBy(this.m_size);
+		const zPv = obb.axes[2].clone().scaleBy(this.m_size);
 		this.m_axis.updateDataWithPos(xPv, yPv, zPv);
 		this.m_axis.updateMeshToGpu();
 

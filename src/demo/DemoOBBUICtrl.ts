@@ -34,7 +34,7 @@ export class DemoOBBUICtrl {
 	private m_texLoader: ImageTextureLoader = null;
 
 	private m_profileInstance = new ProfileInstance();
-	private m_ctrlui = new ParamCtrlUI();
+	private m_ctrlui = new ParamCtrlUI(false);
 
 	constructor() {}
 
@@ -56,6 +56,7 @@ export class DemoOBBUICtrl {
 			rparam.setAttriAntialias(true);
 			rparam.setCamProject(45.0, 10.1, 3000.0);
 			rparam.setCamPosition(1500.0, 1500.0, 1500.0);
+			// rparam.syncBgColor = true;
 
 			this.m_rscene = this.m_graph.createScene();
 			this.m_rscene.initialize(rparam);
@@ -65,6 +66,9 @@ export class DemoOBBUICtrl {
 			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
 
 			this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+
+			let color = new Color4(0.3,0.5,0.7);
+			console.log("color.getCSSHeXRGBColor(): ", color.getCSSHeXRGBColor());
 
 			this.initDiv();
 			this.init3DScene();
@@ -139,6 +143,7 @@ export class DemoOBBUICtrl {
 		this.m_initUI = false;
 
 		let ui = this.m_ctrlui;
+		ui.proBarBGBarAlpha = 0.6;
 		ui.initialize(this.m_rscene, true);
 
 		this.m_obbEntity = this.m_obbEntity0;
@@ -185,8 +190,6 @@ export class DemoOBBUICtrl {
 		ui.addStatusItem("数据", "test_spec_obb", "测试", "测试", true, (info: CtrlInfo): void => {
 
 			console.log("测试特殊数据 ...");
-			// this.m_obbEntity0.showErrorData();
-			// this.m_obbEntity1.showErrorData();
 			this.testSpecObb();
 
 		}, true, false);
@@ -206,6 +209,7 @@ export class DemoOBBUICtrl {
 		oe1.updateWithParams(new Vector3D(1,1,1), new Vector3D(34.2, 5.399, 43.1), new Vector3D(134, 0.0, 0.0));
 		this.obbTest();
 	}
+
 	private obbTest(): void {
 
 		this.m_obbEntity0.update();
@@ -214,16 +218,15 @@ export class DemoOBBUICtrl {
 		let obb0 = this.m_obbEntity0.obb;
 		let obb1 = this.m_obbEntity1.obb;
 
-		let intersection = obb0.intersect(obb1);
-		let intersection2 = obb1.intersect(obb0);
-		intersection = intersection || intersection2;
-		// console.log("intersection2: ", intersection2);
-		// let intersection = obb0.obbIntersect(obb1);
-		// console.log("obbTest() ...");
+		let intersection = obb0.intersect(obb1, obb0);
+		// let intersection = obb0.intersect(obb0, obb1);
+		// let intersection = obb0.intersect(obb1);
+		// let intersection = obb1.intersect(obb0);
+
 		if(intersection) {
-			this.m_infoDiv.innerHTML = "<font color='#ee0000'>相交测试结果: (" + intersection + ")</font>";
+			this.m_infoDiv.innerHTML = "<font color='#ee0000'>OBB相交测试结果: (" + intersection + ")</font>";
 		}else {
-			this.m_infoDiv.innerHTML = "相交测试结果: (" + intersection + ")";
+			this.m_infoDiv.innerHTML = "OBB相交测试结果: (" + intersection + ")";
 		}
 	}
 	private init3DScene(): void {
