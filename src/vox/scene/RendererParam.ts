@@ -55,6 +55,16 @@ class RendererParam implements IRendererParam {
 	syncBgColor = true;
 	batchEnabled = true;
 	processFixedState = false;
+	hideWindowFrame = true;
+
+	/**
+	 * the default value is true
+	 */
+	viewSizeWithTwo = true;
+	/**
+	 * the default value is true
+	 */
+	viewSizeToBigger = true;
 
 	constructor(div: HTMLDivElement = null) {
 		this.m_mainDiv = div;

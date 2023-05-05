@@ -14,7 +14,7 @@ interface IOBB {
 	version: number;
 	radius: number;
 
-	readonly axis: IVector3D[];
+	readonly axes: IVector3D[];
 	readonly extent: IVector3D;
 	readonly center: IVector3D;
 

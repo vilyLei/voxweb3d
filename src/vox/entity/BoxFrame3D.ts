@@ -106,13 +106,13 @@ export default class BoxFrame3D extends DisplayEntity {
 
 	private createPosList8ByOBB(obb: IOBB, scale: number = 1.0): Vector3D[] {
 
-		// bottom frame plane wit "-y axis"
+		// bottom frame plane wit "-y axes"
 		let et = obb.extent.clone().scaleBy(scale);
 
 		let cv = obb.center;
-		let max_vx = obb.axis[0].clone().scaleBy(et.x);
-		let max_vy = obb.axis[1].clone().scaleBy(et.y);
-		let max_vz = obb.axis[2].clone().scaleBy(et.z);
+		let max_vx = obb.axes[0].clone().scaleBy(et.x);
+		let max_vy = obb.axes[1].clone().scaleBy(et.y);
+		let max_vz = obb.axes[2].clone().scaleBy(et.z);
 		let min_vx = max_vx.clone().scaleBy(-1);
 		let min_vy = max_vy.clone().scaleBy(-1);
 		let min_vz = max_vz.clone().scaleBy(-1);

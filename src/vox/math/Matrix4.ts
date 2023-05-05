@@ -42,10 +42,18 @@ class Matrix4 implements IMatrix4 {
 			this.m_localFS32 = this.m_fs32;
 		}
 	}
-	setData(data: number[]): void {
-		if (data.length == 16) {
-			this.m_localFS32.set(data);
+	fromArray(array: number[] | ArrayLike<number>, offset: number = 0): IMatrix4 {
+		const fs = this.m_localFS32;
+		for ( let i = 0; i < 16; i ++ ) {
+			fs[ i ] = array[ i + offset ];
 		}
+		return this;
+	}
+	setData(array16: number[] | ArrayLike<number>): IMatrix4 {
+		if (array16.length == 16) {
+			this.m_localFS32.set(array16);
+		}
+		return this;
 	}
 	getCapacity(): number {
 		return 16;
