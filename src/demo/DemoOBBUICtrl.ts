@@ -63,6 +63,7 @@ export class DemoOBBUICtrl {
 			rparam.setAttriAntialias(true);
 			rparam.setCamProject(45.0, 10.1, 3000.0);
 			rparam.setCamPosition(1500.0, 1500.0, 1500.0);
+			rparam.hideWindowFrame = false;
 			// rparam.syncBgColor = true;
 
 			this.m_rscene = this.m_graph.createScene();
@@ -159,6 +160,7 @@ export class DemoOBBUICtrl {
 		this.m_initUI = false;
 
 		let ui = this.m_ctrlui;
+		ui.syncStageSize = false;
 		ui.proBarBGBarAlpha = 0.6;
 		ui.initialize(this.m_rscene, true);
 
