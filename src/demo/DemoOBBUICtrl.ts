@@ -7,7 +7,6 @@ import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import Vector3D from "../vox/math/Vector3D";
 
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../orthoui/usage/ParamCtrlUI";
@@ -40,7 +39,6 @@ export class DemoOBBUICtrl {
 	private m_rscene: IRendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
 
-	private m_profileInstance = new ProfileInstance();
 	private m_ctrlui = new ParamCtrlUI(false);
 
 	constructor() { }

@@ -11,24 +11,18 @@ import IAABB from "./IAABB";
 import IMatrix4 from "../math/IMatrix4";
 import IRenderEntityBase from "../render/IRenderEntityBase";
 import MathConst from "../math/MathConst";
-class Data3 {
-	vs = [new Float32Array(3), new Float32Array(3), new Float32Array(3)];
-	// getAt(i: number, j: number): number {
-	// 	return this.vs[i][j];
-	// }
-	// setAt(i: number, j: number, value: number): void {
-	// 	this.vs[i][j] = value;
-	// }
-}
 
-let OR = new Data3();
-let OAbsR = new Data3();
+let OR = [new Float32Array(3), new Float32Array(3), new Float32Array(3)];
+let OAbsR = [new Float32Array(3), new Float32Array(3), new Float32Array(3)];
 
 class OBB implements IOBB {
 	private static s_obb = new OBB();
 	private m_pv = new Vector3D();
 	private m_pv1 = new Vector3D();
-	// three axes normalization 3d vectors
+	
+	/**
+	 * three axes normalization 3d vectors
+	 */
 	readonly axes = [new Vector3D(), new Vector3D(), new Vector3D()];
 	readonly extents = new Float32Array(3);
 	/**
@@ -42,12 +36,12 @@ class OBB implements IOBB {
 	constructor() {}
 
 	reset(): void {}
-	equals(ab: IOBB): boolean {
-		if (ab != null && ab != this) {
-			if (!this.center.equalsXYZ(ab.center)) return false;
-			if (!this.extent.equalsXYZ(ab.extent)) return false;
+	equals(ob: IOBB): boolean {
+		if (ob != this && ob != null) {
+			if (!this.center.equalsXYZ(ob.center)) return false;
+			if (!this.extent.equalsXYZ(ob.extent)) return false;
 			for (let i = 0; i < 3; ++i) {
-				if (!this.axes[i].equalsXYZ(ab.axes[i])) return false;
+				if (!this.axes[i].equalsXYZ(ob.axes[i])) return false;
 			}
 			return true;
 		}
@@ -75,18 +69,16 @@ class OBB implements IOBB {
 	}
 
 	/**
-	 * @param ab IAABB instance
+	 * @param ob IAABB instance
 	 * @param transform IMatrix4 instance, the default is null
 	 */
-	fromAABB(ab: IAABB, transform: IMatrix4 = null): void {
+	fromAABB(ob: IAABB, transform: IMatrix4 = null): void {
 		const ls = this.axes;
 		ls[0].setXYZ(1, 0, 0);
 		ls[1].setXYZ(0, 1, 0);
 		ls[2].setXYZ(0, 0, 1);
 		const extent = this.extent;
-		// console.log("#### ab: ", ab);
-		// console.log("#### ab.center: ", ab.center);
-		// console.log("#### ab.max: ", ab.max);
+		
 		if (transform) {
 			transform.deltaTransformVectorSelf(ls[0]);
 			transform.deltaTransformVectorSelf(ls[1]);
@@ -96,21 +88,18 @@ class OBB implements IOBB {
 			ls[1].normalize();
 			ls[2].normalize();
 
-			const pv0 = this.center.copyFrom(ab.center);
-			const pv1 = this.m_pv.copyFrom(ab.max);
+			const pv0 = this.center.copyFrom(ob.center);
+			const pv1 = this.m_pv.copyFrom(ob.max);
 
 			transform.transformVector3Self(pv0);
 			transform.transformVector3Self(pv1);
-
-			// console.log("#### obb.center: ", pv0);
-			// console.log("#### obb.max: ", pv1.clone());
 
 			pv1.subVecsTo(pv1, pv0);
 
 			extent.setXYZ(ls[0].dot(pv1), ls[1].dot(pv1), ls[2].dot(pv1));
 		} else {
-			this.center.copyFrom(ab.center);
-			extent.setXYZ(ab.getWidth() * 0.5, ab.getHeight() * 0.5, ab.getLong() * 0.5);
+			this.center.copyFrom(ob.center);
+			extent.setXYZ(ob.getWidth() * 0.5, ob.getHeight() * 0.5, ob.getLong() * 0.5);
 		}
 		const et = this.extent;
 		this.extents.set([et.x, et.y, et.z]);
@@ -140,9 +129,9 @@ class OBB implements IOBB {
 		return result;
 	}
 
-	intersectAABB(ab: IAABB, transform: IMatrix4 = null): boolean {
+	intersectAABB(ob: IAABB, transform: IMatrix4 = null): boolean {
 		const obb = OBB.s_obb;
-		obb.fromAABB(ab, transform);
+		obb.fromAABB(ob, transform);
 		return this.intersect(obb);
 	}
 	intersectSphere(cv: Vector3D, radius: number): boolean {
@@ -181,13 +170,13 @@ class OBB implements IOBB {
 		}
 
 		const abs = Math.abs;
-		// 计算距离向量t
-		const t0 = this.m_pv.subVecsTo(b.center, a.center);
-		if (t0.getLength() - (a.radius + b.radius) > epsilon) {
+		// 计算距离向量tv
+		const tv = this.m_pv.subVecsTo(b.center, a.center);
+		if (tv.getLength() - (a.radius + b.radius) > epsilon) {
 			return false;
 		}
-		let Avs = OAbsR.vs;
-		let Rvs = OR.vs;
+		let Avs = OAbsR;
+		let Rvs = OR;
 
 		// 计算旋转矩阵R
 		for (let i = 0; i < 3; ++i) {
@@ -198,9 +187,9 @@ class OBB implements IOBB {
 
 		// 计算距离向量t
 		const ts = this.m_ts;
-		ts[0] = t0.dot(a.axes[0]);
-		ts[1] = t0.dot(a.axes[1]);
-		ts[2] = t0.dot(a.axes[2]);
+		ts[0] = tv.dot(a.axes[0]);
+		ts[1] = tv.dot(a.axes[1]);
+		ts[2] = tv.dot(a.axes[2]);
 
 		// 计算旋转矩阵R的绝对值AbsR
 		for (let i = 0; i < 3; ++i) {
