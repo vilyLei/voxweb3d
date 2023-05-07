@@ -185,7 +185,7 @@ class OBB implements IOBB {
 			}
 		}
 
-		// 计算距离向量t
+		// 应用距离向量tv
 		const ts = this.m_ts;
 		ts[0] = tv.dot(a.axes[0]);
 		ts[1] = tv.dot(a.axes[1]);
