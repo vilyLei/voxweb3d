@@ -1,3 +1,5 @@
+interface I_URLFilter {
+}
 export default class URLFilter {
 
 	static isEnabled(): boolean {
