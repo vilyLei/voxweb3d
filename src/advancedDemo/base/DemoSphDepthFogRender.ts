@@ -21,7 +21,7 @@ import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 import { SphDepthFogRenderNode } from "../../advancedDemo/depthFog/renderer/SphDepthFogRenderNode";
 import MouseEvent from "../../vox/event/MouseEvent";
-import URLFilter from "../../tool/base/URLFilter";
+import URLFilter from ".././../cospace/app/utils/URLFilter";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 export class DemoSphDepthFogRender {

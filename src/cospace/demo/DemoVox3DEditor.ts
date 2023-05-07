@@ -19,7 +19,7 @@ import { NormalViewer } from "../app/normalViewer/sc/NormalViewer";
 import { ICoText } from "../voxtext/ICoText";
 import { CoModuleVersion, CoModuleLoader } from "../app/utils/CoModuleLoader";
 import { UIConfig } from "../voxui/system/UIConfig";
-import URLFilter from "../../tool/base/URLFilter";
+import URLFilter from "../../cospace/app/utils/URLFilter";
 import { HttpFileLoader } from "../modules/loaders/HttpFileLoader";
 
 declare var CoRenderer: ICoRenderer;

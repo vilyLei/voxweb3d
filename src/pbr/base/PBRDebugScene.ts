@@ -1,5 +1,5 @@
 import { DebugMaterialContext, MaterialContextParam } from "../../materialLab/base/DebugMaterialContext";
-import URLFilter from "../../tool/base/URLFilter";
+import URLFilter from "../../cospace/app/utils/URLFilter";
 import TextureResLoader from "../../vox/assets/TextureResLoader";
 import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
 import RendererDevice from "../../vox/render/RendererDevice";

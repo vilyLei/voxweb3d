@@ -10,7 +10,7 @@ import { VoxAwardScene } from "./base/award/VoxAwardScene";
 import { UISystem } from "./bgtoy/ui/UISystem";
 import { BGToyAwardSceneParam } from "./bgtoy/ui/BGToyAwardSceneParam";
 import { ImageFileSystem } from "./bgtoy/fio/ImageFileSystem";
-import URLFilter from "./base/URLFilter";
+import URLFilter from "../cospace/app/utils/URLFilter";
 import AABB2D from "../vox/geom/AABB2D";
 import EventBase from "../vox/event/EventBase";
 import { Background3D } from "./bgtoy/ui/Background3D";

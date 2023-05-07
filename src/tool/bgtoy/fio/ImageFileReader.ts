@@ -6,7 +6,7 @@ import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
 import RemoveBlackBGMaterial2 from "../../material/RemoveBlackBGMaterial2";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import { IFileUrlObj, IDropFileListerner, DropFileController } from "../../base/DropFileController";
-import URLFilter from "../../base/URLFilter";
+import URLFilter from "../../../cospace/app/utils/URLFilter";
 import { ImageFileSystem } from "./ImageFileSystem";
 import TextureResLoader from "../../../vox/assets/TextureResLoader";
 

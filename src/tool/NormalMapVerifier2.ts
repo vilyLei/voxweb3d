@@ -23,7 +23,7 @@ import Vector3D from "../vox/math/Vector3D";
 import SelectionBarStyle from "../orthoui/button/SelectionBarStyle";
 
 import PBRDebugScene from "../pbr/base/PBRDebugScene";
-import URLFilter from "./base/URLFilter";
+import URLFilter from "../cospace/app/utils/URLFilter";
 
 export class NormalMapVerifier2 extends PBRDebugScene {
 

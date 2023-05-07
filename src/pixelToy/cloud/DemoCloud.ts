@@ -1,4 +1,4 @@
-import URLFilter from "../../tool/base/URLFilter";
+import URLFilter from "../../cospace/app/utils/URLFilter";
 import TextureResLoader from "../../vox/assets/TextureResLoader";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import ScreenAlignPlaneEntity from "../../vox/entity/ScreenAlignPlaneEntity";

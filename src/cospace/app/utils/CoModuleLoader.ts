@@ -1,5 +1,5 @@
 
-import URLFilter from "../../../tool/base/URLFilter";
+import URLFilter from "../../app/utils/URLFilter";
 import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 interface I_CoModuleLoader {
 }

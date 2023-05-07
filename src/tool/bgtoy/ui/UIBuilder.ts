@@ -5,7 +5,6 @@ import UIBarTool from "../../../orthoui/button/UIBarTool";
 import IColor4 from "../../../vox/material/IColor4";
 import Vector3D from "../../../vox/math/Vector3D";
 import Color4 from "../../../vox/material/Color4";
-import URLFilter from "../../base/URLFilter";
 import RendererState from "../../../vox/render/RendererState";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import TextureConst from "../../../vox/texture/TextureConst";

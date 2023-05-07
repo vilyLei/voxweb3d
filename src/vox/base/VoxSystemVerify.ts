@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import URLFilter from "../../tool/base/URLFilter";
+import URLFilter from "../../cospace/app/utils/URLFilter";
 import ISystemVerify from "../../vox/base/ISystemVerify";
 declare var VoxVerify: ISystemVerify;
 export default class VoxSystemVerify {
