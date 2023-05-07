@@ -1,1 +1,175 @@
-{"items":[{"name":"coageom","ver":"1.01"},{"name":"coedit","ver":"1.06"},{"name":"coentity","ver":"1.05"},{"name":"comaterial","ver":"1.01"},{"name":"comesh","ver":"1.06"},{"name":"cospaceapp","ver":"1.06"},{"name":"threadcore","ver":"1.01"},{"name":"cotext","ver":"1.05"},{"name":"cotexture","ver":"1.05"},{"name":"coui","ver":"1.07"},{"name":"comouseinteraction","ver":"1.01"},{"name":"corenderer","ver":"1.06"},{"name":"corscene","ver":"1.08"},{"name":"cosimplerscene","ver":"1.06"},{"name":"couiinteraction","ver":"1.05"},{"name":"comath","ver":"1.03"},{"name":"modulectmgeomparser","ver":"1.01"},{"name":"moduledracogeomparser","ver":"1.01"},{"name":"moduledracogeomencoder","ver":"1.01"},{"type":"dir","name":"dracoLib","ver":"1.00","items":[{"name":"d1.md","ver":"1.01"},{"name":"d2.md","ver":"1.01"},{"name":"d3.md","ver":"1.01"},{"name":"dEncoder.js","ver":"1.01"},{"name":"ed.md","ver":"1.01"},{"name":"ew.js","ver":"1.01"},{"name":"w1.js","ver":"1.01"},{"name":"w1.md","ver":"1.01"},{"name":"w2.js","ver":"1.01"},{"name":"w2.md","ver":"1.01"},{"name":"w3.js","ver":"1.01"}]},{"name":"modulefbxgeomfastparser","ver":"1.06"},{"name":"moduleobjgeomparser","ver":"1.05"},{"name":"modulepngparser","ver":"1.05"},{"name":"coparticle","ver":"1.06"},{"name":"coenvlightmodule","ver":"1.05"},{"name":"colightmodule","ver":"1.06"},{"name":"occpostoutlinemodule","ver":"1.05"},{"name":"pbreffect","ver":"1.03"},{"name":"vsmshadowmodule","ver":"1.01"},{"name":"lib_voxui","ver":"1.05"}]}
+{
+    "items": [
+        {
+            "name": "coageom",
+            "ver": "1.01"
+        },
+        {
+            "name": "coedit",
+            "ver": "1.06"
+        },
+        {
+            "name": "coentity",
+            "ver": "1.05"
+        },
+        {
+            "name": "comaterial",
+            "ver": "1.01"
+        },
+        {
+            "name": "comesh",
+            "ver": "1.06"
+        },
+        {
+            "name": "cospaceapp",
+            "ver": "1.06"
+        },
+        {
+            "name": "threadcore",
+            "ver": "1.01"
+        },
+        {
+            "name": "cotext",
+            "ver": "1.05"
+        },
+        {
+            "name": "cotexture",
+            "ver": "1.05"
+        },
+        {
+            "name": "coui",
+            "ver": "1.07"
+        },
+        {
+            "name": "comouseinteraction",
+            "ver": "1.01"
+        },
+        {
+            "name": "corenderer",
+            "ver": "1.06"
+        },
+        {
+            "name": "corscene",
+            "ver": "1.08"
+        },
+        {
+            "name": "cosimplerscene",
+            "ver": "1.06"
+        },
+        {
+            "name": "couiinteraction",
+            "ver": "1.05"
+        },
+        {
+            "name": "comath",
+            "ver": "1.03"
+        },
+        {
+            "name": "modulectmgeomparser",
+            "ver": "1.01"
+        },
+        {
+            "name": "moduledracogeomparser",
+            "ver": "1.01"
+        },
+        {
+            "name": "moduledracogeomencoder",
+            "ver": "1.01"
+        },
+        {
+            "type": "dir",
+            "name": "dracoLib",
+            "ver": "1.00",
+            "items": [
+                {
+                    "name": "d1.md",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "d2.md",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "d3.md",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "dEncoder.js",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "ed.md",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "ew.js",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "w1.js",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "w1.md",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "w2.js",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "w2.md",
+                    "ver": "1.01"
+                },
+                {
+                    "name": "w3.js",
+                    "ver": "1.01"
+                }
+            ]
+        },
+        {
+            "name": "modulefbxgeomfastparser",
+            "ver": "1.06"
+        },
+        {
+            "name": "moduleobjgeomparser",
+            "ver": "1.05"
+        },
+        {
+            "name": "modulepngparser",
+            "ver": "1.05"
+        },
+        {
+            "name": "coparticle",
+            "ver": "1.06"
+        },
+        {
+            "name": "coenvlightmodule",
+            "ver": "1.05"
+        },
+        {
+            "name": "colightmodule",
+            "ver": "1.06"
+        },
+        {
+            "name": "occpostoutlinemodule",
+            "ver": "1.05"
+        },
+        {
+            "name": "pbreffect",
+            "ver": "1.03"
+        },
+        {
+            "name": "vsmshadowmodule",
+            "ver": "1.01"
+        },
+        {
+            "name": "lib_voxui",
+            "ver": "1.05"
+        },
+        {
+            "name": "lib_voxmodeledit",
+            "ver": "1.00"
+        }
+    ]
+}
