@@ -44,29 +44,8 @@ class UIBuilder {
 	}
 	private init(): void {
 		let url = "static/assets/ui/reset.png";
-		// url = URLFilter.filterUrl(url);
-		let img = new Image();
 		let fontColor = new Color4(1.0, 1.0, 1.0, 1.0);
 		let bgColor = new Color4(1.0, 1.0, 1.0, 0.3);
-
-		// img.onload = (evt: any): void => {
-		// 	let btn = this.createBtnWithIcon(
-		// 		"reset_btn",
-		// 		img,
-		// 		200,
-		// 		60,
-		// 		"恢复初始设置",
-		// 		25,
-		// 		new Vector3D(-20, 0),
-		// 		new Vector3D(-10),
-		// 		fontColor,
-		// 		bgColor
-		// 	);
-		// 	this.applyBtnColor(btn);
-		// 	this.resetBtn = btn;
-		// 	this.updateBuildFinish();
-		// };
-		// img.src = url;
 
 		this.m_imgLoader.load(url, (pimg: HTMLImageElement, imgUrl: string): void => {
 			let btn = this.createBtnWithIcon(
@@ -87,16 +66,6 @@ class UIBuilder {
 		});
 
 		url = "static/assets/ui/download.png";
-		// url = URLFilter.filterUrl(url);
-		// let img1 = new Image();
-		// img1.onload = (evt: any): void => {
-		// 	let btn = this.createBtnWithIcon("save_btn", img1, 200, 60, "保存图片", 25, new Vector3D(-13, 0), new Vector3D(-20), fontColor, bgColor);
-		// 	this.applyBtnColor(btn);
-		// 	this.saveBtn = btn;
-		// 	this.updateBuildFinish();
-		// };
-		// img1.src = url;
-
 		this.m_imgLoader.load(url, (pimg: HTMLImageElement, imgUrl: string): void => {
 			let btn = this.createBtnWithIcon("save_btn", pimg, 200, 60, "保存图片", 25, new Vector3D(-13, 0), new Vector3D(-20), fontColor, bgColor);
 			this.applyBtnColor(btn);
@@ -104,23 +73,7 @@ class UIBuilder {
 			this.updateBuildFinish();
 		});
 
-		//http://www.artvily.com:9090/static/assets/ui/vox.png
 		url = "static/assets/ui/addInto.png";
-		// url = URLFilter.filterUrl(url);
-		// let img2 = new Image();
-		// img2.onload = (evt: any): void => {
-		// 	let pw = img2.width * 2.0;
-		// 	let ph = img2.height * 2.0;
-		// 	let data = UIBarTool.CreateImageCanvasFixSize(512, 512, pw, ph, img2, new Color4(1.0,1.0,1.0, 0.1), new Vector3D((512 - pw) * 0.5, (512 - ph) * 0.5));
-		// 	let tex = this.m_rscene.textureBlock.createImageTex2D();
-		// 	tex.setDataFromImage(data);
-		// 	let btn = UIBarTool.CreateBtnWithTex(tex);
-		// 	this.applyBtnColor(btn);
-		// 	btn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-		// 	this.addIntoBtn = btn;
-		// 	this.updateBuildFinish();
-		// };
-		// img2.src = url;
 
 		this.m_imgLoader.load(url, (pimg: HTMLImageElement, imgUrl: string): void => {
 			let pw = pimg.width * 2.0;
@@ -152,7 +105,6 @@ class UIBuilder {
 			this.buildFinishCall();
 		}
 	}
-	// private m_index = 0;
 	createBtn(btn_name: string, fontSize: number, fontColor: Color4 = null, fontBgColor: Color4 = null, fixWidth: number = 0): ColorRectImgButton {
 		return UIBarTool.CreateBtn(btn_name, fontSize, fontColor, fontBgColor, fixWidth);
 	}
@@ -211,37 +163,11 @@ class UIBuilder {
 			const ctx2d = canvas.getContext("2d");
 			ctx2d.drawImage(img, 0, 0, img.width, img.height, imgPx, imgPy, img.width, img.height);
 		}
-		// else {
-		// 	// let imgPx = canvas.width;
-		// 	// let imgPy = Math.round(( canvas.height ) * 0.5);
-		// 	// const ctx2d = canvas.getContext("2d");
-		// 	// ctx2d.drawImage(img, 0, 0, img.width, img.height, imgPx, imgPy, img.width, img.height);
-		// }
-
-		// let k = 1 + this.m_index++;
-		// let ri = 1;
-		// canvas.style.display = "bolck";
-		// canvas.style.zIndex = "9999";
-		// canvas.style.left = `${66 + k * 66}px`;
-		// canvas.style.top = `${200 + ri * 66}px`;
-		// canvas.style.position = "absolute";
-		// document.body.appendChild(canvas);
-		// >>
-		// let keyStr = "reset_btn";
 		UIBarTool.AddImageToAtlas(keyStr, canvas);
 		let btn = UIBarTool.CreateBtnWithKeyStr(keyStr);
 		btn.setRenderState(RendererState.BACK_ALPHA_ADD_BLENDSORT_STATE);
 		return btn;
 	}
-	/**
-	const centerX = canvas.width / 2;
-	const centerY = canvas.height / 2;
-	const angleInDegrees = 45;
-	const angleInRadians = angleInDegrees * Math.PI / 180;
-	ctx.translate(centerX, centerY);
-	ctx.rotate(angleInRadians);
-	ctx.drawImage(img, -img.width / 2, -img.height / 2);
-	 */
 }
 
 export { UIBuilder };
