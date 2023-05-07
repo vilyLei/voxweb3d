@@ -16,6 +16,7 @@ import ScreenAlignPlaneEntity from "../../../vox/entity/ScreenAlignPlaneEntity";
 import { UIBuilder } from "./UIBuilder";
 import Color4 from "../../../vox/material/Color4";
 import TextureConst from "../../../vox/texture/TextureConst";
+import URLFilter from "../../../cospace/app/utils/URLFilter";
 
 class BGToyAwardSceneParam implements IAwardSceneParam {
 	texLoader: TextureResLoader = null;
@@ -40,7 +41,8 @@ class BGToyAwardSceneParam implements IAwardSceneParam {
 		this.uiSys.uiHTMLInfo.applyFunction(key);
 	}
 	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-		// url = URLFilter.filterUrl(url);
+
+		url = URLFilter.filterUrl(url);
 		let tex = this.texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 		tex.mipmapEnabled = false;
 		tex.minFilter = tex.magFilter = TextureConst.NEAREST;

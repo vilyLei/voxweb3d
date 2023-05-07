@@ -8,8 +8,10 @@ import Color4 from "../../../vox/material/Color4";
 import RendererState from "../../../vox/render/RendererState";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import TextureConst from "../../../vox/texture/TextureConst";
+import ImageResLoader from "../../../vox/assets/ImageResLoader";
 
 class UIBuilder {
+	private m_imgLoader = new ImageResLoader();
 	private m_rscene: IRendererScene = null;
 	private m_uisrc: IRendererScene = null;
 	private m_graph: IRendererSceneGraph = null;
@@ -47,10 +49,29 @@ class UIBuilder {
 		let fontColor = new Color4(1.0, 1.0, 1.0, 1.0);
 		let bgColor = new Color4(1.0, 1.0, 1.0, 0.3);
 
-		img.onload = (evt: any): void => {
+		// img.onload = (evt: any): void => {
+		// 	let btn = this.createBtnWithIcon(
+		// 		"reset_btn",
+		// 		img,
+		// 		200,
+		// 		60,
+		// 		"恢复初始设置",
+		// 		25,
+		// 		new Vector3D(-20, 0),
+		// 		new Vector3D(-10),
+		// 		fontColor,
+		// 		bgColor
+		// 	);
+		// 	this.applyBtnColor(btn);
+		// 	this.resetBtn = btn;
+		// 	this.updateBuildFinish();
+		// };
+		// img.src = url;
+
+		this.m_imgLoader.load(url, (pimg: HTMLImageElement, imgUrl: string): void => {
 			let btn = this.createBtnWithIcon(
 				"reset_btn",
-				img,
+				pimg,
 				200,
 				60,
 				"恢复初始设置",
@@ -63,27 +84,48 @@ class UIBuilder {
 			this.applyBtnColor(btn);
 			this.resetBtn = btn;
 			this.updateBuildFinish();
-		};
-		img.src = url;
+		});
 
 		url = "static/assets/ui/download.png";
 		// url = URLFilter.filterUrl(url);
-		let img1 = new Image();
-		img1.onload = (evt: any): void => {
-			let btn = this.createBtnWithIcon("save_btn", img1, 200, 60, "保存图片", 25, new Vector3D(-13, 0), new Vector3D(-20), fontColor, bgColor);
+		// let img1 = new Image();
+		// img1.onload = (evt: any): void => {
+		// 	let btn = this.createBtnWithIcon("save_btn", img1, 200, 60, "保存图片", 25, new Vector3D(-13, 0), new Vector3D(-20), fontColor, bgColor);
+		// 	this.applyBtnColor(btn);
+		// 	this.saveBtn = btn;
+		// 	this.updateBuildFinish();
+		// };
+		// img1.src = url;
+
+		this.m_imgLoader.load(url, (pimg: HTMLImageElement, imgUrl: string): void => {
+			let btn = this.createBtnWithIcon("save_btn", pimg, 200, 60, "保存图片", 25, new Vector3D(-13, 0), new Vector3D(-20), fontColor, bgColor);
 			this.applyBtnColor(btn);
 			this.saveBtn = btn;
 			this.updateBuildFinish();
-		};
-		img1.src = url;
+		});
 
+		//http://www.artvily.com:9090/static/assets/ui/vox.png
 		url = "static/assets/ui/addInto.png";
 		// url = URLFilter.filterUrl(url);
-		let img2 = new Image();
-		img2.onload = (evt: any): void => {
-			let pw = img2.width * 2.0;
-			let ph = img2.height * 2.0;
-			let data = UIBarTool.CreateImageCanvasFixSize(512, 512, pw, ph, img2, new Color4(1.0,1.0,1.0, 0.1), new Vector3D((512 - pw) * 0.5, (512 - ph) * 0.5));
+		// let img2 = new Image();
+		// img2.onload = (evt: any): void => {
+		// 	let pw = img2.width * 2.0;
+		// 	let ph = img2.height * 2.0;
+		// 	let data = UIBarTool.CreateImageCanvasFixSize(512, 512, pw, ph, img2, new Color4(1.0,1.0,1.0, 0.1), new Vector3D((512 - pw) * 0.5, (512 - ph) * 0.5));
+		// 	let tex = this.m_rscene.textureBlock.createImageTex2D();
+		// 	tex.setDataFromImage(data);
+		// 	let btn = UIBarTool.CreateBtnWithTex(tex);
+		// 	this.applyBtnColor(btn);
+		// 	btn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+		// 	this.addIntoBtn = btn;
+		// 	this.updateBuildFinish();
+		// };
+		// img2.src = url;
+
+		this.m_imgLoader.load(url, (pimg: HTMLImageElement, imgUrl: string): void => {
+			let pw = pimg.width * 2.0;
+			let ph = pimg.height * 2.0;
+			let data = UIBarTool.CreateImageCanvasFixSize(512, 512, pw, ph, pimg, new Color4(1.0,1.0,1.0, 0.1), new Vector3D((512 - pw) * 0.5, (512 - ph) * 0.5));
 			let tex = this.m_rscene.textureBlock.createImageTex2D();
 			tex.setDataFromImage(data);
 			let btn = UIBarTool.CreateBtnWithTex(tex);
@@ -91,8 +133,7 @@ class UIBuilder {
 			btn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
 			this.addIntoBtn = btn;
 			this.updateBuildFinish();
-		};
-		img2.src = url;
+		});
 
 		let expandTrueBtnImg = UIBarTool.CreateCharsCanvasFixSize(60, 60, ">>", 25, fontColor, bgColor);
 		let expandFalseBtnImg = UIBarTool.CreateCharsCanvasFixSize(60, 60, "<<", 25, fontColor, bgColor);

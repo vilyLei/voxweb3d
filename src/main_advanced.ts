@@ -13,9 +13,9 @@ pwin["VoxVerify"] = new VVF();
 
 // import {DemoLightFlow as Demo} from "./advancedDemo/depthFog/DemoLightFlow";
 
-import { DemoSphDepthFogRender as Demo } from "./advancedDemo/base/DemoSphDepthFogRender";
+// import { DemoSphDepthFogRender as Demo } from "./advancedDemo/base/DemoSphDepthFogRender";
 
-// import { DemoSphDepthFogRender2 as Demo } from "./advancedDemo/base/DemoSphDepthFogRender2";
+import { DemoSphDepthFogRender2 as Demo } from "./advancedDemo/base/DemoSphDepthFogRender2";
 
 // import { DemoSphDepthFog as Demo } from "./advancedDemo/base/DemoSphDepthFog";
 

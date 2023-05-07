@@ -66,7 +66,7 @@ export class RemoveBlackBG2 {
 			// new RenderStatusDisplay(rscene, true);
 
 			let tex = this.getTexByUrl("static/assets/guangyun_40.jpg");
-			document.body.style.overflow = "hidden";
+			// document.body.style.overflow = "hidden";
 			this.m_background.initialize(rscene);
 		}
 	}
