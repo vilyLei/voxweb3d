@@ -1,12 +1,12 @@
 
-import URLFilter from "../../app/utils/URLFilter";
+import URLFilter from "../../../cospace/app/utils/URLFilter";
 import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 interface I_CoModuleLoader {
 }
 class CoModuleVersion {
 	private m_infoObj: any = null;
 	private m_verMap: Map<string, any> = new Map();
-	constructor(infoObj: any){
+	constructor(infoObj: any) {
 		this.m_infoObj = infoObj;
 		const versionInfo = this.m_infoObj;
 		const versionInfoMap = this.m_verMap;
@@ -27,12 +27,17 @@ class CoModuleVersion {
 	}
 	filterUrl(url: string): string {
 		let isDL = url.indexOf("/dracoLib/") > 0;
-		if(!isDL) {
+		if (isDL) {
+			let name = URLFilter.getFileNameAndSuffixName(url, true);
+			if (this.m_verMap.has(name)) {
+				let item = this.m_verMap.get(name);
+				url += "?ver=" + item.ver;
+			}
+		} else {
 			let name = URLFilter.getFileName(url, true);
-			if(this.m_verMap.has(name)) {
-				let item = this.m_verMap.get( name );
-				url +="?ver=" + item.ver;
-				console.log("### ### filterUrl(), name: ", name);
+			if (this.m_verMap.has(name)) {
+				let item = this.m_verMap.get(name);
+				url += "?ver=" + item.ver;
 			}
 		}
 		return url;
@@ -46,41 +51,43 @@ class CoModuleLoader extends ModuleLoader {
 	constructor(times: number, callback: (m?: ModuleLoader) => void = null, versionFilter: CoModuleVersion = null) {
 		super(times, callback, null);
 		let urlChecker = (url: string): string => {
-			if(url.indexOf(".artvily.") > 0) {
+
+			console.log("XX MMMM XXXX init url: ", url);
+			if (url.indexOf(".artvily.") > 0) {
 				return url;
 			}
 			let hostUrl = window.location.href;
 			url = url.trim();
-			if(hostUrl.indexOf(".artvily.") > 0) {
+			if (hostUrl.indexOf(".artvily.") > 0) {
 				let i = url.lastIndexOf("/");
 				let j = url.indexOf(".", i);
 				// hostUrl = "http://localhost:9000/test/";
 				hostUrl = "http://www.artvily.com:9090/";
-				let fileName = url.slice(i,j);
-				if(url.indexOf(".umd.") > 0) {
+				let fileName = url.slice(i, j);
+				if (url.indexOf(".umd.") > 0) {
 					fileName = fileName.toLocaleLowerCase();
-					url = hostUrl + url.slice(0,i) + fileName + ".js";
-				}else {
+					url = hostUrl + url.slice(0, i) + fileName + ".js";
+				} else {
 					url = hostUrl + url;
 				}
 
-				if(fileName == "") {
-					console.error("err: ",url);
-					console.error("i, j: ",i,j);
+				if (fileName == "") {
+					console.error("err: ", url);
+					console.error("i, j: ", i, j);
 				}
-				console.log("urlChecker(), fileName:-"+fileName+"-");
+				console.log("urlChecker(), fileName:-" + fileName + "-");
 				console.log("urlChecker(), new url: ", url);
-				if(versionFilter) {
-					url = versionFilter.filterUrl( url );
+				if (versionFilter) {
+					url = versionFilter.filterUrl(url);
 				}
 				return url;
 			}
-			if(versionFilter) {
-				url = versionFilter.filterUrl( url );
+			if (versionFilter) {
+				url = versionFilter.filterUrl(url);
 			}
 			return url;
 		}
-		this.setUrlChecker( urlChecker );
+		this.setUrlChecker(urlChecker);
 	}
 }
 
