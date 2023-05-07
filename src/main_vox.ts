@@ -334,7 +334,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoOBB as Demo} from "./demo/DemoOBB";
 
- import {DemoOBBUICtrl as Demo} from "./demo/DemoOBBUICtrl";
+//  import {DemoOBBUICtrl as Demo} from "./demo/DemoOBBUICtrl";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   renderer    ////////////////////////////////////
@@ -450,7 +450,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
-//  import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
+ import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

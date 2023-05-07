@@ -1,4 +1,5 @@
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceAppData";
+import { CoModuleVersion } from "../utils/CoModuleLoader";
 import { CoDataModule } from "./CoDataModule";
 interface I_CoGeomModelLoader {
 	
@@ -10,6 +11,7 @@ class CoGeomModelLoader {
 	private m_loadTotal = 0;
 	private m_loadedTotal = 0;
 
+	verTool: CoModuleVersion = null;
 	constructor() {
 	}
 
@@ -18,6 +20,7 @@ class CoGeomModelLoader {
 		this.m_loadedAllCall = loadedAllCallback;
 	}
 	load(urls: string[], typeNS: string = ""): void {
+		CoGeomModelLoader.s_coapp.verTool = this.verTool;
 		if (urls != null && urls.length > 0) {
 
 			CoGeomModelLoader.s_coapp.initialize(null, true);

@@ -55,7 +55,7 @@ export class ModelsLoading {
             this.initModels();
         }
     }
-    private initModels(): void {
+    private initModels2(): void {
         //let vsUrl = "static/private/bake/oldIndexUnwrap/vertex.bin";
         let url0 = "static/assets/fbx/base4.fbx";
         let url1 = "static/private/bake/oldIndexUnwrap/6.ctm";
@@ -75,7 +75,7 @@ export class ModelsLoading {
 
         });
     }
-    private initModels2(): void {
+    private initModels(): void {
 
         let url0 = "static/assets/fbx/base4.fbx";
         let url1 = "static/assets/obj/apple_01.obj";

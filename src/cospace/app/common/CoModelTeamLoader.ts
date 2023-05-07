@@ -1,3 +1,4 @@
+import { CoModuleVersion } from "../utils/CoModuleLoader";
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "./CoGeomModelLoader";
 
 class LoadingTeam {
@@ -40,6 +41,7 @@ class CoModelTeamLoader {
     private m_team: LoadingTeam = null;
     private m_teams: LoadingTeam[] = [];
     private m_enabled = true;
+	verTool: CoModuleVersion = null;
     constructor() {
         this.initialize();
     }
@@ -79,7 +81,7 @@ class CoModelTeamLoader {
         }
     }
     load(urls: string[], callback: (models: CoGeomDataType[], transforms: Float32Array[]) => void): void {
-
+        this.m_modelLoader.verTool = this.verTool;
         let team = new LoadingTeam(urls);
         team.callback = callback;
         this.m_teams.push(team);

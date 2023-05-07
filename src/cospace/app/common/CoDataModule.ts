@@ -10,7 +10,7 @@ import {
 
 import { ICoSpaceApp } from "../../app/ICoSpaceApp";
 import { ICoSpaceAppIns } from "../../app/ICoSpaceAppIns";
-import { CoModuleLoader } from "../utils/CoModuleLoader";
+import { CoModuleVersion, CoModuleLoader } from "../utils/CoModuleLoader";
 
 declare var CoSpaceApp: ICoSpaceApp;
 interface I_CoDataModule {
@@ -23,9 +23,9 @@ export class CoDataModule {
 	private m_dependencyGraphObj: Object;
 	private m_deferredInit: boolean;
 	private m_sysInitCallback: () => void;
-	// private m_urlChecker: (url: string) => string = null;
 
 	readonly coappIns: ICoSpaceAppIns;
+	verTool: CoModuleVersion = null;
 	constructor() { }
 	/**
 	 * 初始化
@@ -38,7 +38,6 @@ export class CoDataModule {
 			this.m_init = false;
 
 			this.m_sysInitCallback = sysInitCallback;
-			// this.m_urlChecker = urlChecker;
 			this.m_deferredInit = deferredInit;
 			let modules: CoTaskCodeModuleParam[] = [
 				{ url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
@@ -61,16 +60,25 @@ export class CoDataModule {
 				]
 			};
 			this.m_dependencyGraphObj = dependencyGraphObj;
-
-			let loader = new CoModuleLoader(1);
-			let urlChecker = loader.getUrlChecker();
-			if (urlChecker != null) {
+			if(this.verTool) {
 				for (let i = 0; i < modules.length; ++i) {
-					modules[i].url = urlChecker(modules[i].url);
+					modules[i].url = this.verTool.filterUrl(modules[i].url);
 				}
 				let nodes = (dependencyGraphObj as any).nodes;
 				for (let i = 0; i < nodes.length; ++i) {
-					nodes[i].path = urlChecker(nodes[i].path);
+					nodes[i].path = this.verTool.filterUrl(nodes[i].path);
+				}
+			}else {
+				let loader = new CoModuleLoader(1);
+				let urlChecker = loader.getUrlChecker();
+				if (urlChecker) {
+					for (let i = 0; i < modules.length; ++i) {
+						modules[i].url = urlChecker(modules[i].url);
+					}
+					let nodes = (dependencyGraphObj as any).nodes;
+					for (let i = 0; i < nodes.length; ++i) {
+						nodes[i].path = urlChecker(nodes[i].path);
+					}
 				}
 			}
 			if (!deferredInit) {
