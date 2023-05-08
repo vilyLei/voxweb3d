@@ -6,10 +6,7 @@ export default class URLFilter {
 	}
 	static filterUrl(url: string): string {
 		if(url.indexOf("blob:") < 0) {
-			console.log("use common tex url");
 			let hostUrl = window.location.href;
-			console.log("KKKK >> KKKK hostUrl: ", hostUrl);
-			console.log("KKKK >> KKKK url: ", url);
 			if (hostUrl.indexOf(".artvily.") > 0) {
 				hostUrl = "http://www.artvily.com:9090/";
 				url = hostUrl + url;

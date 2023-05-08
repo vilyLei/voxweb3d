@@ -334,7 +334,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoOBB as Demo} from "./demo/DemoOBB";
 
-//  import {DemoOBBUICtrl as Demo} from "./demo/DemoOBBUICtrl";
+ import {DemoOBBUICtrl as Demo} from "./demo/DemoOBBUICtrl";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   renderer    ////////////////////////////////////
@@ -420,7 +420,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
-import {DemoFaceTest as Demo} from "./demo/DemoFaceTest";
+// import {DemoFaceTest as Demo} from "./demo/DemoFaceTest";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     event    ///////////////////////////////////
