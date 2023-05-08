@@ -288,16 +288,14 @@ export default class Vector3D implements IVector3D {
     static RadianBetween2(v0: Vector3D, v1: Vector3D): number {
         //  // c^2 = a^2 + b^2 - 2*a*b * cos(x)
         //  // cos(x) = (a^2 + b^2 - c^2) / 2*a*b
-        let pa: number = v0.getLengthSquared();
-        let pb: number = v1.getLengthSquared();
-        v_m_v0.x = v0.x - v1.x;
-        v_m_v0.y = v0.y - v1.y;
-        v_m_v0.z = v0.z - v1.z;
+        let pa = v0.getLengthSquared();
+        let pb = v1.getLengthSquared();
+        v_m_v0.subVecsTo(v0, v1);
         return Math.acos((pa + pb - v_m_v0.getLengthSquared()) / (2.0 * Math.sqrt(pa) * Math.sqrt(pb)));
 
     }
     static Reflect(iv: Vector3D, nv: Vector3D, rv: Vector3D): void {
-        let idotn2: number = (iv.x * nv.x + iv.y * nv.y + iv.z * nv.z) * 2.0;
+        let idotn2 = (iv.x * nv.x + iv.y * nv.y + iv.z * nv.z) * 2.0;
         rv.x = iv.x - idotn2 * nv.x;
         rv.y = iv.y - idotn2 * nv.y;
         rv.z = iv.z - idotn2 * nv.z;

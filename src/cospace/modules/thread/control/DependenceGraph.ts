@@ -76,7 +76,7 @@ class GraphData {
         if(jsonString != undefined && jsonString != "") {
 
             let obj = JSON.parse(jsonString);
-            console.log("GraphData(::initFromJsonString(), obj: ",obj);
+            console.log("GraphData::initFromJsonString(), obj: ",obj);
 
             this.m_nodes = [];
             let node: DependencyNode;

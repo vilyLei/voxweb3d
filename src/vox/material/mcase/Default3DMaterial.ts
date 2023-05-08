@@ -22,6 +22,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
     alignScreen = false;
     fixAlignScreen = false;
     mapLodEnabled = false;
+    useBake = false;
     fragUniformData: Float32Array = null;
     constructor() {
         super();
@@ -44,6 +45,9 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         if (this.fragUniformData) {
             this.m_uniqueName += "FUDL" + this.fragUniformData.length;
         }
+		if(this.useBake) {
+            this.m_uniqueName += "Bake";
+		}
     }
 
     buildShader(): void {
@@ -65,6 +69,9 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
             coder.addDefine("VOX_VTX_MAT_TRANSFORM");
             coder.useVertSpaceMats(true, true, true);
         }
+		if(this.useBake) {
+			coder.addDefine("VOX_USE_BAKE");
+		}
         if (this.fragUniformData) {
             coder.addFragUniform("vec4", "u_fragDatas", Math.floor(this.fragUniformData.length / 4));
         }
@@ -159,11 +166,14 @@ vec2 getUV(vec2 uv) {
     #else
         #ifdef VOX_ALIGN_SCREEN
             gl_Position = u_objMat * localPosition;
+			#ifdef VOX_USE_NORMAL
+				v_worldNormal = normalize( a_nvs.xyz * inverse(mat3(u_objMat)) );
+			#endif
         #else
             gl_Position = localPosition;
-        #endif
-        #ifdef VOX_USE_NORMAL
-            v_worldNormal = normalize( a_nvs.xyz );
+			#ifdef VOX_USE_NORMAL
+				v_worldNormal = normalize( a_nvs.xyz );
+			#endif
         #endif
     #endif
 
@@ -173,6 +183,13 @@ vec2 getUV(vec2 uv) {
     #ifdef VOX_USE_VTX_COLOR
         v_cv = a_cvs.xyz;
     #endif
+	#ifdef VOX_USE_BAKE
+	// for test
+	vec2 uvpos = (a_uvs.xy);
+    // uvpos.y = 1.0 - uvpos.y;
+    uvpos = vec2(2.0) * vec2(uvpos - vec2(0.5));
+    gl_Position = vec4(uvpos, 0.0,1.0);
+	#endif
 `
         );
 
@@ -201,6 +218,7 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     alignScreen = false;
     fixAlignScreen = false;
     mapLodEnabled = false;
+    useBake = false;
     fragUniformData: Float32Array = null;
     constructor() {
         super();
@@ -223,6 +241,7 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
         buf.alignScreen = this.alignScreen;
         buf.fixAlignScreen = this.fixAlignScreen;
         buf.mapLodEnabled = this.mapLodEnabled;
+        buf.useBake = this.useBake;
         buf.fragUniformData = this.fragUniformData;
     }
     /**

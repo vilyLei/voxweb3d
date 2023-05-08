@@ -420,6 +420,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
+import {DemoFaceTest as Demo} from "./demo/DemoFaceTest";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     event    ///////////////////////////////////
@@ -450,7 +451,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
- import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
+//  import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

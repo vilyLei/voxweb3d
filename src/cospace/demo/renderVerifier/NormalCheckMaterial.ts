@@ -95,7 +95,7 @@ class NormalCheckMaterial {
 			bool facing = gl_FrontFacing;
     		vec2 dv = fract(gl_FragCoord.xy/vec2(5.0)) - vec2(0.5);
     		vec2 f2 = sign(dv);
-    
+
     		vec3 nv = normalize(v_nv.xyz);
     		vec3 color = pow(nv, gama);
 
@@ -108,10 +108,10 @@ class NormalCheckMaterial {
     		vec3 frontColor = param.x > 0.5 ? modelColor : color.xyz;
     		vec3 backColor = param.y > 0.5 ? vec3(sign(f2.x * f2.y), 1.0, 1.0) : frontColor;
     		vec3 dstColor = facing ? frontColor : backColor;
-			
+
 			frontColor = param.y > 0.5 ? dstColor : modelColor;
 			dstColor = param.x > 0.5 ? frontColor : dstColor;
-			
+
 			float f = v_dv.x;
 			f = f < 0.8 ? 1.0 : 0.0;
 			// vec3 diffColor = vec3(1.0, 0.0, 0.0) * f + dstColor * (1.0 - f);
@@ -125,6 +125,7 @@ class NormalCheckMaterial {
     		FragColor0 = vec4(vec3(0.8), 1.0);
 			#endif
     		// FragColor0 = vec4(u_params[0].xyz, 1.0);
+			FragColor0.xyz = facing ? vec3(1.0,0.0,0.0) : vec3(0.0,1.0,0.0);
 					`
 				);
 				coder.addVertMainCode(
@@ -134,7 +135,7 @@ class NormalCheckMaterial {
 			vec3 puvs = a_uvs;
 			vec3 pnv = u_params[1].zzz * a_nvs;
 			v_dv = vec3(dot(normalize(a_uvs), normalize( pnv )));
-			vec4 pv = u_projMat * viewPosition;			
+			vec4 pv = u_projMat * viewPosition;
 			gl_Position = pv;
 			v_vnv = normalize(pnv * inverse(mat3(vmat)));
 			pnv = u_params[1].w < 0.5 ? pnv : normalize(pnv * inverse(mat3(u_objMat)));

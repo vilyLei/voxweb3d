@@ -1,17 +1,13 @@
-import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
-import { ICoUI } from "../../../voxui/ICoUI";
 import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { NormalEntityScene } from "./NormalEntityScene";
 import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
 import { NVTransUI } from "../ui/NVTransUI";
 
-declare var CoUI: ICoUI;
 
 declare var CoRScene: ICoRScene;
-declare var CoMaterial: ICoMaterial;
 
 class NormalViewerScene {
 
