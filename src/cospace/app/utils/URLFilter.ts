@@ -1,5 +1,16 @@
 export default class URLFilter {
-
+	static getDomain(url: string): string {
+		var urlReg = /http:\/\/([^\/]+)/i;
+		let domain = url.match(urlReg);
+		return ((domain != null && domain.length > 0) ? domain[0] : "");
+	}
+	static getHostUrl(port?: string): string {
+		let host = location.href;
+		let domain = URLFilter.getDomain(host);
+		let nsList = host.split(":");
+		host = nsList[0]+":"+nsList[1];
+		return port ? host + ":"+port+"/" : domain + "/";
+	}
 	static isEnabled(): boolean {
 		let hostUrl = window.location.href;
 		return hostUrl.indexOf(".artvily.com") > 0;

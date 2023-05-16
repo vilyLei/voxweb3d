@@ -1,0 +1,25 @@
+{
+    "demos": [
+
+        {
+            "name": "slickRoad",
+            "info": "Road Editor"
+        },
+        {
+            "name": "slickRoadViewer",
+            "info": "Road model viewer"
+        },
+        {
+            "name": "renderingVerifier",
+            "info": "1000W+ triangles rendering verifier"
+        },
+        {
+            "name": "normalViewer",
+            "info": "a 3d editor"
+        },
+        {
+            "name": "normalMapVerifier",
+            "info": "Normal Map 检查器(normal map verifier)"
+        }
+    ]
+}

@@ -41,7 +41,7 @@ export class DemoCamera {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-            let rparam: RendererParam = new RendererParam();
+            let rparam = new RendererParam();
             rparam.setAttriAntialias(true);
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);
             this.m_rscene = new RendererScene();

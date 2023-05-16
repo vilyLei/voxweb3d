@@ -1,0 +1,24 @@
+{
+	"demos": [
+		{
+			"name": "slickRoad",
+			"ver": "1.00"
+		},
+		{
+			"name": "slickRoadViewer",
+			"ver": "1.00"
+		},
+		{
+			"name": "renderingVerifier",
+			"ver": "1.00"
+		},
+		{
+			"name": "normalViewer",
+			"ver": "1.00"
+		},
+		{
+			"name": "normalMapVerifier",
+			"ver": "1.00"
+		}
+	]
+}
