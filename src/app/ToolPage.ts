@@ -11,14 +11,13 @@ interface DemoData {
 
 export class ToolPage {
 
-    private m_htmlText: string = "";
+    private m_htmlText = "";
     private m_host = "";
     constructor() { }
 
     initialize(): void {
         console.log("ToolPage::initialize()......");
-        let url: string = location.href + "";
-        document.title = "Rendering & Art";
+        let url = location.href + "";
         this.m_host = URLFilter.getHostUrl("9090");
         this.m_host = URLFilter.getHostUrl();
         url = this.parseUrl(url);
@@ -59,7 +58,7 @@ export class ToolPage {
         htmlText += "<center/>";
         htmlText += '<hr style="height:3px;border:1px solid #444444;"/>';
         htmlText += "<br/>";
-        htmlText += "ENGINE DEMOS";
+        htmlText += "Tools List";
         this.m_htmlText = htmlText;
 
         let po: DemoItem;

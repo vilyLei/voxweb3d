@@ -9,14 +9,13 @@ interface DemoData {
 
 export class Home {
 
-    private m_htmlText: string = "";
+    private m_htmlText = "";
     private m_host = "";
     constructor() { }
 
     initialize(): void {
         console.log("Home::initialize()......");
-        let url: string = location.href + "";
-        document.title = "Rendering & Art";
+        let url = location.href + "";
         if(url.indexOf("artvily.") > 0) {
             this.m_host = "http://www.artvily.com:9090/";
         }
