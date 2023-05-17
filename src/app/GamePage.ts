@@ -9,7 +9,7 @@ interface DemoData {
     demos: DemoItem[];
 }
 
-export class Home {
+export class GamePage {
 
     private m_htmlText = "";
     private m_host = "";
@@ -17,16 +17,12 @@ export class Home {
     constructor() { }
 
     initialize(): void {
-        console.log("Home::initialize()......");
+        console.log("GamePage::initialize()......");
         // let url = location.href + "";
-        // if(url.indexOf("artvily.") > 0) {
-        //     this.m_host = "http://www.artvily.com:9090/";
-        // }
 		this.m_domin = URLFilter.getDomain(location.href);
         this.m_host = URLFilter.getHostUrl("9090");
 		// for test
         // this.m_host = URLFilter.getHostUrl();
-
         // url = this.parseUrl(url);
         // console.log("url: ", url);
 
@@ -34,14 +30,14 @@ export class Home {
         if (this.m_demoBodyDiv == null) {
             this.initUI();
         }
-        this.loadData(this.m_host + "static/voxweb3d/demos/demos.json?ver=" + Math.random() + Date.now());
+        this.loadData(this.m_host + "static/voxweb3d/games/ins.json?ver=" + Math.random() + Date.now());
         this.initHeadApp();
     }
     private initHeadApp(): void {
 
         let appUrl = this.m_host + "static/voxweb3d/demos/camRoaming.js";
 
-        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+        let codeLoader = new XMLHttpRequest();
 		codeLoader.open("GET", appUrl, true);
 		codeLoader.onerror = function(err) {
 			console.error("load error: ", err);
@@ -65,7 +61,7 @@ export class Home {
         htmlText += "<center/>";
         htmlText += '<hr style="height:3px;border:1px solid #444444;"/>';
         htmlText += "<br/>";
-        htmlText += "ENGINE DEMOS";
+        htmlText += "Games List";
         this.m_htmlText = htmlText;
 
         let po: DemoItem;
@@ -79,6 +75,7 @@ export class Home {
 
         let divBody = document.getElementById("divBody") as HTMLDivElement;
         if (divBody != null) {
+            //window.innerHeight
             let body = document.body, html = document.documentElement;
             let height = Math.max(body.scrollHeight, body.offsetHeight,
                 html.clientHeight, html.scrollHeight, html.offsetHeight);
@@ -96,8 +93,9 @@ export class Home {
     }
 
     private loadData(purl: string): void {
-        let codeLoader = new XMLHttpRequest();
+        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
         codeLoader.open("GET", purl, true);
+        //xhr.responseType = "arraybuffer";
         codeLoader.onerror = function (err) {
             console.error("load error: ", err);
         }
@@ -118,6 +116,7 @@ export class Home {
     //     codeLoader.onerror = function (err) {
     //         console.error("load error: ", err);
     //     }
+
     //     codeLoader.onprogress = (e) => {
     //         this.showLoadInfo(e);
     //     };
@@ -212,4 +211,4 @@ export class Home {
     }
 }
 
-export default Home;
+export default GamePage;

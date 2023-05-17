@@ -13,15 +13,18 @@ export class ToolPage {
 
     private m_htmlText = "";
     private m_host = "";
+    private m_domin = "";
     constructor() { }
 
     initialize(): void {
         console.log("ToolPage::initialize()......");
-        let url = location.href + "";
+        // let url = location.href + "";
+		this.m_domin = URLFilter.getDomain(location.href);
         this.m_host = URLFilter.getHostUrl("9090");
-        this.m_host = URLFilter.getHostUrl();
-        url = this.parseUrl(url);
-        console.log("url: ", url);
+		// for test
+        // this.m_host = URLFilter.getHostUrl();
+        // url = this.parseUrl(url);
+        // console.log("url: ", url);
 
         this.m_demoBodyDiv = document.getElementById("demos") as HTMLDivElement;
         if (this.m_demoBodyDiv == null) {
@@ -34,7 +37,7 @@ export class ToolPage {
 
         let appUrl = this.m_host + "static/voxweb3d/demos/camRoaming.js";
 
-        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+        let codeLoader = new XMLHttpRequest();
 		codeLoader.open("GET", appUrl, true);
 		codeLoader.onerror = function(err) {
 			console.error("load error: ", err);
@@ -83,8 +86,9 @@ export class ToolPage {
         this.m_htmlText += "<br/>";
         if(url !== undefined && url != "") {
         }else {
-            url = `http://www.artvily.com/renderCase?sample=toolLoader&demo=${demoName}`;
+            url = this.m_domin + `/renderCase?sample=demoLoader&demo=${demoName}`;
         }
+		console.log("addLinkHtmlLine(), url: ", url);
         this.m_htmlText += `<a id="link_demo" href="${url}" target="_blank">${info}</a>`;
     }
 
@@ -105,28 +109,28 @@ export class ToolPage {
         }
         codeLoader.send(null);
     }
-    private load(purl: string): void {
-        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
-        codeLoader.open("GET", purl, true);
-        //xhr.responseType = "arraybuffer";
-        codeLoader.onerror = function (err) {
-            console.error("load error: ", err);
-        }
+    // private load(purl: string): void {
+    //     let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+    //     codeLoader.open("GET", purl, true);
+    //     //xhr.responseType = "arraybuffer";
+    //     codeLoader.onerror = function (err) {
+    //         console.error("load error: ", err);
+    //     }
 
-        codeLoader.onprogress = (e) => {
-            this.showLoadInfo(e);
-        };
-        codeLoader.onload = () => {
-            let scriptEle: HTMLScriptElement = document.createElement("script");
-            scriptEle.onerror = (e) => {
-                console.error("module script onerror, e: ", e);
-            }
-            scriptEle.innerHTML = codeLoader.response;
-            document.head.appendChild(scriptEle);
-            this.loadFinish();
-        }
-        codeLoader.send(null);
-    }
+    //     codeLoader.onprogress = (e) => {
+    //         this.showLoadInfo(e);
+    //     };
+    //     codeLoader.onload = () => {
+    //         let scriptEle: HTMLScriptElement = document.createElement("script");
+    //         scriptEle.onerror = (e) => {
+    //             console.error("module script onerror, e: ", e);
+    //         }
+    //         scriptEle.innerHTML = codeLoader.response;
+    //         document.head.appendChild(scriptEle);
+    //         this.loadFinish();
+    //     }
+    //     codeLoader.send(null);
+    // }
     private showLoadInfo(e: any): void {
         this.showLoadProgressInfo(e);
     }
