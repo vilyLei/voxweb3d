@@ -3,6 +3,7 @@ import IAABB2D from "../../../vox/geom/IAABB2D";
 import RendererDevice from "../../../vox/render/RendererDevice";
 import AABB2D from "../../../vox/geom/AABB2D";
 
+declare var CURR_PAGE_ST_INFO_LIST: string[];
 class UIHTMLInfo {
 	private m_rscene: IRendererScene = null;
 	private m_areaRect: IAABB2D = null;
@@ -166,6 +167,7 @@ class UIHTMLInfo {
 	private m_contactWithMeDiv: HTMLDivElement = null;
 	private m_versionDiv: HTMLDivElement = null;
 	private initWithMeDiv(): void {
+		console.log("CURR_PAGE_ST_INFO_LIST: ", CURR_PAGE_ST_INFO_LIST);
 		let div = document.createElement("div");
 		div.style.color = "";
 		let pdiv: any = div;
