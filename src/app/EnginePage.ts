@@ -34,7 +34,7 @@ export class EnginePage {
 
         let appUrl = this.m_host + "static/voxweb3d/demos/camRoaming.js";
 
-        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+        let codeLoader = new XMLHttpRequest();
 		codeLoader.open("GET", appUrl, true);
 		codeLoader.onerror = function(err) {
 			console.error("load error: ", err);
@@ -116,11 +116,9 @@ export class EnginePage {
     private m_demoBodyDiv: HTMLDivElement = null;
     private m_infoDiv: HTMLDivElement = null;
     private initUI(): void {
-        // document.body.style.background = "#ffffff";
         this.m_demoBodyDiv = document.createElement('div');
         this.m_demoBodyDiv.style.width = "100vw";
         this.m_demoBodyDiv.style.height = "100vh";
-        //this.elementCenter(this.m_demoBodyDiv);
         document.body.appendChild(this.m_demoBodyDiv);
         document.body.style.margin = '0';
 
