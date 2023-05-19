@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="default.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="default.min.css">
+    <script type="text/javascript" src="highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+    <strong>
+    <pre><code class="language-typescript">
+/**
+ * a demo main class
+ */
+export class DemoBase {
+    private m_init = true;
+
+    constructor() { }
+
+    initialize(): void {
+        console.log("DemoBase::initialize()......");
+        if (this.m_init) {
+            this.m_init = false;
+
+            document.oncontextmenu = function (e) {
+                e.preventDefault();
+            };
+
+
+        }
+    }
+    run(): void {
+    }
+}
+export default DemoBase;
+</code></pre>
+</strong>
+</body>
+
+</html>
