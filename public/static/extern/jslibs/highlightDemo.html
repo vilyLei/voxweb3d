@@ -9,7 +9,7 @@
     <!-- <link rel="stylesheet" href="default.min.css"> -->
     <link rel="stylesheet" type="text/css" href="default.min.css">
     <script type="text/javascript" src="highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
+    <script>hljs.highlightAll();console.log("step head ...")</script>
 </head>
 
 <body>
@@ -28,7 +28,7 @@ export class DemoBase {
         if (this.m_init) {
             this.m_init = false;
 
-            document.oncontextmenu = function (e) {
+            document.oncontextmenu = (e): void => {
                 e.preventDefault();
             };
 
@@ -41,6 +41,7 @@ export class DemoBase {
 export default DemoBase;
 </code></pre>
 </strong>
+<script>console.log("step body ...")</script>
 </body>
 
 </html>
