@@ -17,20 +17,11 @@ export class HighlightCode {
     initialize(): void {
 
         console.log("HighlightCode::initialize()......");
-        // this.initHtml();
-
-
+       
         let cssStr = "";
         let jsStr = "";
         let cssUrl = "http://localhost:9090/static/extern/jslibs/default.min.css";
         let jsUrl = "http://localhost:9090/static/extern/jslibs/highlight.min.js";
-
-        // var cssLink = document.createElement('link');
-        // cssLink.rel = 'stylesheet';
-        // cssLink.type = 'text/css';
-        // cssLink.href = cssUrl;
-        // document.head.appendChild(cssLink);
-        // cssStr = "-";
 
         this.loadFileData(cssUrl, (url: string, dataStr: string): void => {
             cssStr = dataStr;
@@ -62,6 +53,12 @@ export class HighlightCode {
     }
     private initHtmlHead(cssStr: string, jsCodeStr: string): void {
         
+        // var cssLink = document.createElement('link');
+        // cssLink.rel = 'stylesheet';
+        // cssLink.type = 'text/css';
+        // cssLink.href = cssUrl;
+        // document.head.appendChild(cssLink);
+
         var styleCss = document.createElement('style');
         styleCss.innerText = cssStr;
         document.head.appendChild(styleCss);
@@ -173,6 +170,7 @@ export class DemoBase {
     }
 }
 export default DemoBase;
+
 </code></pre>
 </strong>
         `;
