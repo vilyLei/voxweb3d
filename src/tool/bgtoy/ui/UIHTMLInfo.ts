@@ -167,7 +167,9 @@ class UIHTMLInfo {
 	private m_contactWithMeDiv: HTMLDivElement = null;
 	private m_versionDiv: HTMLDivElement = null;
 	private initWithMeDiv(): void {
-		console.log("CURR_PAGE_ST_INFO_LIST: ", CURR_PAGE_ST_INFO_LIST);
+		if(typeof CURR_PAGE_ST_INFO_LIST !== undefined) {
+			// console.log("CURR_PAGE_ST_INFO_LIST: ", CURR_PAGE_ST_INFO_LIST);
+		}
 		let div = document.createElement("div");
 		div.style.color = "";
 		let pdiv: any = div;
