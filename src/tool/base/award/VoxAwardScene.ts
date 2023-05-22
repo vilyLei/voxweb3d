@@ -63,7 +63,7 @@ class VoxAwardScene {
 			tex1.flipY = true;
 			let plane = vparam.createBtnEntity(tex1, (evt: any): void => {
 				console.log(".... mouse down to app home.");
-				let url = "https://blog.csdn.net/vily_lei/article/details/130445863?spm=1001.2014.3001.5502";
+				let url = "http://www.artvily.com/tool";
 				window.open(url, "_blank");
 			});
 			this.m_plAppHome = plane;
