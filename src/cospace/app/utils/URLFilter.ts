@@ -7,7 +7,7 @@ export default class URLFilter {
 	static getHostUrl(port?: string): string {
 		let host = location.href;
 		let domain = URLFilter.getDomain(host);
-		let nsList = host.split(":");
+		let nsList = domain.split(":");
 		host = nsList[0]+":"+nsList[1];
 		return port ? host + ":"+port+"/" : domain + "/";
 	}

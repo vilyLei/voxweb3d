@@ -19,6 +19,7 @@ export class EnginePage {
     initialize(): void {
         console.log("EnginePage::initialize()......");
 		this.m_domin = URLFilter.getDomain(location.href);
+        console.log("this.m_domin: ", this.m_domin);
         this.m_host = URLFilter.getHostUrl("9090");
 		// for test
         // this.m_host = URLFilter.getHostUrl();
@@ -95,6 +96,7 @@ export class EnginePage {
     }
 
     private loadData(purl: string): void {
+        console.log("json url: ", purl);
         let codeLoader = new XMLHttpRequest();
         codeLoader.open("GET", purl, true);
         codeLoader.onerror = function (err) {
