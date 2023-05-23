@@ -5,10 +5,10 @@
 
 // import {EnginePage as Demo} from "./app/EnginePage";
 // import {ToolPage as Demo} from "./app/ToolPage";
-import {GamePage as Demo} from "./app/GamePage";
+// import {GamePage as Demo} from "./app/GamePage";
 
 
-// import {HighlightCode as Demo} from "./app/demo/HighlightCode";
+import {HighlightCode as Demo} from "./app/demo/HighlightCode";
 
 // ancientApple
 // import {AppLoader as Demo} from "./app/AppLoader";

@@ -17,7 +17,7 @@ export class HighlightCode {
     initialize(): void {
 
         console.log("HighlightCode::initialize()......");
-       
+
         let cssStr = "";
         let jsStr = "";
         let cssUrl = "http://localhost:9090/static/extern/jslibs/default.min.css";
@@ -52,7 +52,7 @@ export class HighlightCode {
         codeLoader.send(null);
     }
     private initHtmlHead(cssStr: string, jsCodeStr: string): void {
-        
+
         // var cssLink = document.createElement('link');
         // cssLink.rel = 'stylesheet';
         // cssLink.type = 'text/css';
@@ -143,7 +143,7 @@ export default DemoBase;
         `;
         let body = document.body;
         body.innerHTML = htmlStr + codeStr;
-        
+
         hljs.highlightAll();
     }
     private initHtml2(): void {
@@ -174,8 +174,14 @@ export default DemoBase;
 </code></pre>
 </strong>
         `;
+
+		let dataStr = htmlStr + codeStr;
+		// dataStr = '<p><span style="color: rgb(231, 95, 51);"><strong>hello world</strong></span></p><p><img src="http://www.artvily.com/static/assets/color_02.jpg" alt="sd" data-href="http://www.artvily.com/static/assets/color_02.jpg" style="width: 30%;"/></p><pre id="code_01"><code class="language-typescript">';
+		// dataStr += 'let k = 0;'
+		// dataStr += 'for(let i = 0; i &lt; 10;++i) {'
+		// dataStr += '}</code></pre><p><br></p>';
         let body = document.body;
-        body.innerHTML = htmlStr + codeStr;
+        body.innerHTML = dataStr;
         // hljs.highlightElement(body);
         // document.addEventListener('DOMContentLoaded', (event) => {
         //     document.querySelectorAll('pre code').forEach((el) => {
