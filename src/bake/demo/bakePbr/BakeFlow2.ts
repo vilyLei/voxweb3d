@@ -31,7 +31,7 @@ import { BakedViewer } from "./BakedViewer";
 import { Bin4DataLoader } from "./Bin4DataLoader";
 import VtxDrawingInfo from "../../../vox/render/vtx/VtxDrawingInfo";
 
-type BakingParamType = { su: number; sv: number; bakeUrl: string; bakeType: number, drawLine: boolean, drawShape: boolean };
+type BakingParamType = { su: number; sv: number; bakeUrl: string; bakeType: number, drawLine: boolean, drawShape: boolean, flipY: boolean };
 
 export class BakeFlow2 {
 	constructor() {}
@@ -187,12 +187,24 @@ export class BakeFlow2 {
 		nvsUrl = "static/private/bake/box01/normal.bin";
 		bakeUrl = "static/private/bake/box01/box01_baked.png";
 
-		vsUrl = "static/private/bake/cyl01/vertices.bin";
-		uvs1Url = "static/private/bake/cyl01/uv1.bin";
-		uvs2Url = "static/private/bake/cyl01/uv2.bin";
-		nvsUrl = "static/private/bake/cyl01/normal.bin";
-		bakeUrl = "static/private/bake/cyl01/cyl01_baked.png";
+		vsUrl = "static/private/bake/cly01/vertices.bin";
+		uvs1Url = "static/private/bake/cly01/uv1.bin";
+		uvs2Url = "static/private/bake/cly01/uv2.bin";
+		nvsUrl = "static/private/bake/cly01/normal.bin";
+		bakeUrl = "static/private/bake/cly01/cyl01_baked.png";
 
+		vsUrl = "static/private/bake/bakeData3/model.vertices";
+		uvs1Url = "static/private/bake/bakeData3/model.uv1";
+		uvs2Url = "static/private/bake/bakeData3/model.uv2";
+		nvsUrl = "static/private/bake/bakeData3/model.normal";
+		bakeUrl = "static/private/bake/bakeData3/model_baked.png";
+
+
+		vsUrl = "static/private/bake/bakeData3b/vertices.bin";
+		uvs1Url = "static/private/bake/bakeData3b/uv1.bin";
+		uvs2Url = "static/private/bake/bakeData3b/uv2.bin";
+		nvsUrl = "static/private/bake/bakeData3b/normal.bin";
+		bakeUrl = "static/private/bake/bakeData3b/cyl01_baked.png";
 
 		// vsUrl = "static/private/bake/hat_a_02/vertices.bin";
 		// uvs1Url = "static/private/bake/hat_a_02/uv1.bin";
@@ -215,14 +227,14 @@ export class BakeFlow2 {
 		// ivsUrl = "static/private/bake/hat_b_02/indices.bin";
 		// bakeUrl = "static/private/bake/hat_b_02/hat_b_02.png";
 
-		let bakeType = -1;
-		this.m_drawTimes = 16;
-		this.m_circleTimes = 16;
+		let bakeType = 2;
+		this.m_drawTimes = 1;
+		this.m_circleTimes = 1;
 		this.m_offsetR = 0.0002;
 
-		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true };
-		uvParams = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: true, drawShape: true };
-		uvParams = { su: 0.01, sv: 0.01, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: true, drawShape: true };
+		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true, flipY: false };
+		uvParams = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: false, drawShape: true, flipY: false };
+		uvParams = { su: 0.01, sv: 0.01, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: false, drawShape: true, flipY: false };
 
 		let loader = new Bin4DataLoader();
 		loader.setListener((model: CoGeomDataType): void => {
@@ -275,7 +287,7 @@ export class BakeFlow2 {
 		console.log("#### uvs[0].length: ", uvs[0].length);
 		if (uvs.length > 1) console.log("#### uvs[1].length: ", uvs[1].length);
 		if (bakeType < 0) {
-			let entity = this.m_bakedViewer.createEntity(model, bvParam.bakeUrl);
+			let entity = this.m_bakedViewer.createEntity(model, bvParam.bakeUrl, bvParam.flipY);
 			entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 			let mat4 = transform != null ? new Matrix4(transform) : null;
 			this.m_layouter.layoutAppendItem(entity, mat4);

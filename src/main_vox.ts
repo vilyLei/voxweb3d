@@ -334,7 +334,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoOBB as Demo} from "./demo/DemoOBB";
 
- import {DemoOBBUICtrl as Demo} from "./demo/DemoOBBUICtrl";
+//  import {DemoOBBUICtrl as Demo} from "./demo/DemoOBBUICtrl";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   renderer    ////////////////////////////////////
@@ -566,7 +566,7 @@ pwin["VoxVerify"] = new VVF();
 //  import {BakeExample as Demo} from "./bake/demo/bakePbr/BakeExample";
 //  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
 //  import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
-//  import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
+ import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
 //  import {BakedModel as Demo} from "./bake/demo/bakePbr/BakedModel";
 //  import {BakedModelViewerTest as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest";
 //  import {BakedModelViewerTest2 as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest2";

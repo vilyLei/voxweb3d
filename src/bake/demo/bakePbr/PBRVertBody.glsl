@@ -59,7 +59,7 @@ void main(){
     #ifdef BAKE
     vec2 uvpos = getUV(a_uvs2.xy);
     // vec2 uvpos = (a_uvs2.xy);
-    uvpos.y = 1.0 - uvpos.y;
+    // uvpos.y = 1.0 - uvpos.y;
     uvpos = vec2(2.0) * vec2(uvpos - vec2(0.5));
     uvpos += u_posOffset.xy;
 

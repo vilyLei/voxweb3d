@@ -289,8 +289,8 @@ export default class ShdProgram implements IShdProgram {
     }
     private initShdProgram(): any {
         let gl = this.m_gl;
-        let vshd_str: string = this.m_shdData.getVSCodeStr();
-        let fshd_str: string = this.m_shdData.getFSCodeStr();
+        let vshd_str = this.m_shdData.getVSCodeStr();
+        let fshd_str = this.m_shdData.getFSCodeStr();
         //console.log("ShdProgram::initShdProgram(), this: ",this);
         let pr: RegExp;
         if (this.m_shdData.preCompileInfo == null) {
