@@ -167,9 +167,16 @@ class UIHTMLInfo {
 	private m_contactWithMeDiv: HTMLDivElement = null;
 	private m_versionDiv: HTMLDivElement = null;
 	private initWithMeDiv(): void {
-		if(typeof CURR_PAGE_ST_INFO_LIST !== undefined) {
-			// console.log("CURR_PAGE_ST_INFO_LIST: ", CURR_PAGE_ST_INFO_LIST);
+		let pwin = window as any;
+		let key = "CURR_PAGE_ST_INFO_LIST";
+		let infos: string[] = [];
+		if(pwin[key] !== undefined) {
+			console.log("CURR_PAGE_ST_INFO_LIST: ", pwin[key]);
+			infos = pwin[key] as string[];
 		}
+		// if(typeof CURR_PAGE_ST_INFO_LIST !== undefined) {
+		// 	console.log("CURR_PAGE_ST_INFO_LIST: ", CURR_PAGE_ST_INFO_LIST);
+		// }
 		let div = document.createElement("div");
 		div.style.color = "";
 		let pdiv: any = div;
@@ -184,7 +191,14 @@ class UIHTMLInfo {
 		div.style.zIndex = "99999";
 		div.style.position = "absolute";
 		document.body.appendChild(pdiv);
-		pdiv.innerHTML = `<font color='${fontColor}'>Contacts with me: vily313@126.com</font>`;
+
+		let info = `<font color='${fontColor}'>Contacts with me: vily313@126.com`;		
+		if(infos.length > 2) {
+			let subStr = infos[2];
+			subStr = subStr.slice(subStr.indexOf("("));
+			info += " · 浏览次数" + subStr; 
+		}
+		pdiv.innerHTML = info + '</font>';
 		this.m_contactWithMeDiv = pdiv;
 	}
 	private initVersionDiv(): void {

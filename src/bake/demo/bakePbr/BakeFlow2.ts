@@ -110,7 +110,7 @@ export class BakeFlow2 {
 		this.m_bakedViewer = new BakedViewer(this.m_rscene, this.m_texLoader);
 
 		let bakeUrl = "static/private/bake/ctmUnwrap2/ctmUnwrap2.png";
-		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true };
+		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true, flipY: false };
 
 		let modelLoader = new ModelDataLoader();
 		modelLoader.setListener((modelData: ModelData, uv2ModelData: ModelData, uvData: Float32Array): void => {
