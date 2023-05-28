@@ -174,9 +174,6 @@ class UIHTMLInfo {
 			console.log("CURR_PAGE_ST_INFO_LIST: ", pwin[key]);
 			infos = pwin[key] as string[];
 		}
-		// if(typeof CURR_PAGE_ST_INFO_LIST !== undefined) {
-		// 	console.log("CURR_PAGE_ST_INFO_LIST: ", CURR_PAGE_ST_INFO_LIST);
-		// }
 		let div = document.createElement("div");
 		div.style.color = "";
 		let pdiv: any = div;
