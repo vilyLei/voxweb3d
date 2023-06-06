@@ -55,10 +55,6 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
             return this.decorator.getUniqueShaderName();
         }
     }
-    toString(): string {
-        return "[PBRShaderBuffer()]";
-    }
-
     static GetInstance(): PBRShaderBuffer {
         return PBRShaderBuffer.s_instance;
     }

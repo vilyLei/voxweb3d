@@ -155,7 +155,7 @@ pwin["VoxVerify"] = new VVF();
 //  import {DemoKeyboardEvt as Demo} from "./demo/DemoKeyboardEvt";
 
 //  import {DemoParticle as Demo} from "./demo/DemoParticle";
- import {DemoParticleRefraction as Demo} from "./demo/DemoParticleRefraction";
+//  import {DemoParticleRefraction as Demo} from "./demo/DemoParticleRefraction";
 
 //  import {DemoParticleMixTex as Demo} from "./demo/DemoParticleMixTex";
 
@@ -377,7 +377,7 @@ pwin["VoxVerify"] = new VVF();
 ////////////////////////////   maps    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+ import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     mesh    /////////////////////////////////////

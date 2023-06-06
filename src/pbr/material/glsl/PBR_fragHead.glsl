@@ -17,9 +17,9 @@ vec3 gammaToLinear(vec3 color) {
         return color;
     #endif
 }
-vec3 linearToGamma(vec3 color) { 
+vec3 linearToGamma(vec3 color) {
     #ifdef VOX_GAMMA_CORRECTION
-	    return pow(color, vec3ReciprocalGamma); 
+	    return pow(color, vec3ReciprocalGamma);
     #else
         return color;
     #endif
@@ -108,7 +108,7 @@ float geometrySchlickGGX(float NdotV, float roughness)
 // ----------------------------------------------------------------------------
 float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
     float NdotV = max(dot(N, V), 0.0);
-    float dotNL = max(dot(N, L), 0.0); 
+    float dotNL = max(dot(N, L), 0.0);
     float ggx2 = geometrySchlickGGX(NdotV, roughness);
     float ggx1 = geometrySchlickGGX(dotNL, roughness);
 
@@ -127,7 +127,7 @@ vec3 fresnelSchlick2(vec3 specularColor, vec3 L, vec3 H) {
 #define  OneOnLN2_x6 8.656171// == 1/ln(2) * 6 (6 is SpecularPower of 5 + 1)
 // dot: dot(N,V) or dot(H,V)
 vec3 fresnelSchlick3(vec3 specularColor, float dot, float glossiness) {
-	return specularColor + (max(vec3(glossiness), specularColor) - specularColor) * exp2(-OneOnLN2_x6 * dot); 
+	return specularColor + (max(vec3(glossiness), specularColor) - specularColor) * exp2(-OneOnLN2_x6 * dot);
 }
 vec3 fresnelSchlickWithRoughness(vec3 specularColor, vec3 L, vec3 N, float gloss) {
    return specularColor + (max(vec3(gloss), specularColor) - specularColor) * pow(1.0 - saturate(dot(L, N)), 5.0);
@@ -228,7 +228,7 @@ vec3 getWorldEnvDir(vec3 worldNormal,vec3 worldInvE)
     worldR.zy *= vec2(-1.0);
     return worldR;
 }
-float FD_Schlick(float VoH, float f0, float f90) 
+float FD_Schlick(float VoH, float f0, float f90)
 {
 	return f0 + (f90 - f0) * pow(1.0 - VoH, 5.0);
 }
@@ -312,7 +312,7 @@ mat3 getBTNMat3(in vec2 texUV, in vec3 pos, in vec3 nv)
     vec2 st2 = dFdy(texUV);
 
     vec3 N  = normalize(nv);
-    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);    
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
     vec3 B  = -normalize(cross(N, T));
     return mat3(T, B, N);
 }
@@ -322,7 +322,7 @@ vec2 parallaxOccRayMarchDepth(sampler2D texSampler, vec2 puvs, vec3 viewDir,vec4
     float depthValue = 1.0 - VOX_Texture2D(texSampler, puvs).r;
     float numLayers = mix(occParam.x, occParam.y, max(dot(vec3(0.0, 0.0, 1.0), viewDir),0.0));
     float layerHeight = occParam.z / numLayers;
-    vec2 tuv = (viewDir.xy * occParam.w) / numLayers;  
+    vec2 tuv = (viewDir.xy * occParam.w) / numLayers;
     float ph = 0.0;
     #ifndef VOX_GLSL_ES2
         while(ph < depthValue)
@@ -369,11 +369,11 @@ void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight
     //vec3 F    = fresnelSchlick(clamp(dot(H, rL.V), 0.0, 1.0), rL.F0);
     //vec3 F    = fresnelSchlick3(rL.F0,clamp(dot(H, V), 0.0, 1.0), roughness);
     vec3 F    = fresnelSchlick3(rL.F0, rL.dotNV, roughness);
-    
+
     vec3 nominator    = NDF * G * F;
     float denominator = 4.0 * rL.dotNV * dotNL;
     vec3 specular = nominator / max(denominator, 0.001); // prevent divide by zero for NdotV=0.0 or dotNL=0.0
-    
+
     vec3 kD = (vec3One - F ) * rm;
 
     #ifdef VOX_WOOL
@@ -386,7 +386,7 @@ void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight
     #else
         vec3 specularScatter = vec3One;
     #endif
-    
+
     // add to outgoing radiance Lo
     inColor *= dotNL;
 
@@ -425,7 +425,7 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
     vec2 st2 = dFdy(texUV);
 
     vec3 N   = normalize(nv);
-    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);    
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
     vec3 B  = -normalize(cross(N, T));
     mat3 TBN = mat3(T, B, N);
 
@@ -434,6 +434,29 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
 vec3 getNormalFromMap(in sampler2D texSampler, in vec2 texUV)
 {
     return VOX_Texture2D(texSampler, texUV).xyz * 2.0 - 1.0;
+}
+
+vec3 perturbNormal2Arb( vec3 eyePos, vec3 surfNorm, vec3 mapN, vec2 texUV )
+{
+
+	vec3 q0 = vec3( dFdx( eyePos.x ), dFdx( eyePos.y ), dFdx( eyePos.z ) );
+	vec3 q1 = vec3( dFdy( eyePos.x ), dFdy( eyePos.y ), dFdy( eyePos.z ) );
+	vec2 st0 = dFdx( texUV.st );
+	vec2 st1 = dFdy( texUV.st );
+	vec3 N = surfNorm;
+	vec3 q0perp = cross( N, q0 );
+	vec3 q1perp = cross( q1, N );
+	vec3 T = q1perp * st0.x + q0perp * st1.x;
+	vec3 B = q1perp * st0.y + q0perp * st1.y;
+	float det = max( dot( T, T ), dot( B, B ) );
+	float scale = ( det == 0.0 ) ? 0.0 : inversesqrt( det );
+	return normalize( T * ( mapN.x * scale ) + B * ( mapN.y * scale ) + N * mapN.z );
+}
+
+vec3 perturbNormal2ArbFromMap(sampler2D texSampler, vec2 texUV, vec3 eyePos, vec3 surfNorm )
+{
+	vec3 mapN = VOX_Texture2D(texSampler, texUV).xyz * 2.0 - 1.0;
+	return perturbNormal2Arb(eyePos, surfNorm, mapN, texUV);
 }
 #endif
 
