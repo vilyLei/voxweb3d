@@ -21,6 +21,7 @@ export class BakedModelViewer {
 	private m_texLoader: ImageTextureLoader = null;
 	private m_layouter = new EntityLayouter();
 	private m_div: HTMLDivElement = null;
+	private m_entities: DisplayEntity[] = [];
 
 	private createCurrDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
 		let div: HTMLDivElement = document.createElement("div");
@@ -69,7 +70,13 @@ export class BakedModelViewer {
 	}
 
     private m_timeoutId: any = -1;
-
+	clearScene(): void {
+		for(let i = 0; i < this.m_entities.length; ++i) {
+			this.m_rscene.removeEntity(this.m_entities[i]);
+		}
+		this.m_entities = [];
+		this.m_layouter.layoutReset();
+	}
     private autoUpdate(): void {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
@@ -96,6 +103,7 @@ export class BakedModelViewer {
 		entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 		entity.setMesh(mesh);
 		entity.setMaterial(material);
+		this.m_entities.push( entity );
 		this.m_rscene.addEntity(entity);
 		this.m_layouter.layoutAppendItem( entity, new Matrix4() );
 		this.m_layouter.layoutUpdate();

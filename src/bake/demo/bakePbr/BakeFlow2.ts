@@ -90,9 +90,6 @@ export class BakeFlow2 {
 			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
-			this.m_camTrack = new CameraTrack();
-			this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-
 			//this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 			this.m_statusDisp.initialize();
 
@@ -206,6 +203,32 @@ export class BakeFlow2 {
 		nvsUrl = "static/private/bake/bakeData3b/normal.bin";
 		bakeUrl = "static/private/bake/bakeData3b/cyl01_baked.png";
 
+
+		vsUrl = "static/private/bake/soleBig01/vertices.bin";
+		uvs1Url = "static/private/bake/soleBig01/uv1.bin";
+		uvs2Url = "static/private/bake/soleBig01/uv2.bin";
+		nvsUrl = "static/private/bake/soleBig01/normal.bin";
+		bakeUrl = "static/private/bake/soleBig01/soleBig01_baked.png";
+
+		// vsUrl = "static/private/bake/soleBigErr02/vertices.bin";
+		// uvs1Url = "static/private/bake/soleBigErr02/uv1.bin";
+		// uvs2Url = "static/private/bake/soleBigErr02/uv2.bin";
+		// nvsUrl = "static/private/bake/soleBigErr02/normal.bin";
+		// bakeUrl = "static/private/bake/soleBigErr02/soleBigErr02_baked.png";
+		//soleBigErr02
+
+		// vsUrl = "static/private/bake/soleBig01b/vertices.bin";
+		// uvs1Url = "static/private/bake/soleBig01b/uv1.bin";
+		// uvs2Url = "static/private/bake/soleBig01b/uv2.bin";
+		// nvsUrl = "static/private/bake/soleBig01b/normal.bin";
+		// bakeUrl = "static/private/bake/soleBig01b/soleBig01b_baked.png";
+
+		// vsUrl = "static/private/bake/soleBig01c/vertices.bin";
+		// uvs1Url = "static/private/bake/soleBig01c/uv1.bin";
+		// uvs2Url = "static/private/bake/soleBig01c/uv2.bin";
+		// nvsUrl = "static/private/bake/soleBig01c/normal.bin";
+		// bakeUrl = "static/private/bake/soleBig01c/soleBig01b_baked.png";
+
 		// vsUrl = "static/private/bake/hat_a_02/vertices.bin";
 		// uvs1Url = "static/private/bake/hat_a_02/uv1.bin";
 		// uvs2Url = "static/private/bake/hat_a_02/uv2.bin";
@@ -227,14 +250,14 @@ export class BakeFlow2 {
 		// ivsUrl = "static/private/bake/hat_b_02/indices.bin";
 		// bakeUrl = "static/private/bake/hat_b_02/hat_b_02.png";
 
-		let bakeType = 2;
+		let bakeType = -1;
 		this.m_drawTimes = 1;
 		this.m_circleTimes = 1;
 		this.m_offsetR = 0.0002;
 
 		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true, flipY: false };
 		uvParams = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: false, drawShape: true, flipY: false };
-		uvParams = { su: 0.01, sv: 0.01, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: false, drawShape: true, flipY: false };
+		// uvParams = { su: 0.01, sv: 0.01, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: false, drawShape: true, flipY: false };
 
 		let loader = new Bin4DataLoader();
 		loader.setListener((model: CoGeomDataType): void => {
@@ -255,7 +278,8 @@ export class BakeFlow2 {
 	protected createEntity(model: CoGeomDataType, transform: Float32Array = null, bvParam: BakingParamType): void {
 		if (model != null) {
 			console.log("createEntity(), this.m_modelIndex: ", this.m_modelIndex);
-			console.log("createEntity(), model: ", model);
+			console.log("createEntity(), model.uvsList[1]: ", model.uvsList[1]);
+			// console.log("createEntity(), model: ", model);
 
 			// let fio = new FileIO();
 			// fio.downloadBinFile(model.uvsList[0], "uvData1","uv");
