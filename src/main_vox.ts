@@ -570,9 +570,9 @@ pwin["VoxVerify"] = new VVF();
 //  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
 //  import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
 //  import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
- import {BakedModel as Demo} from "./bake/demo/bakePbr/BakedModel";
+//  import {BakedModel as Demo} from "./bake/demo/bakePbr/BakedModel";
 //  import {BakedModelViewerTest as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest";
-//  import {BakedModelViewerTest2 as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest2";
+ import {BakedModelViewerTest2 as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest2";
 //  import {BakedNormal as Demo} from "./bake/demo/bakePbr/BakedNormal";
 
 ///////////////////////////////////////////////////////////////////////////////

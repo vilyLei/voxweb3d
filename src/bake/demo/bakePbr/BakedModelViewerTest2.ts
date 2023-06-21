@@ -14,7 +14,8 @@ export class BakedModelViewerTest2 {
 			// this.m_viewer = new BakedModelViewer();
 			// this.m_viewer.initialize(0,0,512, 512);
 			// this.initModel();
-			let moduleUrl = "static/private/module/BakingModule.umd.js";
+			// let moduleUrl = "static/private/module/BakingModule.umd.js";
+			let moduleUrl = "static/private/module/BakingModule.umd.min.js";
 			this.loadModule( moduleUrl );
 		}
 	}
@@ -25,8 +26,8 @@ export class BakedModelViewerTest2 {
 		this.initModel();
 	}
 	private initModel(): void {
-		this.initModelWithName("hat_a_01");
-		this.initModelWithName("hat_a_02");
+		this.initModelWithName("soleBig01");
+		// this.initModelWithName("soleBig01b");
 	}
 	private initModelWithName(ns: string): void {
 		// this.m_bakedViewer = new BakedViewer(this.m_rscene, this.m_texLoader);

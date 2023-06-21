@@ -71,11 +71,13 @@ export class BakedModelViewer {
 
     private m_timeoutId: any = -1;
 	clearScene(): void {
-		for(let i = 0; i < this.m_entities.length; ++i) {
-			this.m_rscene.removeEntity(this.m_entities[i]);
+		if(this.m_rscene != null) {
+			for(let i = 0; i < this.m_entities.length; ++i) {
+				this.m_rscene.removeEntity(this.m_entities[i]);
+			}
+			this.m_entities = [];
+			this.m_layouter.layoutReset();
 		}
-		this.m_entities = [];
-		this.m_layouter.layoutReset();
 	}
     private autoUpdate(): void {
         if (this.m_timeoutId > -1) {
