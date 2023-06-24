@@ -254,6 +254,8 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 
+ import {RModelSCViewer as Demo} from "./demo/RModelSCViewer";
+
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   thread    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -572,7 +574,7 @@ pwin["VoxVerify"] = new VVF();
 //  import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
 //  import {BakedModel as Demo} from "./bake/demo/bakePbr/BakedModel";
 //  import {BakedModelViewerTest as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest";
- import {BakedModelViewerTest2 as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest2";
+//  import {BakedModelViewerTest2 as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest2";
 //  import {BakedNormal as Demo} from "./bake/demo/bakePbr/BakedNormal";
 
 ///////////////////////////////////////////////////////////////////////////////
