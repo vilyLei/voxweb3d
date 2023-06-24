@@ -25,6 +25,7 @@
     "build:coSpace": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/main_cospace.ts",
     "build:coEditApp": "vue-cli-service build --target lib --name CoEditApp --dest dist ./src/cospace/edit/coEditMain.ts",
     "build:bakingModule": "vue-cli-service build --target lib --name BakingModule --dest dist ./src/bake/demo/bakePbr/BakingModule.ts",
+    "build:rmodelSCViewer": "vue-cli-service build --target lib --name RModelSCViewer --dest dist ./src/demo/RModelSCViewer.ts",
 
     "build:baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
     "build:engine": "vue-cli-service build --target lib --name VoxApp --dest dist/engine ./src/distribution/rendererIsolate/devEngine.ts",
