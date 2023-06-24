@@ -95,7 +95,18 @@ export class RModelSCViewer {
 			// this.initModels();
 		}
 	}
-	getCameraData(): Float32Array {
+	initSceneByUrl(url: string): void {
+		let loader = this.m_teamLoader;
+
+		loader.load([url], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+			this.m_layouter.layoutReset();
+			for (let i = 0; i < models.length; ++i) {
+				this.createEntity(models[i], transforms != null ? transforms[i] : null, 2.00);
+			}
+			this.m_layouter.layoutUpdate(300, new Vector3D(0, 0, 0));
+		});
+	}
+	getCameraData(posScale: number): Float32Array {
 		let cam = this.m_rscene.getCamera()
 		let mat = cam.getViewMatrix().clone();
 		mat.invert();
