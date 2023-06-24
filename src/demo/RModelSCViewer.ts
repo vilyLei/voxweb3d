@@ -9,6 +9,7 @@ import RendererScene from "../vox/scene/RendererScene";
 
 import { EntityLayouter } from "../vox/utils/EntityLayouter";
 import { CoGeomDataType, CoModelTeamLoader } from "../cospace/app/common/CoModelTeamLoader";
+import { IFileUrlObj, IDropFileListerner, DropFileController } from "../tool/base/DropFileController";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import RendererState from "../vox/render/RendererState";
@@ -33,6 +34,7 @@ pwin["VoxVerify"] = new VVF();
 export class RModelSCViewer {
 	constructor() { }
 
+	protected m_dropController = new DropFileController();
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
 	private m_teamLoader = new CoModelTeamLoader();
@@ -54,7 +56,7 @@ export class RModelSCViewer {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-			let rparam = new RendererParam( div );
+			let rparam = new RendererParam(div);
 			rparam.setCamProject(45, 0.1, 2000.0);
 			rparam.setCamPosition(800.0, 800.0, 800.0);
 			rparam.setCamUpDirect(0.0, 0.0, 1.0);
@@ -91,19 +93,27 @@ export class RModelSCViewer {
 
 			this.initSys();
 
-			// this.initSomePrimitives();
-			// this.initModels();
+			// let vs = this.getCameraData(1.0);
+			// console.log("getCameraData(), vs: ", vs);
+
+			this.m_dropController.initialize(this.m_rscene.getRenderProxy().getCanvas(), this);
 		}
 	}
-	initSceneByUrl(url: string): void {
-		let loader = this.m_teamLoader;
+	private m_baseSize = 300;
+	initSceneByFiles(files: any[], size: number = 300): void {
+		this.m_baseSize = size;
+		this.m_dropController.initFilesLoad(files);
+	}
 
-		loader.load([url], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+	initSceneByUrls(urls: string[], size: number = 300): void {
+		this.m_baseSize = size;
+		let loader = this.m_teamLoader;
+		loader.load(urls, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 			this.m_layouter.layoutReset();
 			for (let i = 0; i < models.length; ++i) {
 				this.createEntity(models[i], transforms != null ? transforms[i] : null, 2.00);
 			}
-			this.m_layouter.layoutUpdate(300, new Vector3D(0, 0, 0));
+			this.m_layouter.layoutUpdate(size, new Vector3D(0, 0, 0));
 		});
 	}
 	getCameraData(posScale: number): Float32Array {
@@ -111,9 +121,25 @@ export class RModelSCViewer {
 		let mat = cam.getViewMatrix().clone();
 		mat.invert();
 		mat.transpose();
-		let vs = mat.getLocalFS32().slice();
+		let vs = mat.getLocalFS32().slice(0);
+		vs[3] *= posScale;
+		vs[7] *= posScale;
+		vs[11] *= posScale;
 		return vs;
 	}
+	
+	private m_dropEnabled = true;
+	initFileLoad(files: IFileUrlObj[]): void {
+		let urls: string[] = [];
+		for (let i = 0; i < files.length; ++i) {
+			urls.push(files[i].url);
+		}
+		this.initSceneByUrls(urls, this.m_baseSize);
+	}
+	isDropEnabled(): boolean {
+		return this.m_dropEnabled;
+	}
+
 	private initModels(): void {
 		let url0 = "static/private/fbx/soleBig01_unwrapuv.fbx";
 		url0 = "static/private/obj/box01.obj";
@@ -131,7 +157,7 @@ export class RModelSCViewer {
 	protected createEntity(model: CoGeomDataType, transform: Float32Array = null, uvScale: number = 1.0): DisplayEntity {
 		if (model != null) {
 			console.log("createEntity(), model: ", model);
-			
+
 			let material = new Default3DMaterial();
 			material.normalEnabled = true;
 			material.setUVScale(uvScale, uvScale);
