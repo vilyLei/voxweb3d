@@ -43,8 +43,9 @@ class EntityLayouter {
 		this.m_transforms.push(transform);
 		// console.log("layoutAppendItem(), entity: ", entity);
 	}
+	locationEnabled = true;
 	layoutUpdate(fixSize: number = 300.0, pivot: Vector3D = null, rotationEnabled: boolean = false): void {
-		
+
 		this.rotationEnabled = rotationEnabled;
 		for (let k = 0; k < this.m_entities.length; ++k) {
 			let et = this.m_entities[k];
@@ -53,7 +54,7 @@ class EntityLayouter {
 			et.setRotationXYZ(0.0, 0.0, 0.0);
 		}
 		if(pivot == null) pivot = new Vector3D();
-		
+
 		this.fixToPosition(this.m_entities, this.m_transforms, pivot, fixSize);
 	}
 
@@ -118,7 +119,7 @@ class EntityLayouter {
 			} else {
 				currMat.copyFrom(mat);
 			}
-			
+
 			let params = currMat.decompose(OrientationType.EULER_ANGLES);
 			entities[k].setScale3(params[2]);
 			entities[k].setRotation3(params[1]);
@@ -130,19 +131,21 @@ class EntityLayouter {
 			else aabb.copyFrom(entities[k].getGlobalBounds());
 		}
 		aabb.update();
-		let pdv = new Vector3D();
-		pdv.subVecsTo(fixV3, aabb.center);
+		if(this.locationEnabled) {
+			let pdv = new Vector3D();
+			pdv.subVecsTo(fixV3, aabb.center);
 
-		aabb.reset();
-		for (let k = 0; k < entities.length; ++k) {
-			let pv = entities[k].getPosition();
-			pv.addBy(pdv);
-			entities[k].setPosition(pv);
-			entities[k].update();
-			if (k > 0) aabb.union(entities[k].getGlobalBounds());
-			else aabb.copyFrom(entities[k].getGlobalBounds());
+			aabb.reset();
+			for (let k = 0; k < entities.length; ++k) {
+				let pv = entities[k].getPosition();
+				pv.addBy(pdv);
+				entities[k].setPosition(pv);
+				entities[k].update();
+				if (k > 0) aabb.union(entities[k].getGlobalBounds());
+				else aabb.copyFrom(entities[k].getGlobalBounds());
+			}
+			aabb.update();
 		}
-		aabb.update();
 	}
 	getSizeScale(): number {
 		return this.m_sizeScale;

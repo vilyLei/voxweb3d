@@ -68,7 +68,11 @@ class CoModuleLoader extends ModuleLoader {
 				let i = url.lastIndexOf("/");
 				let j = url.indexOf(".", i);
 				// hostUrl = "http://localhost:9000/test/";
-				hostUrl = "http://www.artvily.com:9090/";
+				if(!this.forceFiltering) {
+					hostUrl = "http://www.artvily.com:9090/";
+				}else {
+					hostUrl = URLFilter.getHostUrl("9090");
+				}
 				let fileName = url.slice(i, j);
 				if (url.indexOf(".umd.") > 0) {
 					fileName = fileName.toLocaleLowerCase();

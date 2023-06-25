@@ -24,6 +24,7 @@ import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import URLFilter from "../cospace/app/utils/URLFilter";
 import { HttpFileLoader } from "../cospace/modules/loaders/HttpFileLoader";
+import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 
 class VVF {
 	isEnabled(): boolean {
@@ -34,18 +35,20 @@ let pwin: any = window;
 pwin["VoxVerify"] = new VVF();
 
 export class RModelSCViewer {
-	constructor() { }
+	constructor() {}
 
 	protected m_dropController = new DropFileController();
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
-	private m_teamLoader: CoModelTeamLoader = null;//new CoModelTeamLoader();
+	private m_teamLoader: CoModelTeamLoader = null; //new CoModelTeamLoader();
 	private m_layouter = new EntityLayouter();
-	private m_loadingCallback: (prog: number) => void
+	private m_entityContainer = new DisplayEntityContainer();
+	private m_entities: DisplayEntity[] = [];
+	private m_modelDataUrl = "";
+	private m_loadingCallback: (prog: number) => void;
 	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-
 		let host = URLFilter.getHostUrl("9090");
-		if(purl.indexOf("http:") < 0 && purl.indexOf("https:") < 0) {
+		if (purl.indexOf("http:") < 0 && purl.indexOf("https:") < 0) {
 			purl = host + purl;
 		}
 		return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
@@ -60,42 +63,60 @@ export class RModelSCViewer {
 	}
 
 	private loadInfo(initCallback: () => void): void {
-
 		let host = URLFilter.getHostUrl("9090");
 		let url = host + "static/cospace/info.json";
 		console.log("url: ", url);
 		url = URLFilter.filterUrl(url);
 		let httpLoader = new HttpFileLoader();
-		httpLoader.load(url, (data: object, url: string): void => {
-			console.log("loadInfo loaded data: ", data);
-			this.m_teamLoader = new CoModelTeamLoader();
-			this.m_teamLoader.verTool = new CoModuleVersion( data );
-			this.m_teamLoader.verTool.forceFiltering = true;
-			if(initCallback) {
-				initCallback()
-			}
-		},
-		null,
-		null,
-		"json"
+		httpLoader.load(
+			url,
+			(data: object, url: string): void => {
+				console.log("loadInfo loaded data: ", data);
+				this.m_teamLoader = new CoModelTeamLoader();
+				this.m_teamLoader.verTool = new CoModuleVersion(data);
+				this.m_teamLoader.verTool.forceFiltering = true;
+				if (initCallback) {
+					initCallback();
+				}
+			},
+			null,
+			null,
+			"json"
 		);
 	}
-	initialize(div: HTMLDivElement, initCallback: () => void = null): void {
+	private createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
+		let div: HTMLDivElement = document.createElement("div");
+		div.style.width = pw + "px";
+		div.style.height = ph + "px";
+		document.body.appendChild(div);
+		div.style.display = "bolck";
+		div.style.left = px + "px";
+		div.style.top = py + "px";
+		div.style.position = "absolute";
+		div.style.display = "bolck";
+		div.style.position = "absolute";
+		return div;
+	}
+	initialize(div: HTMLDivElement = null, initCallback: () => void = null, zAxisUp: boolean = false): void {
 		console.log("RModelSCViewer::initialize()......");
 		if (this.m_rscene == null) {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-			let rparam = new RendererParam(div);
+			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512, 512));
 			rparam.autoSyncRenderBufferAndWindowSize = false;
 			rparam.setCamProject(45, 0.1, 2000.0);
 			rparam.setCamPosition(800.0, 800.0, 800.0);
-			rparam.setCamUpDirect(0.0, 0.0, 1.0);
+			if (zAxisUp || div == null) {
+				rparam.setCamUpDirect(0.0, 0.0, 1.0);
+			} else {
+				rparam.setCamUpDirect(0.0, 1.0, 0.0);
+			}
 			rparam.setAttriAntialias(true);
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam).setAutoRunning(true);
 
-			let unit = 100.0
+			let unit = 100.0;
 
 			// let cube = new Box3DEntity();
 			// cube.normalEnabled = true;
@@ -109,9 +130,9 @@ export class RModelSCViewer {
 			// cone.setXYZ(-0.8 * unit, 0, 1.6 * unit)
 			// this.m_rscene.addEntity(cone);
 
-			// let axis = new Axis3DEntity();
-			// axis.initialize(300)
-			// this.m_rscene.addEntity(axis);
+			let axis = new Axis3DEntity();
+			axis.initialize(300)
+			this.m_rscene.addEntity(axis);
 
 			// let cam = this.m_rscene.getCamera()
 			// console.log("cam.getViewMatrix(): ")
@@ -127,38 +148,63 @@ export class RModelSCViewer {
 
 			// let vs = this.getCameraData(1.0);
 			// console.log("getCameraData(), vs: ", vs);
-
-			this.m_dropController.initialize(this.m_rscene.getRenderProxy().getCanvas(), this);
-			this.loadInfo( initCallback );
+			this.m_layouter.locationEnabled = false;
+			if (div) {
+				this.m_dropController.initialize(this.m_rscene.getRenderProxy().getCanvas(), this);
+				this.loadInfo(initCallback);
+			} else {
+				this.m_teamLoader = new CoModelTeamLoader();
+				this.initModels();
+			}
+			this.m_rscene.addEntity(this.m_entityContainer);
 		}
 	}
-	private m_baseSize = 300;
-	initSceneByFiles(files: any[], loadingCallback: (prog: number) => void, size: number = 300): void {
+	private m_baseSize = 200;
+	initSceneByFiles(files: any[], loadingCallback: (prog: number) => void, size: number = 200): void {
 		this.m_baseSize = size;
 		this.m_loadingCallback = loadingCallback;
 		this.m_dropController.initFilesLoad(files);
 	}
 
-	initSceneByUrls(urls: string[], types: string[], loadingCallback: (prog: number) => void, size: number = 300): void {
+	initSceneByUrls(urls: string[], types: string[], loadingCallback: (prog: number) => void, size: number = 200): void {
 		this.m_baseSize = size;
 		this.m_loadingCallback = loadingCallback;
 		let loader = this.m_teamLoader;
 		loader.loadWithTypes(urls, types, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 			this.m_layouter.layoutReset();
 			for (let i = 0; i < models.length; ++i) {
-				this.createEntity(models[i], transforms != null ? transforms[i] : null, 2.00);
+				this.createEntity(models[i], transforms != null ? transforms[i] : null, 2.0);
 			}
-			this.m_layouter.layoutUpdate(size, new Vector3D(0, 0, 0));
-			if(this.m_loadingCallback) {
+			this.m_modelDataUrl = urls[0]+"."+types[0];
+			console.log("XXXXXX initSceneByUrls() this.m_modelDataUrl: ", this.m_modelDataUrl);
+			this.fitEntitiesSize();
+			if (this.m_loadingCallback) {
 				this.m_loadingCallback(1.0);
 			}
 		});
 	}
-	getCameraData(posScale: number): Float32Array {
-		let cam = this.m_rscene.getCamera()
+	private fitEntitiesSize(): void{
+		this.m_layouter.layoutUpdate(this.m_baseSize, new Vector3D(0, 0, 0));
+		let container = this.m_entityContainer;
+		let format = URLFilter.getFileSuffixName(this.m_modelDataUrl, true, true);
+		console.log("XXXXXX fitEntitiesSize() this.m_modelDataUrl: ", this.m_modelDataUrl);
+		console.log("format: ", format);
+		switch(format) {
+			case "obj":
+				container.setRotationXYZ(90,0,0);
+				break;
+			default:
+				break;
+		}
+		container.update();
+	}
+	getCameraData(posScale: number, transpose: boolean = false): Float32Array {
+		let cam = this.m_rscene.getCamera();
 		let mat = cam.getViewMatrix().clone();
 		mat.invert();
-		mat.transpose();
+		if (transpose) {
+			mat.transpose();
+		}
 		let vs = mat.getLocalFS32().slice(0);
 		vs[3] *= posScale;
 		vs[7] *= posScale;
@@ -185,14 +231,17 @@ export class RModelSCViewer {
 	private initModels(): void {
 		let url0 = "static/private/fbx/soleBig01_unwrapuv.fbx";
 		url0 = "static/private/obj/box01.obj";
+		url0 = "static/assets/obj/scene01.obj";
+		url0 = "static/assets/fbx/scene03.fbx";
 		let loader = this.m_teamLoader;
-
-		loader.load([url0], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+		let urls: string[] = [url0];
+		loader.load(urls, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 			this.m_layouter.layoutReset();
 			for (let i = 0; i < models.length; ++i) {
-				this.createEntity(models[i], transforms != null ? transforms[i] : null, 2.00);
+				this.createEntity(models[i], transforms != null ? transforms[i] : null, 2.0);
 			}
-			this.m_layouter.layoutUpdate(300, new Vector3D(0, 0, 0));
+			this.m_modelDataUrl = urls[0];
+			this.fitEntitiesSize();
 		});
 	}
 
@@ -211,14 +260,25 @@ export class RModelSCViewer {
 			entity.setMesh(mesh);
 			entity.setMaterial(material);
 
-			this.m_rscene.addEntity(entity);
+			// this.m_rscene.addEntity(entity);
+			entity.update();
+			// this.m_entities.push( entity );
 			this.m_layouter.layoutAppendItem(entity, new Matrix4(transform));
+			this.m_entityContainer.addChild( entity );
 			return entity;
 		}
 	}
 
 	private mouseDown(evt: any): void {
 		console.log("mouse down.");
+		let camdvs = this.getCameraData(0.01, true);
+		console.log("	camdvs: ", camdvs);
+		/*
+		-0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 7.295821666717529,
+		0.70710676908493040, -0.40824827551841736, 0.5773502588272095, 7.295821666717529,
+		0.00000000000000000, 0.816496551036834700, 0.5773502588272095, 7.295821666717529,
+		-0.0000000000000000, 0.000000000000000000, -0.000000000000000, 1.000000000000000
+		*/
 	}
 }
 export default RModelSCViewer;

@@ -25,8 +25,8 @@ export default class URLFilter {
 		}
 		return url;
 	}
-	static getFileName(url: string, lowerCase: boolean = false): string {
-		if(url.indexOf("blob:") < 0) {
+	static getFileName(url: string, lowerCase: boolean = false, force: boolean = false): string {
+		if(url.indexOf("blob:") < 0 || force) {
 			let i = url.lastIndexOf("/");
 			if(i < 0) {
 				return "";
@@ -45,8 +45,8 @@ export default class URLFilter {
 		}
 		return "";
 	}
-	static getFileNameAndSuffixName(url: string, lowerCase: boolean = false): string {
-		if(url.indexOf("blob:") < 0) {
+	static getFileNameAndSuffixName(url: string, lowerCase: boolean = false, force: boolean = false): string {
+		if(url.indexOf("blob:") < 0 || force) {
 			let i = url.lastIndexOf("/");
 			let j = url.indexOf(".", i);
 			if(j < 0) {
@@ -60,8 +60,8 @@ export default class URLFilter {
 		}
 		return "";
 	}
-	static getFileSuffixName(url: string, lowerCase: boolean = false): string {
-		if(url.indexOf("blob:") < 0) {
+	static getFileSuffixName(url: string, lowerCase: boolean = false, force: boolean = false): string {
+		if(url.indexOf("blob:") < 0 || force) {
 			let i = url.lastIndexOf("/");
 			let j = url.indexOf(".", i);
 			if(j < 0) {
