@@ -8,7 +8,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 
 import { EntityLayouter } from "../vox/utils/EntityLayouter";
-import { CoGeomDataType, CoModelTeamLoader } from "../cospace/app/common/CoModelTeamLoader";
+import { CoModuleVersion, CoGeomDataType, CoModelTeamLoader } from "../cospace/app/common/CoModelTeamLoader";
 import { IFileUrlObj, IDropFileListerner, DropFileController } from "../tool/base/DropFileController";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
@@ -22,6 +22,8 @@ import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import Cone3DEntity from "../vox/entity/Cone3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
+import URLFilter from "../cospace/app/utils/URLFilter";
+import { HttpFileLoader } from "../cospace/modules/loaders/HttpFileLoader";
 
 class VVF {
 	isEnabled(): boolean {
@@ -37,10 +39,15 @@ export class RModelSCViewer {
 	protected m_dropController = new DropFileController();
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
-	private m_teamLoader = new CoModelTeamLoader();
+	private m_teamLoader: CoModelTeamLoader = null;//new CoModelTeamLoader();
 	private m_layouter = new EntityLayouter();
-
+	private m_loadingCallback: (prog: number) => void
 	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+
+		let host = URLFilter.getHostUrl("9090");
+		if(purl.indexOf("http:") < 0 && purl.indexOf("https:") < 0) {
+			purl = host + purl;
+		}
 		return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
 	}
 	private initSys(): void {
@@ -49,17 +56,42 @@ export class RModelSCViewer {
 
 		// new RenderStatusDisplay(this.m_rscene, true);
 		new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 1);
+		// this.m_teamLoader.verTool = new CoModuleVersion(null);
 	}
-	initialize(div: HTMLDivElement): void {
+
+	private loadInfo(initCallback: () => void): void {
+
+		let host = URLFilter.getHostUrl("9090");
+		let url = host + "static/cospace/info.json";
+		console.log("url: ", url);
+		url = URLFilter.filterUrl(url);
+		let httpLoader = new HttpFileLoader();
+		httpLoader.load(url, (data: object, url: string): void => {
+			console.log("loadInfo loaded data: ", data);
+			this.m_teamLoader = new CoModelTeamLoader();
+			this.m_teamLoader.verTool = new CoModuleVersion( data );
+			this.m_teamLoader.verTool.forceFiltering = true;
+			if(initCallback) {
+				initCallback()
+			}
+		},
+		null,
+		null,
+		"json"
+		);
+	}
+	initialize(div: HTMLDivElement, initCallback: () => void = null): void {
 		console.log("RModelSCViewer::initialize()......");
 		if (this.m_rscene == null) {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
 			let rparam = new RendererParam(div);
+			rparam.autoSyncRenderBufferAndWindowSize = false;
 			rparam.setCamProject(45, 0.1, 2000.0);
 			rparam.setCamPosition(800.0, 800.0, 800.0);
 			rparam.setCamUpDirect(0.0, 0.0, 1.0);
+			rparam.setAttriAntialias(true);
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam).setAutoRunning(true);
 
@@ -97,23 +129,29 @@ export class RModelSCViewer {
 			// console.log("getCameraData(), vs: ", vs);
 
 			this.m_dropController.initialize(this.m_rscene.getRenderProxy().getCanvas(), this);
+			this.loadInfo( initCallback );
 		}
 	}
 	private m_baseSize = 300;
-	initSceneByFiles(files: any[], size: number = 300): void {
+	initSceneByFiles(files: any[], loadingCallback: (prog: number) => void, size: number = 300): void {
 		this.m_baseSize = size;
+		this.m_loadingCallback = loadingCallback;
 		this.m_dropController.initFilesLoad(files);
 	}
 
-	initSceneByUrls(urls: string[], size: number = 300): void {
+	initSceneByUrls(urls: string[], types: string[], loadingCallback: (prog: number) => void, size: number = 300): void {
 		this.m_baseSize = size;
+		this.m_loadingCallback = loadingCallback;
 		let loader = this.m_teamLoader;
-		loader.load(urls, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+		loader.loadWithTypes(urls, types, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 			this.m_layouter.layoutReset();
 			for (let i = 0; i < models.length; ++i) {
 				this.createEntity(models[i], transforms != null ? transforms[i] : null, 2.00);
 			}
 			this.m_layouter.layoutUpdate(size, new Vector3D(0, 0, 0));
+			if(this.m_loadingCallback) {
+				this.m_loadingCallback(1.0);
+			}
 		});
 	}
 	getCameraData(posScale: number): Float32Array {
@@ -127,14 +165,18 @@ export class RModelSCViewer {
 		vs[11] *= posScale;
 		return vs;
 	}
-	
+
 	private m_dropEnabled = true;
 	initFileLoad(files: IFileUrlObj[]): void {
 		let urls: string[] = [];
+		let types: string[] = [];
 		for (let i = 0; i < files.length; ++i) {
+			console.log("files[i].url: ", files[i].url);
+			console.log("files[i].type: ", files[i].type);
 			urls.push(files[i].url);
+			types.push(files[i].type);
 		}
-		this.initSceneByUrls(urls, this.m_baseSize);
+		this.initSceneByUrls(urls, types, this.m_loadingCallback, this.m_baseSize);
 	}
 	isDropEnabled(): boolean {
 		return this.m_dropEnabled;
@@ -161,7 +203,7 @@ export class RModelSCViewer {
 			let material = new Default3DMaterial();
 			material.normalEnabled = true;
 			material.setUVScale(uvScale, uvScale);
-			material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
+			material.setTextureList([this.getTexByUrl("static/assets/white.jpg")]);
 
 			let mesh = MeshFactory.createDataMeshFromModel(model, material);
 			let entity = new DisplayEntity();

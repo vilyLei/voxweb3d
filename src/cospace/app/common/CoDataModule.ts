@@ -60,8 +60,10 @@ export class CoDataModule {
 				]
 			};
 			this.m_dependencyGraphObj = dependencyGraphObj;
-
+			console.log("this.verTool.forceFiltering: ", this.verTool.forceFiltering);
 			let loader = new CoModuleLoader(1, null, this.verTool);
+			loader.forceFiltering = this.verTool.forceFiltering;
+
 			let urlChecker = loader.getUrlChecker();
 			if (urlChecker) {
 				for (let i = 0; i < modules.length; ++i) {

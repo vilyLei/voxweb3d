@@ -2,7 +2,7 @@ import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceA
 import { CoModuleVersion } from "../utils/CoModuleLoader";
 import { CoDataModule } from "./CoDataModule";
 interface I_CoGeomModelLoader {
-	
+
 }
 class CoGeomModelLoader {
 	private static s_coapp = new CoDataModule();
@@ -28,6 +28,19 @@ class CoGeomModelLoader {
 			CoGeomModelLoader.s_coapp.deferredInit((): void => {
 				for (let i = 0; i < purls.length; ++i) {
 					this.loadModel(purls[i], typeNS);
+				}
+			});
+		}
+	}
+	loadWithType(urls: string[], types: string[]): void {
+		CoGeomModelLoader.s_coapp.verTool = this.verTool;
+		if (urls != null && urls.length > 0) {
+
+			CoGeomModelLoader.s_coapp.initialize(null, true);
+			let purls = urls.slice(0);
+			CoGeomModelLoader.s_coapp.deferredInit((): void => {
+				for (let i = 0; i < purls.length; ++i) {
+					this.loadModel(purls[i], types[i]);
 				}
 			});
 		}
