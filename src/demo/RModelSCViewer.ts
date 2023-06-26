@@ -46,9 +46,13 @@ export class RModelSCViewer {
 	private m_entities: DisplayEntity[] = [];
 	private m_modelDataUrl = "";
 	private m_forceRot90 = false;
+	private m_debugDev = false;
 	private m_loadingCallback: (prog: number) => void;
 	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
 		let host = URLFilter.getHostUrl("9090");
+		if(this.m_debugDev) {
+			host = "";
+		}
 		if (purl.indexOf("http:") < 0 && purl.indexOf("https:") < 0) {
 			purl = host + purl;
 		}
@@ -154,6 +158,7 @@ export class RModelSCViewer {
 				this.m_dropController.initialize(this.m_rscene.getRenderProxy().getCanvas(), this);
 				this.loadInfo(initCallback);
 			} else {
+				this.m_debugDev = true;
 				this.m_teamLoader = new CoModelTeamLoader();
 				this.initModels();
 			}
@@ -238,14 +243,22 @@ export class RModelSCViewer {
 		url0 = "static/private/obj/box01.obj";
 		url0 = "static/assets/obj/scene01.obj";
 		url0 = "static/assets/fbx/scene03.fbx";
-		url0 = "static/private/ply/scene01_ply/export_0.drc";
+		url0 = "static/private/obj/scene01/export_0.obj.drc";
 		let loader = this.m_teamLoader;
 		let urls: string[] = [url0];
 		this.m_forceRot90 = true;
-		//*
+
+		///*
 		urls = [];
-		for(let i = 0; i < 8; ++i) {
-			let purl = "static/private/obj/scene01/export_" + i + ".drc";
+		for(let i = 0; i < 51; ++i) {
+			let purl = "static/private/obj/model02/export_" + i + ".drc";
+			urls.push( purl );
+		}
+		//*/
+		/*
+		urls = [];
+		for(let i = 0; i < 6; ++i) {
+			let purl = "static/private/obj/scene03/export_" + i + ".drc";
 			urls.push( purl );
 		}
 		//*/
