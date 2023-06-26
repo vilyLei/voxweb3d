@@ -53,10 +53,11 @@ export class DemoCospace {
 
 		// 启用鼠标点击事件
 		document.onmousedown = (evt: any): void => {
-			this.mouseDown(evt);
+			// this.mouseDown(evt);
 		};
-		this.initCTMLoad();
+		// this.initCTMLoad();
 		// this.initFBXLoad();
+		this.loadDraco();
 	}
 	private m_files: string[] = ["hand.ctm", "f2.ctm", "h1.ctm", "s3.ctm"];
 
@@ -69,7 +70,8 @@ export class DemoCospace {
 
 		// let url = "static/private/draco/errorNormal.drc";
 		let url = "static/private/draco/sh202/sh202_" + this.m_dracoResIndex + ".drc";
-		// let url = "static/private/draco/t01.drc";
+		url = "static/private/draco/t01.drc";
+		url = "static/private/ply/scene01_ply/export_0.drc";
 		this.loadDracoCallback(url);
 		this.m_dracoResIndex++;
 	}

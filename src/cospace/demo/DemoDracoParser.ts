@@ -21,6 +21,7 @@ import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
 import DivLog from "../../vox/utils/DivLog";
 import IShaderCodeBuffer from "../../vox/material/IShaderCodeBuffer";
+import MeshFactory from "../../vox/mesh/MeshFactory";
 
 /**
  * draco 加载解析多线程示例
@@ -39,11 +40,11 @@ export class DemoDracoParser {
 
 	initialize(): void {
 		console.log("DemoDracoParser::initialize()...");
-
+		let dracoCodeVer = 2
 		let dependencyGraphObj: object = {
 			nodes: [
 				{ uniqueName: "dracoGeomParser", path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js" },
-				{ uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js" },
+				{ uniqueName: "dracoWasmWrapper", path: `static/cospace/modules/dracoLib/w${dracoCodeVer}.js` },
 				{ uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js" }
 			],
 			maps: [
@@ -58,14 +59,14 @@ export class DemoDracoParser {
 		this.m_threadSchedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.js");
 
 		// 建立 draco 模型数据builder(包含加载和解析)
-		this.m_dracoGeomBuilder = new DracoGeomBuilder("static/cospace/modules/draco/ModuleDracoGeomParser.js");
+		this.m_dracoGeomBuilder = new DracoGeomBuilder("", dracoCodeVer);
 
 		this.m_dracoGeomBuilder.initialize(this.m_threadSchedule);
 		this.m_dracoGeomBuilder.setListener(this);
 
 		this.m_lossTime = Date.now();
-		this.loadDraco01();
-		// this.loadDraco02();
+		// this.loadDraco01();
+		this.loadDraco02();
 		// this.loadDraco();
 
 		document.onmousedown = (evt: any): void => {
@@ -82,6 +83,9 @@ export class DemoDracoParser {
 		url = "static/private/draco/sh202_25.ctm.drc";
 		url = "static/private/draco/sh202_26.ctm.drc";
 		url = "static/private/draco/errorNormal.drc";
+		url = "static/private/draco/tri01.drc";
+		url = "static/private/obj/scene01/export_1.drc";
+		url = "static/private/ply/scene01_ply/export_0.drc";
 		// url = "static/private/draco/model.fbs";
 		// url = "static/private/draco/sh202_25.drc";
 		// draco模型数据字节分段信息
@@ -92,9 +96,14 @@ export class DemoDracoParser {
 	private m_vtxTotal: number = 0;
 	private m_trisNumber: number = 0;
 	private loadDraco02(): void {
-		for (let i: number = 0; i < 27; ++i) {
-			// let url = "static/private/draco/sh202/sh202_" + i + ".drc";
-			let url = "static/private/draco/sh202/sh202_" + i + ".drc";
+		// for (let i: number = 0; i < 27; ++i) {
+		// 	// let url = "static/private/draco/sh202/sh202_" + i + ".drc";
+		// 	let url = "static/private/draco/sh202/sh202_" + i + ".drc";
+		// 	this.loadDracoAndParseOnePartFile(url);
+		// }
+		for(let i = 0; i < 8; ++i) {
+			let url = "static/private/ply/scene01_ply/export_" + i + ".drc";
+			// urls.push( purl );
 			this.loadDracoAndParseOnePartFile(url);
 		}
 	}
@@ -143,13 +152,15 @@ export class DemoDracoParser {
 		let material = this.buildShdMaterial();
 		material.initializeByCodeBuf();
 
-		let mesh: DataMesh = new DataMesh();
-		mesh.setIVS(model.indices);
-		mesh.setVS(model.vertices);
-		mesh.setUVS(model.uvsList[0]);
-		mesh.setNVS(model.normals);
-		mesh.setBufSortFormat(material.getBufSortFormat());
-		mesh.initialize();
+		// let mesh: DataMesh = new DataMesh();
+		// mesh.setIVS(model.indices);
+		// mesh.setVS(model.vertices);
+		// mesh.setUVS(model.uvsList[0]);
+		// mesh.setNVS(model.normals);
+		// mesh.setBufSortFormat(material.getBufSortFormat());
+		// mesh.initialize();
+
+		let mesh = MeshFactory.createDataMeshFromModel(model, material);
 
 		let entity: DisplayEntity = new DisplayEntity();
 		entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);

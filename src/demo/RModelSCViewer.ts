@@ -45,6 +45,7 @@ export class RModelSCViewer {
 	private m_entityContainer = new DisplayEntityContainer();
 	private m_entities: DisplayEntity[] = [];
 	private m_modelDataUrl = "";
+	private m_forceRot90 = false;
 	private m_loadingCallback: (prog: number) => void;
 	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
 		let host = URLFilter.getHostUrl("9090");
@@ -183,7 +184,8 @@ export class RModelSCViewer {
 			}
 		});
 	}
-	private fitEntitiesSize(): void{
+	private fitEntitiesSize(forceRot90: boolean = false): void{
+		forceRot90 = forceRot90 || this.m_forceRot90;
 		this.m_layouter.layoutUpdate(this.m_baseSize, new Vector3D(0, 0, 0));
 		let container = this.m_entityContainer;
 		let format = URLFilter.getFileSuffixName(this.m_modelDataUrl, true, true);
@@ -194,6 +196,9 @@ export class RModelSCViewer {
 				container.setRotationXYZ(90,0,0);
 				break;
 			default:
+				if(forceRot90){
+					container.setRotationXYZ(90,0,0);
+				}
 				break;
 		}
 		container.update();
@@ -233,8 +238,24 @@ export class RModelSCViewer {
 		url0 = "static/private/obj/box01.obj";
 		url0 = "static/assets/obj/scene01.obj";
 		url0 = "static/assets/fbx/scene03.fbx";
+		url0 = "static/private/ply/scene01_ply/export_0.drc";
 		let loader = this.m_teamLoader;
 		let urls: string[] = [url0];
+		this.m_forceRot90 = true;
+		//*
+		urls = [];
+		for(let i = 0; i < 8; ++i) {
+			let purl = "static/private/obj/scene01/export_" + i + ".drc";
+			urls.push( purl );
+		}
+		//*/
+		/*
+		urls = [];
+		for(let i = 0; i < 8; ++i) {
+			let purl = "static/private/ply/scene01_ply/export_" + i + ".drc";
+			urls.push( purl );
+		}
+		//*/
 		loader.load(urls, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 			this.m_layouter.layoutReset();
 			for (let i = 0; i < models.length; ++i) {
@@ -273,12 +294,6 @@ export class RModelSCViewer {
 		console.log("mouse down.");
 		let camdvs = this.getCameraData(0.01, true);
 		console.log("	camdvs: ", camdvs);
-		/*
-		-0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 7.295821666717529,
-		0.70710676908493040, -0.40824827551841736, 0.5773502588272095, 7.295821666717529,
-		0.00000000000000000, 0.816496551036834700, 0.5773502588272095, 7.295821666717529,
-		-0.0000000000000000, 0.000000000000000000, -0.000000000000000, 1.000000000000000
-		*/
 	}
 }
 export default RModelSCViewer;

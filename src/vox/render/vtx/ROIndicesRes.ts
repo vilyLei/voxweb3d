@@ -525,7 +525,8 @@ class ROIndicesRes implements IROIndicesRes {
 				vrc.eleBufSubData(ivs, ivtx.getBufDataUsage());
 			}
 			size = ivs.length;
-			stride = size > 65536 ? 4 : 2;
+			// stride = size > 65536 ? 4 : 2;
+			stride = ivs.BYTES_PER_ELEMENT;
 			bytesSize = newBytesSize;
 		} else {
 			let offset = 0;

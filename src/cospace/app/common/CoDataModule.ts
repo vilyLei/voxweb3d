@@ -8,6 +8,7 @@ import {
 	CoTextureDataUnit
 } from "../../app/CoSpaceAppData";
 
+// import { TaskCodeModuleParam } from "../../schedule/base/TaskCodeModuleParam";
 import { ICoSpaceApp } from "../../app/ICoSpaceApp";
 import { ICoSpaceAppIns } from "../../app/ICoSpaceAppIns";
 import { CoModuleVersion, CoModuleLoader } from "../utils/CoModuleLoader";
@@ -39,13 +40,17 @@ export class CoDataModule {
 
 			this.m_sysInitCallback = sysInitCallback;
 			this.m_deferredInit = deferredInit;
+
+			// let dracoModuleParam = new TaskCodeModuleParam("static/cospace/modules/draco/ModuleDracoGeomParser.umd.js", ModuleNS.dracoParser, ModuleFileType.JS);
+			// dracoModuleParam.params = ["static/cospace/modules/dracoLib/"];
 			let modules: CoTaskCodeModuleParam[] = [
 				{ url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
 				{ url: "static/cospace/core/code/ThreadCore.umd.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
 				{ url: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
 				{ url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS },
 				{ url: "static/cospace/modules/png/ModulePNGParser.umd.js", name: CoModuleNS.pngParser, type: CoModuleFileType.JS },
-				{ url: "static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.js", name: CoModuleNS.fbxFastParser, type: CoModuleFileType.JS }
+				{ url: "static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.js", name: CoModuleNS.fbxFastParser, type: CoModuleFileType.JS },
+				{ url: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js", name: CoModuleNS.dracoParser, type: CoModuleFileType.JS, params: ["static/cospace/modules/dracoLib/"] }
 			];
 			this.m_modules = modules;
 			// 初始化数据协同中心
