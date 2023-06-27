@@ -189,6 +189,9 @@ export class RModelSCViewer {
 			}
 		});
 	}
+	setForceRotate90(force: boolean): void {
+		this.m_forceRot90 = force;
+	}
 	private fitEntitiesSize(forceRot90: boolean = false): void{
 		forceRot90 = forceRot90 || this.m_forceRot90;
 		this.m_layouter.layoutUpdate(this.m_baseSize, new Vector3D(0, 0, 0));
@@ -244,11 +247,16 @@ export class RModelSCViewer {
 		url0 = "static/assets/obj/scene01.obj";
 		url0 = "static/assets/fbx/scene03.fbx";
 		url0 = "static/private/obj/scene01/export_0.obj.drc";
+		url0 = "http://localhost:9090/static/uploadFiles/rtTask/v1ModelRTask2001/draco/export_0.drc"
 		let loader = this.m_teamLoader;
 		let urls: string[] = [url0];
 		this.m_forceRot90 = true;
-
-		///*
+		urls = [];
+		for(let i = 0; i < 2; ++i) {
+			let purl = "http://localhost:9090/static/uploadFiles/rtTask/v1ModelRTask2001/draco/export_"+i+".drc";
+			urls.push( purl );
+		}
+		/*
 		urls = [];
 		for(let i = 0; i < 51; ++i) {
 			let purl = "static/private/obj/model02/export_" + i + ".drc";
@@ -302,11 +310,17 @@ export class RModelSCViewer {
 			return entity;
 		}
 	}
-
+	private m_mouseDownCall: ((evt: any) => void)
+	setMouseDownListener(mouseDownCall: ((evt: any) => void)):void {
+		this.m_mouseDownCall = mouseDownCall;
+	}
 	private mouseDown(evt: any): void {
 		console.log("mouse down.");
-		let camdvs = this.getCameraData(0.01, true);
-		console.log("	camdvs: ", camdvs);
+		if(this.m_mouseDownCall != null) {
+			this.m_mouseDownCall(evt);
+		}
+		// let camdvs = this.getCameraData(0.01, true);
+		// console.log("	camdvs: ", camdvs);
 	}
 }
 export default RModelSCViewer;
