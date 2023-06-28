@@ -4,6 +4,8 @@ import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import MouseEvent from "../vox/event/MouseEvent";
+import KeyboardEvent from "../vox/event/KeyboardEvent";
+import Keyboard from "../vox/ui/Keyboard"
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 
@@ -25,6 +27,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import URLFilter from "../cospace/app/utils/URLFilter";
 import { HttpFileLoader } from "../cospace/modules/loaders/HttpFileLoader";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
+import IKeyboardEvent from "../vox/event/IKeyboardEvent";
 
 class VVF {
 	isEnabled(): boolean {
@@ -47,6 +50,8 @@ export class RModelSCViewer {
 	private m_modelDataUrl = "";
 	private m_forceRot90 = false;
 	private m_debugDev = false;
+	private m_baseSize = 200;
+	private m_camvs = [0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 2.390000104904175, 0.7071067690849304, 0.40824827551841736, -0.5773502588272095, -2.390000104904175, 0, 0.8164965510368347, 0.5773502588272095, 2.390000104904175, 0, 0, 0, 1];
 	private m_loadingCallback: (prog: number) => void;
 	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
 		let host = URLFilter.getHostUrl("9090");
@@ -61,6 +66,7 @@ export class RModelSCViewer {
 	private initSys(): void {
 		this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 		this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+		this.m_rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
 
 		// new RenderStatusDisplay(this.m_rscene, true);
 		new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 1);
@@ -89,6 +95,11 @@ export class RModelSCViewer {
 			"json"
 		);
 	}
+	updateCameraWithF32Arr16(fs32Arr16: number[] | Float32Array): void {
+		if(fs32Arr16.length == 16) {
+			this.applyCamvs(fs32Arr16);
+		}
+	}
 	private createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
 		let div: HTMLDivElement = document.createElement("div");
 		div.style.width = pw + "px";
@@ -111,7 +122,8 @@ export class RModelSCViewer {
 			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512, 512));
 			rparam.autoSyncRenderBufferAndWindowSize = false;
 			rparam.setCamProject(45, 0.1, 2000.0);
-			rparam.setCamPosition(800.0, 800.0, 800.0);
+			// rparam.setCamPosition(800.0, -800.0, 800.0);
+			rparam.setCamPosition(239.0, -239.0, 239.0);
 			if (zAxisUp || div == null) {
 				rparam.setCamUpDirect(0.0, 0.0, 1.0);
 			} else {
@@ -165,7 +177,6 @@ export class RModelSCViewer {
 			this.m_rscene.addEntity(this.m_entityContainer);
 		}
 	}
-	private m_baseSize = 200;
 	initSceneByFiles(files: any[], loadingCallback: (prog: number) => void, size: number = 200): void {
 		this.m_baseSize = size;
 		this.m_loadingCallback = loadingCallback;
@@ -251,11 +262,11 @@ export class RModelSCViewer {
 		let loader = this.m_teamLoader;
 		let urls: string[] = [url0];
 		this.m_forceRot90 = true;
-		urls = [];
-		for(let i = 0; i < 2; ++i) {
-			let purl = "http://localhost:9090/static/uploadFiles/rtTask/v1ModelRTask2001/draco/export_"+i+".drc";
-			urls.push( purl );
-		}
+		// urls = [];
+		// for(let i = 0; i < 2; ++i) {
+		// 	let purl = "http://localhost:9090/static/uploadFiles/rtTask/v1ModelRTask2001/draco/export_"+i+".drc";
+		// 	urls.push( purl );
+		// }
 		/*
 		urls = [];
 		for(let i = 0; i < 51; ++i) {
@@ -270,10 +281,10 @@ export class RModelSCViewer {
 			urls.push( purl );
 		}
 		//*/
-		/*
+		// /*
 		urls = [];
 		for(let i = 0; i < 8; ++i) {
-			let purl = "static/private/ply/scene01_ply/export_" + i + ".drc";
+			let purl = "static/private/obj/scene01/export_" + i + ".drc";
 			urls.push( purl );
 		}
 		//*/
@@ -314,13 +325,63 @@ export class RModelSCViewer {
 	setMouseDownListener(mouseDownCall: ((evt: any) => void)):void {
 		this.m_mouseDownCall = mouseDownCall;
 	}
+	private applyCamvs(cdvs: number[] | Float32Array): void {
+
+		if(cdvs == null) {
+			cdvs = [
+			0.7071067690849304, -0.40824827551841736, 0.57735025882720950, 2.390000104904175,
+			0.7071067690849304, 0.408248275518417360, -0.5773502588272095, -2.390000104904175,
+			0.0000000000000000, 0.816496551036834700, 0.57735025882720950, 2.390000104904175,
+			0, 				    0,				      0,				   1
+			];
+		}
+
+		let mat4 = new Matrix4(new Float32Array(cdvs));
+		mat4.transpose();
+		let camvs = mat4.getLocalFS32();
+		let i = 0;
+		let vx = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
+		i = 4;
+		let vy = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
+		i = 8;
+		let vz = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
+		i = 12
+		let pos = new Vector3D(camvs[i], camvs[i+1], camvs[i+2]);
+
+		console.log("		  vy: ", vy);
+		let cam = this.m_rscene.getCamera();
+
+		console.log("cam.getUV(): ", cam.getUV());
+		console.log("");
+		console.log("cam.getNV(): ", cam.getNV());
+		vz.negate();
+		console.log("		  vz: ", vz);
+		console.log("		 pos: ", pos);
+		if(pos.getLength() > 0.001) {
+			let camPos = pos.clone().scaleBy(100.0);
+			cam.lookAtRH(camPos, new Vector3D(), vy);
+			cam.update();
+		}
+	}
+	private keyDown(evt: IKeyboardEvent): void {
+		console.log("key down, evt: ", evt.keyCode);
+		switch(evt.keyCode) {
+			case Keyboard.T:
+				//m_camvs
+				console.log("test t....");
+				// this.applyCamvs(null);
+				break;
+			default:
+				break;
+		}
+	}
 	private mouseDown(evt: any): void {
-		console.log("mouse down.");
+		console.log("mouse down, evt: ", evt);
 		if(this.m_mouseDownCall != null) {
 			this.m_mouseDownCall(evt);
 		}
-		// let camdvs = this.getCameraData(0.01, true);
-		// console.log("	camdvs: ", camdvs);
+		let camdvs = this.getCameraData(0.01, true);
+		console.log("	camdvs: ", camdvs);
 	}
 }
 export default RModelSCViewer;
