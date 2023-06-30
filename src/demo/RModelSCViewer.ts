@@ -121,7 +121,7 @@ export class RModelSCViewer {
 
 			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512, 512));
 			rparam.autoSyncRenderBufferAndWindowSize = false;
-			rparam.setCamProject(45, 0.1, 2000.0);
+			rparam.setCamProject(45, 10.0, 2000.0);
 			// rparam.setCamPosition(800.0, -800.0, 800.0);
 			rparam.setCamPosition(239.0, -239.0, 239.0);
 			if (zAxisUp || div == null) {
@@ -262,6 +262,13 @@ export class RModelSCViewer {
 		let loader = this.m_teamLoader;
 		let urls: string[] = [url0];
 		this.m_forceRot90 = true;
+
+		urls = [];
+		for(let i = 0; i < 2; ++i) {
+			let purl = "static/assets/modules/apple_01/export_"+i+".drc";
+			urls.push( purl );
+		}
+		console.log("xxxxxx urls: ", urls);
 		// urls = [];
 		// for(let i = 0; i < 2; ++i) {
 		// 	let purl = "http://localhost:9090/static/uploadFiles/rtTask/v1ModelRTask2001/draco/export_"+i+".drc";
@@ -281,7 +288,7 @@ export class RModelSCViewer {
 			urls.push( purl );
 		}
 		//*/
-		// /*
+		/*
 		urls = [];
 		for(let i = 0; i < 8; ++i) {
 			let purl = "static/private/obj/scene01/export_" + i + ".drc";
