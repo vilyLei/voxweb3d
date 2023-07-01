@@ -28,6 +28,7 @@ import URLFilter from "../cospace/app/utils/URLFilter";
 import { HttpFileLoader } from "../cospace/modules/loaders/HttpFileLoader";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import IKeyboardEvent from "../vox/event/IKeyboardEvent";
+import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
 class VVF {
 	isEnabled(): boolean {
@@ -119,7 +120,7 @@ export class RModelSCViewer {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512, 512));
+			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512/1.5, 512/1.5));
 			rparam.autoSyncRenderBufferAndWindowSize = false;
 			rparam.setCamProject(45, 10.0, 2000.0);
 			// rparam.setCamPosition(800.0, -800.0, 800.0);
@@ -133,7 +134,7 @@ export class RModelSCViewer {
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam).setAutoRunning(true);
 
-			let unit = 100.0;
+			// let unit = 100.0;
 
 			// let cube = new Box3DEntity();
 			// cube.normalEnabled = true;
@@ -175,6 +176,20 @@ export class RModelSCViewer {
 				this.initModels();
 			}
 			this.m_rscene.addEntity(this.m_entityContainer);
+		}
+	}
+	private m_imgViewEntity: ScreenFixedAlignPlaneEntity = null;
+	private initImgViewer(): void {
+		// let scrPlane = new ScreenFixedAlignPlaneEntity();
+		if(this.m_imgViewEntity == null) {
+			let url = "static/assets/modules/apple_01/mini.jpg"
+			let tex = this.getTexByUrl(url);
+			tex.flipY = true;
+			this.m_imgViewEntity = new ScreenFixedAlignPlaneEntity();
+			this.m_imgViewEntity.initialize(-1,-1,2.0,2.0, [tex]);
+			this.m_rscene.addEntity(this.m_imgViewEntity, 1);
+		}else {
+			this.m_imgViewEntity.setVisible( !this.m_imgViewEntity.isVisible() );
 		}
 	}
 	initSceneByFiles(files: any[], loadingCallback: (prog: number) => void, size: number = 200): void {
@@ -389,6 +404,7 @@ export class RModelSCViewer {
 		}
 		let camdvs = this.getCameraData(0.01, true);
 		console.log("	camdvs: ", camdvs);
+		this.initImgViewer();
 	}
 }
 export default RModelSCViewer;
