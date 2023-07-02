@@ -122,6 +122,7 @@ export class RModelSCViewer {
 
 			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512/1.5, 512/1.5));
 			rparam.autoSyncRenderBufferAndWindowSize = false;
+			// rparam.syncBgColor = true;
 			rparam.setCamProject(45, 10.0, 2000.0);
 			// rparam.setCamPosition(800.0, -800.0, 800.0);
 			rparam.setCamPosition(239.0, -239.0, 239.0);
@@ -152,16 +153,6 @@ export class RModelSCViewer {
 			axis.initialize(300)
 			this.m_rscene.addEntity(axis);
 
-			// let cam = this.m_rscene.getCamera()
-			// console.log("cam.getViewMatrix(): ")
-			// console.log(cam.getViewMatrix().toString())
-			// let mat = cam.getViewMatrix().clone();
-			// mat.invert()
-			// console.log("mat: ")
-			// mat.transpose();
-			// let vs = mat.getLocalFS32()
-			// console.log(vs)
-
 			this.initSys();
 
 			// let vs = this.getCameraData(1.0);
@@ -180,13 +171,14 @@ export class RModelSCViewer {
 	}
 	private m_imgViewEntity: ScreenFixedAlignPlaneEntity = null;
 	private initImgViewer(): void {
-		// let scrPlane = new ScreenFixedAlignPlaneEntity();
 		if(this.m_imgViewEntity == null) {
 			let url = "static/assets/modules/apple_01/mini.jpg"
 			let tex = this.getTexByUrl(url);
 			tex.flipY = true;
 			this.m_imgViewEntity = new ScreenFixedAlignPlaneEntity();
+			this.m_imgViewEntity.transparentBlend =  true;
 			this.m_imgViewEntity.initialize(-1,-1,2.0,2.0, [tex]);
+			this.m_imgViewEntity.setAlpha(0.5);
 			this.m_rscene.addEntity(this.m_imgViewEntity, 1);
 		}else {
 			this.m_imgViewEntity.setVisible( !this.m_imgViewEntity.isVisible() );
@@ -284,32 +276,6 @@ export class RModelSCViewer {
 			urls.push( purl );
 		}
 		console.log("xxxxxx urls: ", urls);
-		// urls = [];
-		// for(let i = 0; i < 2; ++i) {
-		// 	let purl = "http://localhost:9090/static/uploadFiles/rtTask/v1ModelRTask2001/draco/export_"+i+".drc";
-		// 	urls.push( purl );
-		// }
-		/*
-		urls = [];
-		for(let i = 0; i < 51; ++i) {
-			let purl = "static/private/obj/model02/export_" + i + ".drc";
-			urls.push( purl );
-		}
-		//*/
-		/*
-		urls = [];
-		for(let i = 0; i < 6; ++i) {
-			let purl = "static/private/obj/scene03/export_" + i + ".drc";
-			urls.push( purl );
-		}
-		//*/
-		/*
-		urls = [];
-		for(let i = 0; i < 8; ++i) {
-			let purl = "static/private/obj/scene01/export_" + i + ".drc";
-			urls.push( purl );
-		}
-		//*/
 		loader.load(urls, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 			this.m_layouter.layoutReset();
 			for (let i = 0; i < models.length; ++i) {
@@ -335,9 +301,7 @@ export class RModelSCViewer {
 			entity.setMesh(mesh);
 			entity.setMaterial(material);
 
-			// this.m_rscene.addEntity(entity);
 			entity.update();
-			// this.m_entities.push( entity );
 			this.m_layouter.layoutAppendItem(entity, new Matrix4(transform));
 			this.m_entityContainer.addChild( entity );
 			return entity;
@@ -362,23 +326,23 @@ export class RModelSCViewer {
 		mat4.transpose();
 		let camvs = mat4.getLocalFS32();
 		let i = 0;
-		let vx = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
+		// let vx = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
 		i = 4;
 		let vy = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
-		i = 8;
-		let vz = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
+		// i = 8;
+		// let vz = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
 		i = 12
 		let pos = new Vector3D(camvs[i], camvs[i+1], camvs[i+2]);
 
-		console.log("		  vy: ", vy);
+		// console.log("		  vy: ", vy);
 		let cam = this.m_rscene.getCamera();
 
-		console.log("cam.getUV(): ", cam.getUV());
-		console.log("");
-		console.log("cam.getNV(): ", cam.getNV());
-		vz.negate();
-		console.log("		  vz: ", vz);
-		console.log("		 pos: ", pos);
+		// console.log("cam.getUV(): ", cam.getUV());
+		// console.log("");
+		// console.log("cam.getNV(): ", cam.getNV());
+		// vz.negate();
+		// console.log("		  vz: ", vz);
+		// console.log("		 pos: ", pos);
 		if(pos.getLength() > 0.001) {
 			let camPos = pos.clone().scaleBy(100.0);
 			cam.lookAtRH(camPos, new Vector3D(), vy);
@@ -398,12 +362,12 @@ export class RModelSCViewer {
 		}
 	}
 	private mouseDown(evt: any): void {
-		console.log("mouse down, evt: ", evt);
+		// console.log("mouse down, evt: ", evt);
 		if(this.m_mouseDownCall != null) {
 			this.m_mouseDownCall(evt);
 		}
-		let camdvs = this.getCameraData(0.01, true);
-		console.log("	camdvs: ", camdvs);
+		// let camdvs = this.getCameraData(0.01, true);
+		// console.log("	camdvs: ", camdvs);
 		this.initImgViewer();
 	}
 }
