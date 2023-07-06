@@ -27,6 +27,8 @@
     "build:bakingModule": "vue-cli-service build --target lib --name BakingModule --dest dist ./src/bake/demo/bakePbr/BakingModule.ts",
     "build:rmodelSCViewer": "vue-cli-service build --target lib --name RModelSCViewer --dest dist ./src/demo/RModelSCViewer.ts",
 
+	"build:dsrSCViewer": "vue-cli-service build --target lib --name SceneViewer --dest ./public/static/cospace/dsrdiffusion/scViewer ./src/dsrdiffusion/scviewer/SceneViewer.ts",
+
     "build:baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
     "build:engine": "vue-cli-service build --target lib --name VoxApp --dest dist/engine ./src/distribution/rendererIsolate/devEngine.ts",
     "build:roFunctions": "vue-cli-service build --target lib --name VoxApp --dest dist/roFunctions ./src/distribution/rendererIsolate/devROFunctions.ts",
@@ -59,13 +61,13 @@
     "build:coEntity": "vue-cli-service build --target lib --name CoEntity --dest ./public/static/cospace/coentity ./src/cospace/voxentity/CoEntity.ts",
     "build:coEdit": "vue-cli-service build --target lib --name CoEdit --dest ./public/static/cospace/coedit ./src/cospace/edit/CoEdit.ts",
     "build:coParticle": "vue-cli-service build --target lib --name CoParticle --dest ./public/static/cospace/particle/ ./src/cospace/particle/CoParticle.ts",
-    
+
     "build:pbrEffect": "vue-cli-service build --target lib --name PBREffect --dest ./public/static/cospace/renderEffect/pbr ./src/cospace/renderEffect/pbr/PBREffect.ts",
     "build:coLightModule": "vue-cli-service build --target lib --name CoLightModule --dest ./public/static/cospace/renderEffect/lightModule ./src/cospace/renderEffect/light/CoLightModule.ts",
     "build:coEnvLightModule": "vue-cli-service build --target lib --name CoEnvLightModule --dest ./public/static/cospace/renderEffect/envLight ./src/cospace/renderEffect/light/CoEnvLightModule.ts",
     "build:vsmShadowModule": "vue-cli-service build --target lib --name VSMShadowModule --dest ./public/static/cospace/renderEffect/vsmShadow ./src/cospace/renderEffect/shadow/VSMShadowModule.ts",
     "build:occPostOutlineModule": "vue-cli-service build --target lib --name OccPostOutlineModule --dest ./public/static/cospace/renderEffect/occPostOutline ./src/cospace/renderEffect/outline/OccPostOutlineModule.ts",
-    
+
     "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
     "dev:vox": "vue-cli-service serve --type=dev[./src/main_vox.ts]",
     "dev:voxweb": "vue-cli-service serve --type=dev[./src/main_voxweb.ts]",
@@ -74,7 +76,8 @@
     "dev:advanced": "vue-cli-service serve --type=dev[./src/main_advanced.ts]",
     "dev:animation": "vue-cli-service serve --type=dev[./src/main_animation.ts]",
     "dev:tool": "vue-cli-service serve --type=dev[./src/main_tool.ts]",
-    "dev:pixeltoy": "vue-cli-service serve --type=dev[./src/main_pixeltoy.ts]"
+    "dev:pixeltoy": "vue-cli-service serve --type=dev[./src/main_pixeltoy.ts]",
+    "dev:dsrdiffusion": "vue-cli-service serve --type=dev[./src/main_dsrdiffusion.ts]"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.4.2",

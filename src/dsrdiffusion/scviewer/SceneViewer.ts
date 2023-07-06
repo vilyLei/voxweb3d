@@ -1,34 +1,34 @@
-import Vector3D from "../vox/math/Vector3D";
-import RendererDevice from "../vox/render/RendererDevice";
-import RendererParam from "../vox/scene/RendererParam";
-import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../../vox/math/Vector3D";
+import RendererDevice from "../../vox/render/RendererDevice";
+import RendererParam from "../../vox/scene/RendererParam";
+import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 
-import MouseEvent from "../vox/event/MouseEvent";
-import KeyboardEvent from "../vox/event/KeyboardEvent";
-import Keyboard from "../vox/ui/Keyboard"
-import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import RendererScene from "../vox/scene/RendererScene";
+import MouseEvent from "../../vox/event/MouseEvent";
+import KeyboardEvent from "../../vox/event/KeyboardEvent";
+import Keyboard from "../../vox/ui/Keyboard"
+import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
+import RendererScene from "../../vox/scene/RendererScene";
 
-import { EntityLayouter } from "../vox/utils/EntityLayouter";
-import { CoModuleVersion, CoGeomDataType, CoModelTeamLoader } from "../cospace/app/common/CoModelTeamLoader";
-import { IFileUrlObj, IDropFileListerner, DropFileController } from "../tool/base/DropFileController";
+import { EntityLayouter } from "../../vox/utils/EntityLayouter";
+import { CoModuleVersion, CoGeomDataType, CoModelTeamLoader } from "../../cospace/app/common/CoModelTeamLoader";
+import { IFileUrlObj, IDropFileListerner, DropFileController } from "../../tool/base/DropFileController";
 
-import DisplayEntity from "../vox/entity/DisplayEntity";
-import RendererState from "../vox/render/RendererState";
-import Matrix4 from "../vox/math/Matrix4";
-import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
-import { MouseInteraction } from "../vox/ui/MouseInteraction";
-import MeshFactory from "../vox/mesh/MeshFactory";
-import IRenderTexture from "../vox/render/texture/IRenderTexture";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import RendererState from "../../vox/render/RendererState";
+import Matrix4 from "../../vox/math/Matrix4";
+import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import { MouseInteraction } from "../../vox/ui/MouseInteraction";
+import MeshFactory from "../../vox/mesh/MeshFactory";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
-import Cone3DEntity from "../vox/entity/Cone3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import Box3DEntity from "../vox/entity/Box3DEntity";
-import URLFilter from "../cospace/app/utils/URLFilter";
-import { HttpFileLoader } from "../cospace/modules/loaders/HttpFileLoader";
-import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
-import IKeyboardEvent from "../vox/event/IKeyboardEvent";
-import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
+import Cone3DEntity from "../../vox/entity/Cone3DEntity";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import Box3DEntity from "../../vox/entity/Box3DEntity";
+import URLFilter from "../../cospace/app/utils/URLFilter";
+import { HttpFileLoader } from "../../cospace/modules/loaders/HttpFileLoader";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import IKeyboardEvent from "../../vox/event/IKeyboardEvent";
+import ScreenFixedAlignPlaneEntity from "../../vox/entity/ScreenFixedAlignPlaneEntity";
 
 class VVF {
 	isEnabled(): boolean {
@@ -38,7 +38,7 @@ class VVF {
 let pwin: any = window;
 pwin["VoxVerify"] = new VVF();
 
-export class RModelSCViewer {
+export class SceneViewer {
 	constructor() {}
 
 	protected m_dropController = new DropFileController();
@@ -114,8 +114,8 @@ export class RModelSCViewer {
 		div.style.position = "absolute";
 		return div;
 	}
-	initialize(div: HTMLDivElement = null, initCallback: () => void = null, zAxisUp: boolean = false): void {
-		console.log("RModelSCViewer::initialize()......");
+	initialize(div: HTMLDivElement = null, initCallback: () => void = null, zAxisUp: boolean = false, debugDev: boolean = false): void {
+		console.log("SceneViewer::initialize()......");
 		if (this.m_rscene == null) {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -158,7 +158,7 @@ export class RModelSCViewer {
 			// let vs = this.getCameraData(1.0);
 			// console.log("getCameraData(), vs: ", vs);
 			this.m_layouter.locationEnabled = false;
-			if (div) {
+			if (div && !debugDev) {
 				this.m_dropController.initialize(this.m_rscene.getRenderProxy().getCanvas(), this);
 				this.loadInfo(initCallback);
 			} else {
@@ -371,4 +371,4 @@ export class RModelSCViewer {
 		this.initImgViewer();
 	}
 }
-export default RModelSCViewer;
+export default SceneViewer;
