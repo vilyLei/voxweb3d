@@ -7,7 +7,7 @@ class DsrdScene {
 		this.m_viewerLayer = viewerLayer;
 
 		let url = "static/cospace/dsrdiffusion/scViewer/SceneViewer.umd.js";
-		// this.loadModule(url);
+		this.loadModule(url);
 	}
 	private init3DScene(): void {
 		let rscViewer = new SceneViewer.SceneViewer();

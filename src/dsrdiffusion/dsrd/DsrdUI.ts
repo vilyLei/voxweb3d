@@ -2,7 +2,10 @@ import {IItemData} from "./ui/IItemData";
 import {SettingDataPanel} from "./ui/SettingDataPanel";
 import {OutputDataPanel} from "./ui/OutputDataPanel";
 import {EnvDataPanel} from "./ui/EnvDataPanel";
+import {CameraDataPanel} from "./ui/CameraDataPanel";
+import {MaterialDataPanel} from "./ui/MaterialDataPanel";
 import {RenderingSettingItem} from "./ui/RenderingSettingItem";
+import { LightDataPanel } from "./ui/LightDataPanel";
 
 declare var SceneViewer: any;
 const menuDataList: IItemData[] = [
@@ -73,7 +76,7 @@ class DsrdUI {
 			item.initialize(div, pw,ph, settingPanel)
 			items.push(item)
 		}
-		items[1].select();
+		items[3].select();
 	}
 	protected createSettingPanel(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number, data: IItemData): SettingDataPanel {
 		let settingPanel: SettingDataPanel = null;
@@ -81,10 +84,18 @@ class DsrdUI {
 			case "env":
 				settingPanel = new EnvDataPanel();
 				break;
-			// case "output":
-			// 	settingPanel = new OutputDataPanel();
-			// 	break;
-				//EnvDataPanel
+			case "output":
+				settingPanel = new OutputDataPanel();
+				break;
+			case "camera":
+				settingPanel = new CameraDataPanel();
+				break;
+			case "material":
+				settingPanel = new MaterialDataPanel();
+				break;
+			case "light":
+				settingPanel = new LightDataPanel();
+				break;
 			default:
 				settingPanel = new SettingDataPanel();
 		}

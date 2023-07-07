@@ -1,29 +1,31 @@
 import {IItemData} from "./IItemData"
 import {SettingDataPanel} from "./SettingDataPanel"
 import {DataItemComponentParam, DataItemComponent} from "./DataItemComponent"
-class EnvDataPanel extends SettingDataPanel {
+class CameraDataPanel extends SettingDataPanel {
 	constructor() {super()}
 
 	protected init(viewerLayer: HTMLDivElement): void {
 
 		let params: DataItemComponentParam[] = []
 		let param = new DataItemComponentParam();
-		param.keyName = "type";
-		param.name = "环境选择";
-		param.textValue = "室内";
-		param.toText();
-		params.push(param);
-		param = new DataItemComponentParam();
-		param.keyName = "brightness";
-		param.name = "环境亮度";
-		param.numberValue = 0.7;
+		param.keyName = "viewAngle";
+		param.name = "视角";
+		param.numberValue = 45;
+		param.unit = "度";
 		param.toNumber();
 		params.push(param);
 		param = new DataItemComponentParam();
-		param.keyName = "rotation";
-		param.name = "旋转角度";
-		param.numberValue = 0;
-		param.unit = "度";
+		param.keyName = "near";
+		param.name = "近平面";
+		param.numberValue = 0.1;
+		param.unit = "m";
+		param.toNumber();
+		params.push(param);
+		param = new DataItemComponentParam();
+		param.keyName = "far";
+		param.name = "远平面";
+		param.numberValue = 20;
+		param.unit = "m";
 		param.toNumber();
 		params.push(param);
 
@@ -43,4 +45,4 @@ class EnvDataPanel extends SettingDataPanel {
 		}
 	}
 }
-export {EnvDataPanel}
+export {CameraDataPanel}

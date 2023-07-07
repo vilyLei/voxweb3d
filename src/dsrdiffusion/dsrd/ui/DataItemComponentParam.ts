@@ -3,6 +3,7 @@ import Color4 from "../../../vox/material/Color4";
 const __$$colorTool = new Color4()
 class DataItemComponentParam {
 	keyName = "";
+	textContent?: string;
 	name = "";
 	numberValue?: number;
 	booleanValue?: boolean;
@@ -29,9 +30,11 @@ class DataItemComponentParam {
 			case "text":
 				head_viewer.innerHTML = this.name;
 				if(this.numberValue != undefined) {
-					body_viewer.innerHTML = this.numberValue + "";
+					body_viewer.innerHTML = this.numberValue + this.unit;
+				}else if(this.textContent != undefined) {
+					body_viewer.innerHTML = this.textContent + this.unit;
 				}else if(this.textValue != undefined) {
-					body_viewer.innerHTML = this.textValue + "";
+					body_viewer.innerHTML = this.textValue + this.unit;
 				}
 				break;
 			case "boolean":

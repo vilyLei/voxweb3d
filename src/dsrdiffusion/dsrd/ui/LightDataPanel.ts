@@ -1,30 +1,30 @@
 import {IItemData} from "./IItemData"
 import {SettingDataPanel} from "./SettingDataPanel"
 import {DataItemComponentParam, DataItemComponent} from "./DataItemComponent"
-class EnvDataPanel extends SettingDataPanel {
+class LightDataPanel extends SettingDataPanel {
 	constructor() {super()}
 
 	protected init(viewerLayer: HTMLDivElement): void {
 
 		let params: DataItemComponentParam[] = []
 		let param = new DataItemComponentParam();
-		param.keyName = "type";
-		param.name = "环境选择";
-		param.textValue = "室内";
+		param.keyName = "color";
+		param.name = "灯光颜色";
+		param.numberValue = 0xaaeebb;
+		param.toColor();
+		params.push(param);
+		param = new DataItemComponentParam();
+		param.keyName = "energy";
+		param.name = "灯光功率";
+		param.numberValue = 500;
+		param.unit = "W";
+		param.toNumber();
+		params.push(param);
+		param = new DataItemComponentParam();
+		param.keyName = "new_light";
+		param.name = "新建光源";
+		param.textValue = "..."
 		param.toText();
-		params.push(param);
-		param = new DataItemComponentParam();
-		param.keyName = "brightness";
-		param.name = "环境亮度";
-		param.numberValue = 0.7;
-		param.toNumber();
-		params.push(param);
-		param = new DataItemComponentParam();
-		param.keyName = "rotation";
-		param.name = "旋转角度";
-		param.numberValue = 0;
-		param.unit = "度";
-		param.toNumber();
 		params.push(param);
 
 		let container = this.m_container;
@@ -43,4 +43,4 @@ class EnvDataPanel extends SettingDataPanel {
 		}
 	}
 }
-export {EnvDataPanel}
+export {LightDataPanel}

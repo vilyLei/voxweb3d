@@ -2,7 +2,7 @@ import {IItemData} from "./IItemData"
 import {SettingDataPanel} from "./SettingDataPanel"
 class RenderingSettingItem {
 	private m_viewerLayer: HTMLDivElement = null;
-	private m_controller: SettingDataPanel = null;
+	private m_panel: SettingDataPanel = null;
 	private m_areaWidth = 512;
 	private m_areaHeight = 512;
 	private m_selected = false;
@@ -10,7 +10,7 @@ class RenderingSettingItem {
 	private m_selectColors = [0x7aacda, 0x4a93d5, 0x3b7bb5];
 	group: RenderingSettingItem[] = null;
 	constructor() {}
-	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number, controller: SettingDataPanel): void {
+	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number, panel: SettingDataPanel): void {
 
 		console.log("RenderingSettingItem::initialize()......");
 
@@ -18,13 +18,13 @@ class RenderingSettingItem {
 		this.m_areaWidth = areaWidth;
 		this.m_areaHeight = areaHeight;
 
-		this.m_controller = controller;
-		viewerLayer.innerHTML = controller.getName();
+		this.m_panel = panel;
+		viewerLayer.innerHTML = panel.getName();
 		this.initEvent(viewerLayer);
 	}
 
 	getName(): string {
-		return this.m_controller.getName();
+		return this.m_panel.getName();
 	}
 	private applyColorAt(i: number): void {
 		// console.log("applyColorAt(), this.m_selected: ", this.m_selected);
@@ -65,10 +65,12 @@ class RenderingSettingItem {
 		}
 		this.m_selected = true;
 		this.applyColorAt(0);
+		this.m_panel.setVisible(true);
 	}
 	deselect(): void {
 		this.m_selected = false;
 		this.applyColorAt(0);
+		this.m_panel.setVisible(false);
 	}
 }
 export {RenderingSettingItem}

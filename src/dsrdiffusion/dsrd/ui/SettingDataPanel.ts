@@ -19,6 +19,7 @@ class SettingDataPanel {
 		this.m_container = this.createDiv(0,0, areaWidth, areaWidth, "", "", "absolute");
 		viewerLayer.appendChild(this.m_container);
 		this.init(viewerLayer);
+		this.setVisible(false);
 	}
 	getName(): string {
 		return this.m_itemData.name;
@@ -26,7 +27,18 @@ class SettingDataPanel {
 	protected init(viewerLayer: HTMLDivElement): void {
 
 	}
-
+	setVisible(v: boolean): void {
+		let c = this.m_container;
+		let style = c.style;
+		if (v) {
+			style.visibility = "visible";
+		} else {
+			style.visibility = "hidden";
+		}
+	}
+	isVisible(): boolean {
+		return this.m_container.style.visibility == "visible";
+	}
 	protected createDiv(
 		px: number,
 		py: number,
