@@ -405,8 +405,8 @@ export default class Color4 implements IColor4 {
 	/**
 	 * @returns for example: #350b7e
 	 */
-	getCSSHeXRGBColor(): string {
-		let str = "#";
+	getCSSHeXRGBColor(keyStr = "#"): string {
+		let str = keyStr;
 		str += getHexStr(this.r);
 		str += getHexStr(this.g);
 		str += getHexStr(this.b);

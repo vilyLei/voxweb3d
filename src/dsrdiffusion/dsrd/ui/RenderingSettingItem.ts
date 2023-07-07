@@ -22,9 +22,17 @@ class RenderingSettingItem {
 		viewerLayer.innerHTML = panel.getName();
 		this.initEvent(viewerLayer);
 	}
-
+	getPanel(): SettingDataPanel {
+		return this.m_panel;
+	}
 	getName(): string {
 		return this.m_panel.getName();
+	}
+	getKeyName(): string {
+		return this.m_panel.getKeyName();
+	}
+	getType(): string {
+		return this.m_panel.getType();
 	}
 	private applyColorAt(i: number): void {
 		// console.log("applyColorAt(), this.m_selected: ", this.m_selected);

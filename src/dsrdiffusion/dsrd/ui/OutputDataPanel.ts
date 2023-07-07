@@ -1,59 +1,80 @@
-import {IItemData} from "./IItemData"
-import {SettingDataPanel} from "./SettingDataPanel"
-import {DataItemComponentParam, DataItemComponent} from "./DataItemComponent"
+import { IItemData } from "./IItemData";
+import { SettingDataPanel } from "./SettingDataPanel";
+import { DataItemComponentParam, DataItemComponent } from "./DataItemComponent";
 class OutputDataPanel extends SettingDataPanel {
-	constructor() {super()}
+	constructor() {
+		super();
+	}
+	getJsonStr(beginStr = "{", endStr = "}"): string {
 
+		let paramW = this.getItemCompByKeyName("image_width").getParam();
+		let paramH = this.getItemCompByKeyName("image_height").getParam();
+		let sizes = [paramW.numberValue, paramH.numberValue];
+		let jsonStr = `${beginStr}"path":"", "resolution":[${sizes}]`;
+		return super.getJsonStr(jsonStr,endStr);
+	}
 	protected init(viewerLayer: HTMLDivElement): void {
-
-		let params: DataItemComponentParam[] = []
+		let params: DataItemComponentParam[] = [];
 		let param = new DataItemComponentParam();
 		param.keyName = "image_width";
 		param.name = "图像宽";
 		param.numberValue = 512;
+		param.inputType = "number";
+		param.numberMinValue = 1;
+		param.numberMaxValue = 4096;
+		param.editEnabled = true;
+		param.autoEncoding = false;
 		param.toNumber();
 		params.push(param);
 		param = new DataItemComponentParam();
 		param.keyName = "image_height";
 		param.name = "图像高";
 		param.numberValue = 512;
+		param.inputType = "number";
+		param.numberMinValue = 1;
+		param.numberMaxValue = 4096;
+		param.editEnabled = true;
+		param.autoEncoding = false;
 		param.toNumber();
 		params.push(param);
 		param = new DataItemComponentParam();
-		param.keyName = "bg_transparent";
+		param.keyName = "bgTransparent";
 		param.name = "背景透明";
 		param.toBoolean();
 		param.booleanValue = false;
+		// param.editEnabled = true;
 		params.push(param);
 
 		param = new DataItemComponentParam();
-		param.keyName = "output_image_type";
+		param.keyName = "outputType";
 		param.name = "出图类型";
-		param.textValue = "单张图";
+		param.textValue = "single_image";
+		param.textContent = "单张图";
 		param.toText();
 		params.push(param);
 
 		param = new DataItemComponentParam();
-		param.keyName = "bg_color";
+		param.keyName = "bgColor";
 		param.name = "背景色";
-		param.numberValue = 0x33668a;
-		param.toColor()
+		param.numberValue = 0x1668a;
+		param.editEnabled = true;
+		param.toColor();
 		params.push(param);
+		this.m_params = params;
 
 		let container = this.m_container;
 		let startX = 45;
 		let startY = 60;
 		let disY = 60;
-		let py = 0
-		for(let i = 0; i < params.length; ++i) {
-
+		let py = 0;
+		for (let i = 0; i < params.length; ++i) {
 			let itemComp = new DataItemComponent();
 			itemComp.x = startX;
 			itemComp.y = startY + py;
 			itemComp.initialize(container, params[i]);
-
+			this.addItemComp(itemComp);
 			py += disY;
 		}
 	}
 }
-export {OutputDataPanel}
+export { OutputDataPanel };

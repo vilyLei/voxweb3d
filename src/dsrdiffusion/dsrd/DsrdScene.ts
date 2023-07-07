@@ -1,6 +1,8 @@
 declare var SceneViewer: any;
+import { DsrdUI } from "../dsrd/DsrdUI";
 class DsrdScene {
 	private m_viewerLayer: HTMLDivElement = null;
+	ui: DsrdUI = null;
 	constructor() {}
 	initialize(viewerLayer: HTMLDivElement): void {
 		console.log("DsrdScene::initialize()......");
@@ -12,31 +14,31 @@ class DsrdScene {
 	private init3DScene(): void {
 		let rscViewer = new SceneViewer.SceneViewer();
 		console.log("rscViewer: ", rscViewer);
-		rscViewer.initialize(this.m_viewerLayer, () => {
-		}, true, true);
+		rscViewer.initialize(this.m_viewerLayer, () => {}, true, true);
 		// 增加三角面数量的信息显示
 		rscViewer.setForceRotate90(true);
+		this.ui.setRSCViewer( rscViewer );
 	}
-    private loadModule(purl: string): void {
-        let codeLoader = new XMLHttpRequest();
-        codeLoader.open("GET", purl, true);
-        codeLoader.onerror = function (err) {
-            console.error("loadModule error: ", err);
-        }
-        codeLoader.onprogress = (e) => {
-            // this.showLoadInfo(e, codeLoader);
-        };
-        codeLoader.onload = () => {
-            let scriptEle = document.createElement("script");
-            scriptEle.onerror = (e) => {
-                console.error("module script onerror, e: ", e);
-            }
-            scriptEle.innerHTML = codeLoader.response;
-            document.head.appendChild(scriptEle);
-            // this.loadFinish();
+	private loadModule(purl: string): void {
+		let codeLoader = new XMLHttpRequest();
+		codeLoader.open("GET", purl, true);
+		codeLoader.onerror = function(err) {
+			console.error("loadModule error: ", err);
+		};
+		codeLoader.onprogress = e => {
+			// this.showLoadInfo(e, codeLoader);
+		};
+		codeLoader.onload = () => {
+			let scriptEle = document.createElement("script");
+			scriptEle.onerror = e => {
+				console.error("module script onerror, e: ", e);
+			};
+			scriptEle.innerHTML = codeLoader.response;
+			document.head.appendChild(scriptEle);
+			// this.loadFinish();
 			this.init3DScene();
-        }
-        codeLoader.send(null);
-    }
+		};
+		codeLoader.send(null);
+	}
 }
-export {DsrdScene}
+export { DsrdScene };
