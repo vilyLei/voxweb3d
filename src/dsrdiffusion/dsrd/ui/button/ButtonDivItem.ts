@@ -1,48 +1,29 @@
-import { IItemData } from "./IItemData";
-// import { SettingDataPanel } from "./SettingDataPanel";
-class ButtonDivItem {
-	private m_viewerLayer: HTMLDivElement = null;
+import { HTMLViewerLayer } from "../../base/HTMLViewerLayer";
+
+class ButtonDivItem extends HTMLViewerLayer {
 	private m_btn_name = "";
 	private m_btn_idns = "";
-	private m_areaWidth = 512;
-	private m_areaHeight = 512;
 	private m_selected = false;
 	private m_selectColors = [0xbdd9e1, 0xaed4df, 0x83c4d7];
 	private m_deselectColors = [0x7aacda, 0x4a93d5, 0x3b7bb5];
 	group: ButtonDivItem[] = null;
 	onmousedown: (evt: any) => void = null;
 	onmouseup: (evt: any) => void = null;
-	constructor() {}
-	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number, btn_name: string, btn_idns: string): void {
+	constructor() {super();}
+	initialize(viewerLayer: HTMLDivElement, btn_name: string, btn_idns: string): void {
 
 		console.log("ButtonDivItem::initialize()......");
 		let style = viewerLayer.style;
 		style.cursor = "pointer";
 		style.userSelect = "none";
 		// style.color = "#eeeeee";
+		this.setViewer(viewerLayer);
 
-		this.m_viewerLayer = viewerLayer;
-		this.m_areaWidth = areaWidth;
-		this.m_areaHeight = areaHeight;
 		this.m_btn_name = btn_name;
 		this.m_btn_idns = btn_idns;
 		viewerLayer.innerHTML = btn_name;
 		this.initEvent(viewerLayer);
-	}
-	setTextColor(uint24: number): void {
-		this.m_viewerLayer.style.color = "#" + uint24.toString(16);
-	}
-	setVisible(v: boolean): void {
-		let c = this.m_viewerLayer;
-		let style = c.style;
-		if (v) {
-			style.visibility = "visible";
-		} else {
-			style.visibility = "hidden";
-		}
-	}
-	isVisible(): boolean {
-		return this.m_viewerLayer.style.visibility == "visible";
+		this.applyColorAt(0);
 	}
 	setSelectColors(colors: number[]): void {
 		this.m_selectColors = colors;
@@ -57,9 +38,9 @@ class ButtonDivItem {
 		return this.m_btn_idns;
 	}
 	applyColorAt(i: number): void {
-		// console.log("applyColorAt(), this.m_selected: ", this.m_selected);
 		let colors = this.m_selected ? this.m_selectColors : this.m_deselectColors;
-		this.m_viewerLayer.style.backgroundColor = "#" + colors[i].toString(16);
+		// this.m_viewerLayer.style.backgroundColor = "#" + colors[i].toString(16);
+		this.setBackgroundColor(colors[i]);
 	}
 	private initEvent(viewerLayer: HTMLDivElement): void {
 		viewerLayer.onmouseover = evt => {

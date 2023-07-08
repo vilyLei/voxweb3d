@@ -4,6 +4,7 @@ interface IFileUrlObj {
 	type: string;
 	resType: string;
 	url: string;
+	file?:any;
 }
 interface IDropFileListerner {
 	isDropEnabled(): boolean;
@@ -151,6 +152,7 @@ class DropFileController {
 		}
 		return null;
 	}
+	createObjectURLEnabled = true;
 	private getFiles(): IFileUrlObj[] {
 		let flag = 1;
 		let files = this.m_files;
@@ -160,7 +162,11 @@ class DropFileController {
 				for (let i = 0; i < files.length; i++) {
 					let obj = this.testFile(files[i].name);
 					if (obj) {
-						obj.url = window.URL.createObjectURL(files[i]);
+						if(this.createObjectURLEnabled) {
+							obj.url = window.URL.createObjectURL(files[i]);
+						}else {
+							obj.file = files[i];
+						}
 						urls.push(obj);
 					}
 				}

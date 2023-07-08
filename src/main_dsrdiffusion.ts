@@ -13,6 +13,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {SceneViewer as Demo} from "./dsrdiffusion/scviewer/SceneViewer";
  import {DsrdShellDemo as Demo} from "./dsrdiffusion/DsrdShellDemo";
+//  import {DsrdShellLoaderDemo as Demo} from "./dsrdiffusion/DsrdShellLoaderDemo";
 
 document.title = "Vox Dsrdiffusion";
 let ins = new Demo() as any;

@@ -28,6 +28,7 @@
     "build:rmodelSCViewer": "vue-cli-service build --target lib --name RModelSCViewer --dest dist ./src/demo/RModelSCViewer.ts",
 
 	"build:dsrSCViewer": "vue-cli-service build --target lib --name SceneViewer --dest ./public/static/cospace/dsrdiffusion/scViewer ./src/dsrdiffusion/scviewer/SceneViewer.ts",
+	"build:dsrdShell": "vue-cli-service build --target lib --name DSRDShell --dest ./public/static/cospace/dsrdiffusion/shell ./src/dsrdiffusion/DsrdShell.ts",
 
     "build:baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
     "build:engine": "vue-cli-service build --target lib --name VoxApp --dest dist/engine ./src/distribution/rendererIsolate/devEngine.ts",

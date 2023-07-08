@@ -4,12 +4,12 @@ export default class URLFilter {
 		let domain = url.match(urlReg);
 		return ((domain != null && domain.length > 0) ? domain[0] : "");
 	}
-	static getHostUrl(port?: string): string {
+	static getHostUrl(port?: string, end = "/"): string {
 		let host = location.href;
 		let domain = URLFilter.getDomain(host);
 		let nsList = domain.split(":");
 		host = nsList[0]+":"+nsList[1];
-		return port ? host + ":"+port+"/" : domain + "/";
+		return port ? host + ":"+port+"/" : domain + end;
 	}
 	static isEnabled(): boolean {
 		let hostUrl = window.location.href;

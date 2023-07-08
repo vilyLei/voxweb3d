@@ -1,11 +1,14 @@
 import { DsrdScene } from "./dsrd/DsrdScene";
 import { DsrdUI } from "./dsrd/DsrdUI";
 import { RTaskBeginUI } from "./dsrd/RTaskBeginUI";
+import { RTaskSystem } from "./dsrd/task/RTaskSystem";
+import { DivTool } from "./dsrd/utils/HtmlDivUtils";
 class DsrdShell {
 	private m_init = true;
 	private m_rscene = new DsrdScene();
 	private m_ui = new DsrdUI();
 	private m_rtaskBeginUI = new RTaskBeginUI();
+	private m_taskSys = new RTaskSystem();
 	constructor() {}
 	initialize(): void {
 		console.log("DsrdShell::initialize()......");
@@ -13,6 +16,7 @@ class DsrdShell {
 			this.m_init = false;
 
 			this.m_rscene.ui = this.m_ui;
+			this.m_rscene.taskSys = this.m_taskSys;
 			this.initWorkSpace();
 		}
 	}
@@ -46,9 +50,6 @@ class DsrdShell {
 		this.initDSRDUI();
 	}
 
-	private clearDivAllEles(div: HTMLDivElement): void {
-		(div as any).replaceChildren();
-	}
 	private initDSRDUI(): void {
 
 		let width = 512;
@@ -56,60 +57,58 @@ class DsrdShell {
 		let borderWidth = 2;
 		let borderHeight = 2;
 
-		let container = this.createDiv(0, 0, width * 2 + borderWidth * 2, height + borderHeight * 2);
+		let container = DivTool.createDivT1(0, 0, width * 2 + borderWidth * 2, height + borderHeight * 2, "block");
 		let style = container.style;
 		// style.backgroundColor = "#2b65cb";
 		// style.backgroundImage = `linear-gradient(to right bottom, #8ba6d5, #12d8fa, #79a3ef)`;
 		style.backgroundImage = `linear-gradient(to right bottom, #5b6f93, #1d91a5, #375283)`;
 
-		let layerLeft = this.createDiv(borderWidth, borderHeight, width, height);
+		let layerLeft = DivTool.createDivT1(borderWidth, borderHeight, width, height, "block");
 		style = layerLeft.style;
 		style.backgroundColor = "#335533";
 		container.appendChild(layerLeft);
 
-		let layerRight = this.createDiv(width + borderWidth, borderHeight, width, height, "absolute");
+		let layerRight = DivTool.createDivT1(width + borderWidth, borderHeight, width, height, "block", "absolute");
 		style = layerRight.style;
 		style.backgroundColor = "#5b9bd5";
 		container.appendChild(layerRight);
 
-		let beginUILayer = this.createDiv(borderWidth, borderHeight, width * 2, height, "absolute");
+		let beginUILayer = DivTool.createDivT1(borderWidth, borderHeight, width * 2, height, "block", "absolute");
 		style = beginUILayer.style;
 		style.backgroundImage = `linear-gradient(to right bottom, #c0e1d1, #aec7dd)`;
 		style.visibility = "hidden";
 		container.appendChild(beginUILayer);
 		this.m_viewerLayer.appendChild(container);
 
+		let actioncall = (idns: string, type: string):void => {
+			switch(idns) {
+				case "toWorkSpace":
+					this.toWorkSpace();
+					break;
+			}
+		}
+
+		this.m_taskSys.initialize();
+		this.m_taskSys.onaction = actioncall;
+
+		this.m_rtaskBeginUI.rtaskSys = this.m_taskSys;
+		this.m_rtaskBeginUI.onaction = actioncall;
 		this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
 		this.m_rtaskBeginUI.open();
 
-		// this.initDSRDSys(layerLeft, layerRight, width, height);
+		this.initDSRDSys(layerLeft, layerRight, width, height);
+	}
+	private m_workSpaceStatus = 0;
+	private toWorkSpace():void {
+		if(this.m_workSpaceStatus == 0) {
+			this.m_workSpaceStatus = 1;
+			console.log("DsrdShell::toWorkSpace().");
+			this.m_rtaskBeginUI.close();
+		}
 	}
 	private initDSRDSys(layerLeft: HTMLDivElement, layerRight: HTMLDivElement, width: number, height: number): void {
 		this.m_rscene.initialize(layerLeft);
 		this.m_ui.initialize(layerRight, width, height);
-	}
-	private createDiv(px: number, py: number, pw: number, ph: number, position = ""): HTMLDivElement {
-		const div = document.createElement("div");
-		let style = div.style;
-		style.left = px + "px";
-		style.top = py + "px";
-		style.width = pw + "px";
-		style.height = ph + "px";
-		style.display = "block";
-		style.position = "relative";
-		if (position != "") {
-			style.position = position;
-		}
-		// style.position = "absolute";
-
-		// div.style.margin = "0 auto";
-		// div.style.backgroundColor = "#222222";
-		// 添加样式 二
-		// div.style.position = "absolute";
-		// div.style.left = "calc(50% - 256px / 2)";
-		// div.style.left = "calc(50% - 256px / 2)";
-
-		return div;
 	}
 	private showInfo(str: string): void {
 		let div = this.mIDV;

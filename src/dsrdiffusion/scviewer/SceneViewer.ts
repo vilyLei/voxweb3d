@@ -158,6 +158,7 @@ export class SceneViewer {
 			// let vs = this.getCameraData(1.0);
 			// console.log("getCameraData(), vs: ", vs);
 			this.m_layouter.locationEnabled = false;
+			this.m_debugDev = debugDev;
 			if (div && !debugDev) {
 				this.m_dropController.initialize(this.m_rscene.getRenderProxy().getCanvas(), this);
 				this.loadInfo(initCallback);
@@ -170,9 +171,15 @@ export class SceneViewer {
 		}
 	}
 	private m_imgViewEntity: ScreenFixedAlignPlaneEntity = null;
+	private m_viewImageUrl = "static/assets/modules/apple_01/mini.jpg";
+	setViewImageUrl(url: string): void {
+		this.m_viewImageUrl = url;
+		console.log("this.setViewImageUrl(), this.m_viewImageUrl: ", this.m_viewImageUrl);
+	}
 	private initImgViewer(): void {
 		if(this.m_imgViewEntity == null) {
-			let url = "static/assets/modules/apple_01/mini.jpg"
+			console.log("this.initImgViewer(), this.m_viewImageUrl: ", this.m_viewImageUrl);
+			let url = this.m_viewImageUrl;
 			let tex = this.getTexByUrl(url);
 			tex.flipY = true;
 			this.m_imgViewEntity = new ScreenFixedAlignPlaneEntity();

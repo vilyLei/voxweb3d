@@ -12617,8 +12617,8 @@ class Color4 {
    */
 
 
-  getCSSHeXRGBColor() {
-    let str = "#";
+  getCSSHeXRGBColor(keyStr = "#") {
+    let str = keyStr;
     str += getHexStr(this.r);
     str += getHexStr(this.g);
     str += getHexStr(this.b);
@@ -33910,6 +33910,7 @@ class DropFileController {
     this.m_files = null;
     this.imgKeys = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "jfif", "ico", "avif"];
     this.geomModelKeys = ["obj", "ctm", "draco", "drc", "fbx"];
+    this.createObjectURLEnabled = true;
   }
 
   initialize(htmlObj, listener) {
@@ -34064,7 +34065,12 @@ class DropFileController {
           let obj = this.testFile(files[i].name);
 
           if (obj) {
-            obj.url = window.URL.createObjectURL(files[i]);
+            if (this.createObjectURLEnabled) {
+              obj.url = window.URL.createObjectURL(files[i]);
+            } else {
+              obj.file = files[i];
+            }
+
             urls.push(obj);
           }
         }
@@ -41429,6 +41435,7 @@ class SceneViewer {
     this.m_baseSize = 200;
     this.m_camvs = [0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 2.390000104904175, 0.7071067690849304, 0.40824827551841736, -0.5773502588272095, -2.390000104904175, 0, 0.8164965510368347, 0.5773502588272095, 2.390000104904175, 0, 0, 0, 1];
     this.m_imgViewEntity = null;
+    this.m_viewImageUrl = "static/assets/modules/apple_01/mini.jpg";
     this.m_dropEnabled = true;
   }
 
@@ -41532,6 +41539,7 @@ class SceneViewer {
       // console.log("getCameraData(), vs: ", vs);
 
       this.m_layouter.locationEnabled = false;
+      this.m_debugDev = debugDev;
 
       if (div && !debugDev) {
         this.m_dropController.initialize(this.m_rscene.getRenderProxy().getCanvas(), this);
@@ -41546,9 +41554,15 @@ class SceneViewer {
     }
   }
 
+  setViewImageUrl(url) {
+    this.m_viewImageUrl = url;
+    console.log("this.setViewImageUrl(), this.m_viewImageUrl: ", this.m_viewImageUrl);
+  }
+
   initImgViewer() {
     if (this.m_imgViewEntity == null) {
-      let url = "static/assets/modules/apple_01/mini.jpg";
+      console.log("this.initImgViewer(), this.m_viewImageUrl: ", this.m_viewImageUrl);
+      let url = this.m_viewImageUrl;
       let tex = this.getTexByUrl(url);
       tex.flipY = true;
       this.m_imgViewEntity = new ScreenFixedAlignPlaneEntity_1.default();

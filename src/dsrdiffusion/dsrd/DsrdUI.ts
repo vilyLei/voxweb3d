@@ -6,7 +6,7 @@ import { CameraDataPanel } from "./ui/CameraDataPanel";
 import { MaterialDataPanel } from "./ui/MaterialDataPanel";
 import { RenderingSettingItem } from "./ui/RenderingSettingItem";
 import { LightDataPanel } from "./ui/LightDataPanel";
-import { ButtonDivItem } from "./ui/ButtonDivItem";
+import { ButtonDivItem } from "./ui/button/ButtonDivItem";
 
 declare var SceneViewer: any;
 const menuDataList: IItemData[] = [
@@ -104,12 +104,9 @@ class DsrdUI {
 		let ph = 60;
 		let div = this.createDiv(130, 30, pw, ph, "absolute", true);
 		let style = div.style;
-		// style.cursor = "pointer";
-		// style.userSelect = "none";
 		container.appendChild(div);
 		let btn_rendering = new ButtonDivItem();
-		btn_rendering.initialize(div, pw, ph, "新建渲染", "new_rendering");
-		btn_rendering.applyColorAt(0);
+		btn_rendering.initialize(div, "新建渲染", "new_rendering");
 		btn_rendering.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns);
@@ -121,8 +118,7 @@ class DsrdUI {
 		// style.userSelect = "none";
 		container.appendChild(div);
 		btn_rendering = new ButtonDivItem();
-		btn_rendering.initialize(div, pw, ph, "发起渲染", "send_rendering");
-		btn_rendering.applyColorAt(0);
+		btn_rendering.initialize(div, "发起渲染", "send_rendering");
 		btn_rendering.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns);

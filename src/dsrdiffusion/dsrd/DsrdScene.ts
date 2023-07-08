@@ -1,8 +1,11 @@
 declare var SceneViewer: any;
 import { DsrdUI } from "../dsrd/DsrdUI";
+import { RTaskSystem } from "./task/RTaskSystem";
 class DsrdScene {
 	private m_viewerLayer: HTMLDivElement = null;
 	ui: DsrdUI = null;
+	taskSys: RTaskSystem = null;
+	rscViewer: any = null;
 	constructor() {}
 	initialize(viewerLayer: HTMLDivElement): void {
 		console.log("DsrdScene::initialize()......");
@@ -13,11 +16,19 @@ class DsrdScene {
 	}
 	private init3DScene(): void {
 		let rscViewer = new SceneViewer.SceneViewer();
+		this.rscViewer = rscViewer;
 		console.log("rscViewer: ", rscViewer);
-		rscViewer.initialize(this.m_viewerLayer, () => {}, true, true);
+		let debugDev = true;
+		let host = location.href;
+		host = host.toLowerCase();
+		if (host.indexOf("diffusion") > 0) {
+			debugDev = false;
+		}
+		rscViewer.initialize(this.m_viewerLayer, () => {}, true, debugDev);
 		// 增加三角面数量的信息显示
 		rscViewer.setForceRotate90(true);
-		this.ui.setRSCViewer( rscViewer );
+		this.ui.setRSCViewer(rscViewer);
+		this.taskSys.setRSCViewer(rscViewer);
 	}
 	private loadModule(purl: string): void {
 		let codeLoader = new XMLHttpRequest();

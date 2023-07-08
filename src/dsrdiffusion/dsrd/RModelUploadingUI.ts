@@ -1,5 +1,9 @@
+import { HTMLViewerLayer } from "./base/HTMLViewerLayer";
+import { IRTaskDataParam, RTaskSystem } from "./task/RTaskSystem";
 import { IItemData } from "./ui/IItemData";
-import { ButtonDivItem } from "./ui/ButtonDivItem";
+import { ButtonDivItem } from "./ui/button/ButtonDivItem";
+import { HTTPTool, HTTPUrl } from "./utils/HTTPUtils";
+import { DivTool } from "./utils/HtmlDivUtils";
 
 class RModelUploadingUI {
 	private m_viewerLayer: HTMLDivElement = null;
@@ -7,6 +11,10 @@ class RModelUploadingUI {
 	private m_areaHeight = 512;
 	private m_time = 0;
 	private m_resLoaded = 0;
+	// private m_infoDiv: HTMLDivElement = null;
+	private m_textViewer: HTMLViewerLayer = null;
+	onaction: (idns: string, type: string) => void = null;
+	rtaskSys: RTaskSystem = null;
 	constructor() {}
 	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number): void {
 		console.log("RModelUploadingUI::initialize()......");
@@ -15,20 +23,34 @@ class RModelUploadingUI {
 		this.m_areaHeight = areaHeight;
 	}
 	uploadFile(file: any): void {
+		this.m_time = new Date().getTime() - 100;
+		this.m_resLoaded = 0;
 		this.initUI();
 		this.uploadAndSendRendering(file);
 	}
+	open(): void {}
+	close(): void {}
 	private initUI(): void {
-		let pw = 320;
-		let ph = 300;
-		let px = (this.m_areaWidth - pw) * 0.5;
-		let py = 150;
-		let div = this.createDiv(px, py, pw, 300, "absolute", false);
-		let style = div.style;
-		style.textAlign = "center";
-		style.display = "block";
-		this.m_viewerLayer.appendChild(div);
-		div.innerHTML = "uploading...";
+		this.open();
+
+		if (this.m_textViewer == null) {
+			let pw = 320;
+			let ph = 300;
+			let div = DivTool.createDiv(320, 300);
+			this.m_viewerLayer.appendChild(div);
+			let v = new HTMLViewerLayer(div);
+			v.setTextAlign("center");
+			v.layoutToCenter();
+			// v.setDisplayMode("block");
+			// v.setPositionMode("absolute");
+			this.m_textViewer = v;
+		} else {
+			this.m_textViewer.show();
+		}
+		this.m_textViewer.setInnerHTML("uploading...");
+		this.progressCall({ lengthComputable: true, loaded: 100, total: 50000 });
+
+		// this.toUploadFailure("...");
 	}
 	private getRenderingParams(otherParams: string): string {
 		let rtBGTransparent = false;
@@ -41,69 +63,116 @@ class RModelUploadingUI {
 		}
 		return params;
 	}
-	private uploadComplete(evt: any): void {
+	private completeCall(evt: any): void {
 		let str = evt.target.responseText + "";
 		console.log("evt.target.responseText: ", str);
-		var data = JSON.parse(str);
-		console.log("josn obj data: ", data);
+		let data: IRTaskDataParam = null;
+		try {
+			data = JSON.parse(str);
+			console.log("josn obj data: ", data);
+		}catch(e) {
+			data = {success:false} as any;
+			console.error("josn parsing error: ", e);
+		}
+		let type = "upload_success";
 		if (data.success) {
 			// setTaskJsonData(data);
 			console.log("上传成功！");
+			this.rtaskSys.process.toFirstRendering();
+			this.rtaskSys.data.copyFromJson( data );
+			this.rtaskSys.infoViewer.reset();
+			this.rtaskSys.infoViewer.infoDiv = this.m_textViewer.getDiv();
+			this.rtaskSys.startup();
 			// 立即发起一次渲染，获取缩略图和模型数据
 			// alert("上传成功！");
 			// this.reqstUpdate();
+			if (this.onaction) {
+				this.onaction("uploading_success", type);
+			}
 		} else {
-			alert("上传失败！");
+			// alert("上传失败！");
+			console.log("上传失败！");
+			type = "upload_svr_failed";
+			this.toUploadFailure(type);
 		}
 	}
+	private m_backBtn: ButtonDivItem = null;
+	private toUploadFailure(type: string): void {
+		// alert("上传失败！");
+		this.m_textViewer.setInnerHTML("上传失败...");
 
-	private uploadFailed(evt: any): void {
-		alert("上传失败！");
+		let pw = 80;
+		let ph = 50;
+		let px = (this.m_areaWidth - pw) * 0.5;
+		let py = (this.m_areaHeight - ph) * 0.5 + 20;
+
+		let btn = this.m_backBtn;
+		if (btn == null) {
+			let btnDiv = DivTool.createDivT1(px, py, pw, ph, "flex", "absolute", true);
+			let colors = [0x157c73, 0x156a85, 0x15648b];
+			this.m_viewerLayer.appendChild(btnDiv);
+			btn = new ButtonDivItem();
+			btn.setDeselectColors(colors);
+			btn.initialize(btnDiv, "返回", "upload_back");
+			btn.onmouseup = evt => {
+				let currEvt = evt as any;
+				console.log("button_idns: ", currEvt.button_idns);
+				btn.hide();
+				this.m_textViewer.clearInnerHTML();
+				this.m_textViewer.hide();
+				if (this.onaction) {
+					this.onaction(currEvt.button_idns, type);
+				}
+			};
+			btn.setTextColor(0xeeeeee);
+			this.m_backBtn = btn;
+		}
+		btn.show();
+
+		// if (this.onaction) {
+		// 	this.onaction("uploading_failed", type);
+		// }
 	}
 
-	private progressFunction(evt: any): void {
-		// var progressBar = document.getElementById("progressBar");
-		// var percentageDiv = document.getElementById("percentage");
-
+	private progressCall(evt: any): void {
+		let proStr = "0%";
 		if (evt.lengthComputable) {
-			// progressBar.max = evt.total;
-			// progressBar.value = evt.loaded;
-			// percentageDiv.innerHTML = Math.round(evt.loaded / evt.total * 100) + "%";
-			let proStr = Math.round((evt.loaded / evt.total) * 100) + "%";
+			console.log("evt.loaded / evt.total: ", evt.loaded / evt.total);
+			proStr = Math.round((evt.loaded / evt.total) * 100) + "%";
 		}
-		var time = document.getElementById("time");
-		var nt = new Date().getTime();
-		var pertime = (nt - this.m_time) / 1000;
+		var t = new Date().getTime();
+		var pertime = (t - this.m_time) / 1000;
 		this.m_time = new Date().getTime();
 		var perload = evt.loaded - this.m_resLoaded;
 		this.m_resLoaded = evt.loaded;
 
 		var speed = perload / pertime;
 		var bspeed = speed;
-		var units = "B/s";
+		var unit = "B/s";
 		if (speed / 1024 > 1) {
 			speed = speed / 1024;
-			units = "K/s";
+			unit = "K/s";
 		}
 		if (speed / 1024 > 1) {
 			speed = speed / 1024;
-			units = "M/s";
+			unit = "M/s";
 		}
-		let speedStr = speed.toFixed(1);
-		var resttime = ((evt.total - evt.loaded) / bspeed).toFixed(1);
-		// time.innerHTML = '上传速度：' + speedStr + units + '，剩余时间：' + resttime + 's';
-		// if (bspeed == 0) time.innerHTML = '上传已取消';
+		let speedStr = speed.toFixed(1) + unit;
+		let restTime = ((evt.total - evt.loaded) / bspeed).toFixed(1);
+		// this.m_infoDiv.innerHTML = "uploading " + proStr + "<br/>" + speedStr + "<br/>rest time: " + restTime + "s";
+		let html = "uploading " + proStr + "<br/>" + speedStr + "<br/>rest time: " + restTime + "s";
+		this.m_textViewer.setInnerHTML(html);
 	}
 	private uploadAndSendRendering(fileObj: any): void {
 		if (fileObj == null) {
 			return;
 		}
-		let hostUrl = "/";
-		// let startTime = Date.now();
-		let camdvs: number[] = [];
-		let camParam = "&camdvs=[" + camdvs + "]";
-		console.log("camParam: ", camParam);
-		var url = hostUrl + "uploadRTData?srcType=viewer&phase=newrtask" + this.getRenderingParams(camParam);
+		let hostUrl = HTTPUrl.host;
+		// let camdvs: number[] = [];
+		// let camParam = "&camdvs=[" + camdvs + "]";
+		// console.log("camParam: ", camParam);
+		// let url = hostUrl + "uploadRTData?srcType=viewer&phase=newrtask" + this.getRenderingParams(camParam);
+		let url = hostUrl + "uploadRTData?srcType=viewer&phase=newrtask" + this.getRenderingParams("");
 		if (!fileObj) {
 			alert("the file dosen't exist !!!");
 			this.updatePage();
@@ -116,20 +185,23 @@ class RModelUploadingUI {
 			this.updatePage();
 			return;
 		}
-		var form = new FormData();
+		let form = new FormData();
 		form.append("file", fileObj);
 
 		let xhr = new XMLHttpRequest();
 		xhr.open("post", url, true);
+		console.log("uploadAndSendRendering(), form url: ", url);
+		console.log("uploadAndSendRendering(), form fileObj: ", fileObj);
 		xhr.onload = evt => {
-			this.uploadComplete(evt);
+			this.completeCall(evt);
 		};
 		xhr.onerror = evt => {
-			this.uploadFailed(evt);
+			// this.failedCall(evt);
+			this.toUploadFailure("upload_net_failed");
 		};
 
 		xhr.upload.onprogress = evt => {
-			this.progressFunction(evt);
+			this.progressCall(evt);
 		};
 		xhr.upload.onloadstart = evt => {
 			this.m_time = new Date().getTime();
@@ -140,30 +212,7 @@ class RModelUploadingUI {
 		fileObj = null;
 	}
 	private updatePage(): void {
-		location.reload();
-	}
-	private clearDivAllEles(div: HTMLDivElement): void {
-		(div as any).replaceChildren();
-	}
-	private createDiv(px: number, py: number, pw: number, ph: number, position = "", center: boolean = true, display = ""): HTMLDivElement {
-		const div = document.createElement("div");
-		let style = div.style;
-		style.left = px + "px";
-		style.top = py + "px";
-		style.width = pw + "px";
-		style.height = ph + "px";
-		if (display != "") {
-			style.display = "flex";
-		}
-		if (center) {
-			style.alignItems = "center";
-			style.justifyContent = "center";
-		}
-		style.position = "relative";
-		if (position != "") {
-			style.position = position;
-		}
-		return div;
+		HTTPTool.updatePage();
 	}
 }
 export { RModelUploadingUI };
