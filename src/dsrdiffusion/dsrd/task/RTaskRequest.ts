@@ -9,8 +9,8 @@ class RTaskRquest {
 
 	taskInfoViewer: RTaskInfoViewer;
 	data: RTaskData;
-	constructor() {}
-	getDomain(url: string):string {
+	constructor() { }
+	getDomain(url: string): string {
 		var urlReg = /http:\/\/([^\/]+)/i;
 		let domain = url.match(urlReg);
 		return ((domain != null && domain.length > 0) ? domain[0] : "");
@@ -27,7 +27,7 @@ class RTaskRquest {
 		this.taskInfoGettingUrl = HTTPUrl.host + "getRTInfo";
 		this.uploadModelUrl = HTTPUrl.host + "uploadRTData";
 	}
-	reset(): void {}
+	reset(): void { }
 
 	updatePage(): void {
 		HTTPTool.updatePage();
@@ -56,11 +56,11 @@ class RTaskRquest {
 	sendRerenderingReq(otherInfo = ""): void {
 		console.log("sendRerenderingReq(), re-rendering req send !!!");
 		const data = this.data;
-		let keyNames = ["output","env","camera"];
+		let keyNames = ["output", "env", "camera"];
 		let rtdj = this.data.rtJsonData;
 		let keyName = "material";
-		console.log("rtdj.isRTJsonActiveByKeyName(",keyName,"): ", rtdj.isRTJsonActiveByKeyName(keyName));
-		if(rtdj.isRTJsonActiveByKeyName(keyName)) {
+		console.log("rtdj.isRTJsonActiveByKeyName(", keyName, "): ", rtdj.isRTJsonActiveByKeyName(keyName));
+		if (rtdj.isRTJsonActiveByKeyName(keyName)) {
 			keyNames.push(keyName);
 		}
 		let rnodeJson = rtdj.getRTJsonStrByKeyNames(keyNames, true);
@@ -72,7 +72,7 @@ class RTaskRquest {
 	sendUploadReq(fileObj: any, completeCall: (evt: any) => void, toUploadFailure: (evt: any, type: string) => void, progressCall: (evt: any) => void, onloadstart: (evt: any) => void): void {
 
 		// let rnodeJson = this.data.rtJsonData.getRTJsonStrByKeyName("camera");
-		let rnodeJson = this.data.rtJsonData.getRTJsonStrByKeyNames(["output","env","camera"], true);
+		let rnodeJson = this.data.rtJsonData.getRTJsonStrByKeyNames(["output", "env", "camera"], true);
 		// console.log("rnodeJson: \n", rnodeJson);
 		// let url = this.uploadModelUrl + "?srcType=viewer&phase=newrtask" + this.getRenderingParams("");
 		let url = this.uploadModelUrl + "?srcType=viewer&phase=newrtask&rnode=" + rnodeJson;
@@ -102,7 +102,7 @@ class RTaskRquest {
 	sendACommonGetReq(purl: string, onload: (rurl: string, content: string) => void): void {
 		let req = new XMLHttpRequest();
 		req.open("GET", purl, true);
-		req.onerror = function(err) {
+		req.onerror = function (err) {
 			console.error("sendACommonGetReq(), load error: ", err);
 		};
 		// req.onprogress = e => { };
@@ -139,17 +139,29 @@ class RTaskRquest {
 	private sendnotifyTaskInfoReq(purl: string): void {
 		let req = new XMLHttpRequest();
 		req.open("GET", purl, true);
-		req.onerror = function(err) {
+		req.onerror = function (err) {
 			console.error("load error: ", err);
 			console.error("服务器无法正常访问 !!!");
 			return;
 		};
-		req.onprogress = e => {};
+		req.onprogress = e => { };
 		req.onload = evt => {
 			let sdo = JSON.parse(req.response);
 			this.taskInfoViewer.parseRenderingReqInfo(sdo);
 		};
 		req.send(null);
+	}
+
+	syncAliveTasks(callback: (aliveTasks: any[]) => void): void {
+		let url = this.createReqUrlStr(this.taskInfoGettingUrl, "syncAliveTasks", 0, 0, "none");
+		console.log("### ###### 01 syncAliveTasks(), url: ", url);
+		this.sendACommonGetReq(url, (purl, content) => {
+			var infoObj = JSON.parse(content);
+			let aliveTasks = infoObj.tasks;
+			callback(aliveTasks);
+			console.log("### ###### 02 syncAliveTasks(), infoObj: ", infoObj);
+		}
+		);
 	}
 }
 export { RTaskRquest };
