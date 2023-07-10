@@ -1,4 +1,5 @@
 import { IItemData } from "./ui/IItemData";
+import { IRTJsonData } from "./data/IRTJsonData";
 import { SettingDataPanel } from "./ui/SettingDataPanel";
 import { OutputDataPanel } from "./ui/OutputDataPanel";
 import { EnvDataPanel } from "./ui/EnvDataPanel";
@@ -7,6 +8,8 @@ import { MaterialDataPanel } from "./ui/MaterialDataPanel";
 import { RenderingSettingItem } from "./ui/RenderingSettingItem";
 import { LightDataPanel } from "./ui/LightDataPanel";
 import { ButtonDivItem } from "./ui/button/ButtonDivItem";
+import { RTaskSystem } from "./task/RTaskSystem";
+import { DivTool } from "./utils/HtmlDivUtils";
 
 declare var SceneViewer: any;
 const menuDataList: IItemData[] = [
@@ -16,12 +19,14 @@ const menuDataList: IItemData[] = [
 	{ name: "材质", id: 3, type: "material" },
 	{ name: "灯光", id: 4, type: "light" }
 ];
-class DsrdUI {
+class DsrdUI implements IRTJsonData {
 	private m_viewerLayer: HTMLDivElement = null;
 	private m_areaWidth = 512;
 	private m_areaHeight = 512;
 	private m_items: RenderingSettingItem[] = [];
 	private m_itemMap: Map<string, RenderingSettingItem> = new Map();
+
+	rtaskSys: RTaskSystem = null;
 	constructor() {}
 	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number): void {
 		console.log("DsrdUI::initialize()......");
@@ -100,30 +105,102 @@ class DsrdUI {
 	}
 	private buildBtns(container: HTMLDivElement): void {
 
-		let pw = 100;
+		let pw = 130;
 		let ph = 60;
-		let div = this.createDiv(130, 30, pw, ph, "absolute", true);
+		let div = this.createDiv(90, 30, pw, ph, "absolute", true);
 		let style = div.style;
 		container.appendChild(div);
-		let btn_rendering = new ButtonDivItem();
-		btn_rendering.initialize(div, "新建渲染", "new_rendering");
-		btn_rendering.onmouseup = evt => {
+		let divs = [div];
+		let btn = new ButtonDivItem();
+		btn.initialize(div, "新建渲染任务", "new_rendering");
+		btn.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns);
+			this.rtaskSys.request.updatePage();
 		}
-
-		div = this.createDiv(270, 30, pw, ph, "absolute", true);
+		pw = 100;
+		div = this.createDiv(230, 30, pw, ph, "absolute", true);
 		style = div.style;
-		// style.cursor = "pointer";
-		// style.userSelect = "none";
 		container.appendChild(div);
-		btn_rendering = new ButtonDivItem();
-		btn_rendering.initialize(div, "发起渲染", "send_rendering");
-		btn_rendering.onmouseup = evt => {
+		divs.push(div);
+		btn = new ButtonDivItem();
+		btn.initialize(div, "发起渲染", "send_rendering");
+		btn.onmouseup = evt => {
 			let currEvt = evt as any;
-			console.log("button_idns: ", currEvt.button_idns);
-			this.getRSettingJsonStr();
+			console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
+			this.rtaskSys.rerendering();
 		}
+		pw = 130;
+		div = this.createDiv(370, 30, pw, ph, "absolute", true);
+		style = div.style;
+		container.appendChild(div);
+		divs.push(div);
+		btn = new ButtonDivItem();
+		btn.initialize(div, "查看渲染原图", "view_rendering_img");
+		btn.onmouseup = evt => {
+			let currEvt = evt as any;
+			console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
+			window.open(this.rtaskSys.data.bigImgUrl,"_blank");
+		}
+		DivTool.hArrangementDivs(divs);
+	}
+	isRTJsonActiveByKeyName(keyName: string): boolean {
+		let panel = this.getPanelByKeyName(keyName);
+		if(panel) {
+			return panel.isActive();
+		}
+		return false;
+	}
+	getRTJsonStrByKeyName(keyName: string, parentEnabled = true): string {
+		let jsonStr = "";
+		switch(keyName) {
+			case "rnode":
+				jsonStr = this.getRSettingJsonStr();
+				jsonStr = `{"name":"rnode","unit":"m","version":0,${jsonStr}}`;
+				// jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonStr}}`;
+				return jsonStr;
+				break;
+			default:
+				let panel = this.getPanelByKeyName(keyName);
+				jsonStr = panel.getJsonStr();
+				if(parentEnabled) {
+					// jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonStr}}`;
+					jsonStr = `{"name":"rnode","unit":"m","version":0,${jsonStr}}`;
+				}
+				return jsonStr;
+				break;
+		}
+	}
+	getRTJsonStrByKeyNames(keyNames: string[], parentEnabled = true): string {
+
+		let total = keyNames.length;
+		let jsonStr = "";
+		for(let i = 0; i < total; i++) {
+			let keyName = keyNames[i];
+			switch(keyName) {
+				case "rnode":
+					jsonStr = this.getRSettingJsonStr();
+					jsonStr = `{"name":"rnode","unit":"m","version":0,${jsonStr}}`;
+					// jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonStr}}`;
+					return jsonStr;
+					break;
+				default:
+					let panel = this.getPanelByKeyName(keyName);
+					if(jsonStr != "") {
+						jsonStr += "," + panel.getJsonStr();
+					}else {
+						jsonStr = panel.getJsonStr();
+					}
+
+					// return jsonStr;
+					break;
+			}
+		}
+		if(parentEnabled) {
+			// jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonStr}}`;
+			jsonStr = `{"name":"rnode","unit":"m","version":0,${jsonStr}}`;
+		}
+		return jsonStr;
 	}
 	private getRSettingJsonStr(): string {
 		// let items = this.m_items;
@@ -151,9 +228,9 @@ class DsrdUI {
 		// console.log("light jsonStr: ", jsonStr);
 		console.log("-----------------------	----------------------------	-------------------");
 
-		jsonStr = `"rnode":{"name":"rnode","unit":"m",${jsonBody}}`;
-		console.log(jsonStr);
-		return jsonStr;
+		// jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonBody}}`;
+		// console.log(jsonStr);
+		return jsonBody;
 	}
 	protected createSettingPanel(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number, data: IItemData): SettingDataPanel {
 		let settingPanel: SettingDataPanel = null;

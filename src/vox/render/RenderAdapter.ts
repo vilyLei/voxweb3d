@@ -277,12 +277,14 @@ class RenderAdapter implements IRenderAdapter {
 	}
 	private syncHtmlColor(): void {
 		// console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor);
+		// console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor, this.m_syncBgColor);
 		if (this.m_syncBgColor) {
+			// console.log("this.m_bodyBgColor != this.m_rtx.bodyBgColor: ", this.m_bodyBgColor,this.m_rtx.bodyBgColor);
 			if (document && this.m_bodyBgColor != this.m_rtx.bodyBgColor) {
 				this.m_bodyBgColor = this.m_rtx.bodyBgColor;
 				const body = document.body;
 				body.style.background = this.m_bodyBgColor;
-				// console.log("syncHtmlColor(), color: ", this.m_bodyBgColor);
+				console.log("syncHtmlColor(), color: ", this.m_bodyBgColor);
 			}
 		}
 	}

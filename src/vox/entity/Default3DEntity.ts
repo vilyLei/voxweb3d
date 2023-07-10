@@ -68,7 +68,9 @@ export default class Default3DEntity extends DisplayEntity {
         if (this.m_mt) this.m_mt.setRGBA4f(c.r, c.g, c.b, c.a);
     }
     setAlpha(a: number, texAlpha: number = 0.0): void {
-        if (this.m_mt) this.m_mt.setAlpha(a);
+        if (this.m_mt) {
+			this.m_mt.setAlpha(a);
+		}
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
         if (this.m_mt) this.m_mt.setRGB3f(pr, pg, pb);

@@ -5,7 +5,7 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 
 import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
-import Keyboard from "../../vox/ui/Keyboard"
+import Keyboard from "../../vox/ui/Keyboard";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import RendererScene from "../../vox/scene/RendererScene";
 
@@ -29,6 +29,8 @@ import { HttpFileLoader } from "../../cospace/modules/loaders/HttpFileLoader";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import IKeyboardEvent from "../../vox/event/IKeyboardEvent";
 import ScreenFixedAlignPlaneEntity from "../../vox/entity/ScreenFixedAlignPlaneEntity";
+import EventBase from "../../vox/event/EventBase";
+import ImageResLoader from "../../vox/assets/ImageResLoader";
 
 class VVF {
 	isEnabled(): boolean {
@@ -52,16 +54,39 @@ export class SceneViewer {
 	private m_forceRot90 = false;
 	private m_debugDev = false;
 	private m_baseSize = 200;
-	private m_camvs = [0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 2.390000104904175, 0.7071067690849304, 0.40824827551841736, -0.5773502588272095, -2.390000104904175, 0, 0.8164965510368347, 0.5773502588272095, 2.390000104904175, 0, 0, 0, 1];
+	private m_camvs = [
+		0.7071067690849304,
+		-0.40824827551841736,
+		0.5773502588272095,
+		2.390000104904175,
+		0.7071067690849304,
+		0.40824827551841736,
+		-0.5773502588272095,
+		-2.390000104904175,
+		0,
+		0.8164965510368347,
+		0.5773502588272095,
+		2.390000104904175,
+		0,
+		0,
+		0,
+		1
+	];
 	private m_loadingCallback: (prog: number) => void;
-	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+	private m_mi: MouseInteraction = null;
+	private m_rsceneCamVer = -10;
+	filterUrl(purl: string): string {
 		let host = URLFilter.getHostUrl("9090");
-		if(this.m_debugDev) {
+		if (this.m_debugDev) {
 			host = "";
 		}
 		if (purl.indexOf("http:") < 0 && purl.indexOf("https:") < 0) {
 			purl = host + purl;
 		}
+		return purl;
+	}
+	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+		purl = this.filterUrl(purl);
 		return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
 	}
 	private initSys(): void {
@@ -70,7 +95,7 @@ export class SceneViewer {
 		this.m_rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
 
 		// new RenderStatusDisplay(this.m_rscene, true);
-		new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 1);
+		this.m_mi = new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 1);
 		// this.m_teamLoader.verTool = new CoModuleVersion(null);
 	}
 
@@ -97,7 +122,7 @@ export class SceneViewer {
 		);
 	}
 	updateCameraWithF32Arr16(fs32Arr16: number[] | Float32Array): void {
-		if(fs32Arr16.length == 16) {
+		if (fs32Arr16.length == 16) {
 			this.applyCamvs(fs32Arr16);
 		}
 	}
@@ -120,10 +145,11 @@ export class SceneViewer {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512/1.5, 512/1.5));
+			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512 / 1.5, 512 / 1.5));
 			rparam.autoSyncRenderBufferAndWindowSize = false;
 			// rparam.syncBgColor = true;
 			rparam.setCamProject(45, 10.0, 2000.0);
+			// rparam.syncBgColor = true;
 			// rparam.setCamPosition(800.0, -800.0, 800.0);
 			rparam.setCamPosition(239.0, -239.0, 239.0);
 			if (zAxisUp || div == null) {
@@ -134,7 +160,30 @@ export class SceneViewer {
 			rparam.setAttriAntialias(true);
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam).setAutoRunning(true);
-
+			this.m_rscene.updateCamera();
+			this.m_rscene.setClearRGBAColor4f(0,0,0,1);
+			this.m_rsceneCamVer = this.m_rscene.getCamera().version;
+			let delay = 30;
+			this.m_rscene.addEventListener(EventBase.ENTER_FRAME, this, (evt): void => {
+				// console.log("...");
+				const cam = this.m_rscene.getCamera();
+				if (this.m_rsceneCamVer != cam.version) {
+					this.m_rsceneCamVer = cam.version;
+					this.setViewImageAlpha(this.m_imageFakeAlpha);
+				}
+				if(delay > 0) {
+					delay --;
+					if(delay < 1) {
+						delay = 30;
+						// console.log("this.m_imgLoaded: ", this.m_imgLoaded, this.m_imgUrls.length);
+						if(this.m_imgLoaded) {
+							if(this.m_imgUrls.length > 0) {
+								this.setViewImageUrl(this.m_imgUrls.shift());
+							}
+						}
+					}
+				}
+			});
 			// let unit = 100.0;
 
 			// let cube = new Box3DEntity();
@@ -150,7 +199,7 @@ export class SceneViewer {
 			// this.m_rscene.addEntity(cone);
 
 			let axis = new Axis3DEntity();
-			axis.initialize(300)
+			axis.initialize(300);
 			this.m_rscene.addEntity(axis);
 
 			this.initSys();
@@ -166,29 +215,98 @@ export class SceneViewer {
 				this.m_debugDev = true;
 				this.m_teamLoader = new CoModelTeamLoader();
 				this.initModels();
+				// let imgUrls = [
+				// 	"static/assets/modules/apple_01/mini.jpg",
+				// 	"static/assets/box.jpg"
+				// ]
+				// this.setViewImageUrls(imgUrls);
+				this.setViewImageUrl(this.m_viewImageUrl, true);
 			}
 			this.m_rscene.addEntity(this.m_entityContainer);
 		}
 	}
 	private m_imgViewEntity: ScreenFixedAlignPlaneEntity = null;
+	private m_imageAlpha = 1.0;
+	private m_imageFakeAlpha = 0.2;
+	private m_imageVisible = true;
 	private m_viewImageUrl = "static/assets/modules/apple_01/mini.jpg";
-	setViewImageUrl(url: string): void {
-		this.m_viewImageUrl = url;
-		console.log("this.setViewImageUrl(), this.m_viewImageUrl: ", this.m_viewImageUrl);
+	private m_imgResLoader = new ImageResLoader();
+	private m_imgLoaded = true;
+	private m_imgUrls: string[] = [];
+	setViewImageUrls(urls: string[]): void {
+		if(urls === null || urls === undefined) {
+			urls = [];
+		}
+		this.m_imgUrls = urls;
+	}
+	setViewImageUrl(url: string, show = false, imgAlpha = 1.0): void {
+		console.log("this.setViewImageUrl(), url: ", url);
+		if (url != "") {
+			this.m_imageAlpha = imgAlpha;
+			console.log("this.setViewImageUrl(), ready load a new img B.");
+			if (this.m_imgViewEntity != null) {
+				console.log("this.setViewImageUrl(), ready load a new img C.");
+				console.log("url A: ", this.m_viewImageUrl);
+				console.log("url B: ", url);
+				if (this.m_viewImageUrl != url) {
+					console.log("this.setViewImageUrl(), ready load a new img.");
+					if(this.m_imgLoaded) {
+						this.m_viewImageUrl = url;
+						this.m_imgLoaded = false;
+						this.m_imgResLoader.load(this.filterUrl(url), (img: HTMLImageElement, imgUrl: string): void => {
+							let tex = this.m_rscene.textureBlock.createImageTex2D();
+							tex.flipY = true;
+							tex.setDataFromImage(img);
+							console.log("load a new tex res from an image.");
+							this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
+							this.m_imgViewEntity.setTextureList([tex]);
+							this.m_imgViewEntity.updateMaterialToGpu();
+							this.m_imgLoaded = true;
+						});
+					}else {
+						this.m_imgUrls.push(url);
+					}
+				}
+			} else {
+				this.m_viewImageUrl = url;
+				this.initImgViewer();
+			}
+		}
+	}
+	setViewImageFakeAlpha(alpha: number): void {
+		this.m_imageFakeAlpha = alpha;
+	}
+	setViewImageAlpha(alpha: number): void {
+		this.m_imageAlpha = alpha;
+		if (this.m_imgViewEntity != null) {
+			this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
+		}
+	}
+	getViewImageAlpha(): number {
+		return this.m_imageAlpha;
+	}
+	setViewImageVisible(v: boolean): void {
+		this.m_imageVisible = v;
+		if (this.m_imgViewEntity != null) {
+			this.m_imgViewEntity.setVisible(v);
+		}
+	}
+	getViewImageVisible(): boolean {
+		return this.m_imageVisible;
 	}
 	private initImgViewer(): void {
-		if(this.m_imgViewEntity == null) {
+		if (this.m_imgViewEntity == null) {
 			console.log("this.initImgViewer(), this.m_viewImageUrl: ", this.m_viewImageUrl);
-			let url = this.m_viewImageUrl;
-			let tex = this.getTexByUrl(url);
+			let tex = this.getTexByUrl(this.m_viewImageUrl);
 			tex.flipY = true;
 			this.m_imgViewEntity = new ScreenFixedAlignPlaneEntity();
-			this.m_imgViewEntity.transparentBlend =  true;
-			this.m_imgViewEntity.initialize(-1,-1,2.0,2.0, [tex]);
-			this.m_imgViewEntity.setAlpha(0.5);
+			this.m_imgViewEntity.transparentBlend = true;
+			this.m_imgViewEntity.initialize(-1, -1, 2.0, 2.0, [tex]);
+			this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
+			this.m_imgViewEntity.setVisible(this.m_imageVisible);
 			this.m_rscene.addEntity(this.m_imgViewEntity, 1);
-		}else {
-			this.m_imgViewEntity.setVisible( !this.m_imgViewEntity.isVisible() );
+		} else {
+			// this.m_imgViewEntity.setVisible( !this.m_imgViewEntity.isVisible() );
 		}
 	}
 	initSceneByFiles(files: any[], loadingCallback: (prog: number) => void, size: number = 200): void {
@@ -206,7 +324,7 @@ export class SceneViewer {
 			for (let i = 0; i < models.length; ++i) {
 				this.createEntity(models[i], transforms != null ? transforms[i] : null, 2.0);
 			}
-			this.m_modelDataUrl = urls[0]+"."+types[0];
+			this.m_modelDataUrl = urls[0] + "." + types[0];
 			console.log("XXXXXX initSceneByUrls() this.m_modelDataUrl: ", this.m_modelDataUrl);
 			this.fitEntitiesSize();
 			if (this.m_loadingCallback) {
@@ -217,20 +335,20 @@ export class SceneViewer {
 	setForceRotate90(force: boolean): void {
 		this.m_forceRot90 = force;
 	}
-	private fitEntitiesSize(forceRot90: boolean = false): void{
+	private fitEntitiesSize(forceRot90: boolean = false): void {
 		forceRot90 = forceRot90 || this.m_forceRot90;
 		this.m_layouter.layoutUpdate(this.m_baseSize, new Vector3D(0, 0, 0));
 		let container = this.m_entityContainer;
 		let format = URLFilter.getFileSuffixName(this.m_modelDataUrl, true, true);
 		console.log("XXXXXX fitEntitiesSize() this.m_modelDataUrl: ", this.m_modelDataUrl);
 		console.log("format: ", format);
-		switch(format) {
+		switch (format) {
 			case "obj":
-				container.setRotationXYZ(90,0,0);
+				container.setRotationXYZ(90, 0, 0);
 				break;
 			default:
-				if(forceRot90){
-					container.setRotationXYZ(90,0,0);
+				if (forceRot90) {
+					container.setRotationXYZ(90, 0, 0);
 				}
 				break;
 		}
@@ -272,15 +390,15 @@ export class SceneViewer {
 		url0 = "static/assets/obj/scene01.obj";
 		url0 = "static/assets/fbx/scene03.fbx";
 		url0 = "static/private/obj/scene01/export_0.obj.drc";
-		url0 = "http://localhost:9090/static/uploadFiles/rtTask/v1ModelRTask2001/draco/export_0.drc"
+		url0 = "http://localhost:9090/static/uploadFiles/rtTask/v1ModelRTask2001/draco/export_0.drc";
 		let loader = this.m_teamLoader;
 		let urls: string[] = [url0];
 		this.m_forceRot90 = true;
 
 		urls = [];
-		for(let i = 0; i < 2; ++i) {
-			let purl = "static/assets/modules/apple_01/export_"+i+".drc";
-			urls.push( purl );
+		for (let i = 0; i < 2; ++i) {
+			let purl = "static/assets/modules/apple_01/export_" + i + ".drc";
+			urls.push(purl);
 		}
 		console.log("xxxxxx urls: ", urls);
 		loader.load(urls, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
@@ -310,22 +428,33 @@ export class SceneViewer {
 
 			entity.update();
 			this.m_layouter.layoutAppendItem(entity, new Matrix4(transform));
-			this.m_entityContainer.addChild( entity );
+			this.m_entityContainer.addChild(entity);
 			return entity;
 		}
 	}
-	private m_mouseDownCall: ((evt: any) => void)
-	setMouseDownListener(mouseDownCall: ((evt: any) => void)):void {
+	private m_mouseDownCall: (evt: any) => void;
+	setMouseDownListener(mouseDownCall: (evt: any) => void): void {
 		this.m_mouseDownCall = mouseDownCall;
 	}
 	private applyCamvs(cdvs: number[] | Float32Array): void {
-
-		if(cdvs == null) {
+		if (cdvs == null) {
 			cdvs = [
-			0.7071067690849304, -0.40824827551841736, 0.57735025882720950, 2.390000104904175,
-			0.7071067690849304, 0.408248275518417360, -0.5773502588272095, -2.390000104904175,
-			0.0000000000000000, 0.816496551036834700, 0.57735025882720950, 2.390000104904175,
-			0, 				    0,				      0,				   1
+				0.7071067690849304,
+				-0.40824827551841736,
+				0.5773502588272095,
+				2.390000104904175,
+				0.7071067690849304,
+				0.40824827551841736,
+				-0.5773502588272095,
+				-2.390000104904175,
+				0.0,
+				0.8164965510368347,
+				0.5773502588272095,
+				2.390000104904175,
+				0,
+				0,
+				0,
+				1
 			];
 		}
 
@@ -335,11 +464,11 @@ export class SceneViewer {
 		let i = 0;
 		// let vx = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
 		i = 4;
-		let vy = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
+		let vy = new Vector3D(camvs[i], camvs[i + 1], camvs[i + 2], camvs[i + 3]);
 		// i = 8;
 		// let vz = new Vector3D(camvs[i], camvs[i+1], camvs[i+2], camvs[i+3]);
-		i = 12
-		let pos = new Vector3D(camvs[i], camvs[i+1], camvs[i+2]);
+		i = 12;
+		let pos = new Vector3D(camvs[i], camvs[i + 1], camvs[i + 2]);
 
 		// console.log("		  vy: ", vy);
 		let cam = this.m_rscene.getCamera();
@@ -350,7 +479,7 @@ export class SceneViewer {
 		// vz.negate();
 		// console.log("		  vz: ", vz);
 		// console.log("		 pos: ", pos);
-		if(pos.getLength() > 0.001) {
+		if (pos.getLength() > 0.001) {
 			let camPos = pos.clone().scaleBy(100.0);
 			cam.lookAtRH(camPos, new Vector3D(), vy);
 			cam.update();
@@ -358,11 +487,13 @@ export class SceneViewer {
 	}
 	private keyDown(evt: IKeyboardEvent): void {
 		console.log("key down, evt: ", evt.keyCode);
-		switch(evt.keyCode) {
+		switch (evt.keyCode) {
 			case Keyboard.T:
 				//m_camvs
 				console.log("test t....");
 				// this.applyCamvs(null);
+				let url = "static/assets/box.jpg";
+				this.setViewImageUrl(url);
 				break;
 			default:
 				break;
@@ -370,12 +501,12 @@ export class SceneViewer {
 	}
 	private mouseDown(evt: any): void {
 		// console.log("mouse down, evt: ", evt);
-		if(this.m_mouseDownCall != null) {
+		if (this.m_mouseDownCall != null) {
 			this.m_mouseDownCall(evt);
 		}
-		let camdvs = this.getCameraData(0.01, true);
-		console.log("	camdvs: ", camdvs);
-		this.initImgViewer();
+		// let camdvs = this.getCameraData(0.01, true);
+		// console.log("	camdvs: ", camdvs);
+		// this.initImgViewer();
 	}
 }
 export default SceneViewer;

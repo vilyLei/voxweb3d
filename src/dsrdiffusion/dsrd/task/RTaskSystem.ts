@@ -16,6 +16,7 @@ class RTaskSystem {
 		this.infoViewer.data = this.data;
 		this.infoViewer.process = this.process;
 		this.infoViewer.initialize();
+		this.request.data = this.data;
 		this.request.taskInfoViewer = this.infoViewer;
 		this.request.initialize();
 	}
@@ -40,15 +41,21 @@ class RTaskSystem {
 		if (process.running && !process.isError()) {
 			switch (this.process.type) {
 				case RTPType.SyncRStatus:
-					this.request.notifySyncRStatusToSvr(data.taskid, data.taskname);
+					this.request.notifySyncRStatusToSvr();
 					break;
 				case RTPType.CurrRendering:
 					if (process.isAllFinish()) {
 						console.log("CurrRendering, all finish.");
+						// this.m_rscViewer.setViewImageUrl(data.miniImgUrl + "&rrtimes="+this.m_rerenderingTimes, true, 1.0);
+						console.log("AAAA this.m_rscViewer.setViewImageUrls() 0.");
+						this.m_rscViewer.setViewImageUrls(data.miniImgUrls);
 						process.toSyncRStatus();
+						if (this.onaction) {
+							this.onaction("curr-rendering", "finish");
+						}
 					} else {
 						process.running = false;
-						this.request.notifyRenderingInfoToSvr(data.taskid, data.taskname);
+						this.request.notifyRenderingInfoToSvr();
 					}
 					break;
 				case RTPType.FirstRendering:
@@ -62,11 +69,17 @@ class RTaskSystem {
 							}
 						} else {
 							process.running = false;
-							this.request.notifyRenderingInfoToSvr(data.taskid, data.taskname);
+							this.request.notifyRenderingInfoToSvr();
 						}
 					} else if (process.isAllFinish()) {
 						console.log("FirstRendering, all finish.");
-						process.toSyncRStatus();
+						if (!this.m_taskAlive && data.modelLoadStatus == 2) {
+							this.m_taskAlive = true;
+							// this.m_rscViewer.setViewImageUrl(data.miniImgUrl + "&rrtimes="+this.m_rerenderingTimes, true, 1.0);
+							console.log("AAAA this.m_rscViewer.setViewImageUrls() 1.");
+							this.m_rscViewer.setViewImageUrls(data.miniImgUrls);
+							process.toSyncRStatus();
+						}
 					}
 					break;
 				case RTPType.SyncModelStatus:
@@ -74,23 +87,36 @@ class RTaskSystem {
 						this.loadModel();
 					} else {
 						process.running = false;
-						this.request.notifyModelInfoToSvr(data.taskid, data.taskname);
+						this.request.notifyModelInfoToSvr();
 					}
 					break;
 				default:
 					break;
 			}
 
-			if(this.isRTDataFinish()) {
+			if (this.isRTDataFinish()) {
 				this.toWorkSpace();
 			}
 		}
 	}
+	private m_rerenderingTimes = 0;
+	rerendering(): void {
+		console.log("RTaskSystem::rerendering(), this.isTaskAlive(): ", this.isTaskAlive());
+		if (this.isTaskAlive()) {
+			this.m_rerenderingTimes++;
+			this.infoViewer.reset();
+			this.process.toCurrRendering();
+			this.request.sendRerenderingReq();
+			if (this.onaction) {
+				this.onaction("curr-rendering", "new");
+			}
+		}
+	}
 	private m_workSpaceStatus = 0;
-	private toWorkSpace():void {
-		if(this.m_workSpaceStatus == 0) {
+	private toWorkSpace(): void {
+		if (this.m_workSpaceStatus == 0) {
 			this.m_workSpaceStatus = 1;
-			if(this.onaction) {
+			if (this.onaction) {
 				this.onaction("toWorkSpace", "finish");
 			}
 		}
@@ -100,7 +126,11 @@ class RTaskSystem {
 		this.m_rscViewer = rscViewer;
 	}
 	isRTDataFinish(): boolean {
-		return this.data.isModelDataLoaded() &&this.process.isAllFinish();
+		return this.data.isModelDataLoaded() && this.process.isAllFinish();
+	}
+	private m_taskAlive = false;
+	isTaskAlive(): boolean {
+		return this.m_taskAlive;
 	}
 	private loadModel(): void {
 		let data = this.data;
@@ -130,22 +160,23 @@ class RTaskSystem {
 						types.push("drc");
 					}
 					console.log("drcUrls: ", drcUrls);
-					if(this.m_rscViewer != null) {
+					if (this.m_rscViewer != null) {
 						this.m_rscViewer.initSceneByUrls(
 							drcUrls,
 							types,
 							(prog: any) => {
 								console.log("3d viewer drc model loading prog: ", prog);
 								if (prog >= 1.0) {
-									// viewerInfoDiv.innerHTML = "";
-									// loadedModel = true;
 								}
 							},
 							200
 						);
-						this.m_rscViewer.setViewImageUrl(data.miniImgUrl);
+						this.m_rscViewer.setViewImageFakeAlpha(0.1);
 					}
 					data.modelLoadStatus = 2;
+					if (this.process.isSyncModelStatus()) {
+						this.process.toFirstRendering();
+					}
 				});
 			});
 		}

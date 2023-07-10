@@ -8,7 +8,7 @@ class DsrdShell {
 	private m_rscene = new DsrdScene();
 	private m_ui = new DsrdUI();
 	private m_rtaskBeginUI = new RTaskBeginUI();
-	private m_taskSys = new RTaskSystem();
+	private m_rtaskSys = new RTaskSystem();
 	constructor() {}
 	initialize(): void {
 		console.log("DsrdShell::initialize()......");
@@ -16,7 +16,7 @@ class DsrdShell {
 			this.m_init = false;
 
 			this.m_rscene.ui = this.m_ui;
-			this.m_rscene.taskSys = this.m_taskSys;
+			this.m_rscene.taskSys = this.m_rtaskSys;
 			this.initWorkSpace();
 		}
 	}
@@ -85,18 +85,32 @@ class DsrdShell {
 				case "toWorkSpace":
 					this.toWorkSpace();
 					break;
+				case "curr-rendering":
+					console.log("actioncall(), type: ", type);
+					if(type == "new") {
+						this.m_rtaskBeginUI.open();
+					}else if(type == "finish") {
+						this.m_rtaskBeginUI.close();
+					}
+					break;
+				default:
+					break;
 			}
 		}
 
-		this.m_taskSys.initialize();
-		this.m_taskSys.onaction = actioncall;
 
-		this.m_rtaskBeginUI.rtaskSys = this.m_taskSys;
+		this.initDSRDSys(layerLeft, layerRight, width, height);
+
+		this.m_ui.rtaskSys = this.m_rtaskSys;
+
+		this.m_rtaskSys.initialize();
+		this.m_rtaskSys.onaction = actioncall;
+		this.m_rtaskSys.data.rtJsonData = this.m_ui;
+
+		this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys;
 		this.m_rtaskBeginUI.onaction = actioncall;
 		this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
 		this.m_rtaskBeginUI.open();
-
-		this.initDSRDSys(layerLeft, layerRight, width, height);
 	}
 	private m_workSpaceStatus = 0;
 	private toWorkSpace():void {
@@ -109,21 +123,6 @@ class DsrdShell {
 	private initDSRDSys(layerLeft: HTMLDivElement, layerRight: HTMLDivElement, width: number, height: number): void {
 		this.m_rscene.initialize(layerLeft);
 		this.m_ui.initialize(layerRight, width, height);
-	}
-	private showInfo(str: string): void {
-		let div = this.mIDV;
-		if (div == null) {
-			div = document.createElement("div");
-			let style = div.style;
-			style.backgroundColor = "rgba(255,255,255,0.1)";
-			style.color = "#00ee00";
-			style.zIndex = "9100";
-			style.position = "absolute";
-			this.elementCenter(div);
-			// this.m_infoLayer.appendChild(div);
-		}
-		div.innerHTML = str;
-		this.mIDV = div;
 	}
 	private elementCenter(ele: HTMLElement, top: string = "50%", left: string = "50%", position: string = "absolute"): void {
 		const s = ele.style;

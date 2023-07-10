@@ -78,7 +78,7 @@ export default class ImageResLoader {
             unit.addListener(onload);
 
             map.set(initUrl, unit);
-            
+
             const request = new XMLHttpRequest();
             request.open("GET", url, true);
             request.responseType = "blob";
@@ -97,3 +97,4 @@ export default class ImageResLoader {
         }
     }
 }
+export {LoadFunc}

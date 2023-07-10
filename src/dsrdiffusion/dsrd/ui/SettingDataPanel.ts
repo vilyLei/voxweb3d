@@ -1,5 +1,6 @@
 import { IItemData } from "./IItemData";
 import { DataItemComponentParam, DataItemComponent } from "./DataItemComponent";
+import { DivTool } from "../utils/HtmlDivUtils";
 class SettingDataPanel {
 	protected m_viewerLayer: HTMLDivElement = null;
 	protected m_container: HTMLDivElement = null;
@@ -8,7 +9,7 @@ class SettingDataPanel {
 	protected m_areaHeight = 512;
 	protected m_itemCompDict: Map<string, DataItemComponent> = new Map();
 	protected m_params: DataItemComponentParam[];
-
+	protected m_isActive = false;
 	rscViewer: any;
 	constructor() {}
 	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number, data: IItemData): void {
@@ -19,8 +20,9 @@ class SettingDataPanel {
 		this.m_areaHeight = areaHeight;
 
 		this.m_itemData = data;
-		// viewerLayer.innerHTML = data.name;
-		this.m_container = this.createDiv(0, 0, areaWidth, areaWidth, "", "", "absolute");
+		// this.m_container = this.createDiv(0, 0, areaWidth, areaWidth, "", "", "absolute");
+		this.m_container = DivTool.createDivT1(0,0,areaWidth, areaWidth, "", "absolute", false);
+
 		viewerLayer.appendChild(this.m_container);
 		this.init(viewerLayer);
 		this.setVisible(false);
@@ -50,18 +52,6 @@ class SettingDataPanel {
 		return jsonStr;
 	}
 	getJsonStr(beginStr = "{", endStr = "}"): string {
-		// let params = this.m_params;
-		// let jsonStr = beginStr;
-		// let symble = beginStr.length > 1 ? ",":"";
-		// for (let i = 0; i < params.length; i++) {
-		// 	const p = params[i];
-		// 	if(p.autoEncoding) {
-		// 		jsonStr += symble + p.getJsonStr();
-		// 		symble = ",";
-		// 	}
-		// }
-		// jsonStr += endStr;
-		// return `"${this.getKeyName()}":${jsonStr}`;
 		return `"${this.getKeyName()}":${this.getJsonBodyStr(beginStr, endStr)}`;
 	}
 	protected addItemComp(comp: DataItemComponent): void {
@@ -76,6 +66,7 @@ class SettingDataPanel {
 		let style = c.style;
 		if (v) {
 			style.visibility = "visible";
+			this.m_isActive = true;
 		} else {
 			style.visibility = "hidden";
 		}
@@ -83,38 +74,39 @@ class SettingDataPanel {
 	isVisible(): boolean {
 		return this.m_container.style.visibility == "visible";
 	}
-	protected createDiv(
-		px: number,
-		py: number,
-		pw: number,
-		ph: number,
-		display: string = "block",
-		align: string = "",
-		position: string = ""
-	): HTMLDivElement {
-		const div = document.createElement("div");
-		let style = div.style;
-		style.left = px + "px";
-		style.top = py + "px";
-		style.width = pw + "px";
-		style.height = ph + "px";
-		if (display != "") {
-			style.display = display;
-		}
-		if (align != "") {
-			switch (align) {
-				case "center":
-					style.alignItems = "center";
-					style.justifyContent = "center";
-					break;
-			}
-		}
-		// style.userSelect = "none";
-		// style.position = "relative";
-		if (position != "") {
-			style.position = position;
-		}
-		return div;
+	isActive(): boolean {
+		return this.m_isActive;
 	}
+	// protected createDiv(
+	// 	px: number,
+	// 	py: number,
+	// 	pw: number,
+	// 	ph: number,
+	// 	display: string = "block",
+	// 	align: string = "",
+	// 	position: string = ""
+	// ): HTMLDivElement {
+	// 	const div = document.createElement("div");
+	// 	let style = div.style;
+	// 	style.left = px + "px";
+	// 	style.top = py + "px";
+	// 	style.width = pw + "px";
+	// 	style.height = ph + "px";
+	// 	if (display != "") {
+	// 		style.display = display;
+	// 	}
+	// 	if (align != "") {
+	// 		switch (align) {
+	// 			case "center":
+	// 				style.alignItems = "center";
+	// 				style.justifyContent = "center";
+	// 				break;
+	// 		}
+	// 	}
+	// 	if (position != "") {
+	// 		style.position = position;
+	// 	}
+	// 	return div;
+	// }
 }
 export { SettingDataPanel };

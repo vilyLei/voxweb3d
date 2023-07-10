@@ -118,9 +118,14 @@ class RTaskData {
     this.fileName = "";
     this.time = 0;
     this.bgTransparent = false;
-    this.miniImgUrl = "";
+    this.imgResolution = [512, 512];
+    this.imgsTotal = 1; // miniImgUrl = "";
+
+    this.miniImgUrls = [];
     this.bigImgUrl = "";
     this.modelLoadStatus = 0;
+    this.reneringTimes = 0;
+    this.rtJsonData = null;
   }
 
   reset() {}
@@ -131,28 +136,56 @@ class RTaskData {
 
   copyFromJson(d) {
     let t = this;
-    t.taskid = d.taskid;
-    t.version = d.version;
-    t.filepath = d.filepath;
-    t.taskname = d.taskname;
-    t.success = d.success;
-    t.drcsTotal = d.drcsTotal;
-    t.fileName = d.fileName;
-    t.taskid = d.taskid;
-    t.taskid = d.taskid;
+    if (d.taskid !== undefined) t.taskid = d.taskid;
+    if (d.version !== d.version) t.version = d.version;
+    if (d.filepath !== undefined) t.filepath = d.filepath;
+    if (d.taskname !== undefined) t.taskname = d.taskname;
+    if (d.success !== undefined) t.success = d.success;
+    if (d.filepath !== undefined) t.filepath = d.filepath;
+    if (d.fileName !== undefined) t.fileName = d.fileName;
+    if (d.phase !== undefined) t.phase = d.phase;
+    if (d.imgsTotal !== undefined) this.imgsTotal = d.imgsTotal;
+    if (d.sizes !== undefined) this.imgResolution = d.sizes;
+    if (d.bgTransparent !== undefined) this.bgTransparent = d.bgTransparent == 1;
     this.updateUrl();
+  }
+
+  getUrlParams() {
+    let params = "?ver=" + Math.random() + "-" + Math.random() * Date.now() + "&rrtime=" + this.reneringTimes;
+    return params;
   }
 
   updateUrl() {
     let filepath = this.filepath;
     let suffix = this.bgTransparent ? "png" : "jpg";
-    let i = filepath.lastIndexOf("/"); // let imgDirUrl = HTTPUrl.host + filepath.slice(3, i + 1);
-
+    let i = filepath.lastIndexOf("/");
     let imgDirUrl = filepath.slice(2, i + 1);
-    this.miniImgUrl = imgDirUrl + "bld_rendering_mini." + suffix + "?ver=" + Math.random() + "-" + Math.random() * Date.now();
-    this.bigImgUrl = imgDirUrl + "bld_rendering." + suffix + "?ver=" + Math.random() + "-" + Math.random() * Date.now();
-    console.log("this.miniImgUrl: ", this.miniImgUrl);
+    this.bigImgUrl = imgDirUrl + "bld_rendering." + suffix + this.getUrlParams();
     console.log("this.bigImgUrl: ", this.bigImgUrl);
+    let sizes = this.imgResolution;
+    let miniUrl = imgDirUrl + "bld_rendering_mini_0." + suffix + this.getUrlParams();
+    console.log("0 miniUrl: ", miniUrl);
+    this.miniImgUrls = [];
+    this.miniImgUrls.push(miniUrl);
+
+    if (this.imgsTotal == 1) {
+      if (sizes[0] <= 512 || sizes[1] <= 512) {
+        if (sizes[0] > 128 && sizes[1] > 128) {
+          this.miniImgUrls.push(this.bigImgUrl);
+        }
+      }
+    } else if (this.imgsTotal > 1) {
+      miniUrl = imgDirUrl + "bld_rendering_mini_1." + suffix + this.getUrlParams();
+      console.log("1 miniUrl: ", miniUrl);
+      this.miniImgUrls.push(miniUrl);
+    }
+
+    console.log("this.imgsTotal: ", this.imgsTotal);
+
+    for (let i = 0; i < this.miniImgUrls.length; i++) {
+      console.log(i, ", mini url: ", this.miniImgUrls[i]);
+    } // console.log("this.miniImgUrls: ", this.miniImgUrls);
+
   }
 
 }
@@ -416,10 +449,11 @@ class RTaskInfoViewer {
   initialize() {}
 
   reset() {
+    this.rt_phase = "";
     this.rt_phase_times = 0;
     this.taskStatus = 0;
     this.startTime = Date.now();
-    this.infoDiv = null;
+    this.showSpecInfo("waiting...");
   }
 
   taskSuccess() {}
@@ -427,7 +461,7 @@ class RTaskInfoViewer {
   taskFailure() {}
 
   showSpecInfo(keyStr, times = -1) {
-    var div = this.infoDiv;
+    var div = this.infoDiv; // console.log("this.infoDiv: ", this.infoDiv);
 
     if (div != null) {
       if (times >= 0) {
@@ -479,8 +513,10 @@ class RTaskInfoViewer {
     let flag = false;
 
     if (sdo.drcsTotal !== undefined) {
-      this.data.drcsTotal = sdo.drcsTotal;
-      this.process.updateModel(this.data.drcsTotal);
+      if (!this.process.isModelFinish()) {
+        this.data.drcsTotal = sdo.drcsTotal;
+        this.process.updateModel(this.data.drcsTotal);
+      }
     }
 
     this.data.phase = phase;
@@ -532,6 +568,7 @@ class RTaskInfoViewer {
           console.log("task finish, loss time: ", time_s + "s(" + time_ms + "ms), sdo.version: ", sdo.version);
           this.showSpecInfo(`<b><font color="#008800">` + sizes[0] + "x" + sizes[1] + `</font></b>效果图渲染完成<br/><b>(总耗时` + time_s + `s)</b>`);
           this.data.bgTransparent = sdo.bgTransparent == 1;
+          this.data.copyFromJson(sdo);
           this.taskSuccess();
         }
 
@@ -540,7 +577,7 @@ class RTaskInfoViewer {
       case "rtaskerror":
         if (this.taskStatus < 2) {
           this.taskStatus = 2;
-          div.innerHTML = "渲染失败(模型数据不能正确解析)";
+          this.showSpecInfo("渲染失败(模型数据不能正确解析)");
           this.taskFailure();
           return;
         }
@@ -548,8 +585,7 @@ class RTaskInfoViewer {
       case "query-re-rendering-task":
         console.log("query-re-rendering-task, status: ", status);
 
-        if (status == 22) {// restartReqstUpdate();
-        }
+        if (status == 22) {}
 
         break;
 
@@ -747,6 +783,8 @@ const LightDataPanel_1 = __webpack_require__("538b");
 
 const ButtonDivItem_1 = __webpack_require__("47c8");
 
+const HtmlDivUtils_1 = __webpack_require__("7191");
+
 const menuDataList = [{
   name: "出图设置",
   id: 0,
@@ -776,6 +814,7 @@ class DsrdUI {
     this.m_areaHeight = 512;
     this.m_items = [];
     this.m_itemMap = new Map();
+    this.rtaskSys = null;
     this.m_rscViewer = null;
   }
 
@@ -858,32 +897,122 @@ class DsrdUI {
   }
 
   buildBtns(container) {
-    let pw = 100;
+    let pw = 130;
     let ph = 60;
-    let div = this.createDiv(130, 30, pw, ph, "absolute", true);
+    let div = this.createDiv(90, 30, pw, ph, "absolute", true);
     let style = div.style;
     container.appendChild(div);
-    let btn_rendering = new ButtonDivItem_1.ButtonDivItem();
-    btn_rendering.initialize(div, "新建渲染", "new_rendering");
+    let divs = [div];
+    let btn = new ButtonDivItem_1.ButtonDivItem();
+    btn.initialize(div, "新建渲染任务", "new_rendering");
 
-    btn_rendering.onmouseup = evt => {
+    btn.onmouseup = evt => {
       let currEvt = evt;
       console.log("button_idns: ", currEvt.button_idns);
+      this.rtaskSys.request.updatePage();
     };
 
-    div = this.createDiv(270, 30, pw, ph, "absolute", true);
-    style = div.style; // style.cursor = "pointer";
-    // style.userSelect = "none";
-
+    pw = 100;
+    div = this.createDiv(230, 30, pw, ph, "absolute", true);
+    style = div.style;
     container.appendChild(div);
-    btn_rendering = new ButtonDivItem_1.ButtonDivItem();
-    btn_rendering.initialize(div, "发起渲染", "send_rendering");
+    divs.push(div);
+    btn = new ButtonDivItem_1.ButtonDivItem();
+    btn.initialize(div, "发起渲染", "send_rendering");
 
-    btn_rendering.onmouseup = evt => {
+    btn.onmouseup = evt => {
       let currEvt = evt;
-      console.log("button_idns: ", currEvt.button_idns);
-      this.getRSettingJsonStr();
+      console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
+      this.rtaskSys.rerendering();
     };
+
+    pw = 130;
+    div = this.createDiv(370, 30, pw, ph, "absolute", true);
+    style = div.style;
+    container.appendChild(div);
+    divs.push(div);
+    btn = new ButtonDivItem_1.ButtonDivItem();
+    btn.initialize(div, "查看渲染原图", "view_rendering_img");
+
+    btn.onmouseup = evt => {
+      let currEvt = evt;
+      console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
+      window.open(this.rtaskSys.data.bigImgUrl, "_blank");
+    };
+
+    HtmlDivUtils_1.DivTool.hArrangementDivs(divs);
+  }
+
+  isRTJsonActiveByKeyName(keyName) {
+    let panel = this.getPanelByKeyName(keyName);
+
+    if (panel) {
+      return panel.isActive();
+    }
+
+    return false;
+  }
+
+  getRTJsonStrByKeyName(keyName, parentEnabled = true) {
+    let jsonStr = "";
+
+    switch (keyName) {
+      case "rnode":
+        jsonStr = this.getRSettingJsonStr();
+        jsonStr = `{"name":"rnode","unit":"m","version":0,${jsonStr}}`; // jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonStr}}`;
+
+        return jsonStr;
+        break;
+
+      default:
+        let panel = this.getPanelByKeyName(keyName);
+        jsonStr = panel.getJsonStr();
+
+        if (parentEnabled) {
+          // jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonStr}}`;
+          jsonStr = `{"name":"rnode","unit":"m","version":0,${jsonStr}}`;
+        }
+
+        return jsonStr;
+        break;
+    }
+  }
+
+  getRTJsonStrByKeyNames(keyNames, parentEnabled = true) {
+    let total = keyNames.length;
+    let jsonStr = "";
+
+    for (let i = 0; i < total; i++) {
+      let keyName = keyNames[i];
+
+      switch (keyName) {
+        case "rnode":
+          jsonStr = this.getRSettingJsonStr();
+          jsonStr = `{"name":"rnode","unit":"m","version":0,${jsonStr}}`; // jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonStr}}`;
+
+          return jsonStr;
+          break;
+
+        default:
+          let panel = this.getPanelByKeyName(keyName);
+
+          if (jsonStr != "") {
+            jsonStr += "," + panel.getJsonStr();
+          } else {
+            jsonStr = panel.getJsonStr();
+          } // return jsonStr;
+
+
+          break;
+      }
+    }
+
+    if (parentEnabled) {
+      // jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonStr}}`;
+      jsonStr = `{"name":"rnode","unit":"m","version":0,${jsonStr}}`;
+    }
+
+    return jsonStr;
   }
 
   getRSettingJsonStr() {
@@ -910,10 +1039,10 @@ class DsrdUI {
     jsonStr = panel.getJsonStr();
     jsonBody += "," + jsonStr; // console.log("light jsonStr: ", jsonStr);
 
-    console.log("-----------------------	----------------------------	-------------------");
-    jsonStr = `"rnode":{"name":"rnode","unit":"m",${jsonBody}}`;
-    console.log(jsonStr);
-    return jsonStr;
+    console.log("-----------------------	----------------------------	-------------------"); // jsonStr = `"rnode":{"name":"rnode","unit":"m","version:0,${jsonBody}}`;
+    // console.log(jsonStr);
+
+    return jsonBody;
   }
 
   createSettingPanel(viewerLayer, areaWidth, areaHeight, data) {
@@ -1189,21 +1318,18 @@ class RModelUploadingUI {
       loaded: 100,
       total: 50000
     }); // this.toUploadFailure("...");
-  }
+  } // private getRenderingParams(otherParams: string): string {
+  // 	let rtBGTransparent = false;
+  // 	let rimgSizes = [512, 512];
+  // 	let params = "&sizes=" + rimgSizes;
+  // 	// params += getCameraDataParam();
+  // 	params += "&rtBGTransparent=" + (rtBGTransparent ? "1" : "0");
+  // 	if (otherParams != "") {
+  // 		params += otherParams;
+  // 	}
+  // 	return params;
+  // }
 
-  getRenderingParams(otherParams) {
-    let rtBGTransparent = false;
-    let rimgSizes = [512, 512];
-    let params = "&sizes=" + rimgSizes; // params += getCameraDataParam();
-
-    params += "&rtBGTransparent=" + (rtBGTransparent ? "1" : "0");
-
-    if (otherParams != "") {
-      params += otherParams;
-    }
-
-    return params;
-  }
 
   completeCall(evt) {
     let str = evt.target.responseText + "";
@@ -1321,13 +1447,6 @@ class RModelUploadingUI {
       return;
     }
 
-    let hostUrl = HTTPUtils_1.HTTPUrl.host; // let camdvs: number[] = [];
-    // let camParam = "&camdvs=[" + camdvs + "]";
-    // console.log("camParam: ", camParam);
-    // let url = hostUrl + "uploadRTData?srcType=viewer&phase=newrtask" + this.getRenderingParams(camParam);
-
-    let url = hostUrl + "uploadRTData?srcType=viewer&phase=newrtask" + this.getRenderingParams("");
-
     if (!fileObj) {
       alert("the file dosen't exist !!!");
       this.updatePage();
@@ -1343,32 +1462,18 @@ class RModelUploadingUI {
       return;
     }
 
-    let form = new FormData();
-    form.append("file", fileObj);
-    let xhr = new XMLHttpRequest();
-    xhr.open("post", url, true);
-    console.log("uploadAndSendRendering(), form url: ", url);
-    console.log("uploadAndSendRendering(), form fileObj: ", fileObj);
+    let req = this.rtaskSys.request; //sendUploadReq(fileObj: any, completeCall: (evt: any) => void, toUploadFailure: (evt: any, type: string) => void, progressCall: (evt: any) => void, onloadstart: (evt: any) => void): void {
 
-    xhr.onload = evt => {
+    req.sendUploadReq(fileObj, evt => {
       this.completeCall(evt);
-    };
-
-    xhr.onerror = evt => {
-      // this.failedCall(evt);
+    }, (evt, type) => {
       this.toUploadFailure("upload_net_failed");
-    };
-
-    xhr.upload.onprogress = evt => {
+    }, evt => {
       this.progressCall(evt);
-    };
-
-    xhr.upload.onloadstart = evt => {
+    }, evt => {
       this.m_time = new Date().getTime();
       this.m_resLoaded = 0;
-    };
-
-    xhr.send(form);
+    });
     fileObj = null;
   }
 
@@ -1730,6 +1835,40 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 class DivTool {
+  static hArrangementDivs(divChildren) {
+    if (divChildren.length > 0) {
+      let parentDiv = divChildren[0].parentElement;
+
+      if (parentDiv) {
+        let parent_rect = parentDiv.getBoundingClientRect();
+        let sizeTotal = 0;
+
+        for (let i = 0; i < divChildren.length; ++i) {
+          const r = divChildren[i].getBoundingClientRect();
+          sizeTotal += r.width;
+        }
+
+        let dis = parent_rect.width - sizeTotal;
+        let px = dis * 0.5;
+        dis /= divChildren.length + 1;
+        console.log("hArrangementDivs(), dis: ", dis, "parent_rect.width: ", parent_rect.width, ", sizeTotal: ", sizeTotal, ", px: ", px);
+
+        if (dis <= 0) {
+          dis = 0;
+        } else {
+          px = (parent_rect.width - sizeTotal - dis * (divChildren.length - 1)) * 0.5;
+        }
+
+        for (let i = 0; i < divChildren.length; ++i) {
+          let div = divChildren[i];
+          const r = div.getBoundingClientRect();
+          div.style.left = Math.round(px) + "px";
+          px += r.width + dis;
+        }
+      }
+    }
+  }
+
   static createDiv(pw, ph, display = "", position = "", center = false) {
     const div = document.createElement("div");
     let style = div.style;
@@ -1758,6 +1897,17 @@ class DivTool {
 
     return div;
   }
+  /**
+   * @param px the div left
+   * @param py the div top
+   * @param pw the div width
+   * @param ph the div height
+   * @param display the default value is ""
+   * @param position the default value is ""
+   * @param center the default value is false
+   * @returns a HTMLDivElement instance
+   */
+
 
   static createDivT1(px, py, pw, ph, display = "", position = "", center = true) {
     const div = document.createElement("div");
@@ -1837,6 +1987,7 @@ class RTaskRquest {
   constructor() {
     this.taskReqSvrUrl = "";
     this.taskInfoGettingUrl = "";
+    this.uploadModelUrl = "";
   }
 
   getDomain(url) {
@@ -1856,9 +2007,27 @@ class RTaskRquest {
   initialize() {
     this.taskReqSvrUrl = HTTPUtils_1.HTTPUrl.host + "renderingTask";
     this.taskInfoGettingUrl = HTTPUtils_1.HTTPUrl.host + "getRTInfo";
+    this.uploadModelUrl = HTTPUtils_1.HTTPUrl.host + "uploadRTData";
   }
 
   reset() {}
+
+  updatePage() {
+    HTTPUtils_1.HTTPTool.updatePage();
+  }
+
+  getRenderingParams(otherParams) {
+    let rimgSizes = [512, 512];
+    let params = "&sizes=" + rimgSizes; // params += getCameraDataParam();
+
+    params += "&rtBGTransparent=" + (this.data.bgTransparent ? "1" : "0");
+
+    if (otherParams != "") {
+      params += otherParams;
+    }
+
+    return params;
+  }
 
   createReqUrlStr(svrUrl, phase, progress, taskId, taskName, otherInfo = "") {
     let url = svrUrl + "?srcType=viewer&&phase=" + phase + "&progress=" + progress + otherInfo;
@@ -1868,6 +2037,62 @@ class RTaskRquest {
     }
 
     return url;
+  }
+  /**
+   * 对当前的任务重新发起渲染
+   * @param otherInfo
+   */
+
+
+  sendRerenderingReq(otherInfo = "") {
+    console.log("sendRerenderingReq(), re-rendering req send !!!");
+    const data = this.data;
+    let keyNames = ["output", "env", "camera"];
+    let rtdj = this.data.rtJsonData;
+    let keyName = "material";
+    console.log("rtdj.isRTJsonActiveByKeyName(", keyName, "): ", rtdj.isRTJsonActiveByKeyName(keyName));
+
+    if (rtdj.isRTJsonActiveByKeyName(keyName)) {
+      keyNames.push(keyName);
+    }
+
+    let rnodeJson = rtdj.getRTJsonStrByKeyNames(keyNames, true);
+    console.log("rnodeJson: \n", rnodeJson);
+    otherInfo += "&rnode=" + rnodeJson;
+    let url = this.createReqUrlStr(this.taskReqSvrUrl, "query-re-rendering-task", 0, data.taskid, data.taskname, otherInfo);
+    this.sendnotifyTaskInfoReq(url);
+  }
+
+  sendUploadReq(fileObj, completeCall, toUploadFailure, progressCall, onloadstart) {
+    // let rnodeJson = this.data.rtJsonData.getRTJsonStrByKeyName("camera");
+    let rnodeJson = this.data.rtJsonData.getRTJsonStrByKeyNames(["output", "env", "camera"], true); // console.log("rnodeJson: \n", rnodeJson);
+    // let url = this.uploadModelUrl + "?srcType=viewer&phase=newrtask" + this.getRenderingParams("");
+
+    let url = this.uploadModelUrl + "?srcType=viewer&phase=newrtask&rnode=" + rnodeJson;
+    let form = new FormData();
+    form.append("file", fileObj);
+    let xhr = new XMLHttpRequest();
+    xhr.open("post", url, true);
+    console.log("uploadAndSendRendering(), form url: ", url);
+    console.log("uploadAndSendRendering(), form fileObj: ", fileObj);
+
+    xhr.onload = evt => {
+      completeCall(evt);
+    };
+
+    xhr.onerror = evt => {
+      toUploadFailure(evt, "upload_net_failed");
+    };
+
+    xhr.upload.onprogress = evt => {
+      progressCall(evt);
+    };
+
+    xhr.upload.onloadstart = evt => {
+      onloadstart(evt);
+    };
+
+    xhr.send(form);
   }
 
   sendACommonGetReq(purl, onload) {
@@ -1888,13 +2113,15 @@ class RTaskRquest {
     req.send(null);
   }
 
-  notifyRenderingInfoToSvr(taskId, taskName, otherInfo = "") {
-    let url = this.createReqUrlStr(this.taskReqSvrUrl, "queryataskrst", 0, taskId, taskName, otherInfo);
+  notifyRenderingInfoToSvr(otherInfo = "") {
+    const data = this.data;
+    let url = this.createReqUrlStr(this.taskReqSvrUrl, "queryataskrst", 0, data.taskid, data.taskname, otherInfo);
     this.sendnotifyTaskInfoReq(url);
   }
 
-  notifyModelInfoToSvr(taskId, taskName, otherInfo = "") {
-    let url = this.createReqUrlStr(this.taskReqSvrUrl, "queryataskrst", 0, taskId, taskName, otherInfo);
+  notifyModelInfoToSvr(otherInfo = "") {
+    const data = this.data;
+    let url = this.createReqUrlStr(this.taskReqSvrUrl, "queryataskrst", 0, data.taskid, data.taskname, otherInfo);
     this.sendACommonGetReq(url, (purl, content) => {
       console.log("### ###### notifyModelInfoToSvr() loaded, content: ", content);
       let sdo = JSON.parse(content);
@@ -1902,8 +2129,9 @@ class RTaskRquest {
     });
   }
 
-  notifySyncRStatusToSvr(taskId, taskName, otherInfo = "") {
-    let url = this.createReqUrlStr(this.taskInfoGettingUrl, "syncAnAliveTask", 0, taskId, taskName, otherInfo);
+  notifySyncRStatusToSvr(otherInfo = "") {
+    const data = this.data;
+    let url = this.createReqUrlStr(this.taskInfoGettingUrl, "syncAnAliveTask", 0, data.taskid, data.taskname, otherInfo);
     this.sendACommonGetReq(url, (purl, content) => {
       console.log("### ###### notifySyncRStatusToSvr() loaded, content: ", content);
       let sdo = JSON.parse(content);
@@ -2674,6 +2902,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+const HtmlDivUtils_1 = __webpack_require__("7191");
+
 class SettingDataPanel {
   constructor() {
     this.m_viewerLayer = null;
@@ -2682,6 +2912,7 @@ class SettingDataPanel {
     this.m_areaWidth = 512;
     this.m_areaHeight = 512;
     this.m_itemCompDict = new Map();
+    this.m_isActive = false;
   }
 
   initialize(viewerLayer, areaWidth, areaHeight, data) {
@@ -2689,9 +2920,9 @@ class SettingDataPanel {
     this.m_viewerLayer = viewerLayer;
     this.m_areaWidth = areaWidth;
     this.m_areaHeight = areaHeight;
-    this.m_itemData = data; // viewerLayer.innerHTML = data.name;
+    this.m_itemData = data; // this.m_container = this.createDiv(0, 0, areaWidth, areaWidth, "", "", "absolute");
 
-    this.m_container = this.createDiv(0, 0, areaWidth, areaWidth, "", "", "absolute");
+    this.m_container = HtmlDivUtils_1.DivTool.createDivT1(0, 0, areaWidth, areaWidth, "", "absolute", false);
     viewerLayer.appendChild(this.m_container);
     this.init(viewerLayer);
     this.setVisible(false);
@@ -2728,18 +2959,6 @@ class SettingDataPanel {
   }
 
   getJsonStr(beginStr = "{", endStr = "}") {
-    // let params = this.m_params;
-    // let jsonStr = beginStr;
-    // let symble = beginStr.length > 1 ? ",":"";
-    // for (let i = 0; i < params.length; i++) {
-    // 	const p = params[i];
-    // 	if(p.autoEncoding) {
-    // 		jsonStr += symble + p.getJsonStr();
-    // 		symble = ",";
-    // 	}
-    // }
-    // jsonStr += endStr;
-    // return `"${this.getKeyName()}":${jsonStr}`;
     return `"${this.getKeyName()}":${this.getJsonBodyStr(beginStr, endStr)}`;
   }
 
@@ -2759,6 +2978,7 @@ class SettingDataPanel {
 
     if (v) {
       style.visibility = "visible";
+      this.m_isActive = true;
     } else {
       style.visibility = "hidden";
     }
@@ -2768,34 +2988,8 @@ class SettingDataPanel {
     return this.m_container.style.visibility == "visible";
   }
 
-  createDiv(px, py, pw, ph, display = "block", align = "", position = "") {
-    const div = document.createElement("div");
-    let style = div.style;
-    style.left = px + "px";
-    style.top = py + "px";
-    style.width = pw + "px";
-    style.height = ph + "px";
-
-    if (display != "") {
-      style.display = display;
-    }
-
-    if (align != "") {
-      switch (align) {
-        case "center":
-          style.alignItems = "center";
-          style.justifyContent = "center";
-          break;
-      }
-    } // style.userSelect = "none";
-    // style.position = "relative";
-
-
-    if (position != "") {
-      style.position = position;
-    }
-
-    return div;
+  isActive() {
+    return this.m_isActive;
   }
 
 }
@@ -2834,14 +3028,17 @@ class RTaskSystem {
     this.infoViewer = new RTaskInfoViewer_1.RTaskInfoViewer();
     this.onaction = null;
     this.m_timerId = -1;
+    this.m_rerenderingTimes = 0;
     this.m_workSpaceStatus = 0;
     this.m_rscViewer = null;
+    this.m_taskAlive = false;
   }
 
   initialize() {
     this.infoViewer.data = this.data;
     this.infoViewer.process = this.process;
     this.infoViewer.initialize();
+    this.request.data = this.data;
     this.request.taskInfoViewer = this.infoViewer;
     this.request.initialize();
   }
@@ -2871,16 +3068,23 @@ class RTaskSystem {
     if (process.running && !process.isError()) {
       switch (this.process.type) {
         case RTaskProcess_1.RTPType.SyncRStatus:
-          this.request.notifySyncRStatusToSvr(data.taskid, data.taskname);
+          this.request.notifySyncRStatusToSvr();
           break;
 
         case RTaskProcess_1.RTPType.CurrRendering:
           if (process.isAllFinish()) {
-            console.log("CurrRendering, all finish.");
+            console.log("CurrRendering, all finish."); // this.m_rscViewer.setViewImageUrl(data.miniImgUrl + "&rrtimes="+this.m_rerenderingTimes, true, 1.0);
+
+            console.log("AAAA this.m_rscViewer.setViewImageUrls() 0.");
+            this.m_rscViewer.setViewImageUrls(data.miniImgUrls);
             process.toSyncRStatus();
+
+            if (this.onaction) {
+              this.onaction("curr-rendering", "finish");
+            }
           } else {
             process.running = false;
-            this.request.notifyRenderingInfoToSvr(data.taskid, data.taskname);
+            this.request.notifyRenderingInfoToSvr();
           }
 
           break;
@@ -2897,11 +3101,18 @@ class RTaskSystem {
               }
             } else {
               process.running = false;
-              this.request.notifyRenderingInfoToSvr(data.taskid, data.taskname);
+              this.request.notifyRenderingInfoToSvr();
             }
           } else if (process.isAllFinish()) {
             console.log("FirstRendering, all finish.");
-            process.toSyncRStatus();
+
+            if (!this.m_taskAlive && data.modelLoadStatus == 2) {
+              this.m_taskAlive = true; // this.m_rscViewer.setViewImageUrl(data.miniImgUrl + "&rrtimes="+this.m_rerenderingTimes, true, 1.0);
+
+              console.log("AAAA this.m_rscViewer.setViewImageUrls() 1.");
+              this.m_rscViewer.setViewImageUrls(data.miniImgUrls);
+              process.toSyncRStatus();
+            }
           }
 
           break;
@@ -2911,7 +3122,7 @@ class RTaskSystem {
             this.loadModel();
           } else {
             process.running = false;
-            this.request.notifyModelInfoToSvr(data.taskid, data.taskname);
+            this.request.notifyModelInfoToSvr();
           }
 
           break;
@@ -2922,6 +3133,21 @@ class RTaskSystem {
 
       if (this.isRTDataFinish()) {
         this.toWorkSpace();
+      }
+    }
+  }
+
+  rerendering() {
+    console.log("RTaskSystem::rerendering(), this.isTaskAlive(): ", this.isTaskAlive());
+
+    if (this.isTaskAlive()) {
+      this.m_rerenderingTimes++;
+      this.infoViewer.reset();
+      this.process.toCurrRendering();
+      this.request.sendRerenderingReq();
+
+      if (this.onaction) {
+        this.onaction("curr-rendering", "new");
       }
     }
   }
@@ -2942,6 +3168,10 @@ class RTaskSystem {
 
   isRTDataFinish() {
     return this.data.isModelDataLoaded() && this.process.isAllFinish();
+  }
+
+  isTaskAlive() {
+    return this.m_taskAlive;
   }
 
   loadModel() {
@@ -2979,14 +3209,16 @@ class RTaskSystem {
             this.m_rscViewer.initSceneByUrls(drcUrls, types, prog => {
               console.log("3d viewer drc model loading prog: ", prog);
 
-              if (prog >= 1.0) {// viewerInfoDiv.innerHTML = "";
-                // loadedModel = true;
-              }
+              if (prog >= 1.0) {}
             }, 200);
-            this.m_rscViewer.setViewImageUrl(data.miniImgUrl);
+            this.m_rscViewer.setViewImageFakeAlpha(0.1);
           }
 
           data.modelLoadStatus = 2;
+
+          if (this.process.isSyncModelStatus()) {
+            this.process.toFirstRendering();
+          }
         });
       });
     }
@@ -3335,7 +3567,7 @@ class DsrdShell {
     this.m_rscene = new DsrdScene_1.DsrdScene();
     this.m_ui = new DsrdUI_1.DsrdUI();
     this.m_rtaskBeginUI = new RTaskBeginUI_1.RTaskBeginUI();
-    this.m_taskSys = new RTaskSystem_1.RTaskSystem();
+    this.m_rtaskSys = new RTaskSystem_1.RTaskSystem();
     this.m_viewerLayer = null; // private m_infoLayer: HTMLDivElement = null;
 
     this.mIDV = null;
@@ -3348,7 +3580,7 @@ class DsrdShell {
     if (this.m_init) {
       this.m_init = false;
       this.m_rscene.ui = this.m_ui;
-      this.m_rscene.taskSys = this.m_taskSys;
+      this.m_rscene.taskSys = this.m_rtaskSys;
       this.initWorkSpace();
     }
   }
@@ -3404,29 +3636,38 @@ class DsrdShell {
     style.visibility = "hidden";
     container.appendChild(beginUILayer);
     this.m_viewerLayer.appendChild(container);
-    this.m_taskSys.initialize();
 
-    this.m_taskSys.onaction = (idns, type) => {
+    let actioncall = (idns, type) => {
       switch (idns) {
         case "toWorkSpace":
           this.toWorkSpace();
           break;
-      }
-    };
 
-    this.m_rtaskBeginUI.rtaskSys = this.m_taskSys;
+        case "curr-rendering":
+          console.log("actioncall(), type: ", type);
 
-    this.m_rtaskBeginUI.onaction = (idns, type) => {
-      switch (idns) {
-        case "toWorkSpace":
-          this.toWorkSpace();
+          if (type == "new") {
+            this.m_rtaskBeginUI.open();
+          } else if (type == "finish") {
+            this.m_rtaskBeginUI.close();
+          }
+
+          break;
+
+        default:
           break;
       }
     };
 
+    this.initDSRDSys(layerLeft, layerRight, width, height);
+    this.m_ui.rtaskSys = this.m_rtaskSys;
+    this.m_rtaskSys.initialize();
+    this.m_rtaskSys.onaction = actioncall;
+    this.m_rtaskSys.data.rtJsonData = this.m_ui;
+    this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys;
+    this.m_rtaskBeginUI.onaction = actioncall;
     this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
     this.m_rtaskBeginUI.open();
-    this.initDSRDSys(layerLeft, layerRight, width, height);
   }
 
   toWorkSpace() {
@@ -3440,23 +3681,6 @@ class DsrdShell {
   initDSRDSys(layerLeft, layerRight, width, height) {
     this.m_rscene.initialize(layerLeft);
     this.m_ui.initialize(layerRight, width, height);
-  }
-
-  showInfo(str) {
-    let div = this.mIDV;
-
-    if (div == null) {
-      div = document.createElement("div");
-      let style = div.style;
-      style.backgroundColor = "rgba(255,255,255,0.1)";
-      style.color = "#00ee00";
-      style.zIndex = "9100";
-      style.position = "absolute";
-      this.elementCenter(div); // this.m_infoLayer.appendChild(div);
-    }
-
-    div.innerHTML = str;
-    this.mIDV = div;
   }
 
   elementCenter(ele, top = "50%", left = "50%", position = "absolute") {

@@ -13,15 +13,19 @@ class RTaskInfoViewer {
 	constructor() {}
 	initialize(): void {}
 	reset(): void {
+		this.rt_phase = "";
 		this.rt_phase_times = 0;
 		this.taskStatus = 0;
 		this.startTime = Date.now();
-		this.infoDiv = null;
+		this.showSpecInfo("waiting...");
 	}
-	private taskSuccess(): void {}
+	private taskSuccess(): void {
+
+	}
 	private taskFailure(): void {}
 	private showSpecInfo(keyStr: string, times: number = -1): void {
 		var div = this.infoDiv;
+		// console.log("this.infoDiv: ", this.infoDiv);
 		if (div != null) {
 			if (times >= 0) {
 				let flag = times % 3;
@@ -65,11 +69,14 @@ class RTaskInfoViewer {
 		let keyStr = "";
 		let flag = false;
 		if(sdo.drcsTotal !== undefined) {
-			this.data.drcsTotal = sdo.drcsTotal;
-			this.process.updateModel(this.data.drcsTotal);
+			if(!this.process.isModelFinish()) {
+				this.data.drcsTotal = sdo.drcsTotal;
+				this.process.updateModel(this.data.drcsTotal);
+			}
 		}
 		this.data.phase = phase;
 		this.process.renderingPhase = phase;
+
 		// very important code sentence
 		this.process.running = true;
 		///*
@@ -112,13 +119,14 @@ class RTaskInfoViewer {
 						`<b><font color="#008800">` + sizes[0] + "x" + sizes[1] + `</font></b>效果图渲染完成<br/><b>(总耗时` + time_s + `s)</b>`
 					);
 					this.data.bgTransparent = sdo.bgTransparent == 1;
+					this.data.copyFromJson(sdo);
 					this.taskSuccess();
 				}
 				break;
 			case "rtaskerror":
 				if (this.taskStatus < 2) {
 					this.taskStatus = 2;
-					div.innerHTML = "渲染失败(模型数据不能正确解析)";
+					this.showSpecInfo("渲染失败(模型数据不能正确解析)");
 					this.taskFailure();
 					return;
 				}
@@ -126,7 +134,6 @@ class RTaskInfoViewer {
 			case "query-re-rendering-task":
 				console.log("query-re-rendering-task, status: ", status);
 				if (status == 22) {
-					// restartReqstUpdate();
 				}
 				break;
 			default:

@@ -52,17 +52,17 @@ class RModelUploadingUI {
 
 		// this.toUploadFailure("...");
 	}
-	private getRenderingParams(otherParams: string): string {
-		let rtBGTransparent = false;
-		let rimgSizes = [512, 512];
-		let params = "&sizes=" + rimgSizes;
-		// params += getCameraDataParam();
-		params += "&rtBGTransparent=" + (rtBGTransparent ? "1" : "0");
-		if (otherParams != "") {
-			params += otherParams;
-		}
-		return params;
-	}
+	// private getRenderingParams(otherParams: string): string {
+	// 	let rtBGTransparent = false;
+	// 	let rimgSizes = [512, 512];
+	// 	let params = "&sizes=" + rimgSizes;
+	// 	// params += getCameraDataParam();
+	// 	params += "&rtBGTransparent=" + (rtBGTransparent ? "1" : "0");
+	// 	if (otherParams != "") {
+	// 		params += otherParams;
+	// 	}
+	// 	return params;
+	// }
 	private completeCall(evt: any): void {
 		let str = evt.target.responseText + "";
 		console.log("evt.target.responseText: ", str);
@@ -164,15 +164,11 @@ class RModelUploadingUI {
 		this.m_textViewer.setInnerHTML(html);
 	}
 	private uploadAndSendRendering(fileObj: any): void {
+
 		if (fileObj == null) {
 			return;
 		}
-		let hostUrl = HTTPUrl.host;
-		// let camdvs: number[] = [];
-		// let camParam = "&camdvs=[" + camdvs + "]";
-		// console.log("camParam: ", camParam);
-		// let url = hostUrl + "uploadRTData?srcType=viewer&phase=newrtask" + this.getRenderingParams(camParam);
-		let url = hostUrl + "uploadRTData?srcType=viewer&phase=newrtask" + this.getRenderingParams("");
+
 		if (!fileObj) {
 			alert("the file dosen't exist !!!");
 			this.updatePage();
@@ -185,30 +181,24 @@ class RModelUploadingUI {
 			this.updatePage();
 			return;
 		}
-		let form = new FormData();
-		form.append("file", fileObj);
-
-		let xhr = new XMLHttpRequest();
-		xhr.open("post", url, true);
-		console.log("uploadAndSendRendering(), form url: ", url);
-		console.log("uploadAndSendRendering(), form fileObj: ", fileObj);
-		xhr.onload = evt => {
-			this.completeCall(evt);
-		};
-		xhr.onerror = evt => {
-			// this.failedCall(evt);
-			this.toUploadFailure("upload_net_failed");
-		};
-
-		xhr.upload.onprogress = evt => {
-			this.progressCall(evt);
-		};
-		xhr.upload.onloadstart = evt => {
-			this.m_time = new Date().getTime();
-			this.m_resLoaded = 0;
-		};
-
-		xhr.send(form);
+		let req = this.rtaskSys.request;
+		//sendUploadReq(fileObj: any, completeCall: (evt: any) => void, toUploadFailure: (evt: any, type: string) => void, progressCall: (evt: any) => void, onloadstart: (evt: any) => void): void {
+		req.sendUploadReq(
+			fileObj,
+			(evt: any): void => {
+				this.completeCall(evt);
+			},
+			(evt: any, type): void => {
+				this.toUploadFailure("upload_net_failed");
+			},
+			(evt: any): void => {
+				this.progressCall(evt);
+			},
+			(evt: any): void => {
+				this.m_time = new Date().getTime();
+				this.m_resLoaded = 0;
+			}
+		)
 		fileObj = null;
 	}
 	private updatePage(): void {

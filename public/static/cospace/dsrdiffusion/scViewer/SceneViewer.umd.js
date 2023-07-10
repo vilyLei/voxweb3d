@@ -4223,11 +4223,14 @@ class RenderAdapter {
 
   syncHtmlColor() {
     // console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor);
+    // console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor, this.m_syncBgColor);
     if (this.m_syncBgColor) {
+      // console.log("this.m_bodyBgColor != this.m_rtx.bodyBgColor: ", this.m_bodyBgColor,this.m_rtx.bodyBgColor);
       if (document && this.m_bodyBgColor != this.m_rtx.bodyBgColor) {
         this.m_bodyBgColor = this.m_rtx.bodyBgColor;
         const body = document.body;
-        body.style.background = this.m_bodyBgColor; // console.log("syncHtmlColor(), color: ", this.m_bodyBgColor);
+        body.style.background = this.m_bodyBgColor;
+        console.log("syncHtmlColor(), color: ", this.m_bodyBgColor);
       }
     }
   }
@@ -22015,12 +22018,12 @@ class URLFilter {
     return domain != null && domain.length > 0 ? domain[0] : "";
   }
 
-  static getHostUrl(port) {
+  static getHostUrl(port, end = "/") {
     let host = location.href;
     let domain = URLFilter.getDomain(host);
     let nsList = domain.split(":");
     host = nsList[0] + ":" + nsList[1];
-    return port ? host + ":" + port + "/" : domain + "/";
+    return port ? host + ":" + port + "/" : domain + end;
   }
 
   static isEnabled() {
@@ -34183,7 +34186,10 @@ class Default3DEntity extends DisplayEntity_1.default {
   }
 
   setAlpha(a, texAlpha = 0.0) {
-    if (this.m_mt) this.m_mt.setAlpha(a);
+    if (this.m_mt) {
+      console.log("Default3DEntity::setAlpha(), alpha: ", a);
+      this.m_mt.setAlpha(a);
+    }
   }
 
   setRGB3f(pr, pg, pb) {
@@ -41409,6 +41415,10 @@ const DisplayEntityContainer_1 = __importDefault(__webpack_require__("ae33"));
 
 const ScreenFixedAlignPlaneEntity_1 = __importDefault(__webpack_require__("c8c5"));
 
+const EventBase_1 = __importDefault(__webpack_require__("a996"));
+
+const ImageResLoader_1 = __importDefault(__webpack_require__("f1be"));
+
 class VVF {
   isEnabled() {
     return true;
@@ -41434,12 +41444,20 @@ class SceneViewer {
     this.m_debugDev = false;
     this.m_baseSize = 200;
     this.m_camvs = [0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 2.390000104904175, 0.7071067690849304, 0.40824827551841736, -0.5773502588272095, -2.390000104904175, 0, 0.8164965510368347, 0.5773502588272095, 2.390000104904175, 0, 0, 0, 1];
+    this.m_mi = null;
+    this.m_rsceneCamVer = -10;
     this.m_imgViewEntity = null;
+    this.m_imageAlpha = 1.0;
+    this.m_imageFakeAlpha = 0.2;
+    this.m_imageVisible = true;
     this.m_viewImageUrl = "static/assets/modules/apple_01/mini.jpg";
+    this.m_imgResLoader = new ImageResLoader_1.default();
+    this.m_imgLoaded = true;
+    this.m_imgUrls = [];
     this.m_dropEnabled = true;
   }
 
-  getTexByUrl(purl, wrapRepeat = true, mipmapEnabled = true) {
+  filterUrl(purl) {
     let host = URLFilter_1.default.getHostUrl("9090");
 
     if (this.m_debugDev) {
@@ -41450,6 +41468,11 @@ class SceneViewer {
       purl = host + purl;
     }
 
+    return purl;
+  }
+
+  getTexByUrl(purl, wrapRepeat = true, mipmapEnabled = true) {
+    purl = this.filterUrl(purl);
     return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
   }
 
@@ -41458,7 +41481,7 @@ class SceneViewer {
     this.m_rscene.addEventListener(MouseEvent_1.default.MOUSE_DOWN, this, this.mouseDown);
     this.m_rscene.addEventListener(KeyboardEvent_1.default.KEY_DOWN, this, this.keyDown); // new RenderStatusDisplay(this.m_rscene, true);
 
-    new MouseInteraction_1.MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 1); // this.m_teamLoader.verTool = new CoModuleVersion(null);
+    this.m_mi = new MouseInteraction_1.MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 1); // this.m_teamLoader.verTool = new CoModuleVersion(null);
   }
 
   loadInfo(initCallback) {
@@ -41508,7 +41531,8 @@ class SceneViewer {
       let rparam = new RendererParam_1.default(div ? div : this.createDiv(0, 0, 512 / 1.5, 512 / 1.5));
       rparam.autoSyncRenderBufferAndWindowSize = false; // rparam.syncBgColor = true;
 
-      rparam.setCamProject(45, 10.0, 2000.0); // rparam.setCamPosition(800.0, -800.0, 800.0);
+      rparam.setCamProject(45, 10.0, 2000.0); // rparam.syncBgColor = true;
+      // rparam.setCamPosition(800.0, -800.0, 800.0);
 
       rparam.setCamPosition(239.0, -239.0, 239.0);
 
@@ -41520,7 +41544,34 @@ class SceneViewer {
 
       rparam.setAttriAntialias(true);
       this.m_rscene = new RendererScene_1.default();
-      this.m_rscene.initialize(rparam).setAutoRunning(true); // let unit = 100.0;
+      this.m_rscene.initialize(rparam).setAutoRunning(true);
+      this.m_rscene.updateCamera();
+      this.m_rscene.setClearRGBAColor4f(0, 0, 0, 1);
+      this.m_rsceneCamVer = this.m_rscene.getCamera().version;
+      let delay = 30;
+      this.m_rscene.addEventListener(EventBase_1.default.ENTER_FRAME, this, evt => {
+        // console.log("...");
+        const cam = this.m_rscene.getCamera();
+
+        if (this.m_rsceneCamVer != cam.version) {
+          this.m_rsceneCamVer = cam.version;
+          this.setViewImageAlpha(this.m_imageFakeAlpha);
+        }
+
+        if (delay > 0) {
+          delay--;
+
+          if (delay < 1) {
+            delay = 30; // console.log("this.m_imgLoaded: ", this.m_imgLoaded, this.m_imgUrls.length);
+
+            if (this.m_imgLoaded) {
+              if (this.m_imgUrls.length > 0) {
+                this.setViewImageUrl(this.m_imgUrls.shift());
+              }
+            }
+          }
+        }
+      }); // let unit = 100.0;
       // let cube = new Box3DEntity();
       // cube.normalEnabled = true;
       // cube.initializeCube(2 * unit);
@@ -41547,31 +41598,106 @@ class SceneViewer {
       } else {
         this.m_debugDev = true;
         this.m_teamLoader = new CoModelTeamLoader_1.CoModelTeamLoader();
-        this.initModels();
+        this.initModels(); // let imgUrls = [
+        // 	"static/assets/modules/apple_01/mini.jpg",
+        // 	"static/assets/box.jpg"
+        // ]
+        // this.setViewImageUrls(imgUrls);
+
+        this.setViewImageUrl(this.m_viewImageUrl, true);
       }
 
       this.m_rscene.addEntity(this.m_entityContainer);
     }
   }
 
-  setViewImageUrl(url) {
-    this.m_viewImageUrl = url;
-    console.log("this.setViewImageUrl(), this.m_viewImageUrl: ", this.m_viewImageUrl);
+  setViewImageUrls(urls) {
+    if (urls === null || urls === undefined) {
+      urls = [];
+    }
+
+    this.m_imgUrls = urls;
+  }
+
+  setViewImageUrl(url, show = false, imgAlpha = 1.0) {
+    console.log("this.setViewImageUrl(), url: ", url);
+
+    if (url != "") {
+      this.m_imageAlpha = imgAlpha;
+      console.log("this.setViewImageUrl(), ready load a new img B.");
+
+      if (this.m_imgViewEntity != null) {
+        console.log("this.setViewImageUrl(), ready load a new img C.");
+        console.log("url A: ", this.m_viewImageUrl);
+        console.log("url B: ", url);
+
+        if (this.m_viewImageUrl != url) {
+          console.log("this.setViewImageUrl(), ready load a new img.");
+
+          if (this.m_imgLoaded) {
+            this.m_viewImageUrl = url;
+            this.m_imgLoaded = false;
+            this.m_imgResLoader.load(this.filterUrl(url), (img, imgUrl) => {
+              let tex = this.m_rscene.textureBlock.createImageTex2D();
+              tex.flipY = true;
+              tex.setDataFromImage(img);
+              console.log("load a new tex res from an image.");
+              this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
+              this.m_imgViewEntity.setTextureList([tex]);
+              this.m_imgViewEntity.updateMaterialToGpu();
+              this.m_imgLoaded = true;
+            });
+          } else {
+            this.m_imgUrls.push(url);
+          }
+        }
+      } else {
+        this.m_viewImageUrl = url;
+        this.initImgViewer();
+      }
+    }
+  }
+
+  setViewImageFakeAlpha(alpha) {
+    this.m_imageFakeAlpha = alpha;
+  }
+
+  setViewImageAlpha(alpha) {
+    this.m_imageAlpha = alpha;
+
+    if (this.m_imgViewEntity != null) {
+      this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
+    }
+  }
+
+  getViewImageAlpha() {
+    return this.m_imageAlpha;
+  }
+
+  setViewImageVisible(v) {
+    this.m_imageVisible = v;
+
+    if (this.m_imgViewEntity != null) {
+      this.m_imgViewEntity.setVisible(v);
+    }
+  }
+
+  getViewImageVisible() {
+    return this.m_imageVisible;
   }
 
   initImgViewer() {
     if (this.m_imgViewEntity == null) {
       console.log("this.initImgViewer(), this.m_viewImageUrl: ", this.m_viewImageUrl);
-      let url = this.m_viewImageUrl;
-      let tex = this.getTexByUrl(url);
+      let tex = this.getTexByUrl(this.m_viewImageUrl);
       tex.flipY = true;
       this.m_imgViewEntity = new ScreenFixedAlignPlaneEntity_1.default();
       this.m_imgViewEntity.transparentBlend = true;
       this.m_imgViewEntity.initialize(-1, -1, 2.0, 2.0, [tex]);
-      this.m_imgViewEntity.setAlpha(0.5);
+      this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
+      this.m_imgViewEntity.setVisible(this.m_imageVisible);
       this.m_rscene.addEntity(this.m_imgViewEntity, 1);
-    } else {
-      this.m_imgViewEntity.setVisible(!this.m_imgViewEntity.isVisible());
+    } else {// this.m_imgViewEntity.setVisible( !this.m_imgViewEntity.isVisible() );
     }
   }
 
@@ -41719,7 +41845,7 @@ class SceneViewer {
 
   applyCamvs(cdvs) {
     if (cdvs == null) {
-      cdvs = [0.7071067690849304, -0.40824827551841736, 0.57735025882720950, 2.390000104904175, 0.7071067690849304, 0.408248275518417360, -0.5773502588272095, -2.390000104904175, 0.0000000000000000, 0.816496551036834700, 0.57735025882720950, 2.390000104904175, 0, 0, 0, 1];
+      cdvs = [0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 2.390000104904175, 0.7071067690849304, 0.40824827551841736, -0.5773502588272095, -2.390000104904175, 0.0, 0.8164965510368347, 0.5773502588272095, 2.390000104904175, 0, 0, 0, 1];
     }
 
     let mat4 = new Matrix4_1.default(new Float32Array(cdvs));
@@ -41756,6 +41882,8 @@ class SceneViewer {
         //m_camvs
         console.log("test t...."); // this.applyCamvs(null);
 
+        let url = "static/assets/box.jpg";
+        this.setViewImageUrl(url);
         break;
 
       default:
@@ -41767,11 +41895,10 @@ class SceneViewer {
     // console.log("mouse down, evt: ", evt);
     if (this.m_mouseDownCall != null) {
       this.m_mouseDownCall(evt);
-    }
+    } // let camdvs = this.getCameraData(0.01, true);
+    // console.log("	camdvs: ", camdvs);
+    // this.initImgViewer();
 
-    let camdvs = this.getCameraData(0.01, true);
-    console.log("	camdvs: ", camdvs);
-    this.initImgViewer();
   }
 
 }
@@ -44524,6 +44651,138 @@ class VtxCombinedBuf {
 }
 
 exports.default = VtxCombinedBuf;
+
+/***/ }),
+
+/***/ "f1be":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/***************************************************************************/
+
+/*                                                                         */
+
+/*  Copyright 2018-2023 by                                                 */
+
+/*  Vily(vily313@126.com)                                                  */
+
+/*                                                                         */
+
+/***************************************************************************/
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+const URLFilter_1 = __importDefault(__webpack_require__("7aa4"));
+
+class ImgUint {
+  constructor() {
+    this.m_listeners = [];
+    this.url = "";
+    this.img = null;
+    this.loaded = false;
+  }
+
+  addListener(listener) {
+    let ls = this.m_listeners;
+    let i = 0;
+
+    for (; i < ls.length; ++i) {
+      if (ls[i] == listener) {
+        break;
+      }
+    }
+
+    if (i >= ls.length) {
+      ls.push(listener);
+    }
+  }
+
+  removeListener(listener) {
+    let ls = this.m_listeners;
+
+    for (let i = 0; i < ls.length; ++i) {
+      if (ls[i] == listener) {
+        ls.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  dispatch() {
+    if (this.loaded) {
+      let ls = this.m_listeners;
+      this.m_listeners = [];
+
+      for (let i = 0; i < ls.length; ++i) {
+        ls[i](this.img, this.url);
+      }
+    }
+  }
+
+}
+
+class ImageResLoader {
+  constructor() {
+    this.m_map = new Map();
+  }
+
+  load(url, onload) {
+    if (url != "") {
+      let initUrl = url;
+      let map = this.m_map;
+      url = url != "" ? url : "static/assets/box.jpg";
+      url = URLFilter_1.default.filterUrl(url);
+
+      if (map.has(initUrl)) {
+        let punit = map.get(url);
+
+        if (punit.loaded) {
+          onload(punit.img, punit.url);
+        } else {
+          punit.addListener(onload);
+        }
+      }
+
+      let img = new Image();
+      let unit = new ImgUint();
+      unit.img = img;
+      unit.url = initUrl;
+      unit.addListener(onload);
+      map.set(initUrl, unit);
+      const request = new XMLHttpRequest();
+      request.open("GET", url, true);
+      request.responseType = "blob";
+
+      request.onload = e => {
+        img.onload = evt => {
+          unit.loaded = true;
+          unit.dispatch();
+        };
+
+        let pwin = window;
+        img.src = (pwin.URL || pwin.webkitURL).createObjectURL(request.response);
+      };
+
+      request.onerror = e => {
+        console.error("load error binary image buffer request.status: ", request.status, "url:", url);
+      };
+
+      request.send(null);
+    }
+  }
+
+}
+
+exports.default = ImageResLoader;
 
 /***/ }),
 
