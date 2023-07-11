@@ -48,18 +48,21 @@ class CoModelTeamLoader {
     }
     private initialize(): void {
         this.m_modelLoader.setListener(
-            (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+            (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat, url?: string): void => {
                 // console.log("CoModelTeamLoader, loaded model.");
                 if (this.m_team != null) {
                     for (let i = 0; i < models.length; ++i) {
-                        if(models[i] != null && models[i].vertices != null) {
-                            if (transforms) {
-                                this.m_team.transforms.push(transforms[i]);
-                            }else {
-                                this.m_team.transforms.push(null);
-                            }
-                            this.m_team.models.push(models[i]);
-                        }
+						if(models[i] != null) {
+							models[i].url = url;
+							if(models[i].vertices != null) {
+								if (transforms) {
+									this.m_team.transforms.push(transforms[i]);
+								}else {
+									this.m_team.transforms.push(null);
+								}
+								this.m_team.models.push(models[i]);
+							}
+						}
                     }
                 }
             },

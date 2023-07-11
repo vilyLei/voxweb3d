@@ -466,6 +466,12 @@ export default class PureEntity implements IDisplayEntity {
     protected createDisplay(): void {
         this.m_display = RODisplay.Create();
     }
+	/**
+	 * set new textures list for the material of this instance.
+	 */
+	setTextureList(texList: IRenderTexture[]): void {
+
+	}
     activeDisplay(): void {
         if (this.m_display != null) {
             let material: IRenderMaterial = this.m_display.getMaterial() as IRenderMaterial;

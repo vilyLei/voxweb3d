@@ -54,24 +54,7 @@ export class SceneViewer {
 	private m_forceRot90 = false;
 	private m_debugDev = false;
 	private m_baseSize = 200;
-	private m_camvs = [
-		0.7071067690849304,
-		-0.40824827551841736,
-		0.5773502588272095,
-		2.390000104904175,
-		0.7071067690849304,
-		0.40824827551841736,
-		-0.5773502588272095,
-		-2.390000104904175,
-		0,
-		0.8164965510368347,
-		0.5773502588272095,
-		2.390000104904175,
-		0,
-		0,
-		0,
-		1
-	];
+
 	private m_loadingCallback: (prog: number) => void;
 	private m_mi: MouseInteraction = null;
 	private m_rsceneCamVer = -10;
@@ -94,9 +77,7 @@ export class SceneViewer {
 		this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 		this.m_rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
 
-		// new RenderStatusDisplay(this.m_rscene, true);
 		this.m_mi = new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 1);
-		// this.m_teamLoader.verTool = new CoModuleVersion(null);
 	}
 
 	private loadInfo(initCallback: () => void): void {
@@ -121,9 +102,9 @@ export class SceneViewer {
 			"json"
 		);
 	}
-	updateCameraWithF32Arr16(fs32Arr16: number[] | Float32Array): void {
+	updateCameraWithF32Arr16(fs32Arr16: number[] | Float32Array, updateCamera = true): void {
 		if (fs32Arr16.length == 16) {
-			this.applyCamvs(fs32Arr16);
+			this.applyCamvs(fs32Arr16, updateCamera);
 		}
 	}
 	private createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
@@ -139,13 +120,30 @@ export class SceneViewer {
 		div.style.position = "absolute";
 		return div;
 	}
+	/**
+	 * @param fov_angle_degree the default value is 45.0
+	 * @param near the default value is 10.0
+	 * @param far the default value is 5000.0
+	 */
+	setCamProjectParam(fov_angle_degree: number, near: number, far: number): void {
+		if (this.m_rscene) {
+			let cam = this.m_rscene.getCamera();
+			cam.perspectiveRH((Math.PI * fov_angle_degree) / 180.0, cam.getAspect(), near, far);
+		}
+	}
+	updateCamera(): void {
+		if (this.m_rscene) {
+			this.m_rscene.updateCamera();
+		}
+	}
 	initialize(div: HTMLDivElement = null, initCallback: () => void = null, zAxisUp: boolean = false, debugDev: boolean = false): void {
 		console.log("SceneViewer::initialize()......");
 		if (this.m_rscene == null) {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512 / 1.5, 512 / 1.5));
+			let dpr = window.devicePixelRatio;
+			let rparam = new RendererParam(div ? div : this.createDiv(0, 0, 512 / dpr, 512 / dpr));
 			rparam.autoSyncRenderBufferAndWindowSize = false;
 			// rparam.syncBgColor = true;
 			rparam.setCamProject(45, 10.0, 2000.0);
@@ -161,9 +159,16 @@ export class SceneViewer {
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam).setAutoRunning(true);
 			this.m_rscene.updateCamera();
-			this.m_rscene.setClearRGBAColor4f(0,0,0,1);
+			this.m_rscene.setClearRGBAColor4f(0, 0, 0, 1);
 			this.m_rsceneCamVer = this.m_rscene.getCamera().version;
 			let delay = 30;
+			this.m_rscene.addEventListener(MouseEvent.MOUSE_DOUBLE_CLICK, this, (evt: any): void => {
+				if(this.m_imageAlpha > this.m_imageFakeAlpha) {
+					this.setViewImageAlpha(this.m_imageFakeAlpha);
+				}else {
+					this.setViewImageAlpha(1.0);
+				}
+			})
 			this.m_rscene.addEventListener(EventBase.ENTER_FRAME, this, (evt): void => {
 				// console.log("...");
 				const cam = this.m_rscene.getCamera();
@@ -171,14 +176,27 @@ export class SceneViewer {
 					this.m_rsceneCamVer = cam.version;
 					this.setViewImageAlpha(this.m_imageFakeAlpha);
 				}
-				if(delay > 0) {
-					delay --;
-					if(delay < 1) {
+				if (delay > 0) {
+					delay--;
+					if (delay < 1) {
 						delay = 30;
 						// console.log("this.m_imgLoaded: ", this.m_imgLoaded, this.m_imgUrls.length);
-						if(this.m_imgLoaded) {
-							if(this.m_imgUrls.length > 0) {
+						if (this.m_imgLoaded) {
+							if (this.m_imgUrls.length > 0) {
 								this.setViewImageUrl(this.m_imgUrls.shift());
+							}
+						}
+					}
+				}
+				if (this.m_imgTex != null) {
+					console.log("deferred tex res AAA !!!");
+					if (this.m_imgTex.isGpuEnabled()) {
+						if (this.m_imgTexDelay > 0) {
+							this.m_imgTexDelay--;
+							if (this.m_imgTexDelay < 1) {
+								console.log("deferred tex alpha changed !!!");
+								this.setViewImageAlpha(this.m_imageAlpha);
+								this.m_imgTex = null;
 							}
 						}
 					}
@@ -233,8 +251,10 @@ export class SceneViewer {
 	private m_imgResLoader = new ImageResLoader();
 	private m_imgLoaded = true;
 	private m_imgUrls: string[] = [];
+	private m_imgTex: IRenderTexture = null;
+	private m_imgTexDelay = 0;
 	setViewImageUrls(urls: string[]): void {
-		if(urls === null || urls === undefined) {
+		if (urls === null || urls === undefined) {
 			urls = [];
 		}
 		this.m_imgUrls = urls;
@@ -250,20 +270,22 @@ export class SceneViewer {
 				console.log("url B: ", url);
 				if (this.m_viewImageUrl != url) {
 					console.log("this.setViewImageUrl(), ready load a new img.");
-					if(this.m_imgLoaded) {
+					if (this.m_imgLoaded) {
 						this.m_viewImageUrl = url;
 						this.m_imgLoaded = false;
 						this.m_imgResLoader.load(this.filterUrl(url), (img: HTMLImageElement, imgUrl: string): void => {
 							let tex = this.m_rscene.textureBlock.createImageTex2D();
 							tex.flipY = true;
 							tex.setDataFromImage(img);
-							console.log("load a new tex res from an image.");
-							this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
+							console.log("load a new tex res from an image.test01.");
+							// this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
 							this.m_imgViewEntity.setTextureList([tex]);
 							this.m_imgViewEntity.updateMaterialToGpu();
 							this.m_imgLoaded = true;
+							this.m_imgTex = tex;
+							this.m_imgTexDelay = 5;
 						});
-					}else {
+					} else {
 						this.m_imgUrls.push(url);
 					}
 				}
@@ -301,6 +323,7 @@ export class SceneViewer {
 			tex.flipY = true;
 			this.m_imgViewEntity = new ScreenFixedAlignPlaneEntity();
 			this.m_imgViewEntity.transparentBlend = true;
+			this.m_imgViewEntity.depthAlwaysFalse = true;
 			this.m_imgViewEntity.initialize(-1, -1, 2.0, 2.0, [tex]);
 			this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
 			this.m_imgViewEntity.setVisible(this.m_imageVisible);
@@ -436,7 +459,7 @@ export class SceneViewer {
 	setMouseDownListener(mouseDownCall: (evt: any) => void): void {
 		this.m_mouseDownCall = mouseDownCall;
 	}
-	private applyCamvs(cdvs: number[] | Float32Array): void {
+	private applyCamvs(cdvs: number[] | Float32Array, updateCamera: boolean): void {
 		if (cdvs == null) {
 			cdvs = [
 				0.7071067690849304,
@@ -482,7 +505,9 @@ export class SceneViewer {
 		if (pos.getLength() > 0.001) {
 			let camPos = pos.clone().scaleBy(100.0);
 			cam.lookAtRH(camPos, new Vector3D(), vy);
-			cam.update();
+			if (updateCamera) {
+				cam.update();
+			}
 		}
 	}
 	private keyDown(evt: IKeyboardEvent): void {

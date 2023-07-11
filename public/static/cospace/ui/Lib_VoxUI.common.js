@@ -1335,46 +1335,12 @@ const CompEntityBase_1 = __webpack_require__("5ea3");
 class SelectionEntity extends CompEntityBase_1.CompEntityBase {
   constructor() {
     super();
-    this.m_dispatcher = null;
     this.m_currEvent = null;
     this.m_nameItem = null;
     this.m_flagItem = null;
     this.m_flag = true;
-    this.m_enabled = true;
     this.m_nameWidth = 0.0;
     this.uuid = "SelectionEntity";
-  }
-
-  enable() {
-    this.m_enabled = true;
-  }
-
-  disable() {
-    this.m_enabled = false;
-  }
-
-  open() {
-    this.setVisible(true);
-  }
-
-  close() {
-    this.setVisible(false);
-  }
-
-  isOpen() {
-    return this.isVisible();
-  }
-
-  isClosed() {
-    return !this.isVisible();
-  }
-
-  addEventListener(type, listener, func, captureEnabled = true, bubbleEnabled = false) {
-    this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-  }
-
-  removeEventListener(type, listener, func) {
-    this.m_dispatcher.removeEventListener(type, listener, func);
   }
   /**
    * 选中
@@ -1462,25 +1428,36 @@ class SelectionEntity extends CompEntityBase_1.CompEntityBase {
   getNameWidth() {
     return this.m_nameWidth;
   }
+  /**
+   * @param uisc IVoxUIScene instance
+   * @param btnName btn name, the default value is "select"
+   * @param select_name btn selecting status name, the default value is "Yes"
+   * @param deselect_name btn deselecting status name, the default value is "No"
+   * @param fontSize font size, the default value is 30
+   * @param nameWidth btn name part width, the default value is 70
+   * @param statusWidth btn status part width, the default value is 50
+   * @param height btn height, the default value is 40
+   */
 
-  initialize(uisc, barName = "select", select_name = "Yes", deselect_name = "No", fontSize = 30.0, nameWidth = 70, flagWidth = 50, height = 40) {
+
+  initialize(uisc, btnName = "select", select_name = "Yes", deselect_name = "No", fontSize = 30.0, nameWidth = 70, statusWidth = 50, height = 40) {
     if (this.isIniting()) {
       this.init();
       let dis = 2.0;
       this.m_dispatcher = VoxRScene_1.VoxRScene.createEventBaseDispatcher();
       this.m_currEvent = VoxRScene_1.VoxRScene.createSelectionEvent();
 
-      if (barName != "") {
-        let nameItem = this.createBtn("name", uisc, [barName], fontSize, nameWidth, height);
+      if (btnName != "") {
+        let nameItem = this.createBtn("name", uisc, [btnName], fontSize, nameWidth, height);
         this.addEntity(nameItem.button);
         this.m_nameWidth = nameItem.button.getWidth();
         this.m_nameItem = nameItem;
         nameItem.button.addEventListener(VoxRScene_1.MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
       }
 
-      let flagItem = this.createBtn("flag", uisc, [select_name, deselect_name], fontSize, flagWidth, height);
+      let flagItem = this.createBtn("flag", uisc, [select_name, deselect_name], fontSize, statusWidth, height);
 
-      if (barName != "") {
+      if (btnName != "") {
         flagItem.button.setX(this.m_nameWidth + dis);
       }
 
@@ -1638,9 +1615,13 @@ Object.defineProperty(exports, "__esModule", {
 const UIEntityBase_1 = __webpack_require__("0b77");
 
 class UIEntityContainer extends UIEntityBase_1.UIEntityBase {
-  constructor() {
+  constructor(init = false) {
     super();
     this.m_uientities = [];
+
+    if (init) {
+      this.init();
+    }
   }
 
   init() {
@@ -1768,6 +1749,7 @@ class PackedLoader {
 
   setUrlChecker(urlChecker = null) {
     this.m_urlChecker = urlChecker;
+    return this;
   }
 
   getUrlChecker() {
@@ -2260,6 +2242,8 @@ const ClipLabel_1 = __webpack_require__("f35d");
 
 const UIEntityContainer_1 = __webpack_require__("23ac");
 
+const VoxRScene_1 = __webpack_require__("d1de");
+
 class ButtonItem {
   constructor(pbutton, plabel, pBgLabel) {
     this.button = pbutton;
@@ -2291,25 +2275,53 @@ exports.ButtonItem = ButtonItem;
 class CompEntityBase extends UIEntityContainer_1.UIEntityContainer {
   constructor() {
     super();
+    this.m_enabled = true;
+    this.m_dispatcher = null;
     this.m_fontColor = null;
     this.m_fontBgColor = null;
     this.m_bgColors = null;
+    this.uuid = "CompEntityBase";
+  }
+
+  enable() {
+    this.m_enabled = true;
+  }
+
+  disable() {
+    this.m_enabled = false;
+  }
+
+  open() {
+    this.setVisible(true);
+  }
+
+  close() {
+    this.setVisible(false);
+  }
+
+  isOpen() {
+    return this.isVisible();
+  }
+
+  isClosed() {
+    return !this.isVisible();
   }
 
   getNameWidth() {
     return 0.0;
   }
 
+  addEventListener(type, listener, func, captureEnabled = true, bubbleEnabled = false) {
+    this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+  }
+
+  removeEventListener(type, listener, func) {
+    this.m_dispatcher.removeEventListener(type, listener, func);
+  }
+
   setFontColor(fontColor, bgColor) {
     this.m_fontColor = fontColor;
-    this.m_fontBgColor = bgColor; // if (this.m_fontColor == null) this.m_fontColor = VoxMaterial.createColor4();
-    // if (this.m_fontBgColor == null) this.m_fontBgColor = VoxMaterial.createColor4();
-    // if (fontColor) {
-    // 	this.m_fontColor.copyFrom(fontColor);
-    // }
-    // if (bgColor) {
-    // 	this.m_fontBgColor.copyFrom(bgColor);
-    // }
+    this.m_fontBgColor = bgColor;
   }
 
   setBGColors(colors) {
@@ -2322,6 +2334,27 @@ class CompEntityBase extends UIEntityContainer_1.UIEntityContainer {
     }
 
     this.m_bgColors = colors;
+  }
+
+  setFontColorWithARGBUint32(fontColor, bgColor) {
+    this.m_fontColor = VoxRScene_1.VoxRScene.createColor4().setARGBUint32(fontColor);
+    this.m_fontBgColor = VoxRScene_1.VoxRScene.createColor4().setARGBUint32(bgColor);
+  }
+
+  setBGColorsWithARGBUint32(colors) {
+    if (colors == null) {
+      throw Error("colors == null !!!");
+    }
+
+    if (colors.length < 4) {
+      throw Error("colors.length < 4 !!!");
+    }
+
+    this.m_bgColors = [];
+
+    for (let i = 0; i < colors.length; ++i) {
+      this.m_bgColors.push(VoxRScene_1.VoxRScene.createColor4().setARGBUint32(colors[i]));
+    }
   }
 
   destroy() {
@@ -2532,6 +2565,8 @@ class SelectButtonGroup {
     this.m_deselectFunc = null;
     this.m_mouseUpSelect = true;
     this.m_btn = null;
+    this.m_selectColorHexList = [0x4caf50, 0xaaac6a, 0x6ccf70];
+    this.m_deselectColorHexList = [0x5dbea3, 0x33b249, 0x5adbb5];
     this.m_mouseUpSelect = mouseUpSelect;
   }
 
@@ -2549,6 +2584,12 @@ class SelectButtonGroup {
       } else {
         btn.addEventListener(ME.MOUSE_DOWN, this, this.mouseEvtFunc);
       }
+
+      if (this.m_deselectFunc) {
+        this.m_deselectFunc(btn);
+      } else {
+        this.applyDeselectColors(btn);
+      }
     }
   }
 
@@ -2561,24 +2602,80 @@ class SelectButtonGroup {
     this.m_deselectFunc = deselectFunc;
   }
 
+  selectButton(btn) {
+    if (btn) {
+      this.select(btn.uuid);
+    }
+  }
+
   select(uuid) {
     if (this.m_map != null && this.m_map.has(uuid)) {
       let btn = this.m_map.get(uuid);
 
       if (this.m_btn != btn) {
-        if (this.m_btn != null) {
-          if (this.m_deselectFunc != null) {
+        if (this.m_btn) {
+          if (this.m_deselectFunc) {
             this.m_deselectFunc(this.m_btn);
+          } else {
+            this.applyDeselectColors(this.m_btn);
           }
         }
 
         this.m_btn = btn;
 
-        if (this.m_selectFunc != null) {
+        if (this.m_selectFunc) {
           this.m_selectFunc(btn);
+        } else {
+          this.applySelectColors(btn);
         }
       }
     }
+  }
+  /**
+   * @param colorHexList for example: [0x4caf50, 0xaaac6a, 0x6ccf70]
+   */
+
+
+  setSelectColors(colorHexList) {
+    if (colorHexList) {
+      let ls = this.m_selectColorHexList;
+      let len = Math.min(colorHexList.length, ls.length);
+
+      for (let i = 0; i < len; ++i) {
+        ls[i] = colorHexList[i];
+      }
+    }
+  }
+  /**
+   * @param colorHexList for example: [0x4caf50, 0xaaac6a, 0x6ccf70]
+   */
+
+
+  setDeselectColors(colorHexList) {
+    if (colorHexList) {
+      let ls = this.m_deselectColorHexList;
+      let len = Math.min(colorHexList.length, ls.length);
+
+      for (let i = 0; i < len; ++i) {
+        ls[i] = colorHexList[i];
+      }
+    }
+  }
+
+  setBtnColors(btn, colorHexList) {
+    let label = btn.getLable();
+
+    if (label.setColorsWithHex) {
+      label.setColorsWithHex(colorHexList);
+    }
+  }
+
+  applySelectColors(btn) {
+    this.setBtnColors(btn, this.m_selectColorHexList);
+  }
+
+  applyDeselectColors(btn) {
+    this.setBtnColors(btn, this.m_deselectColorHexList);
   }
 
   destroy() {
@@ -3334,6 +3431,12 @@ const VoxEntity_1 = __webpack_require__("9b53");
 
 const VoxMesh_1 = __webpack_require__("228b");
 
+const UIEntityContainer_1 = __webpack_require__("23ac");
+
+const SelectionEntity_1 = __webpack_require__("1dcc");
+
+const ProgressEntity_1 = __webpack_require__("822b");
+
 let __$$__init = true;
 
 function initialize() {
@@ -3412,6 +3515,12 @@ function createTextButton(width, height, idns, texAtlas, textParam, colors) {
 
 exports.createTextButton = createTextButton;
 
+function createUIContainer() {
+  return new UIEntityContainer_1.UIEntityContainer(true);
+}
+
+exports.createUIContainer = createUIContainer;
+
 function createUIPanel() {
   return new UIPanel_1.UIPanel();
 }
@@ -3436,13 +3545,13 @@ function createUIScene(graph, uiConfig = null, atlasSize = 512, renderProcessesT
   let uisc = new VoxUIScene_1.VoxUIScene();
   __$$$currUISCene = uisc;
 
-  if (graph != null) {
+  if (graph) {
     uisc.initialize(graph, atlasSize, renderProcessesTotal);
   }
 
   uisc.uiConfig = uiConfig;
 
-  if (uiConfig != null) {
+  if (uiConfig) {
     let promptSys = new PromptSystem_1.PromptSystem();
     promptSys.initialize(uisc);
     uisc.prompt = promptSys;
@@ -3504,6 +3613,18 @@ function createTextLabelButton(uuid, text, width = 90, height = 50, textColor = 
 
 exports.createTextLabelButton = createTextLabelButton;
 
+function createSelectionEntity() {
+  return new SelectionEntity_1.SelectionEntity();
+}
+
+exports.createSelectionEntity = createSelectionEntity;
+
+function createProgressEntity() {
+  return new ProgressEntity_1.ProgressEntity();
+}
+
+exports.createProgressEntity = createProgressEntity;
+
 /***/ }),
 
 /***/ "822b":
@@ -3525,7 +3646,6 @@ const CompEntityBase_1 = __webpack_require__("5ea3");
 class ProgressEntity extends CompEntityBase_1.CompEntityBase {
   constructor() {
     super();
-    this.m_dispatcher = null;
     this.m_currEvent = null;
     this.m_nameItem = null;
     this.m_addItem = null;
@@ -3539,46 +3659,13 @@ class ProgressEntity extends CompEntityBase_1.CompEntityBase {
     this.m_progress = 0.0;
     this.m_nameWidth = 0.0;
     this.m_value = 0.0;
-    this.m_enabled = true;
     this.m_minValue = 0.0;
     this.m_maxValue = 1.0;
     this.step = 0.1;
-    this.uuid = "ProgressEntity";
     this.m_moveMin = 0;
     this.m_autoDelay = 0;
     this.m_changeStep = 0;
-  }
-
-  enable() {
-    this.m_enabled = true;
-  }
-
-  disable() {
-    this.m_enabled = false;
-  }
-
-  open() {
-    this.setVisible(true);
-  }
-
-  close() {
-    this.setVisible(false);
-  }
-
-  isOpen() {
-    return this.isVisible();
-  }
-
-  isClosed() {
-    return !this.isVisible();
-  }
-
-  addEventListener(type, listener, func, captureEnabled = true, bubbleEnabled = false) {
-    this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-  }
-
-  removeEventListener(type, listener, func) {
-    this.m_dispatcher.removeEventListener(type, listener, func);
+    this.uuid = "ProgressEntity";
   }
 
   destroy() {
@@ -3604,8 +3691,17 @@ class ProgressEntity extends CompEntityBase_1.CompEntityBase {
   getNameWidth() {
     return this.m_nameWidth;
   }
+  /**
+   * @param uisc IVoxUIScene instance
+   * @param btnName btn name, the default value is "prog"
+   * @param fontSize font size, the default value 30
+   * @param nameWidth name part width, the default value 30
+   * @param progLength progress bar length, the default value is 200
+   * @param height btn height, the default value is 40
+   */
 
-  initialize(uisc, barName = "prog", fontSize = 30.0, nameWidth = 30, progLength = 200, height = 40) {
+
+  initialize(uisc, btnName = "prog", fontSize = 30.0, nameWidth = 30, progLength = 200, height = 40) {
     if (this.isIniting()) {
       this.init();
       this.m_ruisc = uisc;
@@ -3615,11 +3711,11 @@ class ProgressEntity extends CompEntityBase_1.CompEntityBase {
       let dis = 2.0;
       let px = 0;
 
-      if (barName != "") {
-        let nameItem = this.createBtn("name", uisc, [barName], fontSize, nameWidth, height);
+      if (btnName != "") {
+        let nameItem = this.createBtn("name", uisc, [btnName], fontSize, nameWidth, height);
         this.addEntity(nameItem.button);
         this.m_nameWidth = nameWidth = nameItem.button.getWidth();
-        height = nameItem.button.getHeight(); // console.log(barName, ", nameWidth: ", nameWidth, "height: ",height);
+        height = nameItem.button.getHeight(); // console.log(btnName, ", nameWidth: ", nameWidth, "height: ",height);
 
         this.m_nameItem = nameItem;
         nameItem.button.addEventListener(VoxRScene_1.MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
@@ -3750,7 +3846,6 @@ class ProgressEntity extends CompEntityBase_1.CompEntityBase {
   }
 
   barEnterFrame(evt) {
-    // console.log("barEnterFrame");
     if (this.m_autoDelay > 20) {
       if (this.m_autoDelay % 7 == 0) {
         this.setProgressLength(this.m_barLength + this.m_changeStep);
@@ -3830,14 +3925,12 @@ class VoxUIScene {
       let crscene = graph.getSceneAt(0);
       let stage = crscene.getStage3D();
       crscene.addEventListener(CoRScene.EventBase.RESIZE, this, this.resizeHandle);
-      let rparam = graph.createRendererSceneParam(); //CoRScene.createRendererSceneParam();
-
+      let rparam = graph.createRendererSceneParam();
       rparam.cameraPerspectiveEnabled = false;
       rparam.setAttriAlpha(false);
       rparam.setCamProject(45.0, 0.1, 3000.0);
       rparam.setCamPosition(0.0, 0.0, 1500.0);
-      let subScene = graph.createSubScene(rparam, renderProcessesTotal, true); //crscene.createSubScene(rparam, renderProcessesTotal, true);
-
+      let subScene = graph.createSubScene(rparam, renderProcessesTotal, true);
       subScene.enableMouseEvent(true);
       let t = this;
       t.rscene = subScene;
@@ -4583,6 +4676,16 @@ class T_CoEntity {
   createDisplayEntityFromModel(model, pmaterial, texEnabled) {
     return CoEntity.createDisplayEntityFromModel(model, pmaterial, texEnabled);
   }
+  /**
+   * @param beginV line begin position
+   * @param endV line begin position
+   * @param color line color, the default value is null
+   */
+
+
+  createLine(beginV, endV, color = null) {
+    return CoEntity.createLine(beginV, endV, color);
+  }
 
   createFreeAxis3DEntity(minV, maxV) {
     return CoEntity.createFreeAxis3DEntity(minV, maxV);
@@ -4692,8 +4795,8 @@ class T_CoEntity {
    */
 
 
-  createCylinder(radius, height, longitudeNumSegments = 20, material = null, texEnabled = false, alignYRatio = -0.5) {
-    return CoEntity.createCylinder(radius, height, longitudeNumSegments, material, texEnabled, alignYRatio);
+  createCylinder(radius, height, longitudeNumSegments = 20, material = null, texEnabled = false, uvType = 1, alignYRatio = -0.5) {
+    return CoEntity.createCylinder(radius, height, longitudeNumSegments, material, texEnabled, uvType, alignYRatio);
   }
   /**
    * @param radius tube radius
@@ -5389,6 +5492,28 @@ var EventBase = null;
 exports.EventBase = EventBase;
 var RendererState = null;
 exports.RendererState = RendererState;
+var TextureConst = null;
+exports.TextureConst = TextureConst;
+var Keyboard = null;
+exports.Keyboard = Keyboard;
+var KeyboardEvent = null;
+exports.KeyboardEvent = KeyboardEvent;
+var RenderDrawMode = null;
+exports.RenderDrawMode = RenderDrawMode;
+var CullFaceMode = null;
+exports.CullFaceMode = CullFaceMode;
+var DepthTestMode = null;
+exports.DepthTestMode = DepthTestMode;
+var RenderBlendMode = null;
+exports.RenderBlendMode = RenderBlendMode;
+var GLStencilFunc = null;
+exports.GLStencilFunc = GLStencilFunc;
+var GLStencilOp = null;
+exports.GLStencilOp = GLStencilOp;
+var GLBlendMode = null;
+exports.GLBlendMode = GLBlendMode;
+var GLBlendEquation = null;
+exports.GLBlendEquation = GLBlendEquation;
 
 class T_CoRScene {
   constructor() {
@@ -5396,13 +5521,27 @@ class T_CoRScene {
   }
 
   init() {
-    if (typeof CoRScene !== "undefined") {
-      exports.RendererDevice = RendererDevice = CoRScene.RendererDevice;
-      exports.SelectionEvent = SelectionEvent = CoRScene.SelectionEvent;
-      exports.ProgressDataEvent = ProgressDataEvent = CoRScene.ProgressDataEvent;
-      exports.EventBase = EventBase = CoRScene.EventBase;
-      exports.MouseEvent = MouseEvent = CoRScene.MouseEvent;
-      exports.RendererState = RendererState = CoRScene.RendererState;
+    const RC = CoRScene;
+    const RD = CoRenderer;
+
+    if (typeof RC !== "undefined") {
+      exports.RendererDevice = RendererDevice = RC.RendererDevice;
+      exports.SelectionEvent = SelectionEvent = RC.SelectionEvent;
+      exports.ProgressDataEvent = ProgressDataEvent = RC.ProgressDataEvent;
+      exports.EventBase = EventBase = RC.EventBase;
+      exports.MouseEvent = MouseEvent = RC.MouseEvent;
+      exports.RendererState = RendererState = RC.RendererState;
+      exports.TextureConst = TextureConst = RC.TextureConst;
+      exports.Keyboard = Keyboard = RC.Keyboard;
+      exports.KeyboardEvent = KeyboardEvent = RC.KeyboardEvent;
+      exports.RenderDrawMode = RenderDrawMode = RD.RenderDrawMode;
+      exports.CullFaceMode = CullFaceMode = RD.CullFaceMode;
+      exports.DepthTestMode = DepthTestMode = RD.DepthTestMode;
+      exports.RenderBlendMode = RenderBlendMode = RD.RenderBlendMode;
+      exports.GLStencilFunc = GLStencilFunc = RD.GLStencilFunc;
+      exports.GLStencilOp = GLStencilOp = RD.GLStencilOp;
+      exports.GLBlendMode = GLBlendMode = RD.GLBlendMode;
+      exports.GLBlendEquation = GLBlendEquation = RD.GLBlendEquation;
     }
   }
 
@@ -7163,7 +7302,7 @@ class ClipLabel extends ClipLabelBase_1.ClipLabelBase {
         let et = CoEntity.createDisplayEntity();
         et.setMaterial(this.m_material);
         et.setMesh(mesh);
-        et.setIvsParam(0, this.m_step);
+        this.m_material.vtxInfo.setIvsParam(0, this.m_step);
         this.m_entities.push(et);
         this.applyRST(et);
       }

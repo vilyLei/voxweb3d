@@ -2,6 +2,7 @@ import { IRTaskDataParam, RTaskData } from "./RTaskData";
 import { RTaskInfoViewer } from "./RTaskInfoViewer";
 import { RTaskRquest } from "./RTaskRequest";
 import { RTPType, RTaskProcess } from "./RTaskProcess";
+import { ModelScene } from "../rscene/ModelScene";
 
 class RTaskSystem {
 	private m_startup = true;
@@ -9,7 +10,7 @@ class RTaskSystem {
 	readonly data = new RTaskData();
 	readonly request = new RTaskRquest();
 	readonly infoViewer = new RTaskInfoViewer();
-
+	modelScene: ModelScene = null;
 	onaction: (idns: string, type: string) => void = null;
 	constructor() {}
 	initialize(): void {
@@ -38,6 +39,7 @@ class RTaskSystem {
 		this.m_timerId = setTimeout(this.timerUpdate.bind(this), this.process.timerDelay);
 		const data = this.data;
 		const process = this.process;
+		const modelsc = this.modelScene;
 		if (process.running && !process.isError()) {
 			switch (this.process.type) {
 				case RTPType.SyncRStatus:
@@ -46,9 +48,7 @@ class RTaskSystem {
 				case RTPType.CurrRendering:
 					if (process.isAllFinish()) {
 						console.log("CurrRendering, all finish.");
-						// this.m_rscViewer.setViewImageUrl(data.miniImgUrl + "&rrtimes="+this.m_rerenderingTimes, true, 1.0);
-						console.log("AAAA this.m_rscViewer.setViewImageUrls() 0.");
-						this.m_rscViewer.setViewImageUrls(data.miniImgUrls);
+						this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
 						process.toSyncRStatus();
 						if (this.onaction) {
 							this.onaction("curr-rendering", "finish");
@@ -60,9 +60,7 @@ class RTaskSystem {
 					break;
 				case RTPType.FirstRendering:
 					if (process.isRunning()) {
-						if (process.isModelFinish()) {
-							this.loadModel();
-						}
+						modelsc.loadModel();
 						if (process.isRenderingFinish()) {
 							if (!process.isModelFinish()) {
 								process.toSyncModelStatus();
@@ -73,22 +71,11 @@ class RTaskSystem {
 						}
 					} else if (process.isAllFinish()) {
 						console.log("FirstRendering, all finish.");
-						if (!this.m_taskAlive && data.modelLoadStatus == 2) {
-							this.m_taskAlive = true;
-							// this.m_rscViewer.setViewImageUrl(data.miniImgUrl + "&rrtimes="+this.m_rerenderingTimes, true, 1.0);
-							console.log("AAAA this.m_rscViewer.setViewImageUrls() 1.");
-							this.m_rscViewer.setViewImageUrls(data.miniImgUrls);
-							process.toSyncRStatus();
-						}
+						modelsc.loadModel();
 					}
 					break;
 				case RTPType.SyncModelStatus:
-					if (process.isModelFinish()) {
-						this.loadModel();
-					} else {
-						process.running = false;
-						this.request.notifyModelInfoToSvr();
-					}
+					modelsc.loadModel();
 					break;
 				default:
 					break;
@@ -110,6 +97,7 @@ class RTaskSystem {
 			if (this.onaction) {
 				this.onaction("curr-rendering", "new");
 			}
+			this.modelScene.rerendering();
 		}
 	}
 	private m_workSpaceStatus = 0;
@@ -128,58 +116,8 @@ class RTaskSystem {
 	isRTDataFinish(): boolean {
 		return this.data.isModelDataLoaded() && this.process.isAllFinish();
 	}
-	private m_taskAlive = false;
 	isTaskAlive(): boolean {
-		return this.m_taskAlive;
-	}
-	private loadModel(): void {
-		let data = this.data;
-		if (data.modelLoadStatus == 0) {
-			data.modelLoadStatus = 1;
-			let req = this.request;
-			let params = "";
-			let url = req.createReqUrlStr(req.taskInfoGettingUrl, "modelToDrc", 0, data.taskid, data.taskname, params);
-			console.log("### ######02 loadModel(), url: ", url);
-			req.sendACommonGetReq(url, (purl, content) => {
-				console.log("### ###### loadDrcModels() loaded, content: ", content);
-				var infoObj = JSON.parse(content);
-				console.log("loadDrcModels() loaded, infoObj: ", infoObj);
-				let resBaseUrl = req.getHostUrl(9090) + infoObj.filepath.slice(2);
-				let statusUrl = resBaseUrl + "status.json";
-				req.sendACommonGetReq(statusUrl, (pstatusUrl, content) => {
-					let statusObj = JSON.parse(content);
-					console.log("statusObj: ", statusObj);
-
-					let list = statusObj.list;
-					let drcsTotal = list.length;
-					let drcUrls = [];
-					let types = [];
-					for (let i = 0; i < drcsTotal; i++) {
-						let drcUrl = resBaseUrl + list[i];
-						drcUrls.push(drcUrl);
-						types.push("drc");
-					}
-					console.log("drcUrls: ", drcUrls);
-					if (this.m_rscViewer != null) {
-						this.m_rscViewer.initSceneByUrls(
-							drcUrls,
-							types,
-							(prog: any) => {
-								console.log("3d viewer drc model loading prog: ", prog);
-								if (prog >= 1.0) {
-								}
-							},
-							200
-						);
-						this.m_rscViewer.setViewImageFakeAlpha(0.1);
-					}
-					data.modelLoadStatus = 2;
-					if (this.process.isSyncModelStatus()) {
-						this.process.toFirstRendering();
-					}
-				});
-			});
-		}
+		return this.data.isCurrTaskAlive();
 	}
 }
 export { IRTaskDataParam, RTaskData, RTaskSystem };

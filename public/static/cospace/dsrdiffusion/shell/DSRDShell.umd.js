@@ -119,13 +119,22 @@ class RTaskData {
     this.time = 0;
     this.bgTransparent = false;
     this.imgResolution = [512, 512];
-    this.imgsTotal = 1; // miniImgUrl = "";
-
+    this.imgsTotal = 1;
     this.miniImgUrls = [];
     this.bigImgUrl = "";
     this.modelLoadStatus = 0;
+    this.currentTaskAlive = false;
+    this.drcNames = [];
     this.reneringTimes = 0;
     this.rtJsonData = null;
+  }
+
+  isFinish() {
+    return this.phase == "finish";
+  }
+
+  isCurrTaskAlive() {
+    return this.currentTaskAlive;
   }
 
   reset() {}
@@ -495,13 +504,13 @@ class RTaskInfoViewer {
       this.process.updateModel(this.data.drcsTotal);
     }
 
+    this.showSpecInfo("正在载入模型数据", this.rt_phase_times++);
     this.process.running = true;
   }
 
   parseRenderingReqInfo(sdo) {
     console.log("parseRenderingReqInfo(), sdo: ", sdo);
     let status = sdo.status;
-    var div = this.infoDiv;
     let phase = sdo.phase;
 
     if (this.rt_phase != phase) {
@@ -816,6 +825,7 @@ class DsrdUI {
     this.m_itemMap = new Map();
     this.rtaskSys = null;
     this.m_rscViewer = null;
+    this.m_materialPanel = null;
   }
 
   initialize(viewerLayer, areaWidth, areaHeight) {
@@ -904,7 +914,7 @@ class DsrdUI {
     container.appendChild(div);
     let divs = [div];
     let btn = new ButtonDivItem_1.ButtonDivItem();
-    btn.initialize(div, "新建渲染任务", "new_rendering");
+    btn.initialize(div, "获取渲染任务", "new_rendering");
 
     btn.onmouseup = evt => {
       let currEvt = evt;
@@ -1045,6 +1055,10 @@ class DsrdUI {
     return jsonBody;
   }
 
+  getMaterialPanel() {
+    return this.m_materialPanel;
+  }
+
   createSettingPanel(viewerLayer, areaWidth, areaHeight, data) {
     let settingPanel = null;
 
@@ -1062,7 +1076,8 @@ class DsrdUI {
         break;
 
       case "material":
-        settingPanel = new MaterialDataPanel_1.MaterialDataPanel();
+        this.m_materialPanel = new MaterialDataPanel_1.MaterialDataPanel();
+        settingPanel = this.m_materialPanel;
         break;
 
       case "light":
@@ -1112,6 +1127,12 @@ exports.DsrdUI = DsrdUI;
 "use strict";
 
 
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -1120,20 +1141,34 @@ const SettingDataPanel_1 = __webpack_require__("a7c5");
 
 const DataItemComponent_1 = __webpack_require__("9bbe");
 
+const URLFilter_1 = __importDefault(__webpack_require__("7aa4"));
+
 class MaterialDataPanel extends SettingDataPanel_1.SettingDataPanel {
   constructor() {
-    super();
-    this.modelName = "apple_body_model";
+    super(); // modelName = "apple_body_model";
+
+    this.modelName = "";
     this.uvScales = [1.0, 1.0];
   }
 
-  getJsonStr(beginStr = "{", endStr = "}") {
-    let uvSX = this.getItemCompByKeyName("uvScale_x").getParam();
-    let uvSY = this.getItemCompByKeyName("uvScale_y").getParam();
-    let uvScales = [uvSX.numberValue, uvSY.numberValue];
-    let jsonStr = `${beginStr}"modelName":"${this.modelName}", "uvScales":[${uvScales}]`; // return super.getJsonStr(jsonStr,endStr);
+  setModelNameWithUrl(url) {
+    let ns = url != "" ? URLFilter_1.default.getFileName(url) : "";
+    this.modelName = ns;
+    console.log("setModelNameWithUrl(), ns: >" + ns + "<");
+  }
 
-    let jsonBody = this.getJsonBodyStr(jsonStr, endStr);
+  getJsonStr(beginStr = "{", endStr = "}") {
+    let jsonBody = "";
+
+    if (this.modelName != "") {
+      let uvSX = this.getItemCompByKeyName("uvScale_x").getParam();
+      let uvSY = this.getItemCompByKeyName("uvScale_y").getParam();
+      let uvScales = [uvSX.numberValue, uvSY.numberValue];
+      let jsonStr = `${beginStr}"modelName":"${this.modelName}", "uvScales":[${uvScales}]`; // return super.getJsonStr(jsonStr,endStr);
+
+      jsonBody = this.getJsonBodyStr(jsonStr, endStr);
+    }
+
     return `"materials":[${jsonBody}]`;
   }
 
@@ -1298,38 +1333,23 @@ class RModelUploadingUI {
     this.open();
 
     if (this.m_textViewer == null) {
-      let pw = 320;
-      let ph = 300;
       let div = HtmlDivUtils_1.DivTool.createDiv(320, 300);
       this.m_viewerLayer.appendChild(div);
       let v = new HTMLViewerLayer_1.HTMLViewerLayer(div);
       v.setTextAlign("center");
-      v.layoutToCenter(); // v.setDisplayMode("block");
-      // v.setPositionMode("absolute");
-
+      v.layoutToCenter();
       this.m_textViewer = v;
     } else {
       this.m_textViewer.show();
     }
 
-    this.m_textViewer.setInnerHTML("uploading...");
-    this.progressCall({
-      lengthComputable: true,
-      loaded: 100,
-      total: 50000
-    }); // this.toUploadFailure("...");
-  } // private getRenderingParams(otherParams: string): string {
-  // 	let rtBGTransparent = false;
-  // 	let rimgSizes = [512, 512];
-  // 	let params = "&sizes=" + rimgSizes;
-  // 	// params += getCameraDataParam();
-  // 	params += "&rtBGTransparent=" + (rtBGTransparent ? "1" : "0");
-  // 	if (otherParams != "") {
-  // 		params += otherParams;
-  // 	}
-  // 	return params;
-  // }
+    this.m_textViewer.setInnerHTML("uploading..."); // this.progressCall({ lengthComputable: true, loaded: 100, total: 50000 });
+    // this.toUploadFailure("...");
+  }
 
+  getTextDiv() {
+    return this.m_textViewer.getDiv();
+  }
 
   completeCall(evt) {
     let str = evt.target.responseText + "";
@@ -1351,17 +1371,14 @@ class RModelUploadingUI {
     if (data.success) {
       // setTaskJsonData(data);
       console.log("上传成功！");
-      this.rtaskSys.process.toFirstRendering();
-      this.rtaskSys.data.copyFromJson(data);
-      this.rtaskSys.infoViewer.reset();
-      this.rtaskSys.infoViewer.infoDiv = this.m_textViewer.getDiv();
-      this.rtaskSys.startup(); // 立即发起一次渲染，获取缩略图和模型数据
-      // alert("上传成功！");
-      // this.reqstUpdate();
-
-      if (this.onaction) {
-        this.onaction("uploading_success", type);
-      }
+      const sys = this.rtaskSys;
+      sys.process.toFirstRendering();
+      sys.data.copyFromJson(data);
+      sys.infoViewer.reset();
+      sys.infoViewer.infoDiv = this.getTextDiv();
+      sys.startup(); // if (this.onaction) {
+      // 	this.onaction("uploading_success", type);
+      // }
     } else {
       // alert("上传失败！");
       console.log("上传失败！");
@@ -1484,6 +1501,122 @@ class RModelUploadingUI {
 }
 
 exports.RModelUploadingUI = RModelUploadingUI;
+
+/***/ }),
+
+/***/ "3b8d":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+class ModelScene {
+  constructor() {
+    this.m_rscViewer = null;
+    this.request = null;
+    this.process = null;
+    this.data = null;
+    this.infoViewer = null;
+  }
+
+  setRSCViewer(rscViewer) {
+    this.m_rscViewer = rscViewer;
+    console.log("ModelScene::setRSCViewer(), rscViewer: ", rscViewer);
+  }
+
+  isModelDataLoaded() {
+    return this.data.modelLoadStatus == 2;
+  }
+
+  rerendering() {
+    this.m_rscViewer.imgViewer.setViewImageAlpha(0.1);
+  }
+
+  loadModel() {
+    const data = this.data;
+    const process = this.process;
+
+    if (data.modelLoadStatus == 0 && process.isModelFinish()) {
+      if (process.isAllFinish() || process.isSyncModelStatus()) {
+        this.infoViewer.showSpecInfo("正在载入模型数据");
+      }
+
+      data.modelLoadStatus = 1;
+      let req = this.request;
+      let params = "";
+      let url = req.createReqUrlStr(req.taskInfoGettingUrl, "modelToDrc", 0, data.taskid, data.taskname, params);
+      console.log("### ######02 loadModel(), url: ", url);
+      req.sendACommonGetReq(url, (purl, content) => {
+        console.log("### ###### loadDrcModels() loaded, content: ", content);
+        var infoObj = JSON.parse(content);
+        console.log("loadDrcModels() loaded, infoObj: ", infoObj);
+        let resBaseUrl = req.getHostUrl(9090) + infoObj.filepath.slice(2);
+        let statusUrl = resBaseUrl + "status.json";
+        req.sendACommonGetReq(statusUrl, (pstatusUrl, content) => {
+          let statusObj = JSON.parse(content);
+          console.log("statusObj: ", statusObj);
+          let list = statusObj.list;
+          let drcsTotal = list.length;
+          let drcUrls = [];
+          let types = [];
+
+          for (let i = 0; i < drcsTotal; i++) {
+            let drcUrl = resBaseUrl + list[i];
+            drcUrls.push(drcUrl);
+            types.push("drc");
+          }
+
+          console.log("drcs list: ", list);
+          console.log("drcUrls: ", drcUrls);
+          data.drcNames = list.slice(0);
+          const rviewer = this.m_rscViewer;
+
+          if (rviewer != null) {
+            rviewer.initSceneByUrls(drcUrls, types, prog => {
+              console.log("3d viewer drc model loading prog: ", prog);
+
+              if (prog >= 1.0) {}
+            }, 200);
+            rviewer.imgViewer.setViewImageFakeAlpha(0.1);
+          }
+
+          data.modelLoadStatus = 2;
+          this.testTaskFinish();
+        });
+      });
+      return true;
+    }
+
+    if (process.isSyncModelStatus()) {
+      process.running = false;
+      this.request.notifyModelInfoToSvr();
+    } else if (process.isFirstRendering()) {
+      this.testTaskFinish();
+    }
+
+    return false;
+  }
+
+  testTaskFinish() {
+    const data = this.data;
+    const process = this.process;
+
+    if (process.isAllFinish()) {
+      if (!data.currentTaskAlive && this.isModelDataLoaded()) {
+        data.currentTaskAlive = true;
+        this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
+        process.toSyncRStatus();
+      }
+    }
+  }
+
+}
+
+exports.ModelScene = ModelScene;
 
 /***/ }),
 
@@ -1912,11 +2045,8 @@ class DivTool {
   static createDivT1(px, py, pw, ph, display = "", position = "", center = true) {
     const div = document.createElement("div");
     let style = div.style;
-
-    if (px > 0 && py > 0) {
-      style.left = px + "px";
-      style.top = py + "px";
-    }
+    style.left = px + "px";
+    style.top = py + "px";
 
     if (pw > 0 && ph > 0) {
       style.width = pw + "px";
@@ -2110,6 +2240,10 @@ class RTaskRquest {
       }
     };
 
+    req.onerror = evt => {
+      console.error("sendACommonGetReq(), error: ", evt);
+    };
+
     req.send(null);
   }
 
@@ -2125,7 +2259,7 @@ class RTaskRquest {
     this.sendACommonGetReq(url, (purl, content) => {
       console.log("### ###### notifyModelInfoToSvr() loaded, content: ", content);
       let sdo = JSON.parse(content);
-      this.taskInfoViewer.parseRenderingReqInfo(sdo);
+      this.taskInfoViewer.parseModelReqInfo(sdo);
     });
   }
 
@@ -2159,9 +2293,140 @@ class RTaskRquest {
     req.send(null);
   }
 
+  syncAliveTasks(callback) {
+    let url = this.createReqUrlStr(this.taskInfoGettingUrl, "syncAliveTasks", 0, 0, "none");
+    console.log("### ###### 01 syncAliveTasks(), url: ", url);
+    this.sendACommonGetReq(url, (purl, content) => {
+      console.log("### ###### 02 syncAliveTasks(), content: ", content);
+      var infoObj = JSON.parse(content);
+      let aliveTasks = infoObj.tasks;
+      callback(aliveTasks);
+      console.log("### ###### 03 syncAliveTasks(), infoObj: ", infoObj);
+    });
+  }
+
 }
 
 exports.RTaskRquest = RTaskRquest;
+
+/***/ }),
+
+/***/ "7aa4":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+class URLFilter {
+  static getDomain(url) {
+    var urlReg = /http:\/\/([^\/]+)/i;
+    let domain = url.match(urlReg);
+    return domain != null && domain.length > 0 ? domain[0] : "";
+  }
+
+  static getHostUrl(port, end = "/") {
+    let host = location.href;
+    let domain = URLFilter.getDomain(host);
+    let nsList = domain.split(":");
+    host = nsList[0] + ":" + nsList[1];
+    return port ? host + ":" + port + "/" : domain + end;
+  }
+
+  static isEnabled() {
+    let hostUrl = window.location.href;
+    return hostUrl.indexOf(".artvily.com") > 0;
+  }
+
+  static filterUrl(url) {
+    if (url.indexOf("blob:") < 0) {
+      let hostUrl = window.location.href;
+
+      if (hostUrl.indexOf(".artvily.") > 0) {
+        hostUrl = "http://www.artvily.com:9090/";
+        url = hostUrl + url;
+      }
+    }
+
+    return url;
+  }
+
+  static getFileName(url, lowerCase = false, force = false) {
+    if (url.indexOf("blob:") < 0 || force) {
+      let i = url.lastIndexOf("/");
+
+      if (i < 0) {
+        return "";
+      }
+
+      let j = url.indexOf(".", i);
+
+      if (j < 0) {
+        return "";
+      }
+
+      if (i + 2 < j) {
+        let str = url.slice(i + 1, j);
+
+        if (lowerCase) {
+          return str.toLocaleLowerCase();
+        }
+
+        return str;
+      }
+    }
+
+    return "";
+  }
+
+  static getFileNameAndSuffixName(url, lowerCase = false, force = false) {
+    if (url.indexOf("blob:") < 0 || force) {
+      let i = url.lastIndexOf("/");
+      let j = url.indexOf(".", i);
+
+      if (j < 0) {
+        return "";
+      }
+
+      let str = url.slice(i + 1);
+
+      if (lowerCase) {
+        return str.toLocaleLowerCase();
+      }
+
+      return str;
+    }
+
+    return "";
+  }
+
+  static getFileSuffixName(url, lowerCase = false, force = false) {
+    if (url.indexOf("blob:") < 0 || force) {
+      let i = url.lastIndexOf("/");
+      let j = url.indexOf(".", i);
+
+      if (j < 0) {
+        return "";
+      }
+
+      let str = url.slice(j + 1);
+
+      if (lowerCase) {
+        return str.toLocaleLowerCase();
+      }
+
+      return str;
+    }
+
+    return "";
+  }
+
+}
+
+exports.default = URLFilter;
 
 /***/ }),
 
@@ -2175,24 +2440,31 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+const ModelScene_1 = __webpack_require__("3b8d");
+
 class DsrdScene {
   constructor() {
-    this.m_viewerLayer = null;
-    this.ui = null;
-    this.taskSys = null;
+    this.m_viewerLayer = null; // ui: DsrdUI = null;
+    // taskSys: RTaskSystem = null;
+
     this.rscViewer = null;
+    this.modelScene = new ModelScene_1.ModelScene();
+    this.onaction = null;
   }
 
   initialize(viewerLayer) {
     console.log("DsrdScene::initialize()......");
-    this.m_viewerLayer = viewerLayer;
-    let url = "static/cospace/dsrdiffusion/scViewer/SceneViewer.umd.js";
+    this.m_viewerLayer = viewerLayer; // let url = "static/cospace/dsrdiffusion/scViewer/SceneViewer.umd.js";
+
+    let url = "static/cospace/dsrdiffusion/dsrdViewer/DsrdViewer.umd.js";
     this.loadModule(url);
   }
 
   init3DScene() {
-    let rscViewer = new SceneViewer.SceneViewer();
-    this.rscViewer = rscViewer;
+    // let rscViewer = new SceneViewer.SceneViewer();
+    let rscViewer = new DsrdViewer.DsrdViewer();
+    let selfT = this;
+    selfT.rscViewer = rscViewer;
     console.log("rscViewer: ", rscViewer);
     let debugDev = true;
     let host = location.href;
@@ -2202,11 +2474,27 @@ class DsrdScene {
       debugDev = false;
     }
 
-    rscViewer.initialize(this.m_viewerLayer, () => {}, true, debugDev); // 增加三角面数量的信息显示
+    rscViewer.initialize(this.m_viewerLayer, () => {}, true, debugDev, true); // 增加三角面数量的信息显示
 
     rscViewer.setForceRotate90(true);
-    this.ui.setRSCViewer(rscViewer);
-    this.taskSys.setRSCViewer(rscViewer);
+    this.modelScene.setRSCViewer(rscViewer);
+    rscViewer.setMouseUpListener(evt => {
+      console.log("upupup XXX, evt: ", evt);
+
+      if (evt.uuid == "") {
+        console.log("clear model ops !!!");
+      } else {
+        console.log("select model ops !!!");
+      }
+
+      if (this.onaction) {
+        this.onaction("select_a_model", evt.uuid);
+      }
+    });
+
+    if (this.onaction) {
+      this.onaction("rsc_viewer_loaded", "finish");
+    }
   }
 
   loadModule(purl) {
@@ -2234,6 +2522,12 @@ class DsrdScene {
     };
 
     codeLoader.send(null);
+  }
+
+  run() {
+    if (this.rscViewer) {
+      this.rscViewer.run();
+    }
   }
 
 }
@@ -2638,13 +2932,32 @@ class RTaskBeginUI {
     input.click();
   }
 
-  showTasksList() {
+  showTasksList(aliveTasks) {
     this.m_uploadModelBtn.setVisible(false);
     this.m_openTasksListBtn.setVisible(false);
-    this.buildTasksList();
+    this.buildTasksList(aliveTasks);
   }
 
-  gotoAliveTaskAt(index) {}
+  gotoAliveTask(data) {
+    console.log("gotoAliveTask(), data: ", data);
+    const sys = this.rtaskSys;
+    sys.data.copyFromJson(data); // if (sys.data.isFinish()) {
+    // 	sys.process.toSyncRStatus();
+    // }else {
+    // 	sys.process.toFirstRendering();
+    // }
+
+    sys.process.toFirstRendering();
+    sys.infoViewer.reset();
+    this.m_uploadUI.initUI();
+    sys.infoViewer.infoDiv = this.m_uploadUI.getTextDiv();
+    sys.startup(); // if (this.onaction) {
+    // 	this.onaction("uploading_success", type);
+    // }
+
+    this.m_tasksListDiv.style.visibility = "hidden";
+    this.m_backFromTaskListBtn.setVisible(false);
+  }
 
   backFromTasksList() {
     this.m_tasksListDiv.style.visibility = "hidden";
@@ -2653,7 +2966,7 @@ class RTaskBeginUI {
     this.m_openTasksListBtn.setVisible(true);
   }
 
-  buildTasksList() {
+  buildTasksList(aliveTasks) {
     let div = this.m_tasksListDiv;
 
     if (div == null) {
@@ -2691,16 +3004,16 @@ class RTaskBeginUI {
     this.m_tasksListDiv.style.visibility = "visible";
     this.m_backFromTaskListBtn.setVisible(true);
     HtmlDivUtils_1.DivTool.clearDivAllEles(div);
-    let total = 8;
+    let total = aliveTasks.length;
 
     for (let i = 0; i < total; ++i) {
       let br = document.createElement("br");
       div.appendChild(br);
       let link = document.createElement("a");
-      link.innerHTML = "选择第<" + (i + 1) + ">个渲染任务: " + "vkTask-" + i;
+      link.innerHTML = `渲染任务<<b><font color="#008800">${aliveTasks[i].taskname}</font></b>>`;
       link.href = "#";
       link.addEventListener("click", () => {
-        this.gotoAliveTaskAt(i);
+        this.gotoAliveTask(aliveTasks[i]);
       });
       div.appendChild(link);
       br = document.createElement("br");
@@ -2724,16 +3037,13 @@ class RTaskBeginUI {
     container.appendChild(div);
     let btn = new ButtonDivItem_1.ButtonDivItem();
     btn.setDeselectColors(colors);
-    btn.initialize(div, "上传渲染模型", "upload_model");
+    btn.initialize(div, "新建渲染任务", "upload_model");
     btn.applyColorAt(0);
 
     btn.onmouseup = evt => {
       let currEvt = evt;
       console.log("button_idns: ", currEvt.button_idns);
-      this.openDir(); // // for test
-      // if(this.onaction) {
-      // 	this.onaction("toWorkSpace", "finish");
-      // }
+      this.openDir();
     };
 
     btn.setTextColor(0xeeeeee);
@@ -2748,7 +3058,16 @@ class RTaskBeginUI {
     btn.onmouseup = evt => {
       let currEvt = evt;
       console.log("button_idns: ", currEvt.button_idns);
-      this.showTasksList();
+      let req = this.rtaskSys.request;
+      req.syncAliveTasks(aliveTasks => {
+        console.log("aliveTasks: ", aliveTasks);
+
+        if (aliveTasks && aliveTasks.length > 0) {
+          this.showTasksList(aliveTasks);
+        } else {
+          alert("没有可操作的其他渲染任务");
+        }
+      });
     };
 
     btn.setTextColor(0xeeeeee);
@@ -2779,6 +3098,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+const HtmlDivUtils_1 = __webpack_require__("7191");
+
 const DataItemComponentParam_1 = __webpack_require__("8448");
 
 exports.DataItemComponentParam = DataItemComponentParam_1.DataItemComponentParam;
@@ -2804,21 +3125,18 @@ class DataItemComponent {
   }
 
   init(viewerLayer, param) {
-    // 286dab
     let height = 23;
     let width = 159;
-    let container = this.createDiv(this.x, this.y, 320, height, "", "", "absolute");
+    let container = HtmlDivUtils_1.DivTool.createDivT1(this.x, this.y, 320, height, "block", "absolute", false);
     let style = container.style;
-    let headDiv = this.createDiv(0, 0, width, height, "", "", "absolute");
-    let bodyDiv = this.createDiv(161, 0, width, height, "", "", "absolute");
+    let headDiv = HtmlDivUtils_1.DivTool.createDivT1(0, 0, width, height, "block", "absolute", false);
+    let bodyDiv = HtmlDivUtils_1.DivTool.createDivT1(161, 0, width, height, "block", "absolute", false);
     style = headDiv.style;
     style.background = "#286dab";
     style.color = "#eeeeee";
     style = bodyDiv.style;
     style.background = "#286dab";
-    style.color = "#eeeeee"; // let style = container.style;
-    // style.background = "#286dab";
-
+    style.color = "#eeeeee";
     viewerLayer.appendChild(container);
     this.m_containerDiv = container;
     this.m_headDiv = headDiv;
@@ -2847,43 +3165,11 @@ class DataItemComponent {
       style.outline = "none";
       style.color = "#eeeeee";
       style.fontSize = "17px";
-      style.textAlign = "center"; // style.alignItems = "center";
-      // style.justifyContent = "center";
-
+      style.textAlign = "center";
       bodyDiv.append(input);
       this.m_input = input;
       param.body_viewer = input;
     }
-  }
-
-  createDiv(px, py, pw, ph, display = "block", align = "", position = "") {
-    const div = document.createElement("div");
-    let style = div.style;
-    style.left = px + "px";
-    style.top = py + "px";
-    style.width = pw + "px";
-    style.height = ph + "px";
-
-    if (display != "") {
-      style.display = display;
-    }
-
-    if (align != "") {
-      switch (align) {
-        case "center":
-          style.alignItems = "center";
-          style.justifyContent = "center";
-          break;
-      }
-    } // style.userSelect = "none";
-    // style.position = "relative";
-
-
-    if (position != "") {
-      style.position = position;
-    }
-
-    return div;
   }
 
 }
@@ -3026,12 +3312,12 @@ class RTaskSystem {
     this.data = new RTaskData_1.RTaskData();
     this.request = new RTaskRequest_1.RTaskRquest();
     this.infoViewer = new RTaskInfoViewer_1.RTaskInfoViewer();
+    this.modelScene = null;
     this.onaction = null;
     this.m_timerId = -1;
     this.m_rerenderingTimes = 0;
     this.m_workSpaceStatus = 0;
     this.m_rscViewer = null;
-    this.m_taskAlive = false;
   }
 
   initialize() {
@@ -3064,6 +3350,7 @@ class RTaskSystem {
     this.m_timerId = setTimeout(this.timerUpdate.bind(this), this.process.timerDelay);
     const data = this.data;
     const process = this.process;
+    const modelsc = this.modelScene;
 
     if (process.running && !process.isError()) {
       switch (this.process.type) {
@@ -3073,10 +3360,8 @@ class RTaskSystem {
 
         case RTaskProcess_1.RTPType.CurrRendering:
           if (process.isAllFinish()) {
-            console.log("CurrRendering, all finish."); // this.m_rscViewer.setViewImageUrl(data.miniImgUrl + "&rrtimes="+this.m_rerenderingTimes, true, 1.0);
-
-            console.log("AAAA this.m_rscViewer.setViewImageUrls() 0.");
-            this.m_rscViewer.setViewImageUrls(data.miniImgUrls);
+            console.log("CurrRendering, all finish.");
+            this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
             process.toSyncRStatus();
 
             if (this.onaction) {
@@ -3091,9 +3376,7 @@ class RTaskSystem {
 
         case RTaskProcess_1.RTPType.FirstRendering:
           if (process.isRunning()) {
-            if (process.isModelFinish()) {
-              this.loadModel();
-            }
+            modelsc.loadModel();
 
             if (process.isRenderingFinish()) {
               if (!process.isModelFinish()) {
@@ -3105,26 +3388,13 @@ class RTaskSystem {
             }
           } else if (process.isAllFinish()) {
             console.log("FirstRendering, all finish.");
-
-            if (!this.m_taskAlive && data.modelLoadStatus == 2) {
-              this.m_taskAlive = true; // this.m_rscViewer.setViewImageUrl(data.miniImgUrl + "&rrtimes="+this.m_rerenderingTimes, true, 1.0);
-
-              console.log("AAAA this.m_rscViewer.setViewImageUrls() 1.");
-              this.m_rscViewer.setViewImageUrls(data.miniImgUrls);
-              process.toSyncRStatus();
-            }
+            modelsc.loadModel();
           }
 
           break;
 
         case RTaskProcess_1.RTPType.SyncModelStatus:
-          if (process.isModelFinish()) {
-            this.loadModel();
-          } else {
-            process.running = false;
-            this.request.notifyModelInfoToSvr();
-          }
-
+          modelsc.loadModel();
           break;
 
         default:
@@ -3149,6 +3419,8 @@ class RTaskSystem {
       if (this.onaction) {
         this.onaction("curr-rendering", "new");
       }
+
+      this.modelScene.rerendering();
     }
   }
 
@@ -3171,57 +3443,7 @@ class RTaskSystem {
   }
 
   isTaskAlive() {
-    return this.m_taskAlive;
-  }
-
-  loadModel() {
-    let data = this.data;
-
-    if (data.modelLoadStatus == 0) {
-      data.modelLoadStatus = 1;
-      let req = this.request;
-      let params = "";
-      let url = req.createReqUrlStr(req.taskInfoGettingUrl, "modelToDrc", 0, data.taskid, data.taskname, params);
-      console.log("### ######02 loadModel(), url: ", url);
-      req.sendACommonGetReq(url, (purl, content) => {
-        console.log("### ###### loadDrcModels() loaded, content: ", content);
-        var infoObj = JSON.parse(content);
-        console.log("loadDrcModels() loaded, infoObj: ", infoObj);
-        let resBaseUrl = req.getHostUrl(9090) + infoObj.filepath.slice(2);
-        let statusUrl = resBaseUrl + "status.json";
-        req.sendACommonGetReq(statusUrl, (pstatusUrl, content) => {
-          let statusObj = JSON.parse(content);
-          console.log("statusObj: ", statusObj);
-          let list = statusObj.list;
-          let drcsTotal = list.length;
-          let drcUrls = [];
-          let types = [];
-
-          for (let i = 0; i < drcsTotal; i++) {
-            let drcUrl = resBaseUrl + list[i];
-            drcUrls.push(drcUrl);
-            types.push("drc");
-          }
-
-          console.log("drcUrls: ", drcUrls);
-
-          if (this.m_rscViewer != null) {
-            this.m_rscViewer.initSceneByUrls(drcUrls, types, prog => {
-              console.log("3d viewer drc model loading prog: ", prog);
-
-              if (prog >= 1.0) {}
-            }, 200);
-            this.m_rscViewer.setViewImageFakeAlpha(0.1);
-          }
-
-          data.modelLoadStatus = 2;
-
-          if (this.process.isSyncModelStatus()) {
-            this.process.toFirstRendering();
-          }
-        });
-      });
-    }
+    return this.data.isCurrTaskAlive();
   }
 
 }
@@ -3568,6 +3790,7 @@ class DsrdShell {
     this.m_ui = new DsrdUI_1.DsrdUI();
     this.m_rtaskBeginUI = new RTaskBeginUI_1.RTaskBeginUI();
     this.m_rtaskSys = new RTaskSystem_1.RTaskSystem();
+    this.m_modelScene = null;
     this.m_viewerLayer = null; // private m_infoLayer: HTMLDivElement = null;
 
     this.mIDV = null;
@@ -3579,9 +3802,47 @@ class DsrdShell {
 
     if (this.m_init) {
       this.m_init = false;
-      this.m_rscene.ui = this.m_ui;
-      this.m_rscene.taskSys = this.m_rtaskSys;
+      this.m_modelScene = this.m_rscene.modelScene;
+      const rtsys = this.m_rtaskSys;
+      const modelsc = this.m_modelScene;
+      rtsys.modelScene = modelsc;
+      modelsc.data = rtsys.data;
+      modelsc.request = rtsys.request;
+      modelsc.infoViewer = rtsys.infoViewer;
+      modelsc.process = rtsys.process;
+
+      let actioncall = (idns, type) => {
+        switch (idns) {
+          case "rsc_viewer_loaded":
+            let rviewer = this.m_rscene.rscViewer;
+            this.m_ui.setRSCViewer(rviewer);
+            this.m_rtaskSys.setRSCViewer(rviewer);
+            break;
+
+          case "select_a_model":
+            let uuidStr = type;
+            console.log("DsrdShell::initialize() select uuidStr: ", uuidStr); // let rviewer = this.m_rscene.rscViewer;
+            // this.m_ui.setRSCViewer(rviewer);
+            // this.m_rtaskSys.setRSCViewer(rviewer);
+
+            let panel = this.m_ui.getMaterialPanel();
+            panel.setModelNameWithUrl(uuidStr);
+            break;
+
+          default:
+            break;
+        }
+      };
+
+      this.m_rscene.onaction = actioncall;
       this.initWorkSpace();
+
+      let mainLoop = now => {
+        this.m_rscene.run();
+        window.requestAnimationFrame(mainLoop);
+      };
+
+      window.requestAnimationFrame(mainLoop);
     }
   }
 

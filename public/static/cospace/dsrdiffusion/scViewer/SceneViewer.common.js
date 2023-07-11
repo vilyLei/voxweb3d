@@ -34178,7 +34178,6 @@ class Default3DEntity extends DisplayEntity_1.default {
 
   setAlpha(a, texAlpha = 0.0) {
     if (this.m_mt) {
-      console.log("Default3DEntity::setAlpha(), alpha: ", a);
       this.m_mt.setAlpha(a);
     }
   }
@@ -35130,6 +35129,10 @@ class CameraBase {
       this.m_rightHandEnabled = true;
       this.m_changed = true;
     }
+  }
+
+  getFOVRandian() {
+    return this.m_fovRadian;
   }
 
   getAspect() {
@@ -41434,7 +41437,6 @@ class SceneViewer {
     this.m_forceRot90 = false;
     this.m_debugDev = false;
     this.m_baseSize = 200;
-    this.m_camvs = [0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 2.390000104904175, 0.7071067690849304, 0.40824827551841736, -0.5773502588272095, -2.390000104904175, 0, 0.8164965510368347, 0.5773502588272095, 2.390000104904175, 0, 0, 0, 1];
     this.m_mi = null;
     this.m_rsceneCamVer = -10;
     this.m_imgViewEntity = null;
@@ -41445,6 +41447,8 @@ class SceneViewer {
     this.m_imgResLoader = new ImageResLoader_1.default();
     this.m_imgLoaded = true;
     this.m_imgUrls = [];
+    this.m_imgTex = null;
+    this.m_imgTexDelay = 0;
     this.m_dropEnabled = true;
   }
 
@@ -41470,9 +41474,8 @@ class SceneViewer {
   initSys() {
     this.m_texLoader = new ImageTextureLoader_1.default(this.m_rscene.textureBlock);
     this.m_rscene.addEventListener(MouseEvent_1.default.MOUSE_DOWN, this, this.mouseDown);
-    this.m_rscene.addEventListener(KeyboardEvent_1.default.KEY_DOWN, this, this.keyDown); // new RenderStatusDisplay(this.m_rscene, true);
-
-    this.m_mi = new MouseInteraction_1.MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 1); // this.m_teamLoader.verTool = new CoModuleVersion(null);
+    this.m_rscene.addEventListener(KeyboardEvent_1.default.KEY_DOWN, this, this.keyDown);
+    this.m_mi = new MouseInteraction_1.MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 1);
   }
 
   loadInfo(initCallback) {
@@ -41493,9 +41496,9 @@ class SceneViewer {
     }, null, null, "json");
   }
 
-  updateCameraWithF32Arr16(fs32Arr16) {
+  updateCameraWithF32Arr16(fs32Arr16, updateCamera = true) {
     if (fs32Arr16.length == 16) {
-      this.applyCamvs(fs32Arr16);
+      this.applyCamvs(fs32Arr16, updateCamera);
     }
   }
 
@@ -41511,6 +41514,25 @@ class SceneViewer {
     div.style.display = "bolck";
     div.style.position = "absolute";
     return div;
+  }
+  /**
+   * @param fov_angle_degree the default value is 45.0
+   * @param near the default value is 10.0
+   * @param far the default value is 5000.0
+   */
+
+
+  setCamProjectParam(fov_angle_degree, near, far) {
+    if (this.m_rscene) {
+      let cam = this.m_rscene.getCamera();
+      cam.perspectiveRH(Math.PI * fov_angle_degree / 180.0, cam.getAspect(), near, far);
+    }
+  }
+
+  updateCamera() {
+    if (this.m_rscene) {
+      this.m_rscene.update();
+    }
   }
 
   initialize(div = null, initCallback = null, zAxisUp = false, debugDev = false) {
@@ -41540,6 +41562,13 @@ class SceneViewer {
       this.m_rscene.setClearRGBAColor4f(0, 0, 0, 1);
       this.m_rsceneCamVer = this.m_rscene.getCamera().version;
       let delay = 30;
+      this.m_rscene.addEventListener(MouseEvent_1.default.MOUSE_DOUBLE_CLICK, this, evt => {
+        if (this.m_imageAlpha > this.m_imageFakeAlpha) {
+          this.setViewImageAlpha(this.m_imageFakeAlpha);
+        } else {
+          this.setViewImageAlpha(1.0);
+        }
+      });
       this.m_rscene.addEventListener(EventBase_1.default.ENTER_FRAME, this, evt => {
         // console.log("...");
         const cam = this.m_rscene.getCamera();
@@ -41558,6 +41587,22 @@ class SceneViewer {
             if (this.m_imgLoaded) {
               if (this.m_imgUrls.length > 0) {
                 this.setViewImageUrl(this.m_imgUrls.shift());
+              }
+            }
+          }
+        }
+
+        if (this.m_imgTex != null) {
+          console.log("deferred tex res AAA !!!");
+
+          if (this.m_imgTex.isGpuEnabled()) {
+            if (this.m_imgTexDelay > 0) {
+              this.m_imgTexDelay--;
+
+              if (this.m_imgTexDelay < 1) {
+                console.log("deferred tex alpha changed !!!");
+                this.setViewImageAlpha(this.m_imageAlpha);
+                this.m_imgTex = null;
               }
             }
           }
@@ -41632,11 +41677,13 @@ class SceneViewer {
               let tex = this.m_rscene.textureBlock.createImageTex2D();
               tex.flipY = true;
               tex.setDataFromImage(img);
-              console.log("load a new tex res from an image.");
-              this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
+              console.log("load a new tex res from an image.test01."); // this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
+
               this.m_imgViewEntity.setTextureList([tex]);
               this.m_imgViewEntity.updateMaterialToGpu();
               this.m_imgLoaded = true;
+              this.m_imgTex = tex;
+              this.m_imgTexDelay = 5;
             });
           } else {
             this.m_imgUrls.push(url);
@@ -41684,6 +41731,7 @@ class SceneViewer {
       tex.flipY = true;
       this.m_imgViewEntity = new ScreenFixedAlignPlaneEntity_1.default();
       this.m_imgViewEntity.transparentBlend = true;
+      this.m_imgViewEntity.depthAlwaysFalse = true;
       this.m_imgViewEntity.initialize(-1, -1, 2.0, 2.0, [tex]);
       this.m_imgViewEntity.setAlpha(this.m_imageAlpha);
       this.m_imgViewEntity.setVisible(this.m_imageVisible);
@@ -41834,7 +41882,7 @@ class SceneViewer {
     this.m_mouseDownCall = mouseDownCall;
   }
 
-  applyCamvs(cdvs) {
+  applyCamvs(cdvs, updateCamera) {
     if (cdvs == null) {
       cdvs = [0.7071067690849304, -0.40824827551841736, 0.5773502588272095, 2.390000104904175, 0.7071067690849304, 0.40824827551841736, -0.5773502588272095, -2.390000104904175, 0.0, 0.8164965510368347, 0.5773502588272095, 2.390000104904175, 0, 0, 0, 1];
     }
@@ -41861,7 +41909,10 @@ class SceneViewer {
     if (pos.getLength() > 0.001) {
       let camPos = pos.clone().scaleBy(100.0);
       cam.lookAtRH(camPos, new Vector3D_1.default(), vy);
-      cam.update();
+
+      if (updateCamera) {
+        cam.update();
+      }
     }
   }
 

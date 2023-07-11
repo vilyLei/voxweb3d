@@ -13,6 +13,7 @@ import IRODisplay from "../../vox/display/IRODisplay";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import IMeshBase from "../mesh/IMeshBase";
 import IRenderEntityBase from "./IRenderEntityBase";
+import IRenderTexture from "./texture/IRenderTexture";
 
 /**
  * to be used in the renderer runtime
@@ -58,6 +59,11 @@ export default interface IRenderEntity extends IRenderEntityBase {
      * @param deferred the default value is true
      */
     updateMeshToGpu(rc?: IRenderProxy, deferred?: boolean): void;
+
+	/**
+	 * set new textures list for the material of this instance.
+	 */
+	setTextureList(texList: IRenderTexture[]): void;
     /**
      * @param rc the default value is null
      * @param deferred the default value is true

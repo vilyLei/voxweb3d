@@ -178,6 +178,9 @@ class CameraBase implements IRenderCamera {
             this.m_changed = true;
         }
     }
+	getFOVRandian(): number {
+		return this.m_fovRadian;
+	}
     getAspect(): number { return this.m_aspect; }
     getViewFieldZoom(): number { return this.m_viewFieldZoom; }
     orthoRH(zNear: number, zFar: number, b: number, t: number, l: number, r: number): void {

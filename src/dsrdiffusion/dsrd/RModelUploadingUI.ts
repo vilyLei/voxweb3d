@@ -30,39 +30,26 @@ class RModelUploadingUI {
 	}
 	open(): void {}
 	close(): void {}
-	private initUI(): void {
+	initUI(): void {
 		this.open();
 
 		if (this.m_textViewer == null) {
-			let pw = 320;
-			let ph = 300;
 			let div = DivTool.createDiv(320, 300);
 			this.m_viewerLayer.appendChild(div);
 			let v = new HTMLViewerLayer(div);
 			v.setTextAlign("center");
 			v.layoutToCenter();
-			// v.setDisplayMode("block");
-			// v.setPositionMode("absolute");
 			this.m_textViewer = v;
 		} else {
 			this.m_textViewer.show();
 		}
 		this.m_textViewer.setInnerHTML("uploading...");
-		this.progressCall({ lengthComputable: true, loaded: 100, total: 50000 });
-
+		// this.progressCall({ lengthComputable: true, loaded: 100, total: 50000 });
 		// this.toUploadFailure("...");
 	}
-	// private getRenderingParams(otherParams: string): string {
-	// 	let rtBGTransparent = false;
-	// 	let rimgSizes = [512, 512];
-	// 	let params = "&sizes=" + rimgSizes;
-	// 	// params += getCameraDataParam();
-	// 	params += "&rtBGTransparent=" + (rtBGTransparent ? "1" : "0");
-	// 	if (otherParams != "") {
-	// 		params += otherParams;
-	// 	}
-	// 	return params;
-	// }
+	getTextDiv(): HTMLDivElement {
+		return this.m_textViewer.getDiv();
+	}
 	private completeCall(evt: any): void {
 		let str = evt.target.responseText + "";
 		console.log("evt.target.responseText: ", str);
@@ -78,17 +65,15 @@ class RModelUploadingUI {
 		if (data.success) {
 			// setTaskJsonData(data);
 			console.log("上传成功！");
-			this.rtaskSys.process.toFirstRendering();
-			this.rtaskSys.data.copyFromJson( data );
-			this.rtaskSys.infoViewer.reset();
-			this.rtaskSys.infoViewer.infoDiv = this.m_textViewer.getDiv();
-			this.rtaskSys.startup();
-			// 立即发起一次渲染，获取缩略图和模型数据
-			// alert("上传成功！");
-			// this.reqstUpdate();
-			if (this.onaction) {
-				this.onaction("uploading_success", type);
-			}
+			const sys = this.rtaskSys;
+			sys.process.toFirstRendering();
+			sys.data.copyFromJson( data );
+			sys.infoViewer.reset();
+			sys.infoViewer.infoDiv = this.getTextDiv();
+			sys.startup();
+			// if (this.onaction) {
+			// 	this.onaction("uploading_success", type);
+			// }
 		} else {
 			// alert("上传失败！");
 			console.log("上传失败！");

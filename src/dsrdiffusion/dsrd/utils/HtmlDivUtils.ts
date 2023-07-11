@@ -64,10 +64,8 @@ class DivTool {
 	static createDivT1(px: number, py: number, pw: number, ph: number, display = "", position = "", center: boolean = true): HTMLDivElement {
 		const div = document.createElement("div");
 		let style = div.style;
-		if (px > 0 && py > 0) {
-			style.left = px + "px";
-			style.top = py + "px";
-		}
+		style.left = px + "px";
+		style.top = py + "px";
 		if (pw > 0 && ph > 0) {
 			style.width = pw + "px";
 			style.height = ph + "px";

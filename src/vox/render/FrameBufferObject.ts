@@ -565,7 +565,7 @@ class FrameBufferObject {
 			}
 			if (fs[i] != this.m_uid) {
 				fs[i] = this.m_uid;
-				console.log("XXXXX fbo A0 bind fbo to OK..., gl.FRAMEBUFFER: ", gl.FRAMEBUFFER, type);
+				// console.log("XXXXX fbo A0 bind fbo to OK..., gl.FRAMEBUFFER: ", gl.FRAMEBUFFER, type);
 				gl.bindFramebuffer(type, this.m_fbo);
 			}
 			return type;
@@ -574,7 +574,7 @@ class FrameBufferObject {
 	}
 	static BindToBackbuffer(rc: any, frameBufferType: number, rcuid: number): void {
 		const fs = FrameBufferObject.s_bindFT[rcuid];
-		console.log("XXXXX fbo A1 bind fbo to BindToBackbuffer:(), frameBufferType: ", frameBufferType);
+		// console.log("XXXXX fbo A1 bind fbo to BindToBackbuffer:(), frameBufferType: ", frameBufferType);
 		switch (frameBufferType) {
 			case FrameBufferType.DRAW_FRAMEBUFFER:
 				fs[2] = -9;

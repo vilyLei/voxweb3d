@@ -61,14 +61,35 @@ class RTaskBeginUI {
 		input.click();
 	}
 
-	showTasksList(): void {
+	showTasksList(aliveTasks: any[]): void {
 		this.m_uploadModelBtn.setVisible(false);
 		this.m_openTasksListBtn.setVisible(false);
-		this.buildTasksList();
+		this.buildTasksList(aliveTasks);
 	}
 	private m_tasksListDiv: HTMLDivElement = null;
 	private m_backFromTaskListBtn: ButtonDivItem = null;
-	private gotoAliveTaskAt(index: number): void {}
+	private gotoAliveTask(data: any): void {
+		console.log("gotoAliveTask(), data: ", data);
+		const sys = this.rtaskSys;
+		sys.data.copyFromJson(data);
+		// if (sys.data.isFinish()) {
+		// 	sys.process.toSyncRStatus();
+		// }else {
+		// 	sys.process.toFirstRendering();
+		// }
+		sys.process.toFirstRendering();
+
+		sys.infoViewer.reset();
+		this.m_uploadUI.initUI();
+		sys.infoViewer.infoDiv = this.m_uploadUI.getTextDiv();
+		sys.startup();
+		// if (this.onaction) {
+		// 	this.onaction("uploading_success", type);
+		// }
+
+		this.m_tasksListDiv.style.visibility = "hidden";
+		this.m_backFromTaskListBtn.setVisible(false);
+	}
 	private backFromTasksList(): void {
 		this.m_tasksListDiv.style.visibility = "hidden";
 		this.m_backFromTaskListBtn.setVisible(false);
@@ -76,7 +97,7 @@ class RTaskBeginUI {
 		this.m_uploadModelBtn.setVisible(true);
 		this.m_openTasksListBtn.setVisible(true);
 	}
-	buildTasksList(): void {
+	buildTasksList(aliveTasks: any[]): void {
 		let div = this.m_tasksListDiv;
 		if (div == null) {
 			let pw = 320;
@@ -113,16 +134,16 @@ class RTaskBeginUI {
 		this.m_tasksListDiv.style.visibility = "visible";
 		this.m_backFromTaskListBtn.setVisible(true);
 		DivTool.clearDivAllEles(div);
-		let total = 8;
+		let total = aliveTasks.length;
 		for (let i = 0; i < total; ++i) {
 			let br = document.createElement("br");
 			div.appendChild(br);
 
 			let link = document.createElement("a");
-			link.innerHTML = "选择第<" + (i + 1) + ">个渲染任务: " + "vkTask-" + i;
+			link.innerHTML = `渲染任务<<b><font color="#008800">${aliveTasks[i].taskname}</font></b>>`;
 			link.href = "#";
 			link.addEventListener("click", () => {
-				this.gotoAliveTaskAt(i);
+				this.gotoAliveTask(aliveTasks[i]);
 			});
 			div.appendChild(link);
 			br = document.createElement("br");
@@ -144,16 +165,12 @@ class RTaskBeginUI {
 		container.appendChild(div);
 		let btn = new ButtonDivItem();
 		btn.setDeselectColors(colors);
-		btn.initialize(div, "上传渲染模型", "upload_model");
+		btn.initialize(div, "新建渲染任务", "upload_model");
 		btn.applyColorAt(0);
 		btn.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns);
 			this.openDir();
-			// // for test
-			// if(this.onaction) {
-			// 	this.onaction("toWorkSpace", "finish");
-			// }
 		};
 		btn.setTextColor(0xeeeeee);
 		this.m_uploadModelBtn = btn;
@@ -167,7 +184,15 @@ class RTaskBeginUI {
 		btn.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns);
-			this.showTasksList();
+			let req = this.rtaskSys.request;
+			req.syncAliveTasks((aliveTasks: any[]): void => {
+				console.log("aliveTasks: ", aliveTasks);
+				if (aliveTasks && aliveTasks.length > 0) {
+					this.showTasksList(aliveTasks);
+				} else {
+					alert("没有可操作的其他渲染任务");
+				}
+			});
 		};
 		btn.setTextColor(0xeeeeee);
 		this.m_openTasksListBtn = btn;

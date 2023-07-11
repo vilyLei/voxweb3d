@@ -112,7 +112,7 @@ class DsrdUI implements IRTJsonData {
 		container.appendChild(div);
 		let divs = [div];
 		let btn = new ButtonDivItem();
-		btn.initialize(div, "新建渲染任务", "new_rendering");
+		btn.initialize(div, "获取渲染任务", "new_rendering");
 		btn.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns);
@@ -232,6 +232,10 @@ class DsrdUI implements IRTJsonData {
 		// console.log(jsonStr);
 		return jsonBody;
 	}
+	private m_materialPanel: MaterialDataPanel = null;
+	getMaterialPanel(): MaterialDataPanel {
+		return this.m_materialPanel;
+	}
 	protected createSettingPanel(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number, data: IItemData): SettingDataPanel {
 		let settingPanel: SettingDataPanel = null;
 		switch (data.type) {
@@ -245,7 +249,8 @@ class DsrdUI implements IRTJsonData {
 				settingPanel = new CameraDataPanel();
 				break;
 			case "material":
-				settingPanel = new MaterialDataPanel();
+				this.m_materialPanel = new MaterialDataPanel();
+				settingPanel = this.m_materialPanel;
 				break;
 			case "light":
 				settingPanel = new LightDataPanel();

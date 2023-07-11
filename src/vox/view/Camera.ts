@@ -14,7 +14,7 @@ import {IRenderCamera} from "../../vox/render/IRenderCamera";
 class Camera implements IRenderCamera{
 
     protected m_uslotIndex: number = 0;
-    
+
     protected m_tempV: Vector3D = new Vector3D()
     protected m_tempV1: Vector3D = new Vector3D();
     protected m_initRV: Vector3D = new Vector3D();
@@ -50,7 +50,7 @@ class Camera implements IRenderCamera{
     protected m_rightHandEnabled: boolean = true;
     protected m_rotV: Vector3D = new Vector3D(0.0,0.0,0.0);
     protected m_scaleV: Vector3D = new Vector3D(1.0,1.0,1.0);
-    
+
     protected m_viewFieldZoom: number = 1.0;
     protected m_changed: boolean = true;
     protected m_unlock: boolean = true;
@@ -64,7 +64,7 @@ class Camera implements IRenderCamera{
     ucameraPosProbe: IShaderUniformProbe = null;
     uniformEnabled: boolean = false;
     name = "Camera";
-    
+
 
     // 不允许外界修改camera数据
     lock(): void {
@@ -110,7 +110,7 @@ class Camera implements IRenderCamera{
             this.m_changed = true;
         }
     }
-    
+
     getLookAtLHToCamera(camera: Camera): void {
         camera.lookAtLH(this.m_camPos, this.m_lookAtPos, this.m_up);
     }
@@ -118,20 +118,24 @@ class Camera implements IRenderCamera{
         camera.lookAtRH(this.m_camPos, this.m_lookAtPos, this.m_up);
     }
     perspectiveLH(fovy: number, aspect: number, zNear: number, zFar: number): void {
-        
+
     }
-    perspectiveRH(fovy: number, aspect: number, zNear: number, zFar: number): void {        
+    perspectiveRH(fovy: number, aspect: number, zNear: number, zFar: number): void {
     }
-    perspectiveRH2(fovy: number, pw: number, ph: number, zNear: number, zFar: number): void {        
+    perspectiveRH2(fovy: number, pw: number, ph: number, zNear: number, zFar: number): void {
     }
     getAspect(): number { return this.m_aspect; }
     getViewFieldZoom(): number { return this.m_viewFieldZoom; }
     orthoRH(zNear: number, zFar: number, b: number, t: number, l: number, r: number): void {
-        
+
     }
     orthoLH(zNear: number, zFar: number, b: number, t: number, l: number, r: number): void {
-        
+
     }
+
+	getFOVRandian(): number {
+		return 1.7;
+	}
     isPerspectiveEnabled(): boolean {
         return this.m_perspectiveEnabled;
     }
@@ -192,7 +196,7 @@ class Camera implements IRenderCamera{
     translationXYZ(px: number, py: number, pz: number): void {
         this.m_tempV.setXYZ(px,py,pz);
         if (this.m_unlock && Vector3D.DistanceSquared(this.m_camPos, this.m_tempV) > 0.01) {
-            
+
             this.m_camPos.setTo(px, py, pz);
             this.m_lookAtPos.x = px + this.m_lookAtDirec.x;
             this.m_lookAtPos.y = py + this.m_lookAtDirec.y;
@@ -308,7 +312,7 @@ class Camera implements IRenderCamera{
         }
     }
     copyFrom(tarCam: Camera): void {
-        
+
     }
     private m_tempNV: Vector3D = new Vector3D();
     private m_tempUPV: Vector3D = new Vector3D();
@@ -323,7 +327,7 @@ class Camera implements IRenderCamera{
     getRV(): Vector3D { this.m_tempRV.copyFrom(this.m_initRV); return this.m_tempRV; }
     getPosition():Vector3D { this.m_tempCamPos.copyFrom(this.m_camPos); return this.m_tempCamPos; }
     getLookAtPosition(): Vector3D { this.m_tempLookAtPos.copyFrom(this.m_lookAtPos); return this.m_tempLookAtPos; }
-    
+
     setLookAtPosition(v: Vector3D):void {
         if (this.m_unlock) {
             this.m_lookAtPos.setTo(v.x, v.y, v.z);
@@ -399,12 +403,12 @@ class Camera implements IRenderCamera{
         //this.m_viewInvertMat.transformVectorSelf(outV);
     }
     getWorldPickingRayByScreenXY(screenX: number, screenY: number, ray_pos: Vector3D, ray_tv: Vector3D): void {
-        
+
     }
     calcScreenNormalizeXYByWorldPos(pv3: Vector3D, scPV3: Vector3D): void {
     }
     worldPosToScreen(pv: Vector3D): void {
-        
+
     }
     // 计算3D空间的球体在屏幕空间的最小包围矩形, outV的x,y表示矩形的x和y;outV的z和w表示宽和高,取值为像素数
     calcViewRectByWorldSphere(pv: Vector3D, radius: number, outV: Vector3D): void {
@@ -412,7 +416,7 @@ class Camera implements IRenderCamera{
 
     // 计算3D空间的球体在屏幕空间的最小包围矩形, outV的x,y表示矩形的x和y;outV的z和w表示宽和高,取值0.0 - 1.0之间
     calcScreenRectByWorldSphere(pv: Vector3D, radius: number, outV: Vector3D): void {
-        
+
     }
     getZNear(): number { return this.m_zNear; }
     setZNear(value: number): void { this.m_zNear = value; }
@@ -425,7 +429,7 @@ class Camera implements IRenderCamera{
     getFov(): number {
         return this.m_fovy;
     }
-    
+
     getWordFrustumVtxArr(): Vector3D[] {
         return null;
     }
@@ -456,13 +460,13 @@ class Camera implements IRenderCamera{
     // 可见性检测这边可以做的更精细，例如上一帧检测过的对象如果摄像机没有移动而且它自身也没有位置等变化，就可以不用检测
     // 例如精细检测可以分类: 圆球，圆柱体，长方体 等不同的检测模型计算方式会有区别
     visiTestAABB(ab: AABB): boolean {
-        
+
         return true;
     }
     update(): void {
     }
     updateCamMatToUProbe(uniformProbe: IShaderUniformProbe): void {
-       
+
     }
     destroy(): void {
     }
@@ -472,7 +476,7 @@ class Camera implements IRenderCamera{
     lookLHEnabled(): boolean {
         return !this.m_lookRHEnabled;
     }
-    
+
     getViewMatrix(): IMatrix4 {
         return null;
     }

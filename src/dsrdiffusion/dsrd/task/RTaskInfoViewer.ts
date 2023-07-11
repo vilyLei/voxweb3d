@@ -23,7 +23,7 @@ class RTaskInfoViewer {
 
 	}
 	private taskFailure(): void {}
-	private showSpecInfo(keyStr: string, times: number = -1): void {
+	showSpecInfo(keyStr: string, times: number = -1): void {
 		var div = this.infoDiv;
 		// console.log("this.infoDiv: ", this.infoDiv);
 		if (div != null) {
@@ -54,13 +54,13 @@ class RTaskInfoViewer {
 			this.data.drcsTotal = sdo.drcsTotal;
 			this.process.updateModel(this.data.drcsTotal);
 		}
+		this.showSpecInfo("正在载入模型数据", this.rt_phase_times++);
 		this.process.running = true;
 	}
 	parseRenderingReqInfo(sdo: any) {
 		console.log("parseRenderingReqInfo(), sdo: ", sdo);
 		let status = sdo.status;
 
-		var div = this.infoDiv;
 		let phase = sdo.phase;
 		if (this.rt_phase != phase) {
 			this.rt_phase = phase;

@@ -12,7 +12,7 @@ import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import IMatrix4 from "../math/IMatrix4";
 
 interface IRenderCamera {
-    
+
     version: number;
     matUProbe: IShaderUniformProbe;
     ufrustumProbe: IShaderUniformProbe;
@@ -24,7 +24,7 @@ interface IRenderCamera {
     unlock(): void;
     lookAtLH(camPos: IVector3D, lookAtPos: IVector3D, up: IVector3D): void;
     lookAtRH(camPos: IVector3D, lookAtPos: IVector3D, up: IVector3D): void;
-    
+
     perspectiveLH(fovy: number, aspect: number, zNear: number, zFar: number): void;
     perspectiveRH(fovy: number, aspect: number, zNear: number, zFar: number): void;
     perspectiveRH2(fovy: number, pw: number, ph: number, zNear: number, zFar: number): void;
@@ -42,7 +42,7 @@ interface IRenderCamera {
     getViewHeight(): number;
     getNearPlaneWidth(): number;
     getNearPlaneHeight(): number;
-    
+
     getPerspectiveEnabled(): boolean;
     setPerspectiveEnabled(boo: boolean): void;
 
@@ -51,9 +51,11 @@ interface IRenderCamera {
     getWorldPickingRayByScreenXY(screenX: number, screenY: number, ray_pos: IVector3D, ray_tv: IVector3D): void;
     calcScreenNormalizeXYByWorldPos(pv3: IVector3D, scPV3: IVector3D): void;
     worldPosToScreen(pv: IVector3D): void;
-    
+
     // 计算3D空间的球体在屏幕空间的最小包围矩形, outV的x,y表示矩形的x和y;outV的z和w表示宽和高,取值0.0 - 1.0之间
     calcScreenRectByWorldSphere(pv: IVector3D, radius: number, outV: IVector3D): void;
+
+	getFOVRandian(): number;
     getZNear(): number;
     setZNear(value: number): void;
     getZFar(): number;
@@ -64,13 +66,13 @@ interface IRenderCamera {
     setNearPlaneHeight(value: number): void;
     getFov(): number;
     setLookAtPosition(v: IVector3D):void;
-    
+
     getWordFrustumVtxArr(): IVector3D[];
     getWordFrustumWAABBCenter(): IVector3D;
     visiTestSphere2(w_cv: IVector3D, radius: number): boolean;
 
     visiTestNearPlaneWithSphere(w_cv: IVector3D, radius: number): number;
-    
+
     visiTestSphere3(w_cv: IVector3D, radius: number, farROffset: number): boolean;
     visiTestPosition(pv: IVector3D): boolean;
     visiTestPlane(nv: IVector3D, distance: number): boolean;
@@ -81,7 +83,7 @@ interface IRenderCamera {
     // 可见性检测这边可以做的更精细，例如上一帧检测过的对象如果摄像机没有移动而且它自身也没有位置等变化，就可以不用检测
     // 例如精细检测可以分类: 圆球，圆柱体，长方体 等不同的检测模型计算方式会有区别
     visiTestAABB(ab: IAABB): boolean;
-    
+
     update(): void
     updateCamMatToUProbe(uniformProbe: IShaderUniformProbe): void;
     lookRHEnabled(): boolean;
@@ -92,7 +94,7 @@ interface IRenderCamera {
     getNV(): IVector3D;
     getUV(): IVector3D;
     getRV(): IVector3D;
-    
+
     getViewMatrix(): IMatrix4;
     getProjectMatrix(): IMatrix4;
 

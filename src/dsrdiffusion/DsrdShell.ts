@@ -1,6 +1,7 @@
 import { DsrdScene } from "./dsrd/DsrdScene";
 import { DsrdUI } from "./dsrd/DsrdUI";
 import { RTaskBeginUI } from "./dsrd/RTaskBeginUI";
+import { ModelScene } from "./dsrd/rscene/ModelScene";
 import { RTaskSystem } from "./dsrd/task/RTaskSystem";
 import { DivTool } from "./dsrd/utils/HtmlDivUtils";
 class DsrdShell {
@@ -9,15 +10,49 @@ class DsrdShell {
 	private m_ui = new DsrdUI();
 	private m_rtaskBeginUI = new RTaskBeginUI();
 	private m_rtaskSys = new RTaskSystem();
+	private m_modelScene: ModelScene = null;
 	constructor() {}
 	initialize(): void {
 		console.log("DsrdShell::initialize()......");
 		if (this.m_init) {
 			this.m_init = false;
+			this.m_modelScene = this.m_rscene.modelScene;
+			const rtsys = this.m_rtaskSys;
+			const modelsc = this.m_modelScene;
+			rtsys.modelScene = modelsc;
 
-			this.m_rscene.ui = this.m_ui;
-			this.m_rscene.taskSys = this.m_rtaskSys;
+			modelsc.data = rtsys.data;
+			modelsc.request = rtsys.request;
+			modelsc.infoViewer = rtsys.infoViewer;
+			modelsc.process = rtsys.process;
+			let actioncall = (idns: string, type: string):void => {
+				switch(idns) {
+					case "rsc_viewer_loaded":
+						let rviewer = this.m_rscene.rscViewer;
+						this.m_ui.setRSCViewer(rviewer);
+						this.m_rtaskSys.setRSCViewer(rviewer);
+						break;
+					case "select_a_model":
+						let uuidStr = type;
+						console.log("DsrdShell::initialize() select uuidStr: ", uuidStr);
+						// let rviewer = this.m_rscene.rscViewer;
+						// this.m_ui.setRSCViewer(rviewer);
+						// this.m_rtaskSys.setRSCViewer(rviewer);
+						let panel = this.m_ui.getMaterialPanel();
+						panel.setModelNameWithUrl(uuidStr);
+						break;
+					default:
+						break;
+				}
+			}
+			this.m_rscene.onaction = actioncall;
 			this.initWorkSpace();
+
+			let mainLoop = (now: any): void => {
+				this.m_rscene.run();
+				window.requestAnimationFrame(mainLoop);
+			};
+			window.requestAnimationFrame(mainLoop);
 		}
 	}
 	private m_viewerLayer: HTMLDivElement = null;

@@ -1,3 +1,4 @@
+import { DivTool } from "../utils/HtmlDivUtils";
 import { DataItemComponentParam } from "./DataItemComponentParam";
 class DataItemComponent {
 	protected m_viewerLayer: HTMLDivElement;
@@ -22,21 +23,19 @@ class DataItemComponent {
 		return this.m_param;
 	}
 	protected init(viewerLayer: HTMLDivElement, param: DataItemComponentParam): void {
-		// 286dab
+
 		let height = 23;
 		let width = 159;
-		let container = this.createDiv(this.x, this.y, 320, height, "", "", "absolute");
+		let container = DivTool.createDivT1(this.x, this.y, 320, height, "block", "absolute", false);
 		let style = container.style;
-		let headDiv = this.createDiv(0, 0, width, height, "", "", "absolute");
-		let bodyDiv = this.createDiv(161, 0, width, height, "", "", "absolute");
+		let headDiv = DivTool.createDivT1(0, 0, width, height, "block", "absolute", false);
+		let bodyDiv =  DivTool.createDivT1(161, 0, width, height, "block", "absolute", false);
 		style = headDiv.style;
 		style.background = "#286dab";
 		style.color = "#eeeeee";
 		style = bodyDiv.style;
 		style.background = "#286dab";
 		style.color = "#eeeeee";
-		// let style = container.style;
-		// style.background = "#286dab";
 		viewerLayer.appendChild(container);
 
 		this.m_containerDiv = container;
@@ -67,45 +66,10 @@ class DataItemComponent {
 			style.color = "#eeeeee";
 			style.fontSize = "17px";
 			style.textAlign = "center";
-			// style.alignItems = "center";
-			// style.justifyContent = "center";
 			bodyDiv.append(input);
 			this.m_input = input;
 			param.body_viewer = input;
 		}
-	}
-	protected createDiv(
-		px: number,
-		py: number,
-		pw: number,
-		ph: number,
-		display: string = "block",
-		align: string = "",
-		position: string = ""
-	): HTMLDivElement {
-		const div = document.createElement("div");
-		let style = div.style;
-		style.left = px + "px";
-		style.top = py + "px";
-		style.width = pw + "px";
-		style.height = ph + "px";
-		if (display != "") {
-			style.display = display;
-		}
-		if (align != "") {
-			switch (align) {
-				case "center":
-					style.alignItems = "center";
-					style.justifyContent = "center";
-					break;
-			}
-		}
-		// style.userSelect = "none";
-		// style.position = "relative";
-		if (position != "") {
-			style.position = position;
-		}
-		return div;
 	}
 }
 export { DataItemComponent, DataItemComponentParam };

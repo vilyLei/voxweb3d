@@ -29,14 +29,21 @@ class RTaskData implements IRTaskDataParam {
 	imgResolution = [512, 512]
 	imgsTotal = 1
 
-	// miniImgUrl = "";
 	miniImgUrls: string[] = [];
 	bigImgUrl = "";
 	modelLoadStatus = 0;
+	currentTaskAlive = false;
+	drcNames: string[] = [];
 
 	reneringTimes = 0;
 	rtJsonData: IRTJsonData = null;
 	constructor() {}
+	isFinish(): boolean {
+		return this.phase == "finish";
+	}
+	isCurrTaskAlive(): boolean {
+		return this.currentTaskAlive;
+	}
 	reset(): void {
 	}
 	isModelDataLoaded(): boolean {

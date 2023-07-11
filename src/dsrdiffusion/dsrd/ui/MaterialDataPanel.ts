@@ -1,19 +1,30 @@
 import {IItemData} from "./IItemData"
 import {SettingDataPanel} from "./SettingDataPanel"
 import {DataItemComponentParam, DataItemComponent} from "./DataItemComponent"
+import URLFilter from "../../../cospace/app/utils/URLFilter";
 class MaterialDataPanel extends SettingDataPanel {
 	constructor() {super()}
-	modelName = "apple_body_model";
+	// modelName = "apple_body_model";
+	modelName = "";
 	uvScales = [1.0, 1.0];
 
+	setModelNameWithUrl(url: string): void {
+		let ns = url != "" ? URLFilter.getFileName(url) : "";
+		this.modelName = ns;
+		console.log("setModelNameWithUrl(), ns: >"+ns+"<");
+	}
 	getJsonStr(beginStr = "{", endStr = "}"): string {
 
-		let uvSX = this.getItemCompByKeyName("uvScale_x").getParam();
-		let uvSY = this.getItemCompByKeyName("uvScale_y").getParam();
-		let uvScales = [uvSX.numberValue, uvSY.numberValue];
-		let jsonStr = `${beginStr}"modelName":"${this.modelName}", "uvScales":[${uvScales}]`;
-		// return super.getJsonStr(jsonStr,endStr);
-		let jsonBody = this.getJsonBodyStr(jsonStr,endStr)
+		let jsonBody = "";
+		if(this.modelName != "") {
+
+			let uvSX = this.getItemCompByKeyName("uvScale_x").getParam();
+			let uvSY = this.getItemCompByKeyName("uvScale_y").getParam();
+			let uvScales = [uvSX.numberValue, uvSY.numberValue];
+			let jsonStr = `${beginStr}"modelName":"${this.modelName}", "uvScales":[${uvScales}]`;
+			// return super.getJsonStr(jsonStr,endStr);
+			jsonBody = this.getJsonBodyStr(jsonStr,endStr);
+		}
 		return `"materials":[${jsonBody}]`;
 	}
 	protected init(viewerLayer: HTMLDivElement): void {

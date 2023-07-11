@@ -269,7 +269,7 @@ class T_CoRScene {
 	 * @param normalEnabled the default value is false
 	 */
 	createDefaultMaterial(normalEnabled?: boolean): IDefault3DMaterial {
-		return CoRScene.createDefaultMaterial();
+		return CoRScene.createDefaultMaterial(normalEnabled);
 	}
 	/**
 	 * build 3d line entity rendering material

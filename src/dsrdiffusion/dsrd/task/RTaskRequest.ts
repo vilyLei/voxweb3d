@@ -111,6 +111,9 @@ class RTaskRquest {
 				onload(purl, req.response);
 			}
 		};
+		req.onerror = evt => {
+			console.error("sendACommonGetReq(), error: ", evt);
+		}
 		req.send(null);
 	}
 	notifyRenderingInfoToSvr(otherInfo = ""): void {
@@ -124,7 +127,7 @@ class RTaskRquest {
 		this.sendACommonGetReq(url, (purl, content) => {
 			console.log("### ###### notifyModelInfoToSvr() loaded, content: ", content);
 			let sdo = JSON.parse(content);
-			this.taskInfoViewer.parseRenderingReqInfo(sdo);
+			this.taskInfoViewer.parseModelReqInfo(sdo);
 		})
 	}
 	notifySyncRStatusToSvr(otherInfo = ""): void {
@@ -134,7 +137,7 @@ class RTaskRquest {
 			console.log("### ###### notifySyncRStatusToSvr() loaded, content: ", content);
 			let sdo = JSON.parse(content);
 			this.taskInfoViewer.parseSyncRStatuReqInfo(sdo);
-		})
+		});
 	}
 	private sendnotifyTaskInfoReq(purl: string): void {
 		let req = new XMLHttpRequest();
@@ -156,10 +159,11 @@ class RTaskRquest {
 		let url = this.createReqUrlStr(this.taskInfoGettingUrl, "syncAliveTasks", 0, 0, "none");
 		console.log("### ###### 01 syncAliveTasks(), url: ", url);
 		this.sendACommonGetReq(url, (purl, content) => {
+			console.log("### ###### 02 syncAliveTasks(), content: ", content);
 			var infoObj = JSON.parse(content);
 			let aliveTasks = infoObj.tasks;
 			callback(aliveTasks);
-			console.log("### ###### 02 syncAliveTasks(), infoObj: ", infoObj);
+			console.log("### ###### 03 syncAliveTasks(), infoObj: ", infoObj);
 		}
 		);
 	}
