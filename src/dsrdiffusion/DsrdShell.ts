@@ -1,3 +1,4 @@
+import URLFilter from "../cospace/app/utils/URLFilter";
 import { DsrdScene } from "./dsrd/DsrdScene";
 import { DsrdUI } from "./dsrd/DsrdUI";
 import { RTaskBeginUI } from "./dsrd/RTaskBeginUI";
@@ -25,26 +26,26 @@ class DsrdShell {
 			modelsc.request = rtsys.request;
 			modelsc.infoViewer = rtsys.infoViewer;
 			modelsc.process = rtsys.process;
-			let actioncall = (idns: string, type: string):void => {
-				switch(idns) {
+			let actioncall = (idns: string, type: string): void => {
+				switch (idns) {
 					case "rsc_viewer_loaded":
 						let rviewer = this.m_rscene.rscViewer;
 						this.m_ui.setRSCViewer(rviewer);
 						this.m_rtaskSys.setRSCViewer(rviewer);
 						break;
 					case "select_a_model":
-						let uuidStr = type;
-						console.log("DsrdShell::initialize() select uuidStr: ", uuidStr);
+						// let uuidStr = type;
+						// console.log("DsrdShell::initialize() select uuidStr: ", uuidStr);
 						// let rviewer = this.m_rscene.rscViewer;
 						// this.m_ui.setRSCViewer(rviewer);
 						// this.m_rtaskSys.setRSCViewer(rviewer);
 						let panel = this.m_ui.getMaterialPanel();
-						panel.setModelNameWithUrl(uuidStr);
+						panel.setModelNamesWithUrls(this.m_rscene.selectedModelUrls);
 						break;
 					default:
 						break;
 				}
-			}
+			};
 			this.m_rscene.onaction = actioncall;
 			this.initWorkSpace();
 
@@ -86,7 +87,6 @@ class DsrdShell {
 	}
 
 	private initDSRDUI(): void {
-
 		let width = 512;
 		let height = 512;
 		let borderWidth = 2;
@@ -115,24 +115,37 @@ class DsrdShell {
 		container.appendChild(beginUILayer);
 		this.m_viewerLayer.appendChild(container);
 
-		let actioncall = (idns: string, type: string):void => {
-			switch(idns) {
+		const data = this.m_rtaskSys.data;
+		let actioncall = (idns: string, type: string): void => {
+			switch (idns) {
 				case "toWorkSpace":
 					this.toWorkSpace();
 					break;
 				case "curr-rendering":
 					console.log("actioncall(), type: ", type);
-					if(type == "new") {
+					if (type == "new") {
 						this.m_rtaskBeginUI.open();
-					}else if(type == "finish") {
+					} else if (type == "finish") {
 						this.m_rtaskBeginUI.close();
+					}
+					break;
+				case "update-rnode":
+					let rnode = data.rnode;
+					console.log("xxxx shell, rnode: ", rnode);
+					if(rnode) {
+						if(rnode.camera !== undefined) {
+							let camMatrix = rnode.camera.matrix;
+							console.log("camMatrix: ", camMatrix);
+							if(camMatrix !== undefined) {
+								this.m_rscene.setCameraWithF32Arr16(camMatrix);
+							}
+						}
 					}
 					break;
 				default:
 					break;
 			}
-		}
-
+		};
 
 		this.initDSRDSys(layerLeft, layerRight, width, height);
 
@@ -143,13 +156,14 @@ class DsrdShell {
 		this.m_rtaskSys.data.rtJsonData = this.m_ui;
 
 		this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys;
+		// this.m_rtaskBeginUI.rscene = this.m_rscene;
 		this.m_rtaskBeginUI.onaction = actioncall;
 		this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
 		this.m_rtaskBeginUI.open();
 	}
 	private m_workSpaceStatus = 0;
-	private toWorkSpace():void {
-		if(this.m_workSpaceStatus == 0) {
+	private toWorkSpace(): void {
+		if (this.m_workSpaceStatus == 0) {
 			this.m_workSpaceStatus = 1;
 			console.log("DsrdShell::toWorkSpace().");
 			this.m_rtaskBeginUI.close();

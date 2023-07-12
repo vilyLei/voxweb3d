@@ -53,14 +53,14 @@ class RTaskRquest {
 	 * 对当前的任务重新发起渲染
 	 * @param otherInfo
 	 */
-	sendRerenderingReq(otherInfo = ""): void {
+	sendRerenderingReq(otherInfo = "", forceMaterial = false): void {
 		console.log("sendRerenderingReq(), re-rendering req send !!!");
 		const data = this.data;
 		let keyNames = ["output", "env", "camera"];
 		let rtdj = this.data.rtJsonData;
 		let keyName = "material";
 		console.log("rtdj.isRTJsonActiveByKeyName(", keyName, "): ", rtdj.isRTJsonActiveByKeyName(keyName));
-		if (rtdj.isRTJsonActiveByKeyName(keyName)) {
+		if (rtdj.isRTJsonActiveByKeyName(keyName) || forceMaterial) {
 			keyNames.push(keyName);
 		}
 		let rnodeJson = rtdj.getRTJsonStrByKeyNames(keyNames, true);
@@ -137,6 +137,17 @@ class RTaskRquest {
 			console.log("### ###### notifySyncRStatusToSvr() loaded, content: ", content);
 			let sdo = JSON.parse(content);
 			this.taskInfoViewer.parseSyncRStatuReqInfo(sdo);
+		});
+	}
+	syncRTaskInfoFromSvr(otherInfo = "", call: (jsonObj: any) => void): void {
+		const data = this.data;
+		let url = this.createReqUrlStr(this.taskInfoGettingUrl, "syncAnAliveTaskInfo", 0, data.taskid, data.taskname, otherInfo);
+		this.sendACommonGetReq(url, (purl, content) => {
+			console.log("### ###### syncRTaskInfoFromSvr() loaded, content: ", content);
+			let sdo = JSON.parse(content);
+			if(call) {
+				call(sdo);
+			}
 		});
 	}
 	private sendnotifyTaskInfoReq(purl: string): void {

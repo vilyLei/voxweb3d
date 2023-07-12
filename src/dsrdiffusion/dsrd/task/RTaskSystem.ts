@@ -31,6 +31,12 @@ class RTaskSystem {
 	setTimerDelay(delay: number): void {
 		this.process.timerDelay = delay;
 	}
+	updateRNode(): void {
+		if (this.onaction) {
+			console.log("RTaskSystem::updateRNode() ...");
+			this.onaction("update-rnode", "new");
+		}
+	}
 	private m_timerId: any = -1;
 	private timerUpdate(): void {
 		if (this.m_timerId > -1) {

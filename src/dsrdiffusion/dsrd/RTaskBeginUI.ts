@@ -4,6 +4,7 @@ import { IFileUrlObj, IDropFileListerner, DropFileController } from "../../tool/
 import { RModelUploadingUI } from "./RModelUploadingUI";
 import { DivTool } from "./utils/HtmlDivUtils";
 import { RTaskSystem } from "./task/RTaskSystem";
+import { DsrdScene } from "../dsrd/DsrdScene";
 
 class RTaskBeginUI {
 	private m_viewerLayer: HTMLDivElement = null;
@@ -16,6 +17,7 @@ class RTaskBeginUI {
 	private m_uploadUI = new RModelUploadingUI();
 	onaction: (idns: string, type: string) => void = null;
 	rtaskSys: RTaskSystem = null;
+	// rscene: DsrdScene = null;
 	constructor() {}
 	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number): void {
 		console.log("RTaskBeginUI::initialize()......");
@@ -83,6 +85,11 @@ class RTaskBeginUI {
 		this.m_uploadUI.initUI();
 		sys.infoViewer.infoDiv = this.m_uploadUI.getTextDiv();
 		sys.startup();
+		sys.request.syncRTaskInfoFromSvr("", (jsonObj: any): void => {
+			console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.rnode: ", jsonObj.rnode);
+			sys.data.rnode = jsonObj.rnode;
+			sys.updateRNode();
+		});
 		// if (this.onaction) {
 		// 	this.onaction("uploading_success", type);
 		// }

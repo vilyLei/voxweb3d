@@ -11,7 +11,7 @@ function numberToCSSHeXRGBColorStr(v: number): string {
 	return str;
 }
 function checkCSSHexRGBColorStr(value: string): string {
-	let str = value.replace(/[^\a,b,c,e,f\0-9]/g,'');
+	let str = value.replace(/[^\a,b,c,d,e,f\0-9]/g,'');
 	if(str.length < 1) {
 		str = "0"
 	}else if(str.length > 6) {

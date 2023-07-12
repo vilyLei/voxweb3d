@@ -116,6 +116,7 @@ class RTaskData {
     this.modelLoadStatus = 0;
     this.currentTaskAlive = false;
     this.drcNames = [];
+    this.rnode = null;
     this.reneringTimes = 0;
     this.rtJsonData = null;
   }
@@ -146,6 +147,7 @@ class RTaskData {
     if (d.phase !== undefined) t.phase = d.phase;
     if (d.imgsTotal !== undefined) this.imgsTotal = d.imgsTotal;
     if (d.sizes !== undefined) this.imgResolution = d.sizes;
+    if (d.rnode !== undefined) this.rnode = d.rnode;
     if (d.bgTransparent !== undefined) this.bgTransparent = d.bgTransparent == 1;
     this.updateUrl();
   }
@@ -899,8 +901,9 @@ class DsrdUI {
 
   buildBtns(container) {
     let pw = 130;
-    let ph = 60;
-    let div = this.createDiv(90, 30, pw, ph, "absolute", true);
+    let ph = 60; // let div = this.createDiv(90, 30, pw, ph, "absolute", true);
+
+    let div = HtmlDivUtils_1.DivTool.createDivT1(90, 30, pw, ph, "flex", "absolute", true);
     let style = div.style;
     container.appendChild(div);
     let divs = [div];
@@ -914,7 +917,7 @@ class DsrdUI {
     };
 
     pw = 100;
-    div = this.createDiv(230, 30, pw, ph, "absolute", true);
+    div = HtmlDivUtils_1.DivTool.createDivT1(230, 30, pw, ph, "flex", "absolute", true);
     style = div.style;
     container.appendChild(div);
     divs.push(div);
@@ -924,11 +927,13 @@ class DsrdUI {
     btn.onmouseup = evt => {
       let currEvt = evt;
       console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
-      this.rtaskSys.rerendering();
+      this.rtaskSys.rerendering(); // for test
+
+      this.rtaskSys.request.sendRerenderingReq("", true);
     };
 
     pw = 130;
-    div = this.createDiv(370, 30, pw, ph, "absolute", true);
+    div = HtmlDivUtils_1.DivTool.createDivT1(370, 30, pw, ph, "flex", "absolute", true);
     style = div.style;
     container.appendChild(div);
     divs.push(div);
@@ -1138,26 +1143,51 @@ class MaterialDataPanel extends SettingDataPanel_1.SettingDataPanel {
   constructor() {
     super(); // modelName = "apple_body_model";
 
-    this.modelName = "";
+    this.modelNames = [];
     this.uvScales = [1.0, 1.0];
   }
 
-  setModelNameWithUrl(url) {
-    let ns = url != "" ? URLFilter_1.default.getFileName(url) : "";
-    this.modelName = ns;
-    console.log("setModelNameWithUrl(), ns: >" + ns + "<");
+  setModelNamesWithUrls(urls) {
+    if (urls && urls.length > 0) {
+      this.modelNames = [];
+
+      for (let i = 0; i < urls.length; i++) {
+        let url = urls[i];
+        let ns = url != "" ? URLFilter_1.default.getFileName(url) : "";
+
+        if (ns != "") {}
+
+        this.modelNames.push(ns); // console.log("setModelNameWithUrl(), ns: >" + ns + "<");
+      }
+    } else {
+      this.modelNames = [];
+    }
+
+    console.log("this.modelNames: ", this.modelNames);
   }
 
   getJsonStr(beginStr = "{", endStr = "}") {
     let jsonBody = "";
 
-    if (this.modelName != "") {
-      let uvSX = this.getItemCompByKeyName("uvScale_x").getParam();
-      let uvSY = this.getItemCompByKeyName("uvScale_y").getParam();
-      let uvScales = [uvSX.numberValue, uvSY.numberValue];
-      let jsonStr = `${beginStr}"modelName":"${this.modelName}", "uvScales":[${uvScales}]`; // return super.getJsonStr(jsonStr,endStr);
+    if (this.modelNames.length > 0) {
+      let ls = this.modelNames;
 
-      jsonBody = this.getJsonBodyStr(jsonStr, endStr);
+      for (let i = 0; i < ls.length; i++) {
+        const modelName = ls[i];
+
+        if (modelName != "") {
+          let uvSX = this.getItemCompByKeyName("uvScale_x").getParam();
+          let uvSY = this.getItemCompByKeyName("uvScale_y").getParam();
+          let uvScales = [uvSX.numberValue, uvSY.numberValue];
+          let jsonStr = `${beginStr}"modelName":"${modelName}", "uvScales":[${uvScales}],"act":"update"`; // return super.getJsonStr(jsonStr,endStr);
+
+          if (jsonBody != "") {
+            jsonBody += "," + this.getJsonBodyStr(jsonStr, endStr);
+          } else {
+            jsonBody = this.getJsonBodyStr(jsonStr, endStr);
+          }
+        }
+      }
     }
 
     return `"materials":[${jsonBody}]`;
@@ -2165,7 +2195,7 @@ class RTaskRquest {
    */
 
 
-  sendRerenderingReq(otherInfo = "") {
+  sendRerenderingReq(otherInfo = "", forceMaterial = false) {
     console.log("sendRerenderingReq(), re-rendering req send !!!");
     const data = this.data;
     let keyNames = ["output", "env", "camera"];
@@ -2173,7 +2203,7 @@ class RTaskRquest {
     let keyName = "material";
     console.log("rtdj.isRTJsonActiveByKeyName(", keyName, "): ", rtdj.isRTJsonActiveByKeyName(keyName));
 
-    if (rtdj.isRTJsonActiveByKeyName(keyName)) {
+    if (rtdj.isRTJsonActiveByKeyName(keyName) || forceMaterial) {
       keyNames.push(keyName);
     }
 
@@ -2261,6 +2291,19 @@ class RTaskRquest {
       console.log("### ###### notifySyncRStatusToSvr() loaded, content: ", content);
       let sdo = JSON.parse(content);
       this.taskInfoViewer.parseSyncRStatuReqInfo(sdo);
+    });
+  }
+
+  syncRTaskInfoFromSvr(otherInfo = "", call) {
+    const data = this.data;
+    let url = this.createReqUrlStr(this.taskInfoGettingUrl, "syncAnAliveTaskInfo", 0, data.taskid, data.taskname, otherInfo);
+    this.sendACommonGetReq(url, (purl, content) => {
+      console.log("### ###### syncRTaskInfoFromSvr() loaded, content: ", content);
+      let sdo = JSON.parse(content);
+
+      if (call) {
+        call(sdo);
+      }
     });
   }
 
@@ -2353,7 +2396,7 @@ class URLFilter {
         return "";
       }
 
-      let j = url.indexOf(".", i);
+      let j = url.lastIndexOf(".", url.length);
 
       if (j < 0) {
         return "";
@@ -2376,7 +2419,7 @@ class URLFilter {
   static getFileNameAndSuffixName(url, lowerCase = false, force = false) {
     if (url.indexOf("blob:") < 0 || force) {
       let i = url.lastIndexOf("/");
-      let j = url.indexOf(".", i);
+      let j = url.lastIndexOf(".", url.length);
 
       if (j < 0) {
         return "";
@@ -2396,8 +2439,7 @@ class URLFilter {
 
   static getFileSuffixName(url, lowerCase = false, force = false) {
     if (url.indexOf("blob:") < 0 || force) {
-      let i = url.lastIndexOf("/");
-      let j = url.indexOf(".", i);
+      let j = url.lastIndexOf(".", url.length);
 
       if (j < 0) {
         return "";
@@ -2441,6 +2483,8 @@ class DsrdScene {
     this.rscViewer = null;
     this.modelScene = new ModelScene_1.ModelScene();
     this.onaction = null;
+    this.m_camvs16 = null;
+    this.selectedModelUrls = [];
   }
 
   initialize(viewerLayer) {
@@ -2449,6 +2493,14 @@ class DsrdScene {
 
     let url = "static/cospace/dsrdiffusion/dsrdViewer/DsrdViewer.umd.js";
     this.loadModule(url);
+  }
+
+  setCameraWithF32Arr16(camvs16) {
+    this.m_camvs16 = camvs16;
+
+    if (this.rscViewer && this.m_camvs16) {
+      this.rscViewer.updateCameraWithF32Arr16(this.m_camvs16);
+    }
   }
 
   init3DScene() {
@@ -2465,21 +2517,32 @@ class DsrdScene {
       debugDev = false;
     }
 
-    rscViewer.initialize(this.m_viewerLayer, () => {}, true, debugDev, true); // 增加三角面数量的信息显示
+    let releaseModule = !debugDev;
+    rscViewer.initialize(this.m_viewerLayer, () => {
+      if (this.m_camvs16) {
+        rscViewer.updateCameraWithF32Arr16(this.m_camvs16);
+      }
+    }, true, debugDev, releaseModule); // 增加三角面数量的信息显示
 
     rscViewer.setForceRotate90(true);
-    this.modelScene.setRSCViewer(rscViewer);
-    rscViewer.setMouseUpListener(evt => {
-      console.log("upupup XXX, evt: ", evt);
+    this.modelScene.setRSCViewer(rscViewer); // rscViewer.setMouseUpListener((evt: any): void => {
+    // 	console.log("upupup XXX, evt: ", evt);
+    // 	if (evt.uuid == "") {
+    // 		console.log("clear model ops !!!");
+    // 	} else {
+    // 		console.log("select model ops !!!");
+    // 	}
+    // 	if (this.onaction) {
+    // 		this.onaction("select_a_model", evt.uuid);
+    // 	}
+    // });
 
-      if (evt.uuid == "") {
-        console.log("clear model ops !!!");
-      } else {
-        console.log("select model ops !!!");
-      }
+    rscViewer.setModelSelectListener(urls => {
+      console.log("setModelSelectListener(), urls: ", urls);
+      this.selectedModelUrls = urls;
 
       if (this.onaction) {
-        this.onaction("select_a_model", evt.uuid);
+        this.onaction("select_a_model", "finish");
       }
     });
 
@@ -2554,7 +2617,7 @@ function numberToCSSHeXRGBColorStr(v) {
 }
 
 function checkCSSHexRGBColorStr(value) {
-  let str = value.replace(/[^\a,b,c,e,f\0-9]/g, '');
+  let str = value.replace(/[^\a,b,c,d,e,f\0-9]/g, '');
 
   if (str.length < 1) {
     str = "0";
@@ -2864,6 +2927,7 @@ const RModelUploadingUI_1 = __webpack_require__("3a06");
 const HtmlDivUtils_1 = __webpack_require__("7191");
 
 class RTaskBeginUI {
+  // rscene: DsrdScene = null;
   constructor() {
     this.m_viewerLayer = null;
     this.m_areaWidth = 512;
@@ -2942,7 +3006,12 @@ class RTaskBeginUI {
     sys.infoViewer.reset();
     this.m_uploadUI.initUI();
     sys.infoViewer.infoDiv = this.m_uploadUI.getTextDiv();
-    sys.startup(); // if (this.onaction) {
+    sys.startup();
+    sys.request.syncRTaskInfoFromSvr("", jsonObj => {
+      console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.rnode: ", jsonObj.rnode);
+      sys.data.rnode = jsonObj.rnode;
+      sys.updateRNode();
+    }); // if (this.onaction) {
     // 	this.onaction("uploading_success", type);
     // }
 
@@ -3331,6 +3400,13 @@ class RTaskSystem {
 
   setTimerDelay(delay) {
     this.process.timerDelay = delay;
+  }
+
+  updateRNode() {
+    if (this.onaction) {
+      console.log("RTaskSystem::updateRNode() ...");
+      this.onaction("update-rnode", "new");
+    }
   }
 
   timerUpdate() {
@@ -3811,13 +3887,13 @@ class DsrdShell {
             break;
 
           case "select_a_model":
-            let uuidStr = type;
-            console.log("DsrdShell::initialize() select uuidStr: ", uuidStr); // let rviewer = this.m_rscene.rscViewer;
+            // let uuidStr = type;
+            // console.log("DsrdShell::initialize() select uuidStr: ", uuidStr);
+            // let rviewer = this.m_rscene.rscViewer;
             // this.m_ui.setRSCViewer(rviewer);
             // this.m_rtaskSys.setRSCViewer(rviewer);
-
             let panel = this.m_ui.getMaterialPanel();
-            panel.setModelNameWithUrl(uuidStr);
+            panel.setModelNamesWithUrls(this.m_rscene.selectedModelUrls);
             break;
 
           default:
@@ -3888,6 +3964,7 @@ class DsrdShell {
     style.visibility = "hidden";
     container.appendChild(beginUILayer);
     this.m_viewerLayer.appendChild(container);
+    const data = this.m_rtaskSys.data;
 
     let actioncall = (idns, type) => {
       switch (idns) {
@@ -3906,6 +3983,23 @@ class DsrdShell {
 
           break;
 
+        case "update-rnode":
+          let rnode = data.rnode;
+          console.log("xxxx shell, rnode: ", rnode);
+
+          if (rnode) {
+            if (rnode.camera !== undefined) {
+              let camMatrix = rnode.camera.matrix;
+              console.log("camMatrix: ", camMatrix);
+
+              if (camMatrix !== undefined) {
+                this.m_rscene.setCameraWithF32Arr16(camMatrix);
+              }
+            }
+          }
+
+          break;
+
         default:
           break;
       }
@@ -3916,7 +4010,8 @@ class DsrdShell {
     this.m_rtaskSys.initialize();
     this.m_rtaskSys.onaction = actioncall;
     this.m_rtaskSys.data.rtJsonData = this.m_ui;
-    this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys;
+    this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys; // this.m_rtaskBeginUI.rscene = this.m_rscene;
+
     this.m_rtaskBeginUI.onaction = actioncall;
     this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
     this.m_rtaskBeginUI.open();

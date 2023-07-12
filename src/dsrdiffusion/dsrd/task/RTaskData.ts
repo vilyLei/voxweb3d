@@ -14,6 +14,7 @@ interface IRTaskDataParam {
 	imgsTotal?: number;
 	time?: number;
 	sizes?: number[];
+	rnode?: any;
 }
 class RTaskData implements IRTaskDataParam {
 	taskid = 0;
@@ -26,8 +27,8 @@ class RTaskData implements IRTaskDataParam {
 	fileName = "";
 	time = 0;
 	bgTransparent = false;
-	imgResolution = [512, 512]
-	imgsTotal = 1
+	imgResolution = [512, 512];
+	imgsTotal = 1;
 
 	miniImgUrls: string[] = [];
 	bigImgUrl = "";
@@ -35,6 +36,7 @@ class RTaskData implements IRTaskDataParam {
 	currentTaskAlive = false;
 	drcNames: string[] = [];
 
+	rnode: any = null;
 	reneringTimes = 0;
 	rtJsonData: IRTJsonData = null;
 	constructor() {}
@@ -44,35 +46,24 @@ class RTaskData implements IRTaskDataParam {
 	isCurrTaskAlive(): boolean {
 		return this.currentTaskAlive;
 	}
-	reset(): void {
-	}
+	reset(): void {}
 	isModelDataLoaded(): boolean {
 		return this.modelLoadStatus == 2;
 	}
 	copyFromJson(d: IRTaskDataParam): void {
 		let t = this;
-		if (d.taskid !== undefined)
-			t.taskid = d.taskid;
-		if (d.version !== d.version)
-			t.version = d.version;
-		if (d.filepath !== undefined)
-			t.filepath = d.filepath;
-		if (d.taskname !== undefined)
-			t.taskname = d.taskname;
-		if (d.success !== undefined)
-			t.success = d.success;
-		if (d.filepath !== undefined)
-			t.filepath = d.filepath;
-		if (d.fileName !== undefined)
-			t.fileName = d.fileName;
-		if (d.phase !== undefined)
-			t.phase = d.phase;
-		if (d.imgsTotal !== undefined)
-			this.imgsTotal = d.imgsTotal;
-		if (d.sizes !== undefined)
-			this.imgResolution = d.sizes;
-		if ((d as any).bgTransparent !== undefined)
-			this.bgTransparent = (d as any).bgTransparent == 1;
+		if (d.taskid !== undefined) t.taskid = d.taskid;
+		if (d.version !== d.version) t.version = d.version;
+		if (d.filepath !== undefined) t.filepath = d.filepath;
+		if (d.taskname !== undefined) t.taskname = d.taskname;
+		if (d.success !== undefined) t.success = d.success;
+		if (d.filepath !== undefined) t.filepath = d.filepath;
+		if (d.fileName !== undefined) t.fileName = d.fileName;
+		if (d.phase !== undefined) t.phase = d.phase;
+		if (d.imgsTotal !== undefined) this.imgsTotal = d.imgsTotal;
+		if (d.sizes !== undefined) this.imgResolution = d.sizes;
+		if (d.rnode !== undefined) this.rnode = d.rnode;
+		if ((d as any).bgTransparent !== undefined) this.bgTransparent = (d as any).bgTransparent == 1;
 		this.updateUrl();
 	}
 	private getUrlParams(): string {
@@ -93,20 +84,20 @@ class RTaskData implements IRTaskDataParam {
 
 		this.miniImgUrls = [];
 		this.miniImgUrls.push(miniUrl);
-		if(this.imgsTotal == 1) {
-			if(sizes[0] <= 512 || sizes[1] <= 512) {
-				if(sizes[0] > 128 && sizes[1] > 128) {
+		if (this.imgsTotal == 1) {
+			if (sizes[0] <= 512 || sizes[1] <= 512) {
+				if (sizes[0] > 128 && sizes[1] > 128) {
 					this.miniImgUrls.push(this.bigImgUrl);
 				}
 			}
-		}else if(this.imgsTotal > 1){
+		} else if (this.imgsTotal > 1) {
 			miniUrl = imgDirUrl + "bld_rendering_mini_1." + suffix + this.getUrlParams();
 			console.log("1 miniUrl: ", miniUrl);
 			this.miniImgUrls.push(miniUrl);
 		}
 		console.log("this.imgsTotal: ", this.imgsTotal);
-		for(let i = 0; i < this.miniImgUrls.length; i++) {
-			console.log(i,", mini url: ", this.miniImgUrls[i]);
+		for (let i = 0; i < this.miniImgUrls.length; i++) {
+			console.log(i, ", mini url: ", this.miniImgUrls[i]);
 		}
 		// console.log("this.miniImgUrls: ", this.miniImgUrls);
 	}

@@ -1254,6 +1254,19 @@ class DsrdViewerBase {
 
       pos.scaleBy(1.0 / list.length);
 
+      if (list.length > 0) {
+        if (this.m_modelSelectCall) {
+          let urls = [];
+
+          for (let i = 0; i < list.length; i++) {
+            urls.push(list[i].uuid);
+          }
+
+          console.log("modelSelectCall, urls: ", urls);
+          this.m_modelSelectCall(urls);
+        }
+      }
+
       if (transCtr && list.length > 0) {
         // 暂时注释掉，后续功能完善了再启用
         // transCtr.select(list as ITransformEntity[], pos);
@@ -1266,9 +1279,12 @@ class DsrdViewerBase {
     this.m_mouseUpCall = mouseUpCall;
   }
 
-  mouseUpTargetListener(evt) {
-    console.log("mouseUpTargetListener() mouse up...");
+  setModelSelectListener(modelSelectCall) {
+    this.m_modelSelectCall = modelSelectCall;
+  }
 
+  mouseUpTargetListener(evt) {
+    // console.log("mouseUpTargetListener() mouse up...");
     if (this.m_mouseUpCall) {
       this.m_mouseUpCall(evt);
     }
@@ -1292,6 +1308,10 @@ class DsrdViewerBase {
 
     if (this.m_mouseUpCall) {
       this.m_mouseUpCall(evt);
+    }
+
+    if (this.m_modelSelectCall) {
+      this.m_modelSelectCall([]);
     }
   }
 

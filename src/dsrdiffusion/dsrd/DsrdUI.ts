@@ -107,7 +107,8 @@ class DsrdUI implements IRTJsonData {
 
 		let pw = 130;
 		let ph = 60;
-		let div = this.createDiv(90, 30, pw, ph, "absolute", true);
+		// let div = this.createDiv(90, 30, pw, ph, "absolute", true);
+		let div = DivTool.createDivT1(90, 30, pw, ph,"flex", "absolute", true);
 		let style = div.style;
 		container.appendChild(div);
 		let divs = [div];
@@ -119,7 +120,7 @@ class DsrdUI implements IRTJsonData {
 			this.rtaskSys.request.updatePage();
 		}
 		pw = 100;
-		div = this.createDiv(230, 30, pw, ph, "absolute", true);
+		div = DivTool.createDivT1(230, 30, pw, ph,"flex", "absolute", true);
 		style = div.style;
 		container.appendChild(div);
 		divs.push(div);
@@ -129,9 +130,11 @@ class DsrdUI implements IRTJsonData {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
 			this.rtaskSys.rerendering();
+			// for test
+			this.rtaskSys.request.sendRerenderingReq("", true);
 		}
 		pw = 130;
-		div = this.createDiv(370, 30, pw, ph, "absolute", true);
+		div = DivTool.createDivT1(370, 30, pw, ph, "flex", "absolute", true);
 		style = div.style;
 		container.appendChild(div);
 		divs.push(div);

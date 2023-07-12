@@ -31,7 +31,7 @@ export default class URLFilter {
 			if(i < 0) {
 				return "";
 			}
-			let j = url.indexOf(".", i);
+			let j = url.lastIndexOf(".", url.length);
 			if(j < 0) {
 				return "";
 			}
@@ -48,7 +48,7 @@ export default class URLFilter {
 	static getFileNameAndSuffixName(url: string, lowerCase: boolean = false, force: boolean = false): string {
 		if(url.indexOf("blob:") < 0 || force) {
 			let i = url.lastIndexOf("/");
-			let j = url.indexOf(".", i);
+			let j = url.lastIndexOf(".", url.length);
 			if(j < 0) {
 				return "";
 			}
@@ -62,8 +62,7 @@ export default class URLFilter {
 	}
 	static getFileSuffixName(url: string, lowerCase: boolean = false, force: boolean = false): string {
 		if(url.indexOf("blob:") < 0 || force) {
-			let i = url.lastIndexOf("/");
-			let j = url.indexOf(".", i);
+			let j = url.lastIndexOf(".", url.length);
 			if(j < 0) {
 				return "";
 			}

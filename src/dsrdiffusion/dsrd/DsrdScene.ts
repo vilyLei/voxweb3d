@@ -19,6 +19,13 @@ class DsrdScene {
 		let url = "static/cospace/dsrdiffusion/dsrdViewer/DsrdViewer.umd.js";
 		this.loadModule(url);
 	}
+	private m_camvs16: number[] = null;
+	setCameraWithF32Arr16(camvs16: number[]): void {
+		this.m_camvs16 = camvs16;
+		if(this.rscViewer && this.m_camvs16) {
+			this.rscViewer.updateCameraWithF32Arr16( this.m_camvs16 );
+		}
+	}
 	private init3DScene(): void {
 		// let rscViewer = new SceneViewer.SceneViewer();
 		let rscViewer = new DsrdViewer.DsrdViewer();
@@ -32,26 +39,39 @@ class DsrdScene {
 		if (host.indexOf("diffusion") > 0) {
 			debugDev = false;
 		}
-		rscViewer.initialize(this.m_viewerLayer, () => {}, true, debugDev, true);
+		let releaseModule = !debugDev;
+		rscViewer.initialize(this.m_viewerLayer, () => {
+			if(this.m_camvs16) {
+				rscViewer.updateCameraWithF32Arr16( this.m_camvs16 );
+			}
+		}, true, debugDev, releaseModule);
 		// 增加三角面数量的信息显示
 		rscViewer.setForceRotate90(true);
 		this.modelScene.setRSCViewer(rscViewer);
-		rscViewer.setMouseUpListener((evt: any): void => {
-			console.log("upupup XXX, evt: ", evt);
-			if (evt.uuid == "") {
-				console.log("clear model ops !!!");
-			} else {
-				console.log("select model ops !!!");
-			}
+		// rscViewer.setMouseUpListener((evt: any): void => {
+		// 	console.log("upupup XXX, evt: ", evt);
+		// 	if (evt.uuid == "") {
+		// 		console.log("clear model ops !!!");
+		// 	} else {
+		// 		console.log("select model ops !!!");
+		// 	}
 
+		// 	if (this.onaction) {
+		// 		this.onaction("select_a_model", evt.uuid);
+		// 	}
+		// });
+		rscViewer.setModelSelectListener((urls: string[]): void => {
+			console.log("setModelSelectListener(), urls: ", urls);
+			this.selectedModelUrls = urls;
 			if (this.onaction) {
-				this.onaction("select_a_model", evt.uuid);
+				this.onaction("select_a_model", "finish");
 			}
 		});
 		if (this.onaction) {
 			this.onaction("rsc_viewer_loaded", "finish");
 		}
 	}
+	selectedModelUrls: string[] = [];
 	private loadModule(purl: string): void {
 		let codeLoader = new XMLHttpRequest();
 		codeLoader.open("GET", purl, true);
