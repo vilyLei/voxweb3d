@@ -80,23 +80,19 @@ class RTaskBeginUI {
 		// 	sys.process.toFirstRendering();
 		// }
 		sys.process.toFirstRendering();
+		sys.syncRendering = true;
 
 		sys.infoViewer.reset();
 		this.m_uploadUI.initUI();
 		sys.infoViewer.infoDiv = this.m_uploadUI.getTextDiv();
 		sys.startup();
 		sys.request.syncRTaskInfoFromSvr("", (jsonObj: any): void => {
-			console.log("sys.request.syncRTaskInfoFromSvr, jsonObj: ", jsonObj);
-			console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.task: ", jsonObj.task);
 			if(jsonObj.task !== undefined) {
 				sys.data.rnode = jsonObj.task.rnode;
-				console.log("sys.request.syncRTaskInfoFromSvr, sys.data.rnode: ", sys.data.rnode);
 				sys.updateRNode();
 			}
 		});
-		// if (this.onaction) {
-		// 	this.onaction("uploading_success", type);
-		// }
+
 
 		this.m_tasksListDiv.style.visibility = "hidden";
 		this.m_backFromTaskListBtn.setVisible(false);

@@ -17,8 +17,11 @@ class DsrdShell {
 		console.log("DsrdShell::initialize()......");
 		if (this.m_init) {
 			this.m_init = false;
-			this.m_modelScene = this.m_rscene.modelScene;
+
+			const rsc = this.m_rscene;
+			this.m_modelScene = rsc.modelScene;
 			const rtsys = this.m_rtaskSys;
+			rsc.data = rtsys.data;
 			const modelsc = this.m_modelScene;
 			rtsys.modelScene = modelsc;
 
@@ -29,9 +32,9 @@ class DsrdShell {
 			let actioncall = (idns: string, type: string): void => {
 				switch (idns) {
 					case "rsc_viewer_loaded":
-						let rviewer = this.m_rscene.rscViewer;
+						let rviewer = rsc.rscViewer;
 						this.m_ui.setRSCViewer(rviewer);
-						this.m_rtaskSys.setRSCViewer(rviewer);
+						// this.m_rtaskSys.setRSCViewer(rviewer);
 						break;
 					case "select_a_model":
 						// let uuidStr = type;
@@ -130,18 +133,26 @@ class DsrdShell {
 					}
 					break;
 				case "update-rnode":
-					let rnode = data.rnode;
-					console.log("xxxx shell, rnode: ", rnode);
-					if(rnode) {
-						if(rnode.camera !== undefined) {
-							let camMatrix = rnode.camera.matrix;
-							console.log("camMatrix: ", camMatrix);
-							if(camMatrix !== undefined) {
-								this.m_rscene.setCameraWithF32Arr16(camMatrix);
-							}
-						}
-					}
+					// let rnode = data.rnode;
+					// console.log("xxxx shell, rnode: ", rnode);
+					// if (rnode) {
+					// 	const cam = rnode.camera;
+					// 	if (cam !== undefined) {
+					// 		if (cam.viewAngle !== undefined && cam.near !== undefined && cam.far !== undefined) {
+					// 			this.m_rscene.setCamProjectParam(cam.viewAngle, cam.near, cam.far);
+					// 		}
+					// 		let camMatrix = cam.matrix;
+					// 		console.log("camMatrix: ", camMatrix);
+					// 		if (camMatrix !== undefined) {
+					// 			this.m_rscene.setCameraWithF32Arr16(camMatrix);
+					// 		}
+					// 	}
+					// }
+					this.m_rscene.updateDataWithCurrRNode();
 					break;
+				// case "current_rendering_begin":
+				// 	this.m_rtaskBeginUI.open();
+				// 	break;
 				default:
 					break;
 			}
@@ -156,13 +167,13 @@ class DsrdShell {
 		this.m_rtaskSys.data.rtJsonData = this.m_ui;
 
 		this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys;
-		// this.m_rtaskBeginUI.rscene = this.m_rscene;
 		this.m_rtaskBeginUI.onaction = actioncall;
 		this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
 		this.m_rtaskBeginUI.open();
 	}
 	private m_workSpaceStatus = 0;
 	private toWorkSpace(): void {
+		this.m_ui.setTaskName(this.m_rtaskSys.data.taskname);
 		if (this.m_workSpaceStatus == 0) {
 			this.m_workSpaceStatus = 1;
 			console.log("DsrdShell::toWorkSpace().");

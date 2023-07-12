@@ -46,8 +46,22 @@ class RTaskInfoViewer {
 		}
 	}
 
-	parseSyncRStatuReqInfo(sdo: any) {
-		// this.parseRenderingReqInfo(sdo)
+	parseSyncRStatuReqInfo(sdo: any, callback: (type: string)=>void = null) {
+		if(sdo != null) {
+			const data = this.data;
+			if(data.version != sdo.version) {
+				console.log("$$$$$$$$$$ parseSyncRStatuReqInfo(), this.process.toCurrRendering() ...");
+				data.version = sdo.version;
+				data.phase = sdo.phase;
+				this.process.toCurrRendering();
+				this.reset();
+				if(callback) {
+					callback("current_rendering_begin");
+				}
+			}
+		}
+		this.process.running = true;
+
 	}
 	parseModelReqInfo(sdo: any) {
 		if(sdo.drcsTotal !== undefined) {

@@ -26,6 +26,7 @@ class DsrdUI implements IRTJsonData {
 	private m_items: RenderingSettingItem[] = [];
 	private m_itemMap: Map<string, RenderingSettingItem> = new Map();
 
+	taskNameDiv: HTMLDivElement = null;
 	rtaskSys: RTaskSystem = null;
 	constructor() {}
 	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number): void {
@@ -44,6 +45,9 @@ class DsrdUI implements IRTJsonData {
 			this.m_items[i].getPanel().rscViewer = rscViewer;
 		}
 		console.log("DsrdUI::setRSCViewer(), rscViewer: ", rscViewer);
+	}
+	setTaskName(taskName: string): void {
+		this.taskNameDiv.innerHTML = taskName;
 	}
 	private initUIScene(layer: HTMLDivElement, areaWidth: number, areaHeight: number): void {
 		let total = 5;
@@ -64,6 +68,18 @@ class DsrdUI implements IRTJsonData {
 		this.buildBtns( bottomBtnBGDiv );
 
 		let ctrlAreaDiv = this.createDiv(subW, 0, areaWidth - subW, height, "absolute", false);
+
+		this.taskNameDiv = this.createDiv(subW + 10, 5, areaWidth - subW - 20, 35, "absolute", false);
+		this.taskNameDiv.innerHTML = "rendering...";
+		style = this.taskNameDiv.style;
+		style.color = "#101033";
+		// style.userSelect = true
+		// style.backgroundColor = "#556677"
+		style.textAlign = "center";
+		style.alignItems = "center";
+		style.justifyContent = "center";
+		layer.appendChild(this.taskNameDiv);
+
 		style = ctrlAreaDiv.style;
 		// style.backgroundColor = "#555555";
 		layer.appendChild(ctrlAreaDiv);
@@ -125,13 +141,13 @@ class DsrdUI implements IRTJsonData {
 		container.appendChild(div);
 		divs.push(div);
 		btn = new ButtonDivItem();
-		btn.initialize(div, "发起渲染", "send_rendering");
+		btn.initialize(div, "渲染图像", "send_rendering");
 		btn.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
 			this.rtaskSys.rerendering();
 			// for test
-			this.rtaskSys.request.sendRerenderingReq("", true);
+			// this.rtaskSys.request.sendRerenderingReq("", true);
 		}
 		pw = 130;
 		div = DivTool.createDivT1(370, 30, pw, ph, "flex", "absolute", true);

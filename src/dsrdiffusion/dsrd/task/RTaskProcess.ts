@@ -1,4 +1,5 @@
 enum RTPType {
+	None,
 	FirstRendering,
 	CurrRendering,
 	SyncRStatus,

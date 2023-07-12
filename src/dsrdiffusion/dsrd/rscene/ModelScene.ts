@@ -2,6 +2,7 @@ import { RTaskData } from "../task/RTaskData";
 import { RTaskInfoViewer } from "../task/RTaskInfoViewer";
 import { RTaskProcess } from "../task/RTaskProcess";
 import { RTaskRquest } from "../task/RTaskRequest";
+import { IDsrdSceneCtrl } from "../rscene/IDsrdSceneCtrl";
 
 class ModelScene {
 	private m_rscViewer: any = null;
@@ -9,6 +10,7 @@ class ModelScene {
 	process: RTaskProcess = null;
 	data: RTaskData = null;
 	infoViewer: RTaskInfoViewer = null;
+	scene: IDsrdSceneCtrl = null;
 	constructor() {}
 	setRSCViewer(rscViewer: any): void {
 		this.m_rscViewer = rscViewer;
@@ -18,6 +20,7 @@ class ModelScene {
 		return this.data.modelLoadStatus == 2;
 	}
 	rerendering(): void {
+		console.log("XXXXXXX rscViewer.imgViewer.setViewImageAlpha(0.1)");
 		this.m_rscViewer.imgViewer.setViewImageAlpha(0.1);
 	}
 	loadModel(): boolean {
@@ -90,7 +93,9 @@ class ModelScene {
 		if (process.isAllFinish()) {
 			if (!data.currentTaskAlive && this.isModelDataLoaded()) {
 				data.currentTaskAlive = true;
-				this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
+				console.log("XXXXXXX ModelScene::testTaskFinish(), scene.setViewImageUrls(), urls: ", data.miniImgUrls);
+				// this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
+				this.scene.setViewImageUrls(data.miniImgUrls);
 				process.toSyncRStatus();
 			}
 		}

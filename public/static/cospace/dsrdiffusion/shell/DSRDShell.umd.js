@@ -497,7 +497,24 @@ class RTaskInfoViewer {
     }
   }
 
-  parseSyncRStatuReqInfo(sdo) {// this.parseRenderingReqInfo(sdo)
+  parseSyncRStatuReqInfo(sdo, callback = null) {
+    if (sdo != null) {
+      const data = this.data;
+
+      if (data.version != sdo.version) {
+        console.log("$$$$$$$$$$ parseSyncRStatuReqInfo(), this.process.toCurrRendering() ...");
+        data.version = sdo.version;
+        data.phase = sdo.phase;
+        this.process.toCurrRendering();
+        this.reset();
+
+        if (callback) {
+          callback("current_rendering_begin");
+        }
+      }
+    }
+
+    this.process.running = true;
   }
 
   parseModelReqInfo(sdo) {
@@ -825,6 +842,7 @@ class DsrdUI {
     this.m_areaHeight = 512;
     this.m_items = [];
     this.m_itemMap = new Map();
+    this.taskNameDiv = null;
     this.rtaskSys = null;
     this.m_rscViewer = null;
     this.m_materialPanel = null;
@@ -850,6 +868,10 @@ class DsrdUI {
     console.log("DsrdUI::setRSCViewer(), rscViewer: ", rscViewer);
   }
 
+  setTaskName(taskName) {
+    this.taskNameDiv.innerHTML = taskName;
+  }
+
   initUIScene(layer, areaWidth, areaHeight) {
     let total = 5;
     let height = 400;
@@ -867,6 +889,16 @@ class DsrdUI {
     layer.appendChild(bottomBtnBGDiv);
     this.buildBtns(bottomBtnBGDiv);
     let ctrlAreaDiv = this.createDiv(subW, 0, areaWidth - subW, height, "absolute", false);
+    this.taskNameDiv = this.createDiv(subW + 10, 5, areaWidth - subW - 20, 35, "absolute", false);
+    this.taskNameDiv.innerHTML = "rendering...";
+    style = this.taskNameDiv.style;
+    style.color = "#101033"; // style.userSelect = true
+    // style.backgroundColor = "#556677"
+
+    style.textAlign = "center";
+    style.alignItems = "center";
+    style.justifyContent = "center";
+    layer.appendChild(this.taskNameDiv);
     style = ctrlAreaDiv.style; // style.backgroundColor = "#555555";
 
     layer.appendChild(ctrlAreaDiv); // 2c71b0
@@ -931,14 +963,13 @@ class DsrdUI {
     container.appendChild(div);
     divs.push(div);
     btn = new ButtonDivItem_1.ButtonDivItem();
-    btn.initialize(div, "发起渲染", "send_rendering");
+    btn.initialize(div, "渲染图像", "send_rendering");
 
     btn.onmouseup = evt => {
       let currEvt = evt;
       console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
       this.rtaskSys.rerendering(); // for test
-
-      this.rtaskSys.request.sendRerenderingReq("", true);
+      // this.rtaskSys.request.sendRerenderingReq("", true);
     };
 
     pw = 130;
@@ -1551,6 +1582,7 @@ class ModelScene {
     this.process = null;
     this.data = null;
     this.infoViewer = null;
+    this.scene = null;
   }
 
   setRSCViewer(rscViewer) {
@@ -1563,6 +1595,7 @@ class ModelScene {
   }
 
   rerendering() {
+    console.log("XXXXXXX rscViewer.imgViewer.setViewImageAlpha(0.1)");
     this.m_rscViewer.imgViewer.setViewImageAlpha(0.1);
   }
 
@@ -1638,7 +1671,9 @@ class ModelScene {
     if (process.isAllFinish()) {
       if (!data.currentTaskAlive && this.isModelDataLoaded()) {
         data.currentTaskAlive = true;
-        this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
+        console.log("XXXXXXX ModelScene::testTaskFinish(), scene.setViewImageUrls(), urls: ", data.miniImgUrls); // this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
+
+        this.scene.setViewImageUrls(data.miniImgUrls);
         process.toSyncRStatus();
       }
     }
@@ -2174,20 +2209,17 @@ class RTaskRquest {
 
   updatePage() {
     HTTPUtils_1.HTTPTool.updatePage();
-  }
+  } // getRenderingParams(otherParams: string): string {
+  // 	let rimgSizes = [512, 512];
+  // 	let params = "&sizes=" + rimgSizes;
+  // 	// params += getCameraDataParam();
+  // 	params += "&rtBGTransparent=" + (this.data.bgTransparent ? "1" : "0");
+  // 	if (otherParams != "") {
+  // 		params += otherParams;
+  // 	}
+  // 	return params;
+  // }
 
-  getRenderingParams(otherParams) {
-    let rimgSizes = [512, 512];
-    let params = "&sizes=" + rimgSizes; // params += getCameraDataParam();
-
-    params += "&rtBGTransparent=" + (this.data.bgTransparent ? "1" : "0");
-
-    if (otherParams != "") {
-      params += otherParams;
-    }
-
-    return params;
-  }
 
   createReqUrlStr(svrUrl, phase, progress, taskId, taskName, otherInfo = "") {
     let url = svrUrl + "?srcType=viewer&&phase=" + phase + "&progress=" + progress + otherInfo;
@@ -2217,6 +2249,8 @@ class RTaskRquest {
     }
 
     let rnodeJson = rtdj.getRTJsonStrByKeyNames(keyNames, true);
+    let rnodeJsonObj = JSON.parse(rnodeJson);
+    this.data.rnode = rnodeJsonObj;
     console.log("rnodeJson: \n", rnodeJson);
     otherInfo += "&rnode=" + rnodeJson;
     let url = this.createReqUrlStr(this.taskReqSvrUrl, "query-re-rendering-task", 0, data.taskid, data.taskname, otherInfo);
@@ -2293,13 +2327,13 @@ class RTaskRquest {
     });
   }
 
-  notifySyncRStatusToSvr(otherInfo = "") {
+  notifySyncRStatusToSvr(otherInfo = "", callback = null) {
     const data = this.data;
     let url = this.createReqUrlStr(this.taskInfoGettingUrl, "syncAnAliveTask", 0, data.taskid, data.taskname, otherInfo);
     this.sendACommonGetReq(url, (purl, content) => {
-      console.log("### ###### notifySyncRStatusToSvr() loaded, content: ", content);
+      // console.log("### ###### notifySyncRStatusToSvr() loaded, content: ", content);
       let sdo = JSON.parse(content);
-      this.taskInfoViewer.parseSyncRStatuReqInfo(sdo);
+      this.taskInfoViewer.parseSyncRStatuReqInfo(sdo, callback);
     });
   }
 
@@ -2486,29 +2520,85 @@ const ModelScene_1 = __webpack_require__("3b8d");
 
 class DsrdScene {
   constructor() {
-    this.m_viewerLayer = null; // ui: DsrdUI = null;
+    this.m_viewerLayer = null;
+    this.m_rscViewerInited = false; // ui: DsrdUI = null;
     // taskSys: RTaskSystem = null;
 
     this.rscViewer = null;
     this.modelScene = new ModelScene_1.ModelScene();
+    this.data = null;
     this.onaction = null;
+    this.m_camParams = null;
     this.m_camvs16 = null;
+    this.m_viewImgUrls = null;
     this.selectedModelUrls = [];
   }
 
   initialize(viewerLayer) {
     console.log("DsrdScene::initialize()......");
-    this.m_viewerLayer = viewerLayer; // let url = "static/cospace/dsrdiffusion/scViewer/SceneViewer.umd.js";
+    this.m_viewerLayer = viewerLayer;
+    this.modelScene.scene = this; // let url = "static/cospace/dsrdiffusion/scViewer/SceneViewer.umd.js";
 
     let url = "static/cospace/dsrdiffusion/dsrdViewer/DsrdViewer.umd.js";
     this.loadModule(url);
   }
 
+  updateDataWithCurrRNode() {
+    let rnode = this.data.rnode;
+    console.log("xxxx shell, rnode: ", rnode);
+
+    if (rnode) {
+      const cam = rnode.camera;
+
+      if (cam !== undefined) {
+        if (cam.viewAngle !== undefined && cam.near !== undefined && cam.far !== undefined) {
+          this.setCamProjectParam(cam.viewAngle, cam.near, cam.far);
+        }
+
+        let camMatrix = cam.matrix;
+        console.log("camMatrix: ", camMatrix);
+
+        if (camMatrix !== undefined) {
+          this.setCameraWithF32Arr16(camMatrix);
+        }
+      }
+    }
+  }
+  /**
+   * @param fov_angle_degree the default value is 45.0
+   * @param near the default value is 10.0
+   * @param far the default value is 5000.0
+   */
+
+
+  setCamProjectParam(fov_angle_degree, near, far) {
+    if (this.m_camParams == null) {
+      this.m_camParams = new Array(4);
+    }
+
+    const params = this.m_camParams;
+    params[0] = fov_angle_degree;
+    params[1] = near * 100.0;
+    params[2] = far * 100.0; //const params = this.m_camParams;
+
+    if (this.m_rscViewerInited) {
+      this.rscViewer.setCamProjectParam(params[0], params[1], params[2]);
+    }
+  }
+
   setCameraWithF32Arr16(camvs16) {
     this.m_camvs16 = camvs16;
 
-    if (this.rscViewer && this.m_camvs16) {
+    if (this.m_rscViewerInited && this.m_camvs16) {
       this.rscViewer.updateCameraWithF32Arr16(this.m_camvs16);
+    }
+  }
+
+  setViewImageUrls(urls) {
+    this.m_viewImgUrls = urls;
+
+    if (this.m_rscViewerInited && this.m_viewImgUrls) {
+      this.rscViewer.imgViewer.setViewImageUrls(this.m_viewImgUrls);
     }
   }
 
@@ -2528,6 +2618,18 @@ class DsrdScene {
 
     let releaseModule = !debugDev;
     rscViewer.initialize(this.m_viewerLayer, () => {
+      this.m_rscViewerInited = true;
+
+      if (this.m_viewImgUrls) {
+        this.rscViewer.imgViewer.setViewImageUrls(this.m_viewImgUrls);
+      }
+
+      const params = this.m_camParams;
+
+      if (params) {
+        this.rscViewer.setCamProjectParam(params[0], params[1], params[2]);
+      }
+
       if (this.m_camvs16) {
         rscViewer.updateCameraWithF32Arr16(this.m_camvs16);
       }
@@ -3012,23 +3114,17 @@ class RTaskBeginUI {
     // }
 
     sys.process.toFirstRendering();
+    sys.syncRendering = true;
     sys.infoViewer.reset();
     this.m_uploadUI.initUI();
     sys.infoViewer.infoDiv = this.m_uploadUI.getTextDiv();
     sys.startup();
     sys.request.syncRTaskInfoFromSvr("", jsonObj => {
-      console.log("sys.request.syncRTaskInfoFromSvr, jsonObj: ", jsonObj);
-      console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.task: ", jsonObj.task);
-
       if (jsonObj.task !== undefined) {
         sys.data.rnode = jsonObj.task.rnode;
-        console.log("sys.request.syncRTaskInfoFromSvr, sys.data.rnode: ", sys.data.rnode);
         sys.updateRNode();
       }
-    }); // if (this.onaction) {
-    // 	this.onaction("uploading_success", type);
-    // }
-
+    });
     this.m_tasksListDiv.style.visibility = "hidden";
     this.m_backFromTaskListBtn.setVisible(false);
   }
@@ -3389,9 +3485,14 @@ class RTaskSystem {
     this.modelScene = null;
     this.onaction = null;
     this.m_timerId = -1;
+    this.syncRendering = false;
     this.m_rerenderingTimes = 0;
-    this.m_workSpaceStatus = 0;
-    this.m_rscViewer = null;
+    this.m_workSpaceStatus = 0; // private m_rscViewer: any = null;
+    // setRSCViewer(rscViewer: any): void {
+    // 	this.m_rscViewer = rscViewer;
+    // }
+
+    this.m_preRTDataFinish = false;
   }
 
   initialize() {
@@ -3432,22 +3533,50 @@ class RTaskSystem {
     const data = this.data;
     const process = this.process;
     const modelsc = this.modelScene;
+    let rtFinish = this.isRTDataFinish();
 
     if (process.running && !process.isError()) {
       switch (this.process.type) {
         case RTaskProcess_1.RTPType.SyncRStatus:
-          this.request.notifySyncRStatusToSvr();
+          process.running = false;
+          this.request.notifySyncRStatusToSvr("", type => {
+            if (type == "current_rendering_begin") {
+              this.syncRendering = true;
+
+              if (this.onaction) {
+                this.onaction("curr-rendering", "new");
+              }
+            }
+          });
           break;
 
         case RTaskProcess_1.RTPType.CurrRendering:
           if (process.isAllFinish()) {
             console.log("CurrRendering, all finish.");
-            this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
-            process.toSyncRStatus();
+            console.log("XXXXXXX RTaskSystem::timerUpdate(), scene.setViewImageUrls(), urls: ", data.miniImgUrls); // this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
+
+            this.modelScene.scene.setViewImageUrls(data.miniImgUrls);
 
             if (this.onaction) {
               this.onaction("curr-rendering", "finish");
             }
+
+            const sys = this;
+
+            if (this.syncRendering) {
+              sys.request.syncRTaskInfoFromSvr("", jsonObj => {
+                console.log("tasksys, sys.request.syncRTaskInfoFromSvr, jsonObj: ", jsonObj); // console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.task: ", jsonObj.task);
+
+                if (jsonObj.task !== undefined) {
+                  sys.data.rnode = jsonObj.task.rnode;
+                  sys.updateRNode();
+                }
+              });
+            } else {
+              sys.updateRNode();
+            }
+
+            process.toSyncRStatus();
           } else {
             process.running = false;
             this.request.notifyRenderingInfoToSvr();
@@ -3483,9 +3612,27 @@ class RTaskSystem {
       }
 
       if (this.isRTDataFinish()) {
+        // let t = this.isRTDataFinish();
+        // if (rtFinish != t || this.m_preRTDataFinish != t) {
+        // 	const sys = this;
+        // 	if (this.syncRendering) {
+        // 		sys.request.syncRTaskInfoFromSvr("", (jsonObj: any): void => {
+        // 			console.log("tasksys, sys.request.syncRTaskInfoFromSvr, jsonObj: ", jsonObj);
+        // 			// console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.task: ", jsonObj.task);
+        // 			if (jsonObj.task !== undefined) {
+        // 				sys.data.rnode = jsonObj.task.rnode;
+        // 				sys.updateRNode();
+        // 			}
+        // 		});
+        // 	} else {
+        // 		sys.updateRNode();
+        // 	}
+        // }
         this.toWorkSpace();
       }
     }
+
+    this.m_preRTDataFinish = this.isRTDataFinish();
   }
 
   rerendering() {
@@ -3502,7 +3649,10 @@ class RTaskSystem {
       }
 
       this.modelScene.rerendering();
+      return true;
     }
+
+    return false;
   }
 
   toWorkSpace() {
@@ -3513,10 +3663,6 @@ class RTaskSystem {
         this.onaction("toWorkSpace", "finish");
       }
     }
-  }
-
-  setRSCViewer(rscViewer) {
-    this.m_rscViewer = rscViewer;
   }
 
   isRTDataFinish() {
@@ -3745,10 +3891,11 @@ Object.defineProperty(exports, "__esModule", {
 var RTPType;
 
 (function (RTPType) {
-  RTPType[RTPType["FirstRendering"] = 0] = "FirstRendering";
-  RTPType[RTPType["CurrRendering"] = 1] = "CurrRendering";
-  RTPType[RTPType["SyncRStatus"] = 2] = "SyncRStatus";
-  RTPType[RTPType["SyncModelStatus"] = 3] = "SyncModelStatus";
+  RTPType[RTPType["None"] = 0] = "None";
+  RTPType[RTPType["FirstRendering"] = 1] = "FirstRendering";
+  RTPType[RTPType["CurrRendering"] = 2] = "CurrRendering";
+  RTPType[RTPType["SyncRStatus"] = 3] = "SyncRStatus";
+  RTPType[RTPType["SyncModelStatus"] = 4] = "SyncModelStatus";
 })(RTPType || (RTPType = {}));
 
 exports.RTPType = RTPType;
@@ -3883,8 +4030,10 @@ class DsrdShell {
 
     if (this.m_init) {
       this.m_init = false;
-      this.m_modelScene = this.m_rscene.modelScene;
+      const rsc = this.m_rscene;
+      this.m_modelScene = rsc.modelScene;
       const rtsys = this.m_rtaskSys;
+      rsc.data = rtsys.data;
       const modelsc = this.m_modelScene;
       rtsys.modelScene = modelsc;
       modelsc.data = rtsys.data;
@@ -3895,9 +4044,9 @@ class DsrdShell {
       let actioncall = (idns, type) => {
         switch (idns) {
           case "rsc_viewer_loaded":
-            let rviewer = this.m_rscene.rscViewer;
-            this.m_ui.setRSCViewer(rviewer);
-            this.m_rtaskSys.setRSCViewer(rviewer);
+            let rviewer = rsc.rscViewer;
+            this.m_ui.setRSCViewer(rviewer); // this.m_rtaskSys.setRSCViewer(rviewer);
+
             break;
 
           case "select_a_model":
@@ -3998,21 +4147,26 @@ class DsrdShell {
           break;
 
         case "update-rnode":
-          let rnode = data.rnode;
-          console.log("xxxx shell, rnode: ", rnode);
-
-          if (rnode) {
-            if (rnode.camera !== undefined) {
-              let camMatrix = rnode.camera.matrix;
-              console.log("camMatrix: ", camMatrix);
-
-              if (camMatrix !== undefined) {
-                this.m_rscene.setCameraWithF32Arr16(camMatrix);
-              }
-            }
-          }
-
+          // let rnode = data.rnode;
+          // console.log("xxxx shell, rnode: ", rnode);
+          // if (rnode) {
+          // 	const cam = rnode.camera;
+          // 	if (cam !== undefined) {
+          // 		if (cam.viewAngle !== undefined && cam.near !== undefined && cam.far !== undefined) {
+          // 			this.m_rscene.setCamProjectParam(cam.viewAngle, cam.near, cam.far);
+          // 		}
+          // 		let camMatrix = cam.matrix;
+          // 		console.log("camMatrix: ", camMatrix);
+          // 		if (camMatrix !== undefined) {
+          // 			this.m_rscene.setCameraWithF32Arr16(camMatrix);
+          // 		}
+          // 	}
+          // }
+          this.m_rscene.updateDataWithCurrRNode();
           break;
+        // case "current_rendering_begin":
+        // 	this.m_rtaskBeginUI.open();
+        // 	break;
 
         default:
           break;
@@ -4024,14 +4178,15 @@ class DsrdShell {
     this.m_rtaskSys.initialize();
     this.m_rtaskSys.onaction = actioncall;
     this.m_rtaskSys.data.rtJsonData = this.m_ui;
-    this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys; // this.m_rtaskBeginUI.rscene = this.m_rscene;
-
+    this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys;
     this.m_rtaskBeginUI.onaction = actioncall;
     this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
     this.m_rtaskBeginUI.open();
   }
 
   toWorkSpace() {
+    this.m_ui.setTaskName(this.m_rtaskSys.data.taskname);
+
     if (this.m_workSpaceStatus == 0) {
       this.m_workSpaceStatus = 1;
       console.log("DsrdShell::toWorkSpace().");

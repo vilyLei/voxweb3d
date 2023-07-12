@@ -38,6 +38,7 @@ class RTaskSystem {
 		}
 	}
 	private m_timerId: any = -1;
+	syncRendering = false;
 	private timerUpdate(): void {
 		if (this.m_timerId > -1) {
 			clearTimeout(this.m_timerId);
@@ -46,19 +47,44 @@ class RTaskSystem {
 		const data = this.data;
 		const process = this.process;
 		const modelsc = this.modelScene;
+		let rtFinish = this.isRTDataFinish();
+
 		if (process.running && !process.isError()) {
 			switch (this.process.type) {
 				case RTPType.SyncRStatus:
-					this.request.notifySyncRStatusToSvr();
+					process.running = false;
+					this.request.notifySyncRStatusToSvr("", (type: string): void => {
+						if (type == "current_rendering_begin") {
+							this.syncRendering = true;
+							if (this.onaction) {
+								this.onaction("curr-rendering", "new");
+							}
+						}
+					});
 					break;
 				case RTPType.CurrRendering:
 					if (process.isAllFinish()) {
 						console.log("CurrRendering, all finish.");
-						this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
-						process.toSyncRStatus();
+						console.log("XXXXXXX RTaskSystem::timerUpdate(), scene.setViewImageUrls(), urls: ", data.miniImgUrls);
+						// this.m_rscViewer.imgViewer.setViewImageUrls(data.miniImgUrls);
+						this.modelScene.scene.setViewImageUrls(data.miniImgUrls);
 						if (this.onaction) {
 							this.onaction("curr-rendering", "finish");
 						}
+						const sys = this;
+						if (this.syncRendering) {
+							sys.request.syncRTaskInfoFromSvr("", (jsonObj: any): void => {
+								console.log("tasksys, sys.request.syncRTaskInfoFromSvr, jsonObj: ", jsonObj);
+								// console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.task: ", jsonObj.task);
+								if (jsonObj.task !== undefined) {
+									sys.data.rnode = jsonObj.task.rnode;
+									sys.updateRNode();
+								}
+							});
+						} else {
+							sys.updateRNode();
+						}
+						process.toSyncRStatus();
 					} else {
 						process.running = false;
 						this.request.notifyRenderingInfoToSvr();
@@ -88,12 +114,30 @@ class RTaskSystem {
 			}
 
 			if (this.isRTDataFinish()) {
+				// let t = this.isRTDataFinish();
+				// if (rtFinish != t || this.m_preRTDataFinish != t) {
+				// 	const sys = this;
+				// 	if (this.syncRendering) {
+				// 		sys.request.syncRTaskInfoFromSvr("", (jsonObj: any): void => {
+				// 			console.log("tasksys, sys.request.syncRTaskInfoFromSvr, jsonObj: ", jsonObj);
+				// 			// console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.task: ", jsonObj.task);
+				// 			if (jsonObj.task !== undefined) {
+				// 				sys.data.rnode = jsonObj.task.rnode;
+				// 				sys.updateRNode();
+				// 			}
+				// 		});
+				// 	} else {
+				// 		sys.updateRNode();
+				// 	}
+				// }
+
 				this.toWorkSpace();
 			}
 		}
+		this.m_preRTDataFinish = this.isRTDataFinish();
 	}
 	private m_rerenderingTimes = 0;
-	rerendering(): void {
+	rerendering(): boolean {
 		console.log("RTaskSystem::rerendering(), this.isTaskAlive(): ", this.isTaskAlive());
 		if (this.isTaskAlive()) {
 			this.m_rerenderingTimes++;
@@ -104,7 +148,9 @@ class RTaskSystem {
 				this.onaction("curr-rendering", "new");
 			}
 			this.modelScene.rerendering();
+			return true;
 		}
+		return false;
 	}
 	private m_workSpaceStatus = 0;
 	private toWorkSpace(): void {
@@ -115,10 +161,11 @@ class RTaskSystem {
 			}
 		}
 	}
-	private m_rscViewer: any = null;
-	setRSCViewer(rscViewer: any): void {
-		this.m_rscViewer = rscViewer;
-	}
+	// private m_rscViewer: any = null;
+	// setRSCViewer(rscViewer: any): void {
+	// 	this.m_rscViewer = rscViewer;
+	// }
+	private m_preRTDataFinish = false;
 	isRTDataFinish(): boolean {
 		return this.data.isModelDataLoaded() && this.process.isAllFinish();
 	}

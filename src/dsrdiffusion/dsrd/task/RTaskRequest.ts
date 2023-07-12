@@ -32,16 +32,16 @@ class RTaskRquest {
 	updatePage(): void {
 		HTTPTool.updatePage();
 	}
-	getRenderingParams(otherParams: string): string {
-		let rimgSizes = [512, 512];
-		let params = "&sizes=" + rimgSizes;
-		// params += getCameraDataParam();
-		params += "&rtBGTransparent=" + (this.data.bgTransparent ? "1" : "0");
-		if (otherParams != "") {
-			params += otherParams;
-		}
-		return params;
-	}
+	// getRenderingParams(otherParams: string): string {
+	// 	let rimgSizes = [512, 512];
+	// 	let params = "&sizes=" + rimgSizes;
+	// 	// params += getCameraDataParam();
+	// 	params += "&rtBGTransparent=" + (this.data.bgTransparent ? "1" : "0");
+	// 	if (otherParams != "") {
+	// 		params += otherParams;
+	// 	}
+	// 	return params;
+	// }
 	createReqUrlStr(svrUrl: string, phase: string, progress: number, taskId: number, taskName: string, otherInfo = ""): string {
 		let url = svrUrl + "?srcType=viewer&&phase=" + phase + "&progress=" + progress + otherInfo;
 		if (taskId > 0) {
@@ -64,6 +64,8 @@ class RTaskRquest {
 			keyNames.push(keyName);
 		}
 		let rnodeJson = rtdj.getRTJsonStrByKeyNames(keyNames, true);
+		let rnodeJsonObj = JSON.parse(rnodeJson);
+		this.data.rnode = rnodeJsonObj;
 		console.log("rnodeJson: \n", rnodeJson);
 		otherInfo += "&rnode=" + rnodeJson;
 		let url = this.createReqUrlStr(this.taskReqSvrUrl, "query-re-rendering-task", 0, data.taskid, data.taskname, otherInfo);
@@ -130,13 +132,13 @@ class RTaskRquest {
 			this.taskInfoViewer.parseModelReqInfo(sdo);
 		})
 	}
-	notifySyncRStatusToSvr(otherInfo = ""): void {
+	notifySyncRStatusToSvr(otherInfo = "", callback: (type: string)=>void = null): void {
 		const data = this.data;
 		let url = this.createReqUrlStr(this.taskInfoGettingUrl, "syncAnAliveTask", 0, data.taskid, data.taskname, otherInfo);
 		this.sendACommonGetReq(url, (purl, content) => {
-			console.log("### ###### notifySyncRStatusToSvr() loaded, content: ", content);
+			// console.log("### ###### notifySyncRStatusToSvr() loaded, content: ", content);
 			let sdo = JSON.parse(content);
-			this.taskInfoViewer.parseSyncRStatuReqInfo(sdo);
+			this.taskInfoViewer.parseSyncRStatuReqInfo(sdo, callback);
 		});
 	}
 	syncRTaskInfoFromSvr(otherInfo = "", call: (jsonObj: any) => void): void {
