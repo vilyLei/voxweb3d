@@ -86,9 +86,13 @@ class RTaskBeginUI {
 		sys.infoViewer.infoDiv = this.m_uploadUI.getTextDiv();
 		sys.startup();
 		sys.request.syncRTaskInfoFromSvr("", (jsonObj: any): void => {
-			console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.rnode: ", jsonObj.rnode);
-			sys.data.rnode = jsonObj.rnode;
-			sys.updateRNode();
+			console.log("sys.request.syncRTaskInfoFromSvr, jsonObj: ", jsonObj);
+			console.log("sys.request.syncRTaskInfoFromSvr, jsonObj.task: ", jsonObj.task);
+			if(jsonObj.task !== undefined) {
+				sys.data.rnode = jsonObj.task.rnode;
+				console.log("sys.request.syncRTaskInfoFromSvr, sys.data.rnode: ", sys.data.rnode);
+				sys.updateRNode();
+			}
 		});
 		// if (this.onaction) {
 		// 	this.onaction("uploading_success", type);
