@@ -87,12 +87,11 @@ class RTaskBeginUI {
 		sys.infoViewer.infoDiv = this.m_uploadUI.getTextDiv();
 		sys.startup();
 		sys.request.syncRTaskInfoFromSvr("", (jsonObj: any): void => {
-			if(jsonObj.task !== undefined) {
+			if (jsonObj.task !== undefined) {
 				sys.data.rnode = jsonObj.task.rnode;
 				sys.updateRNode();
 			}
 		});
-
 
 		this.m_tasksListDiv.style.visibility = "hidden";
 		this.m_backFromTaskListBtn.setVisible(false);
@@ -104,25 +103,39 @@ class RTaskBeginUI {
 		this.m_uploadModelBtn.setVisible(true);
 		this.m_openTasksListBtn.setVisible(true);
 	}
-	buildTasksList(aliveTasks: any[]): void {
+	private initInfoDiv(): void {
 		let div = this.m_tasksListDiv;
 		if (div == null) {
 			let pw = 320;
-			let ph = 300;
 			let px = (this.m_areaWidth - pw) * 0.5;
 			let py = 50;
-
-			this.m_tasksListDiv = DivTool.createDivT1(px, py, pw, 300, "flex", "absolute", false);
+			this.m_tasksListDiv = DivTool.createDivT1(px, py, pw, 100, "flex", "absolute", false);
 			div = this.m_tasksListDiv;
 			let style = div.style;
 			style.textAlign = "center";
 			style.display = "block";
 			this.m_viewerLayer.appendChild(div);
-
-			pw = 80;
-			ph = 50;
-			px = (this.m_areaWidth - pw) * 0.5;
-			py = this.m_areaHeight - ph - 20;
+		}
+	}
+	buildTasksList(aliveTasks: any[]): void {
+		this.initInfoDiv();
+		let div = this.m_tasksListDiv;
+		// if (div == null) {
+		// 	let pw = 320;
+		// 	let px = (this.m_areaWidth - pw) * 0.5;
+		// 	let py = 50;
+		// 	this.m_tasksListDiv = DivTool.createDivT1(px, py, pw, 300, "flex", "absolute", false);
+		// 	div = this.m_tasksListDiv;
+		// 	let style = div.style;
+		// 	style.textAlign = "center";
+		// 	style.display = "block";
+		// 	this.m_viewerLayer.appendChild(div);
+		// }
+		if (this.m_backFromTaskListBtn == null) {
+			let pw = 80;
+			let ph = 50;
+			let px = (this.m_areaWidth - pw) * 0.5;
+			let py = this.m_areaHeight - ph - 20;
 
 			let btnDiv = DivTool.createDivT1(px, py, pw, ph, "flex", "absolute", true);
 			let colors = [0x157c73, 0x156a85, 0x15648b];
@@ -142,6 +155,13 @@ class RTaskBeginUI {
 		this.m_backFromTaskListBtn.setVisible(true);
 		DivTool.clearDivAllEles(div);
 		let total = aliveTasks.length;
+		if (total > 0) {
+			aliveTasks.sort((a: any, b: any): number => {
+				return a.ctime - b.ctime
+			})
+		}
+		console.log("ooooooooo aliveTasks: ", aliveTasks);
+
 		for (let i = 0; i < total; ++i) {
 			let br = document.createElement("br");
 			div.appendChild(br);
@@ -162,6 +182,12 @@ class RTaskBeginUI {
 		div.appendChild(br);
 	}
 	private buildBtns(container: HTMLDivElement): void {
+		// let tasks: any[] = [{"ctime":10},{"ctime":21},{"ctime":9}];
+		// tasks.sort((a: any, b: any): number => {
+		// 	return a.ctime - b.ctime
+		// })
+		// console.log("xxxxxxxx tasks: ", tasks);
+
 		let colors = [0x157c73, 0x156a85, 0x15648b];
 		let pw = 150;
 		let ph = 60;
@@ -173,6 +199,7 @@ class RTaskBeginUI {
 		let btn = new ButtonDivItem();
 		btn.setDeselectColors(colors);
 		btn.initialize(div, "新建渲染任务", "upload_model");
+		btn.toRoundedRectangleStyle();
 		btn.applyColorAt(0);
 		btn.onmouseup = evt => {
 			let currEvt = evt as any;
@@ -187,6 +214,7 @@ class RTaskBeginUI {
 		btn = new ButtonDivItem();
 		btn.setDeselectColors(colors);
 		btn.initialize(div, "打开任务列表", "open_task_list");
+		btn.toRoundedRectangleStyle();
 		btn.applyColorAt(0);
 		btn.onmouseup = evt => {
 			let currEvt = evt as any;
@@ -205,6 +233,10 @@ class RTaskBeginUI {
 		this.m_openTasksListBtn = btn;
 	}
 
+	setInnerHTML(htmlStr: string): void {
+		this.initInfoDiv();
+		this.m_tasksListDiv.innerHTML = htmlStr;
+	}
 	open(): void {
 		this.m_viewerLayer.style.visibility = "visible";
 	}

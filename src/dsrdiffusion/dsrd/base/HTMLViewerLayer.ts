@@ -15,6 +15,9 @@ class HTMLViewerLayer {
 	getDiv(): HTMLDivElement {
 		return this.m_viewer as HTMLDivElement;
 	}
+	getStyle(): CSSStyleDeclaration {
+		return this.m_viewer.style;
+	}
 	setViewer(viewer: HTMLDivElement | HTMLCanvasElement): void {
 		this.m_viewer = viewer;
 		if (viewer) {

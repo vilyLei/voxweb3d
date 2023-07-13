@@ -239,7 +239,7 @@ class OutputDataPanel extends SettingDataPanel_1.SettingDataPanel {
     param.name = "图像宽";
     param.numberValue = 512;
     param.inputType = "number";
-    param.numberMinValue = 1;
+    param.numberMinValue = 128;
     param.numberMaxValue = 4096;
     param.editEnabled = true;
     param.autoEncoding = false;
@@ -250,7 +250,7 @@ class OutputDataPanel extends SettingDataPanel_1.SettingDataPanel {
     param.name = "图像高";
     param.numberValue = 512;
     param.inputType = "number";
-    param.numberMinValue = 1;
+    param.numberMinValue = 128;
     param.numberMaxValue = 4096;
     param.editEnabled = true;
     param.autoEncoding = false;
@@ -278,18 +278,12 @@ class OutputDataPanel extends SettingDataPanel_1.SettingDataPanel {
     param.toColor();
     params.push(param);
     this.m_params = params;
-    let container = this.m_container;
-    let startX = 45;
     let startY = 60;
-    let disY = 60;
+    let disY = 50;
     let py = 0;
 
     for (let i = 0; i < params.length; ++i) {
-      let itemComp = new DataItemComponent_1.DataItemComponent();
-      itemComp.x = startX;
-      itemComp.y = startY + py;
-      itemComp.initialize(container, params[i]);
-      this.addItemComp(itemComp);
+      this.createItemComponent(startY + py, params[i]);
       py += disY;
     }
   }
@@ -658,6 +652,10 @@ class HTMLViewerLayer {
     return this.m_viewer;
   }
 
+  getStyle() {
+    return this.m_viewer.style;
+  }
+
   setViewer(viewer) {
     this.m_viewer = viewer;
 
@@ -813,6 +811,8 @@ const ButtonDivItem_1 = __webpack_require__("47c8");
 
 const HtmlDivUtils_1 = __webpack_require__("7191");
 
+const ParamInputPanel_1 = __webpack_require__("b800");
+
 const menuDataList = [{
   name: "出图设置",
   id: 0,
@@ -840,10 +840,15 @@ class DsrdUI {
     this.m_viewerLayer = null;
     this.m_areaWidth = 512;
     this.m_areaHeight = 512;
+    this.m_planeAreaWidth = 512;
+    this.m_planeAreaHeight = 512;
+    this.m_bottomAreaHeight = 512;
     this.m_items = [];
     this.m_itemMap = new Map();
+    this.m_paramInputPanel = new ParamInputPanel_1.ParamInputPanel();
     this.taskNameDiv = null;
     this.rtaskSys = null;
+    this.layoutHorizon = true;
     this.m_rscViewer = null;
     this.m_materialPanel = null;
   }
@@ -869,28 +874,33 @@ class DsrdUI {
   }
 
   setTaskName(taskName) {
-    this.taskNameDiv.innerHTML = taskName;
+    this.taskNameDiv.innerHTML = `<u>${taskName}</u>`;
   }
 
   initUIScene(layer, areaWidth, areaHeight) {
     let total = 5;
-    let height = 400;
+    this.m_planeAreaWidth = Math.floor(0.8 * areaWidth);
+    this.m_planeAreaHeight = Math.floor(0.8 * areaHeight);
+    this.m_bottomAreaHeight = areaHeight - this.m_planeAreaHeight;
+    let height = this.m_planeAreaHeight;
+    let subW = areaWidth - this.m_planeAreaWidth;
     let subH = height / total;
-    let subW = 110;
-    let startY = 0;
-    let colors = [0x334455, 0x335555, 0x335566, 0x445555, 0x445566, 0x446666];
-    let menuBtnBGDiv = this.createDiv(0, 0, subW, height, "absolute");
+    let startY = 0; // let menuBtnBGDiv = this.createDiv(0, 0, subW, height, "absolute");
+
+    let menuBtnBGDiv = HtmlDivUtils_1.DivTool.createDivT1(0, 0, subW, height, "flex", "absolute", false);
     let style = menuBtnBGDiv.style;
     style.backgroundColor = "#668fb6";
-    layer.appendChild(menuBtnBGDiv);
-    let bottomBtnBGDiv = this.createDiv(0, height, areaWidth, areaHeight - height, "absolute", false);
+    layer.appendChild(menuBtnBGDiv); // let bottomBtnBGDiv = this.createDiv(0, height, areaWidth, areaHeight - height, "absolute", false);
+
+    let bottomBtnBGDiv = HtmlDivUtils_1.DivTool.createDivT1(0, height, areaWidth, areaHeight - height, "flex", "absolute", false);
     style = bottomBtnBGDiv.style;
     style.backgroundColor = "#bdd9e1";
     layer.appendChild(bottomBtnBGDiv);
-    this.buildBtns(bottomBtnBGDiv);
-    let ctrlAreaDiv = this.createDiv(subW, 0, areaWidth - subW, height, "absolute", false);
-    this.taskNameDiv = this.createDiv(subW + 10, 5, areaWidth - subW - 20, 35, "absolute", false);
-    this.taskNameDiv.innerHTML = "rendering...";
+    this.buildBtns(bottomBtnBGDiv); // let planeAreaDiv = this.createDiv(subW, 0, areaWidth - subW, height, "absolute", false);
+
+    let planeAreaDiv = HtmlDivUtils_1.DivTool.createDivT1(subW, 0, areaWidth - subW, height, "flex", "absolute", false); // this.taskNameDiv = this.createDiv(subW + 10, 5, areaWidth - subW - 20, 35, "absolute", false);
+
+    this.taskNameDiv = HtmlDivUtils_1.DivTool.createDivT1(subW + 10, 5, areaWidth - subW - 20, 35, "flex", "absolute", false);
     style = this.taskNameDiv.style;
     style.color = "#101033"; // style.userSelect = true
     // style.backgroundColor = "#556677"
@@ -899,9 +909,9 @@ class DsrdUI {
     style.alignItems = "center";
     style.justifyContent = "center";
     layer.appendChild(this.taskNameDiv);
-    style = ctrlAreaDiv.style; // style.backgroundColor = "#555555";
+    style = planeAreaDiv.style; // style.backgroundColor = "#555555";
 
-    layer.appendChild(ctrlAreaDiv); // 2c71b0
+    layer.appendChild(planeAreaDiv); // 2c71b0
 
     let dls = menuDataList;
     let items = this.m_items;
@@ -912,16 +922,16 @@ class DsrdUI {
       // let data = dls[i];
       // let colorStr = "#" + colors[i].toString(16);
       let colorStr = "#bdd9e1"; // console.log("colorStr: ", colorStr);
+      // let div = this.createDiv(0, startY + i * subH, pw, ph, "absolute");
 
-      let div = this.createDiv(0, startY + i * subH, pw, ph, "absolute");
+      let div = HtmlDivUtils_1.DivTool.createDivT1(0, startY + i * subH, pw, ph, "flex", "absolute", true);
       style = div.style;
       style.backgroundColor = colorStr;
       style.cursor = "pointer";
       style.userSelect = "none";
       layer.appendChild(div); // let settingPanel = new SettingDataPanel();
 
-      let settingPanel = this.createSettingPanel(ctrlAreaDiv, areaWidth - subW, height, dls[i]); // settingPanel.initialize(ctrlAreaDiv, areaWidth - subW, height, dls[i])
-
+      let settingPanel = this.createSettingPanel(planeAreaDiv, this.m_planeAreaWidth, height, dls[i]);
       const item = new RenderingSettingItem_1.RenderingSettingItem();
       item.group = items;
       item.initialize(div, pw, ph, settingPanel);
@@ -930,6 +940,15 @@ class DsrdUI {
     }
 
     items[0].select();
+    console.log("uuuuuuuu areaWidth, areaHeight: ", areaWidth, areaHeight);
+    let paramInputDiv = HtmlDivUtils_1.DivTool.createDivT1(0, 0, areaWidth, areaHeight, "flex", "absolute", false);
+    layer.appendChild(paramInputDiv); // style = paramInputDiv.style;
+    // style.color = "#101033";
+
+    let piPanel = this.m_paramInputPanel;
+    piPanel.initialize(paramInputDiv, areaWidth, areaHeight, this.layoutHorizon);
+    piPanel.viewLayer.setBackgroundColor(0xbdd9e1);
+    piPanel.close();
   }
 
   getItemByKeyName(keyName) {
@@ -941,15 +960,15 @@ class DsrdUI {
   }
 
   buildBtns(container) {
-    let pw = 130;
-    let ph = 60; // let div = this.createDiv(90, 30, pw, ph, "absolute", true);
-
-    let div = HtmlDivUtils_1.DivTool.createDivT1(90, 30, pw, ph, "flex", "absolute", true);
-    let style = div.style;
+    let pw = Math.floor(0.28 * this.m_areaWidth);
+    let ph = Math.floor(0.6 * this.m_bottomAreaHeight);
+    let py = Math.floor((this.m_bottomAreaHeight - ph) * 0.5);
+    let div = HtmlDivUtils_1.DivTool.createDivT1(1, py, pw, ph, "flex", "absolute", true);
     container.appendChild(div);
     let divs = [div];
     let btn = new ButtonDivItem_1.ButtonDivItem();
     btn.initialize(div, "获取渲染任务", "new_rendering");
+    btn.toRoundedRectangleStyle();
 
     btn.onmouseup = evt => {
       let currEvt = evt;
@@ -957,13 +976,12 @@ class DsrdUI {
       this.rtaskSys.request.updatePage();
     };
 
-    pw = 100;
-    div = HtmlDivUtils_1.DivTool.createDivT1(230, 30, pw, ph, "flex", "absolute", true);
-    style = div.style;
+    div = HtmlDivUtils_1.DivTool.createDivT1(1, py, pw, ph, "flex", "absolute", true);
     container.appendChild(div);
     divs.push(div);
     btn = new ButtonDivItem_1.ButtonDivItem();
     btn.initialize(div, "渲染图像", "send_rendering");
+    btn.toRoundedRectangleStyle();
 
     btn.onmouseup = evt => {
       let currEvt = evt;
@@ -972,13 +990,12 @@ class DsrdUI {
       // this.rtaskSys.request.sendRerenderingReq("", true);
     };
 
-    pw = 130;
-    div = HtmlDivUtils_1.DivTool.createDivT1(370, 30, pw, ph, "flex", "absolute", true);
-    style = div.style;
+    div = HtmlDivUtils_1.DivTool.createDivT1(1, py, pw, ph, "flex", "absolute", true);
     container.appendChild(div);
     divs.push(div);
     btn = new ButtonDivItem_1.ButtonDivItem();
     btn.initialize(div, "查看渲染原图", "view_rendering_img");
+    btn.toRoundedRectangleStyle();
 
     btn.onmouseup = evt => {
       let currEvt = evt;
@@ -1124,31 +1141,9 @@ class DsrdUI {
         settingPanel = new SettingDataPanel_1.SettingDataPanel();
     }
 
+    settingPanel.paramInputPanel = this.m_paramInputPanel;
     settingPanel.initialize(viewerLayer, areaWidth, areaHeight, data);
     return settingPanel;
-  }
-
-  createDiv(px, py, pw, ph, position = "", center = true) {
-    const div = document.createElement("div");
-    let style = div.style;
-    style.left = px + "px";
-    style.top = py + "px";
-    style.width = pw + "px";
-    style.height = ph + "px";
-    style.display = "flex";
-
-    if (center) {
-      style.alignItems = "center";
-      style.justifyContent = "center";
-    }
-
-    style.position = "relative";
-
-    if (position != "") {
-      style.position = position;
-    }
-
-    return div;
   }
 
 }
@@ -1318,18 +1313,12 @@ class MaterialDataPanel extends SettingDataPanel_1.SettingDataPanel {
     param.toNumber();
     params.push(param);
     this.m_params = params;
-    let container = this.m_container;
-    let startX = 45;
     let startY = 45;
-    let disY = 41;
+    let disY = 31;
     let py = 0;
 
     for (let i = 0; i < params.length; ++i) {
-      let itemComp = new DataItemComponent_1.DataItemComponent();
-      itemComp.x = startX;
-      itemComp.y = startY + py;
-      itemComp.initialize(container, params[i]);
-      this.addItemComp(itemComp);
+      this.createItemComponent(startY + py, params[i]);
       py += disY;
     }
   }
@@ -1406,6 +1395,14 @@ class RModelUploadingUI {
 
     this.m_textViewer.setInnerHTML("uploading..."); // this.progressCall({ lengthComputable: true, loaded: 100, total: 50000 });
     // this.toUploadFailure("...");
+  }
+
+  setInnerHTML(htmlStr) {
+    if (this.m_textViewer == null) {
+      this.initUI();
+    }
+
+    this.m_textViewer.setInnerHTML(htmlStr);
   }
 
   getTextDiv() {
@@ -1562,6 +1559,263 @@ class RModelUploadingUI {
 }
 
 exports.RModelUploadingUI = RModelUploadingUI;
+
+/***/ }),
+
+/***/ "3b73":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/***************************************************************************/
+
+/*                                                                         */
+
+/*  Copyright 2018-2023 by                                                 */
+
+/*  Vily(vily313@126.com)                                                  */
+
+/*                                                                         */
+
+/***************************************************************************/
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+class RendererDevice {
+  /**
+   * set web html body background color
+   * @param color a color string, the default value is "white"
+   */
+  static SetWebBodyColor(color = "white") {
+    const body = document.body;
+    body.style.background = color;
+  }
+
+  static SetLanguage(language) {
+    RendererDevice.s_language = language;
+  }
+
+  static IsChineseLanguage() {
+    let lg = RendererDevice.GetLanguage();
+    return lg == "zh-CN";
+  }
+
+  static GetLanguage() {
+    if (RendererDevice.s_language != "") {
+      return RendererDevice.s_language;
+    }
+
+    RendererDevice.s_language = navigator.language;
+    return RendererDevice.s_language;
+  }
+
+  static SetThreadEnabled(boo) {
+    RendererDevice.s_threadEnabled = boo;
+  }
+
+  static GetThreadEnabled() {
+    return RendererDevice.s_threadEnabled;
+  }
+
+  static GetDebugEnabled() {
+    return RendererDevice.s_debugEnabled;
+  }
+
+  static SetDebugEnabled(boo) {
+    RendererDevice.s_debugEnabled = boo;
+  }
+
+  static SetDevicePixelRatio(dpr) {
+    RendererDevice.s_devicePixelRatio = dpr;
+  }
+
+  static GetDevicePixelRatio() {
+    return RendererDevice.s_devicePixelRatio;
+  }
+
+  static Initialize(infoArr) {
+    if (RendererDevice.s_inited) {
+      RendererDevice.s_inited = false;
+      RendererDevice.s_WEBGL_VER = infoArr[0];
+      RendererDevice.TestMobileWeb();
+      RendererDevice.s_language = navigator.language + "";
+    }
+  }
+  /**
+   * 返回当前是不是window操作系统 PC端
+   */
+
+
+  static IsWindowsPCOS() {
+    return !(RendererDevice.IsSafariWeb() || RendererDevice.IsMobileWeb());
+  }
+  /**
+   * 得到windows系统环境下当前浏览器是否使用独立显卡。集显 integrated video card, 独显 external video card
+   * get whether the gpu is external video card in window os
+   * @returns get whether the gpu is external video card in window os
+   */
+
+
+  static IsWinExternalVideoCard() {
+    if (RendererDevice.s_winExternalVideoCardFlag > 0) {
+      return RendererDevice.s_winExternalVideoCardFlag == 2;
+    }
+
+    let flag = RendererDevice.IsSafariWeb() || RendererDevice.IsMobileWeb();
+
+    if (!flag) {
+      flag = RendererDevice.GPU_RENDERER.indexOf("Intel(R)") < 0;
+    }
+
+    RendererDevice.s_winExternalVideoCardFlag = flag ? 2 : 1;
+    /**
+     * webgl_renderer:  ANGLE (Intel, Intel(R) UHD Graphics 630 Direct3D11 vs_5_0 ps_5_0, D3D11-25.20.100.6617)
+     */
+
+    return RendererDevice.s_winExternalVideoCardFlag == 2;
+  }
+
+  static TestSafariWeb() {
+    //return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+    return /Safari/.test(navigator.userAgent) && /Mac OS/.test(navigator.userAgent);
+  }
+
+  static IsWebGL1() {
+    return RendererDevice.s_WEBGL_VER == 1;
+  }
+
+  static IsWebGL2() {
+    return RendererDevice.s_WEBGL_VER == 2;
+  }
+
+  static IsMobileWeb() {
+    if (RendererDevice.s_mobileFlag > 0) {
+      return RendererDevice.s_mobileFlag == 2;
+    }
+
+    return RendererDevice.TestMobileWeb();
+  }
+
+  static IsSafariWeb() {
+    if (RendererDevice.s_safariFlag > 0) {
+      return RendererDevice.s_safariFlag == 2;
+    }
+
+    RendererDevice.s_safariFlag = RendererDevice.TestSafariWeb() ? 2 : 1;
+    return RendererDevice.s_safariFlag == 2;
+  }
+
+  static IsIOS() {
+    if (RendererDevice.s_IOS_Flag > 0) {
+      return RendererDevice.s_IOS_Flag == 2;
+    }
+
+    let boo = false;
+
+    if (/iPad|iPhone|iPod/.test(navigator.platform)) {
+      boo = true;
+    } else {
+      boo = navigator.maxTouchPoints != undefined && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform);
+    }
+
+    RendererDevice.s_IOS_Flag = boo ? 2 : 1;
+    return boo;
+  }
+
+  static IsIpadOS() {
+    if (RendererDevice.s_IPad_Flag > 0) {
+      return RendererDevice.s_IPad_Flag == 2;
+    }
+
+    let boo = navigator.maxTouchPoints > 0 && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform);
+
+    if (!boo && /iPod|iPad|iPadPro|iPodPro/i.test(navigator.userAgent)) {
+      boo = true;
+    }
+
+    RendererDevice.s_IPad_Flag = boo ? 2 : 1;
+    return boo;
+  }
+
+  static IsAndroidOS() {
+    if (RendererDevice.s_Android_Flag > 0) {
+      return RendererDevice.s_Android_Flag == 2;
+    }
+
+    let boo = RendererDevice.TestMobileWeb();
+
+    if (boo && /Android|Linux/i.test(navigator.userAgent)) {
+      boo = true;
+    } else {
+      boo = false;
+    }
+
+    RendererDevice.s_Android_Flag = boo ? 2 : 1;
+    return boo;
+  }
+
+  static TestMobileWeb() {
+    if (RendererDevice.s_mobileFlag > 0) {
+      return RendererDevice.s_mobileFlag == 2;
+    }
+
+    if (/mobile/.test(location.href)) {
+      RendererDevice.s_mobileFlag = 2;
+      return RendererDevice.s_mobileFlag == 2;
+    }
+
+    if (/Android/i.test(navigator.userAgent)) {
+      if (/Mobile/i.test(navigator.userAgent)) {
+        RendererDevice.s_mobileFlag = 2;
+        return RendererDevice.s_mobileFlag == 2;
+      } else {
+        RendererDevice.s_mobileFlag = 1;
+        return RendererDevice.s_mobileFlag == 2;
+      }
+    } else if (/webOS|iPhone|iPod|iPad|iPodPro|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      RendererDevice.s_mobileFlag = 2;
+      return RendererDevice.s_mobileFlag == 2;
+    }
+
+    RendererDevice.s_mobileFlag = 1;
+    return RendererDevice.s_mobileFlag == 2;
+  }
+
+}
+
+RendererDevice.s_inited = true;
+RendererDevice.s_WEBGL_VER = 2;
+RendererDevice.s_devicePixelRatio = 1.0;
+RendererDevice.s_mobileFlag = 0;
+RendererDevice.s_safariFlag = 0;
+RendererDevice.s_Android_Flag = 0;
+RendererDevice.s_IOS_Flag = 0;
+RendererDevice.s_IPad_Flag = 0;
+RendererDevice.s_winExternalVideoCardFlag = 0;
+/**
+ * zh-CN, en-US, ect....
+ */
+
+RendererDevice.s_language = "";
+RendererDevice.s_debugEnabled = true;
+RendererDevice.GPU_VENDOR = "unknown";
+RendererDevice.GPU_RENDERER = "unknown";
+RendererDevice.MAX_TEXTURE_SIZE = 4096;
+RendererDevice.MAX_RENDERBUFFER_SIZE = 4096;
+RendererDevice.MAX_VIEWPORT_WIDTH = 4096;
+RendererDevice.MAX_VIEWPORT_HEIGHT = 4096; // for debug
+
+RendererDevice.SHOWLOG_ENABLED = false;
+RendererDevice.SHADERCODE_TRACE_ENABLED = false; // true: force vertex shader precision to highp
+
+RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true; // true: force fragment shader precision to highp
+
+RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true; // worker multi threads enabled yes or no
+
+RendererDevice.s_threadEnabled = true;
+exports.default = RendererDevice;
 
 /***/ }),
 
@@ -1750,6 +2004,17 @@ class ButtonDivItem extends HTMLViewerLayer_1.HTMLViewerLayer {
     this.applyColorAt(0);
   }
 
+  toRoundedRectangleStyle(style = null) {
+    if (!style) {
+      style = this.getStyle();
+    }
+
+    style.borderRadius = "10px"; // style.outline = "10px solid #00ff"
+
+    style.outline = "none";
+    style.boxShadow = "0 0 0 5px #7aacda";
+  }
+
   setSelectColors(colors) {
     this.m_selectColors = colors;
   }
@@ -1915,18 +2180,12 @@ class CameraDataPanel extends SettingDataPanel_1.SettingDataPanel {
     param.toNumber();
     params.push(param);
     this.m_params = params;
-    let container = this.m_container;
-    let startX = 45;
     let startY = 95;
-    let disY = 60;
+    let disY = 50;
     let py = 0;
 
     for (let i = 0; i < params.length; ++i) {
-      let itemComp = new DataItemComponent_1.DataItemComponent();
-      itemComp.x = startX;
-      itemComp.y = startY + py;
-      itemComp.initialize(container, params[i]);
-      this.addItemComp(itemComp);
+      this.createItemComponent(startY + py, params[i]);
       py += disY;
     }
   }
@@ -2000,18 +2259,12 @@ class LightDataPanel extends SettingDataPanel_1.SettingDataPanel {
     param.autoEncoding = false;
     params.push(param);
     this.m_params = params;
-    let container = this.m_container;
-    let startX = 45;
     let startY = 95;
-    let disY = 60;
+    let disY = 50;
     let py = 0;
 
     for (let i = 0; i < params.length; ++i) {
-      let itemComp = new DataItemComponent_1.DataItemComponent();
-      itemComp.x = startX;
-      itemComp.y = startY + py;
-      itemComp.initialize(container, params[i]);
-      this.addItemComp(itemComp);
+      this.createItemComponent(startY + py, params[i]);
       py += disY;
     }
   }
@@ -2033,6 +2286,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 class DivTool {
+  /**
+   * 水平均匀排列
+   */
   static hArrangementDivs(divChildren) {
     if (divChildren.length > 0) {
       let parentDiv = divChildren[0].parentElement;
@@ -2728,7 +2984,7 @@ function numberToCSSHeXRGBColorStr(v) {
 }
 
 function checkCSSHexRGBColorStr(value) {
-  let str = value.replace(/[^\a,b,c,d,e,f\0-9]/g, '');
+  let str = value.replace(/[^\a,b,c,d,e,f\0-9]/g, "");
 
   if (str.length < 1) {
     str = "0";
@@ -2741,7 +2997,7 @@ function checkCSSHexRGBColorStr(value) {
 }
 
 function checkIntegerNumberStr(value, min, max) {
-  let str = value.replace(/[^\.\0-9]/g, '');
+  let str = value.replace(/[^\.\0-9]/g, "");
   let nv = parseFloat(str);
 
   if (isNaN(nv)) {
@@ -2750,12 +3006,12 @@ function checkIntegerNumberStr(value, min, max) {
 
   nv = Math.round(nv);
   nv = clamp(nv, min, max);
-  str = nv + '';
+  str = nv + "";
   return str;
 }
 
 function checkFloatNumberStr(value, min, max) {
-  let str = value.replace(/[^\.\0-9]/g, '');
+  let str = value.replace(/[^\.\0-9]/g, "");
   let nv = parseFloat(str);
 
   if (isNaN(nv)) {
@@ -2766,7 +3022,7 @@ function checkFloatNumberStr(value, min, max) {
   console.log("checkFloatNumberStr(), nv: ", nv, str);
   str = nv.toFixed(4);
   nv = parseFloat(str);
-  str = nv + '';
+  str = nv + "";
 
   if (str.indexOf(".") < 1) {
     str += ".0";
@@ -2782,9 +3038,10 @@ class DataItemComponentParam {
     this.unit = "";
     this.compType = "number";
     this.editEnabled = false;
+    this.mobileWebEnabled = false;
     this.inputType = "text";
-    this.numberMinValue = 0;
-    this.numberMaxValue = 1;
+    this.numberMinValue = -0xffffff;
+    this.numberMaxValue = 0xffffff;
     this.floatNumberEnabled = false;
     this.autoEncoding = true;
   }
@@ -2811,41 +3068,151 @@ class DataItemComponentParam {
     this.compType = "color";
   }
 
+  updateColorInput(input) {
+    let str = checkCSSHexRGBColorStr(input.value);
+    input.value = str + this.unit;
+    this.numberValue = parseInt("0x" + str);
+  }
+
+  updateFloatNumberInput(input) {
+    let str = checkFloatNumberStr(input.value, this.numberMinValue, this.numberMaxValue);
+    input.value = str + this.unit;
+    this.numberValue = parseFloat(str);
+  }
+
+  updateIntegerNumberInput(input) {
+    let str = checkIntegerNumberStr(input.value, this.numberMinValue, this.numberMaxValue);
+    input.value = str + this.unit;
+    this.numberValue = parseInt(str);
+  }
+
+  updateColorValueStr(valueStr) {
+    let str = checkCSSHexRGBColorStr(valueStr);
+    this.numberValue = parseInt("0x" + str);
+  }
+
+  updateFloatNumberValueStr(valueStr) {
+    let str = checkFloatNumberStr(valueStr, this.numberMinValue, this.numberMaxValue);
+    this.numberValue = parseFloat(str);
+  }
+
+  updateIntegerNumberValueStr(valueStr) {
+    let str = checkIntegerNumberStr(valueStr, this.numberMinValue, this.numberMaxValue);
+    this.numberValue = parseInt(str);
+  }
+
+  updateValueWithStr(valueStr, syncViewing = true) {
+    console.log("updateValueWithStr(), this.compType: ", this.compType, ", valueStr: ", valueStr, ", syncViewing: ", syncViewing);
+
+    switch (this.compType) {
+      case "color":
+        this.updateColorValueStr(valueStr);
+        break;
+
+      case "number":
+        console.log("ZZZZZZ this.floatNumberEnabled: ", this.floatNumberEnabled);
+
+        if (this.floatNumberEnabled) {
+          this.updateFloatNumberValueStr(valueStr);
+        } else {
+          this.updateIntegerNumberValueStr(valueStr);
+        }
+
+        break;
+
+      case "text":
+        if (this.textContent !== undefined) {
+          this.textContent = valueStr;
+        } else if (this.textValue !== undefined) {
+          this.textValue = valueStr;
+        }
+
+        break;
+
+      case "boolean":
+        valueStr = valueStr.toLowerCase();
+
+        switch (valueStr) {
+          case "是":
+          case "1":
+          case "yes":
+          case "y":
+          case "ok":
+          case "t":
+          case "true":
+            this.booleanValue = true;
+            break;
+
+          default:
+            this.booleanValue = false;
+            break;
+        }
+
+        break;
+
+      default:
+        break;
+    }
+
+    if (syncViewing) {
+      this.displayToViewer();
+    }
+  }
+
   initEvents() {
     if (this.editEnabled) {
-      let input = this.body_viewer;
-      input.type = "text";
-
-      switch (this.compType) {
-        case "color":
-          if (this.inputType == "text") {
-            // input.onkeyup = evt => {
-            input.onkeyup = evt => {
-              let str = checkCSSHexRGBColorStr(input.value);
-              input.value = str + this.unit;
-              this.numberValue = parseInt("0x" + str);
-            };
+      if (this.mobileWebEnabled) {
+        this.body_viewer.onmouseup = evt => {
+          // alert("test mouse up");
+          // console.log("dfsfsdfsdfsdf: ", this.paramPanel);
+          if (this.paramPanel) {
+            this.paramPanel.setParam(this);
+            this.paramPanel.open();
           }
+        };
+      } else {
+        let input = this.body_viewer;
+        input.type = "text";
 
-          break;
-
-        default:
-          if (this.inputType == "number") {
-            if (this.floatNumberEnabled) {
-              input.onkeyup = evt => {
-                let str = checkFloatNumberStr(input.value, this.numberMinValue, this.numberMaxValue);
-                input.value = str + this.unit;
-                this.numberValue = parseFloat(str);
-              };
-            } else {
-              input.onkeyup = evt => {
-                let str = checkIntegerNumberStr(input.value, this.numberMinValue, this.numberMaxValue);
-                input.value = str + this.unit;
-                this.numberValue = parseInt(str);
+        switch (this.compType) {
+          case "color":
+            if (this.inputType == "text") {
+              // input.onkeyup = evt => {
+              // input.onkeyup = evt => {
+              // 	this.updateColorContent(input);
+              // }
+              input.onblur = evt => {
+                this.updateColorInput(input);
               };
             }
-          }
 
+            break;
+
+          default:
+            if (this.inputType == "number") {
+              if (this.floatNumberEnabled) {
+                // input.onkeyup = evt => {
+                // 	// let str = checkFloatNumberStr( input.value, this.numberMinValue, this.numberMaxValue );
+                // 	// input.value = str + this.unit;
+                // 	// this.numberValue = parseFloat(str);
+                // 	this.updateFloatNumberInput(input);
+                // }
+                input.onblur = evt => {
+                  this.updateFloatNumberInput(input);
+                };
+              } else {
+                // input.onkeyup = evt => {
+                // 	let str = checkIntegerNumberStr( input.value, this.numberMinValue, this.numberMaxValue );
+                // 	input.value = str + this.unit;
+                // 	this.numberValue = parseInt(str);
+                // }
+                input.onblur = evt => {
+                  this.updateIntegerNumberInput(input);
+                };
+              }
+            }
+
+        }
       }
     } else {
       let div = this.body_viewer;
@@ -2921,7 +3288,11 @@ class DataItemComponentParam {
 
     if (valueStr != "") {
       if (this.editEnabled) {
-        body_viewer.value = valueStr;
+        if (this.mobileWebEnabled) {
+          body_viewer.innerHTML = valueStr;
+        } else {
+          body_viewer.value = valueStr;
+        }
       } else {
         body_viewer.innerHTML = valueStr;
       }
@@ -3136,24 +3507,41 @@ class RTaskBeginUI {
     this.m_openTasksListBtn.setVisible(true);
   }
 
-  buildTasksList(aliveTasks) {
+  initInfoDiv() {
     let div = this.m_tasksListDiv;
 
     if (div == null) {
       let pw = 320;
-      let ph = 300;
       let px = (this.m_areaWidth - pw) * 0.5;
       let py = 50;
-      this.m_tasksListDiv = HtmlDivUtils_1.DivTool.createDivT1(px, py, pw, 300, "flex", "absolute", false);
+      this.m_tasksListDiv = HtmlDivUtils_1.DivTool.createDivT1(px, py, pw, 100, "flex", "absolute", false);
       div = this.m_tasksListDiv;
       let style = div.style;
       style.textAlign = "center";
       style.display = "block";
       this.m_viewerLayer.appendChild(div);
-      pw = 80;
-      ph = 50;
-      px = (this.m_areaWidth - pw) * 0.5;
-      py = this.m_areaHeight - ph - 20;
+    }
+  }
+
+  buildTasksList(aliveTasks) {
+    this.initInfoDiv();
+    let div = this.m_tasksListDiv; // if (div == null) {
+    // 	let pw = 320;
+    // 	let px = (this.m_areaWidth - pw) * 0.5;
+    // 	let py = 50;
+    // 	this.m_tasksListDiv = DivTool.createDivT1(px, py, pw, 300, "flex", "absolute", false);
+    // 	div = this.m_tasksListDiv;
+    // 	let style = div.style;
+    // 	style.textAlign = "center";
+    // 	style.display = "block";
+    // 	this.m_viewerLayer.appendChild(div);
+    // }
+
+    if (this.m_backFromTaskListBtn == null) {
+      let pw = 80;
+      let ph = 50;
+      let px = (this.m_areaWidth - pw) * 0.5;
+      let py = this.m_areaHeight - ph - 20;
       let btnDiv = HtmlDivUtils_1.DivTool.createDivT1(px, py, pw, ph, "flex", "absolute", true);
       let colors = [0x157c73, 0x156a85, 0x15648b];
       this.m_viewerLayer.appendChild(btnDiv);
@@ -3176,6 +3564,14 @@ class RTaskBeginUI {
     HtmlDivUtils_1.DivTool.clearDivAllEles(div);
     let total = aliveTasks.length;
 
+    if (total > 0) {
+      aliveTasks.sort((a, b) => {
+        return a.ctime - b.ctime;
+      });
+    }
+
+    console.log("ooooooooo aliveTasks: ", aliveTasks);
+
     for (let i = 0; i < total; ++i) {
       let br = document.createElement("br");
       div.appendChild(br);
@@ -3197,6 +3593,11 @@ class RTaskBeginUI {
   }
 
   buildBtns(container) {
+    // let tasks: any[] = [{"ctime":10},{"ctime":21},{"ctime":9}];
+    // tasks.sort((a: any, b: any): number => {
+    // 	return a.ctime - b.ctime
+    // })
+    // console.log("xxxxxxxx tasks: ", tasks);
     let colors = [0x157c73, 0x156a85, 0x15648b];
     let pw = 150;
     let ph = 60;
@@ -3208,6 +3609,7 @@ class RTaskBeginUI {
     let btn = new ButtonDivItem_1.ButtonDivItem();
     btn.setDeselectColors(colors);
     btn.initialize(div, "新建渲染任务", "upload_model");
+    btn.toRoundedRectangleStyle();
     btn.applyColorAt(0);
 
     btn.onmouseup = evt => {
@@ -3223,6 +3625,7 @@ class RTaskBeginUI {
     btn = new ButtonDivItem_1.ButtonDivItem();
     btn.setDeselectColors(colors);
     btn.initialize(div, "打开任务列表", "open_task_list");
+    btn.toRoundedRectangleStyle();
     btn.applyColorAt(0);
 
     btn.onmouseup = evt => {
@@ -3242,6 +3645,11 @@ class RTaskBeginUI {
 
     btn.setTextColor(0xeeeeee);
     this.m_openTasksListBtn = btn;
+  }
+
+  setInnerHTML(htmlStr) {
+    this.initInfoDiv();
+    this.m_tasksListDiv.innerHTML = htmlStr;
   }
 
   open() {
@@ -3264,6 +3672,12 @@ exports.RTaskBeginUI = RTaskBeginUI;
 "use strict";
 
 
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -3274,15 +3688,25 @@ const DataItemComponentParam_1 = __webpack_require__("8448");
 
 exports.DataItemComponentParam = DataItemComponentParam_1.DataItemComponentParam;
 
+const RendererDevice_1 = __importDefault(__webpack_require__("3b73"));
+
 class DataItemComponent {
   constructor() {
+    this.m_areaWidth = 512;
+    this.m_areaHeight = 512;
+    this.m_isMobileWeb = false;
+    this.height = 23;
     this.x = 45;
     this.y = 50;
   }
 
-  initialize(viewerLayer, param) {
+  initialize(width, height, viewerLayer, param) {
+    this.m_areaWidth = width;
+    this.m_areaHeight = height;
     this.m_viewerLayer = viewerLayer;
     this.m_param = param;
+    this.m_isMobileWeb = RendererDevice_1.default.IsMobileWeb(); // this.m_isMobileWeb = true;
+
     this.init(viewerLayer, param);
   }
 
@@ -3295,12 +3719,13 @@ class DataItemComponent {
   }
 
   init(viewerLayer, param) {
-    let height = 23;
-    let width = 159;
-    let container = HtmlDivUtils_1.DivTool.createDivT1(this.x, this.y, 320, height, "block", "absolute", false);
+    let height = this.height;
+    let width = Math.floor(this.m_areaWidth * 0.5) - 2; // console.log("comp width: ", width);
+
+    let container = HtmlDivUtils_1.DivTool.createDivT1(2, this.y, width * 2 + 2, height, "block", "absolute", false);
     let style = container.style;
     let headDiv = HtmlDivUtils_1.DivTool.createDivT1(0, 0, width, height, "block", "absolute", false);
-    let bodyDiv = HtmlDivUtils_1.DivTool.createDivT1(161, 0, width, height, "block", "absolute", false);
+    let bodyDiv = HtmlDivUtils_1.DivTool.createDivT1(width + 1, 0, width, height, "block", "absolute", false);
     style = headDiv.style;
     style.background = "#286dab";
     style.color = "#eeeeee";
@@ -3316,29 +3741,33 @@ class DataItemComponent {
     this.createInput(bodyDiv, param, width, height);
     container.appendChild(headDiv);
     container.appendChild(bodyDiv);
+    param.mobileWebEnabled = this.m_isMobileWeb;
     param.displayToViewer();
     param.initEvents();
   }
 
   createInput(bodyDiv, param, width, height) {
     if (param.editEnabled) {
-      var input = document.createElement("input"); // input.type = param.inputType;
+      if (this.m_isMobileWeb) {} else {
+        var input = document.createElement("input"); // input.type = param.inputType;
 
-      let style = input.style;
-      style.position = "absolute";
-      style.left = 0 + "px";
-      style.top = 0 + "px";
-      style.width = width + "px";
-      style.height = height + "px";
-      style.background = "transparent";
-      style.borderWidth = "0px";
-      style.outline = "none";
-      style.color = "#eeeeee";
-      style.fontSize = "17px";
-      style.textAlign = "center";
-      bodyDiv.append(input);
-      this.m_input = input;
-      param.body_viewer = input;
+        let style = input.style;
+        style.position = "absolute";
+        style.left = 0 + "px";
+        style.top = 0 + "px";
+        style.width = width + "px";
+        style.height = height + "px";
+        style.background = "transparent";
+        style.borderWidth = "0px";
+        style.outline = "none";
+        style.color = "#eeeeee";
+        style.fontSize = "17px";
+        style.textAlign = "center";
+        style.userSelect = "none";
+        bodyDiv.append(input);
+        this.m_input = input;
+        param.body_viewer = input;
+      }
     }
   }
 
@@ -3358,6 +3787,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+const DataItemComponent_1 = __webpack_require__("9bbe");
+
 const HtmlDivUtils_1 = __webpack_require__("7191");
 
 class SettingDataPanel {
@@ -3369,6 +3800,7 @@ class SettingDataPanel {
     this.m_areaHeight = 512;
     this.m_itemCompDict = new Map();
     this.m_isActive = false;
+    this.paramInputPanel = null;
   }
 
   initialize(viewerLayer, areaWidth, areaHeight, data) {
@@ -3419,11 +3851,26 @@ class SettingDataPanel {
   }
 
   addItemComp(comp) {
+    comp.getParam().paramPanel = this.paramInputPanel;
     this.m_itemCompDict.set(comp.getKeyName(), comp);
   }
 
   getItemCompByKeyName(keyName) {
     return this.m_itemCompDict.get(keyName);
+  }
+
+  getItemParamByKeyName(keyName) {
+    let item = this.m_itemCompDict.get(keyName);
+
+    if (item) {
+      return item.getParam();
+    }
+
+    return null;
+  }
+
+  getItemParams() {
+    return this.m_params;
   }
 
   init(viewerLayer) {}
@@ -3446,6 +3893,14 @@ class SettingDataPanel {
 
   isActive() {
     return this.m_isActive;
+  }
+
+  createItemComponent(py, param) {
+    let itemComp = new DataItemComponent_1.DataItemComponent();
+    itemComp.y = py;
+    itemComp.initialize(this.m_areaWidth, this.m_areaHeight, this.m_container, param);
+    this.addItemComp(itemComp);
+    return itemComp;
   }
 
 }
@@ -3676,6 +4131,186 @@ class RTaskSystem {
 }
 
 exports.RTaskSystem = RTaskSystem;
+
+/***/ }),
+
+/***/ "b800":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+const DataItemComponent_1 = __webpack_require__("9bbe");
+
+const HtmlDivUtils_1 = __webpack_require__("7191");
+
+const HTMLViewerLayer_1 = __webpack_require__("2403");
+
+const ButtonDivItem_1 = __webpack_require__("47c8");
+
+class ParamInputPanel {
+  constructor() {
+    this.m_viewerLayer = null;
+    this.m_areaWidth = 512;
+    this.m_areaHeight = 512;
+    this.m_confirmBtn = null;
+    this.m_itemParam = new DataItemComponent_1.DataItemComponentParam();
+    this.viewLayer = new HTMLViewerLayer_1.HTMLViewerLayer();
+    this.m_param = null;
+  }
+
+  setParam(param) {
+    if (param != this.m_itemParam) {
+      if (param != null) {
+        this.m_itemParam.editEnabled = true;
+        this.m_itemParam.floatNumberEnabled = param.floatNumberEnabled;
+        this.m_itemParam.compType = param.compType;
+        this.m_itemParam.name = param.name; // console.log("bbbbbbbb param.getCurrValueString(): ", param.getCurrValueString());
+
+        this.m_itemParam.updateValueWithStr(param.getCurrValueString());
+      }
+
+      this.m_param = param;
+    }
+  }
+
+  initialize(viewerLayer, areaWidth, areaHeight, layoutHorizon) {
+    console.log("ParamInputPanel::initialize()......");
+    this.m_viewerLayer = viewerLayer;
+    this.m_areaWidth = areaWidth;
+    this.m_areaHeight = areaHeight;
+    this.viewLayer.setViewer(this.m_viewerLayer);
+
+    if (layoutHorizon) {}
+
+    let pw = 80;
+    let ph = 50;
+    let px = (this.m_areaWidth - pw) * 0.5;
+    let py = this.m_areaHeight * 0.7;
+    let btnDiv = HtmlDivUtils_1.DivTool.createDivT1(px, py, pw, ph, "flex", "absolute", true);
+    let colors = [0x157c73, 0x156a85, 0x15648b];
+    this.m_viewerLayer.appendChild(btnDiv);
+    let btn = new ButtonDivItem_1.ButtonDivItem();
+    btn.setDeselectColors(colors);
+    btn.initialize(btnDiv, "确认", "confirm_param_update");
+
+    btn.onmouseup = evt => {
+      let currEvt = evt;
+      console.log("button_idns: ", currEvt.button_idns);
+      this.applyParamValue();
+    };
+
+    this.m_confirmBtn = btn;
+    btn.setTextColor(0xeeeeee);
+    this.init(viewerLayer, areaWidth, areaHeight);
+    this.open();
+  }
+
+  applyParamValue() {
+    if (this.m_input.value != "") {
+      if (this.m_param != null) {
+        this.m_param.updateValueWithStr(this.m_input.value);
+      }
+    }
+
+    this.close();
+  }
+
+  init(viewerLayer, areaWidth, areaHeight) {
+    let height = 50;
+    let width = Math.floor(areaWidth * 0.5) - 2;
+    console.log("ParamInputPanel::init(), width: ", width);
+    let container = HtmlDivUtils_1.DivTool.createDivT1(2, 20, width * 2 + 2, height, "block", "absolute", false);
+    let style = container.style;
+    let headDiv = HtmlDivUtils_1.DivTool.createDivT1(0, 0, width, height, "flex", "absolute", false);
+    let bodyDiv = HtmlDivUtils_1.DivTool.createDivT1(width + 1, 0, width, height, "block", "absolute", false);
+    style = headDiv.style;
+    style.textAlign = "center";
+    style.alignItems = "center";
+    style.justifyContent = "center";
+    style.background = "#286dab";
+    style.color = "#eeeeee";
+    style = bodyDiv.style;
+    style.background = "#286dab";
+    style.color = "#eeeeee";
+    container.appendChild(headDiv);
+    container.appendChild(bodyDiv);
+    viewerLayer.appendChild(container);
+    this.createInput(bodyDiv, width, height);
+    let param = this.m_itemParam;
+    param.editEnabled = true; // param.numberMinValue = -0xffffff;
+    // param.numberMaxValue = 0xffffff;
+
+    param.head_viewer = headDiv;
+    param.body_viewer = this.m_input;
+    param.initEvents(); // headDiv.innerHTML = "图像";
+    // this.m_input.value = "512";
+  }
+
+  createInput(bodyDiv, width, height) {
+    var input = document.createElement("input");
+    let style = input.style;
+    style.position = "absolute";
+    style.left = 0 + "px";
+    style.top = 0 + "px";
+    style.width = width + "px";
+    style.height = height + "px";
+    style.background = "transparent";
+    style.borderWidth = "0px";
+    style.outline = "none";
+    style.color = "#eeeeee";
+    style.fontSize = "17px";
+    style.textAlign = "center";
+    style.userSelect = "none";
+    bodyDiv.append(input);
+    this.m_input = input; // input.onkeydown = evt => {
+    // 	input.value = "fff"
+    // }
+
+    input.onkeyup = evt => {
+      // console.log(evt);
+      //input.value = "xxx" + evt.key
+      let keyStr = evt.key + "";
+
+      if (keyStr == "Enter") {
+        this.applyParamValue();
+      }
+    };
+  }
+
+  setVisible(v) {
+    this.viewLayer.setVisible(v);
+  }
+
+  isVisible() {
+    return this.viewLayer.isVisible();
+  }
+
+  open() {
+    if (!this.isVisible()) {
+      this.setVisible(true);
+    }
+  }
+
+  isOpen() {
+    return this.isVisible();
+  }
+
+  close() {
+    if (this.isVisible()) {
+      this.m_input.value = "";
+      this.setParam(null);
+      this.setVisible(false);
+    }
+  }
+
+}
+
+exports.ParamInputPanel = ParamInputPanel;
 
 /***/ }),
 
@@ -3997,6 +4632,12 @@ exports.RTaskProcess = RTaskProcess;
 "use strict";
 
 
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -4011,6 +4652,9 @@ const RTaskSystem_1 = __webpack_require__("b66b");
 
 const HtmlDivUtils_1 = __webpack_require__("7191");
 
+const RendererDevice_1 = __importDefault(__webpack_require__("3b73")); // declare var CURR_PAGE_ST_INFO_LIST: any;
+
+
 class DsrdShell {
   constructor() {
     this.m_init = true;
@@ -4019,17 +4663,28 @@ class DsrdShell {
     this.m_rtaskBeginUI = new RTaskBeginUI_1.RTaskBeginUI();
     this.m_rtaskSys = new RTaskSystem_1.RTaskSystem();
     this.m_modelScene = null;
+    this.m_isMobileWeb = false;
     this.m_viewerLayer = null; // private m_infoLayer: HTMLDivElement = null;
 
     this.mIDV = null;
+    this.m_areaWidth = 512;
+    this.m_areaHeight = 512;
+    this.m_layoutHorizon = true;
     this.m_workSpaceStatus = 0;
   }
 
   initialize() {
+    document.body.onload = evt => {
+      this.init();
+    };
+  }
+
+  init() {
     console.log("DsrdShell::initialize()......");
 
     if (this.m_init) {
       this.m_init = false;
+      this.m_isMobileWeb = RendererDevice_1.default.IsMobileWeb();
       const rsc = this.m_rscene;
       this.m_modelScene = rsc.modelScene;
       const rtsys = this.m_rtaskSys;
@@ -4103,30 +4758,88 @@ class DsrdShell {
     this.initDSRDUI();
   }
 
-  initDSRDUI() {
-    let width = 512;
-    let height = 512;
+  createLayers(width, height) {
+    let divs = [];
     let borderWidth = 2;
     let borderHeight = 2;
-    let container = HtmlDivUtils_1.DivTool.createDivT1(0, 0, width * 2 + borderWidth * 2, height + borderHeight * 2, "block");
-    let style = container.style; // style.backgroundColor = "#2b65cb";
-    // style.backgroundImage = `linear-gradient(to right bottom, #8ba6d5, #12d8fa, #79a3ef)`;
+    let container;
+    let layerLeft;
+    let layerRight;
+    let beginUILayer;
 
+    if (this.m_layoutHorizon) {
+      console.log("horizon layout ...");
+      this.m_areaWidth = width * 2;
+      this.m_areaHeight = height;
+      container = HtmlDivUtils_1.DivTool.createDivT1(0, 0, this.m_areaWidth + borderWidth * 2, this.m_areaHeight + borderHeight * 2, "block");
+      layerLeft = HtmlDivUtils_1.DivTool.createDivT1(borderWidth, borderHeight, width, height, "block");
+      layerRight = HtmlDivUtils_1.DivTool.createDivT1(width + borderWidth, borderHeight, width, height, "block", "absolute");
+      beginUILayer = HtmlDivUtils_1.DivTool.createDivT1(borderWidth, borderHeight, this.m_areaWidth, this.m_areaHeight, "block", "absolute");
+    } else {
+      this.m_areaWidth = width;
+      this.m_areaHeight = height * 2;
+      console.log("vertical layout ...");
+      container = HtmlDivUtils_1.DivTool.createDivT1(0, 0, this.m_areaWidth + borderWidth * 2, this.m_areaHeight + borderHeight * 2, "block");
+      layerLeft = HtmlDivUtils_1.DivTool.createDivT1(borderWidth, borderHeight, width, height, "block");
+      layerRight = HtmlDivUtils_1.DivTool.createDivT1(borderWidth, borderHeight + height, width, height, "block", "absolute");
+      beginUILayer = HtmlDivUtils_1.DivTool.createDivT1(borderWidth, borderHeight, this.m_areaWidth, this.m_areaHeight, "block", "absolute");
+    }
+
+    divs.push(container);
+    divs.push(layerLeft);
+    divs.push(layerRight);
+    divs.push(beginUILayer);
+    container.appendChild(layerLeft);
+    container.appendChild(layerRight);
+    container.appendChild(beginUILayer);
+    this.m_viewerLayer.appendChild(container);
+    return divs;
+  }
+
+  initDSRDUI() {
+    // this.m_isMobileWeb = true;
+    let width = 512;
+    let height = 512;
+    let divs = null;
+    let areaRect = this.m_viewerLayer.getBoundingClientRect();
+
+    if (this.m_isMobileWeb) {
+      let pw = Math.floor(areaRect.width);
+      let ph = Math.floor(areaRect.height);
+      this.m_layoutHorizon = pw > ph;
+      let size = 0;
+
+      if (pw > ph) {
+        size = Math.floor(0.5 * pw);
+        size = Math.min(size, ph);
+      } else {
+        size = Math.floor(0.5 * ph);
+        size = Math.min(size, pw);
+      }
+
+      width = height = size - 4;
+    }
+
+    divs = this.createLayers(width, height);
+    this.m_ui.layoutHorizon = this.m_layoutHorizon; // DivLog.SetDebugEnabled( true );
+    // // DivLog.ShowAtTop();
+    // DivLog.ShowLog("win,width: " + areaRect.width);
+    // DivLog.ShowLog("work,width: " + width);
+    // DivLog.ShowLog("work,height: " + height);
+
+    let container = divs[0];
+    let layerLeft = divs[1];
+    let layerRight = divs[2];
+    let beginUILayer = divs[3];
+    let style = container.style;
     style.backgroundImage = `linear-gradient(to right bottom, #5b6f93, #1d91a5, #375283)`;
-    let layerLeft = HtmlDivUtils_1.DivTool.createDivT1(borderWidth, borderHeight, width, height, "block");
     style = layerLeft.style;
     style.backgroundColor = "#335533";
-    container.appendChild(layerLeft);
-    let layerRight = HtmlDivUtils_1.DivTool.createDivT1(width + borderWidth, borderHeight, width, height, "block", "absolute");
     style = layerRight.style;
     style.backgroundColor = "#5b9bd5";
-    container.appendChild(layerRight);
-    let beginUILayer = HtmlDivUtils_1.DivTool.createDivT1(borderWidth, borderHeight, width * 2, height, "block", "absolute");
     style = beginUILayer.style;
     style.backgroundImage = `linear-gradient(to right bottom, #c0e1d1, #aec7dd)`;
     style.visibility = "hidden";
-    container.appendChild(beginUILayer);
-    this.m_viewerLayer.appendChild(container);
     const data = this.m_rtaskSys.data;
 
     let actioncall = (idns, type) => {
@@ -4180,8 +4893,26 @@ class DsrdShell {
     this.m_rtaskSys.data.rtJsonData = this.m_ui;
     this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys;
     this.m_rtaskBeginUI.onaction = actioncall;
-    this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
+
+    if (this.m_layoutHorizon) {
+      this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
+    } else {
+      this.m_rtaskBeginUI.initialize(beginUILayer, width, height * 2);
+    }
+
     this.m_rtaskBeginUI.open();
+    let win = window;
+    let flagInfo = win["CURR_PAGE_ST_INFO_LIST"]; // console.log("xxxxxxx flagInfo: ", flagInfo);
+
+    if (flagInfo !== undefined) {
+      this.m_rtaskBeginUI.open();
+    } // let info = ``;
+    // info += `<br/>layer.width:${Math.floor(areaRect.width)}`;
+    // info += `<br/>layer.height:${Math.floor(areaRect.height)}`;
+    // info += `<br/>area.width:${this.m_areaWidth}`;
+    // info += `<br/>area.height:${this.m_areaHeight}`;
+    // this.m_rtaskBeginUI.setInnerHTML("Welcome You" + info);
+
   }
 
   toWorkSpace() {
@@ -4197,6 +4928,7 @@ class DsrdShell {
   initDSRDSys(layerLeft, layerRight, width, height) {
     this.m_rscene.initialize(layerLeft);
     this.m_ui.initialize(layerRight, width, height);
+    this.m_ui.setTaskName("rendering...");
   }
 
   elementCenter(ele, top = "50%", left = "50%", position = "absolute") {
@@ -4278,18 +5010,12 @@ class EnvDataPanel extends SettingDataPanel_1.SettingDataPanel {
 
     params.push(param);
     this.m_params = params;
-    let container = this.m_container;
-    let startX = 45;
     let startY = 95;
-    let disY = 60;
+    let disY = 50;
     let py = 0;
 
     for (let i = 0; i < params.length; ++i) {
-      let itemComp = new DataItemComponent_1.DataItemComponent();
-      itemComp.x = startX;
-      itemComp.y = startY + py;
-      itemComp.initialize(container, params[i]);
-      this.addItemComp(itemComp);
+      this.createItemComponent(startY + py, params[i]);
       py += disY;
     }
   }

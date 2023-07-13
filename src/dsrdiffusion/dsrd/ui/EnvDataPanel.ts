@@ -52,18 +52,11 @@ class EnvDataPanel extends SettingDataPanel {
 		params.push(param);
 		this.m_params = params;
 
-		let container = this.m_container;
-		let startX = 45;
 		let startY = 95;
-		let disY = 60;
+		let disY = 50;
 		let py = 0
 		for(let i = 0; i < params.length; ++i) {
-
-			let itemComp = new DataItemComponent();
-			itemComp.x = startX;
-			itemComp.y = startY + py;
-			itemComp.initialize(container, params[i]);
-			this.addItemComp( itemComp );
+			this.createItemComponent(startY + py, params[i]);
 			py += disY;
 		}
 	}

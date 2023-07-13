@@ -47,6 +47,12 @@ class RModelUploadingUI {
 		// this.progressCall({ lengthComputable: true, loaded: 100, total: 50000 });
 		// this.toUploadFailure("...");
 	}
+	setInnerHTML(htmlStr: string): void {
+		if (this.m_textViewer == null) {
+			this.initUI();
+		}
+		this.m_textViewer.setInnerHTML( htmlStr );
+	}
 	getTextDiv(): HTMLDivElement {
 		return this.m_textViewer.getDiv();
 	}

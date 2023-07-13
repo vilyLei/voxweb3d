@@ -20,7 +20,7 @@ class OutputDataPanel extends SettingDataPanel {
 		param.name = "图像宽";
 		param.numberValue = 512;
 		param.inputType = "number";
-		param.numberMinValue = 1;
+		param.numberMinValue = 128;
 		param.numberMaxValue = 4096;
 		param.editEnabled = true;
 		param.autoEncoding = false;
@@ -31,7 +31,7 @@ class OutputDataPanel extends SettingDataPanel {
 		param.name = "图像高";
 		param.numberValue = 512;
 		param.inputType = "number";
-		param.numberMinValue = 1;
+		param.numberMinValue = 128;
 		param.numberMaxValue = 4096;
 		param.editEnabled = true;
 		param.autoEncoding = false;
@@ -62,17 +62,11 @@ class OutputDataPanel extends SettingDataPanel {
 		params.push(param);
 		this.m_params = params;
 
-		let container = this.m_container;
-		let startX = 45;
 		let startY = 60;
-		let disY = 60;
+		let disY = 50;
 		let py = 0;
 		for (let i = 0; i < params.length; ++i) {
-			let itemComp = new DataItemComponent();
-			itemComp.x = startX;
-			itemComp.y = startY + py;
-			itemComp.initialize(container, params[i]);
-			this.addItemComp(itemComp);
+			this.createItemComponent(startY + py, params[i]);
 			py += disY;
 		}
 	}

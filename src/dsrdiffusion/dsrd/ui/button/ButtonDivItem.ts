@@ -25,6 +25,15 @@ class ButtonDivItem extends HTMLViewerLayer {
 		this.initEvent(viewerLayer);
 		this.applyColorAt(0);
 	}
+	toRoundedRectangleStyle(style: CSSStyleDeclaration = null): void {
+		if(!style) {
+			style = this.getStyle();
+		}
+		style.borderRadius = "10px"
+		// style.outline = "10px solid #00ff"
+		style.outline = "none"
+		style.boxShadow = "0 0 0 5px #7aacda"
+	}
 	setSelectColors(colors: number[]): void {
 		this.m_selectColors = colors;
 	}

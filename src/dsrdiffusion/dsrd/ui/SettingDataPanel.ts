@@ -1,6 +1,7 @@
 import { IItemData } from "./IItemData";
 import { DataItemComponentParam, DataItemComponent } from "./DataItemComponent";
 import { DivTool } from "../utils/HtmlDivUtils";
+import { IParamInputPanel } from "./IParamInputPanel";
 class SettingDataPanel {
 	protected m_viewerLayer: HTMLDivElement = null;
 	protected m_container: HTMLDivElement = null;
@@ -11,6 +12,7 @@ class SettingDataPanel {
 	protected m_params: DataItemComponentParam[];
 	protected m_isActive = false;
 	rscViewer: any;
+	paramInputPanel: IParamInputPanel = null;
 	constructor() {}
 	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number, data: IItemData): void {
 		console.log("SettingDataController::initialize()......");
@@ -21,7 +23,7 @@ class SettingDataPanel {
 
 		this.m_itemData = data;
 		// this.m_container = this.createDiv(0, 0, areaWidth, areaWidth, "", "", "absolute");
-		this.m_container = DivTool.createDivT1(0,0,areaWidth, areaWidth, "", "absolute", false);
+		this.m_container = DivTool.createDivT1(0, 0, areaWidth, areaWidth, "", "absolute", false);
 
 		viewerLayer.appendChild(this.m_container);
 		this.init(viewerLayer);
@@ -40,10 +42,10 @@ class SettingDataPanel {
 	getJsonBodyStr(beginStr = "{", endStr = "}"): string {
 		let params = this.m_params;
 		let jsonStr = beginStr;
-		let symble = beginStr.length > 1 ? ",":"";
+		let symble = beginStr.length > 1 ? "," : "";
 		for (let i = 0; i < params.length; i++) {
 			const p = params[i];
-			if(p.autoEncoding) {
+			if (p.autoEncoding) {
 				jsonStr += symble + p.getJsonStr();
 				symble = ",";
 			}
@@ -55,10 +57,21 @@ class SettingDataPanel {
 		return `"${this.getKeyName()}":${this.getJsonBodyStr(beginStr, endStr)}`;
 	}
 	protected addItemComp(comp: DataItemComponent): void {
+		comp.getParam().paramPanel = this.paramInputPanel;
 		this.m_itemCompDict.set(comp.getKeyName(), comp);
 	}
 	getItemCompByKeyName(keyName: string): DataItemComponent {
 		return this.m_itemCompDict.get(keyName);
+	}
+	getItemParamByKeyName(keyName: string): DataItemComponentParam {
+		let item = this.m_itemCompDict.get(keyName);
+		if(item) {
+			return item.getParam();
+		}
+		return null;
+	}
+	getItemParams(): DataItemComponentParam[] {
+		return this.m_params;
 	}
 	protected init(viewerLayer: HTMLDivElement): void {}
 	setVisible(v: boolean): void {
@@ -77,36 +90,12 @@ class SettingDataPanel {
 	isActive(): boolean {
 		return this.m_isActive;
 	}
-	// protected createDiv(
-	// 	px: number,
-	// 	py: number,
-	// 	pw: number,
-	// 	ph: number,
-	// 	display: string = "block",
-	// 	align: string = "",
-	// 	position: string = ""
-	// ): HTMLDivElement {
-	// 	const div = document.createElement("div");
-	// 	let style = div.style;
-	// 	style.left = px + "px";
-	// 	style.top = py + "px";
-	// 	style.width = pw + "px";
-	// 	style.height = ph + "px";
-	// 	if (display != "") {
-	// 		style.display = display;
-	// 	}
-	// 	if (align != "") {
-	// 		switch (align) {
-	// 			case "center":
-	// 				style.alignItems = "center";
-	// 				style.justifyContent = "center";
-	// 				break;
-	// 		}
-	// 	}
-	// 	if (position != "") {
-	// 		style.position = position;
-	// 	}
-	// 	return div;
-	// }
+	createItemComponent(py: number, param: DataItemComponentParam): DataItemComponent {
+		let itemComp = new DataItemComponent();
+		itemComp.y = py;
+		itemComp.initialize(this.m_areaWidth, this.m_areaHeight, this.m_container, param);
+		this.addItemComp(itemComp);
+		return itemComp;
+	}
 }
 export { SettingDataPanel };

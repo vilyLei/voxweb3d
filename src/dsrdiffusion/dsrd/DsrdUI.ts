@@ -10,6 +10,7 @@ import { LightDataPanel } from "./ui/LightDataPanel";
 import { ButtonDivItem } from "./ui/button/ButtonDivItem";
 import { RTaskSystem } from "./task/RTaskSystem";
 import { DivTool } from "./utils/HtmlDivUtils";
+import { ParamInputPanel } from "./ui/ParamInputPanel";
 
 declare var SceneViewer: any;
 const menuDataList: IItemData[] = [
@@ -23,11 +24,15 @@ class DsrdUI implements IRTJsonData {
 	private m_viewerLayer: HTMLDivElement = null;
 	private m_areaWidth = 512;
 	private m_areaHeight = 512;
+	private m_planeAreaWidth = 512;
+	private m_planeAreaHeight = 512;
+	private m_bottomAreaHeight = 512;
 	private m_items: RenderingSettingItem[] = [];
 	private m_itemMap: Map<string, RenderingSettingItem> = new Map();
-
+	private m_paramInputPanel = new ParamInputPanel();
 	taskNameDiv: HTMLDivElement = null;
 	rtaskSys: RTaskSystem = null;
+	layoutHorizon = true;
 	constructor() {}
 	initialize(viewerLayer: HTMLDivElement, areaWidth: number, areaHeight: number): void {
 		console.log("DsrdUI::initialize()......");
@@ -47,30 +52,37 @@ class DsrdUI implements IRTJsonData {
 		console.log("DsrdUI::setRSCViewer(), rscViewer: ", rscViewer);
 	}
 	setTaskName(taskName: string): void {
-		this.taskNameDiv.innerHTML = taskName;
+		this.taskNameDiv.innerHTML = `<u>${taskName}</u>`;
 	}
 	private initUIScene(layer: HTMLDivElement, areaWidth: number, areaHeight: number): void {
+
 		let total = 5;
-		let height = 400;
+		this.m_planeAreaWidth =  Math.floor(0.8 * areaWidth);
+		this.m_planeAreaHeight =  Math.floor(0.8 * areaHeight);
+		this.m_bottomAreaHeight = areaHeight - this.m_planeAreaHeight;
+
+		let height = this.m_planeAreaHeight;
+		let subW = areaWidth - this.m_planeAreaWidth;
 		let subH = height / total;
-		let subW = 110;
 		let startY = 0;
-		let colors = [0x334455, 0x335555, 0x335566, 0x445555, 0x445566, 0x446666];
-		let menuBtnBGDiv = this.createDiv(0, 0, subW, height, "absolute");
+		// let menuBtnBGDiv = this.createDiv(0, 0, subW, height, "absolute");
+		let menuBtnBGDiv = DivTool.createDivT1(0, 0, subW, height, "flex","absolute", false);
 		let style = menuBtnBGDiv.style;
 		style.backgroundColor = "#668fb6";
 		layer.appendChild(menuBtnBGDiv);
 
-		let bottomBtnBGDiv = this.createDiv(0, height, areaWidth, areaHeight - height, "absolute", false);
+		// let bottomBtnBGDiv = this.createDiv(0, height, areaWidth, areaHeight - height, "absolute", false);
+		let bottomBtnBGDiv = DivTool.createDivT1(0, height, areaWidth, areaHeight - height, "flex","absolute", false);
 		style = bottomBtnBGDiv.style;
 		style.backgroundColor = "#bdd9e1";
 		layer.appendChild(bottomBtnBGDiv);
 		this.buildBtns( bottomBtnBGDiv );
 
-		let ctrlAreaDiv = this.createDiv(subW, 0, areaWidth - subW, height, "absolute", false);
+		// let planeAreaDiv = this.createDiv(subW, 0, areaWidth - subW, height, "absolute", false);
+		let planeAreaDiv = DivTool.createDivT1(subW, 0, areaWidth - subW, height, "flex", "absolute", false);
 
-		this.taskNameDiv = this.createDiv(subW + 10, 5, areaWidth - subW - 20, 35, "absolute", false);
-		this.taskNameDiv.innerHTML = "rendering...";
+		// this.taskNameDiv = this.createDiv(subW + 10, 5, areaWidth - subW - 20, 35, "absolute", false);
+		this.taskNameDiv = DivTool.createDivT1(subW + 10, 5, areaWidth - subW - 20, 35, "flex", "absolute", false);
 		style = this.taskNameDiv.style;
 		style.color = "#101033";
 		// style.userSelect = true
@@ -80,9 +92,10 @@ class DsrdUI implements IRTJsonData {
 		style.justifyContent = "center";
 		layer.appendChild(this.taskNameDiv);
 
-		style = ctrlAreaDiv.style;
+		style = planeAreaDiv.style;
 		// style.backgroundColor = "#555555";
-		layer.appendChild(ctrlAreaDiv);
+		layer.appendChild(planeAreaDiv);
+
 		// 2c71b0
 		let dls = menuDataList;
 		let items = this.m_items;
@@ -93,7 +106,8 @@ class DsrdUI implements IRTJsonData {
 			// let colorStr = "#" + colors[i].toString(16);
 			let colorStr = "#bdd9e1";
 			// console.log("colorStr: ", colorStr);
-			let div = this.createDiv(0, startY + i * subH, pw, ph, "absolute");
+			// let div = this.createDiv(0, startY + i * subH, pw, ph, "absolute");
+			let div = DivTool.createDivT1(0, startY + i * subH, pw, ph, "flex","absolute", true);
 			style = div.style;
 			style.backgroundColor = colorStr;
 			style.cursor = "pointer";
@@ -101,8 +115,7 @@ class DsrdUI implements IRTJsonData {
 			layer.appendChild(div);
 
 			// let settingPanel = new SettingDataPanel();
-			let settingPanel = this.createSettingPanel(ctrlAreaDiv, areaWidth - subW, height, dls[i]);
-			// settingPanel.initialize(ctrlAreaDiv, areaWidth - subW, height, dls[i])
+			let settingPanel = this.createSettingPanel(planeAreaDiv, this.m_planeAreaWidth, height, dls[i]);
 			const item = new RenderingSettingItem();
 			item.group = items;
 			item.initialize(div, pw, ph, settingPanel);
@@ -111,7 +124,15 @@ class DsrdUI implements IRTJsonData {
 		}
 		items[0].select();
 
-
+		console.log("uuuuuuuu areaWidth, areaHeight: ", areaWidth, areaHeight);
+		let paramInputDiv = DivTool.createDivT1(0, 0, areaWidth, areaHeight, "flex", "absolute", false);
+		layer.appendChild(paramInputDiv);
+		// style = paramInputDiv.style;
+		// style.color = "#101033";
+		let piPanel = this.m_paramInputPanel;
+		piPanel.initialize(paramInputDiv,areaWidth, areaHeight, this.layoutHorizon);
+		piPanel.viewLayer.setBackgroundColor(0xbdd9e1);
+		piPanel.close();
 	}
 	getItemByKeyName(keyName: string):RenderingSettingItem {
 		return this.m_itemMap.get(keyName);
@@ -119,29 +140,31 @@ class DsrdUI implements IRTJsonData {
 	getPanelByKeyName(keyName: string):SettingDataPanel {
 		return this.m_itemMap.get(keyName).getPanel();
 	}
+
 	private buildBtns(container: HTMLDivElement): void {
 
-		let pw = 130;
-		let ph = 60;
-		// let div = this.createDiv(90, 30, pw, ph, "absolute", true);
-		let div = DivTool.createDivT1(90, 30, pw, ph,"flex", "absolute", true);
-		let style = div.style;
+		let pw = Math.floor(0.28 * this.m_areaWidth);
+		let ph = Math.floor(0.6 * this.m_bottomAreaHeight);
+		let py = Math.floor((this.m_bottomAreaHeight - ph) * 0.5);
+		let div = DivTool.createDivT1(1, py, pw, ph,"flex", "absolute", true);
 		container.appendChild(div);
 		let divs = [div];
 		let btn = new ButtonDivItem();
 		btn.initialize(div, "获取渲染任务", "new_rendering");
+		btn.toRoundedRectangleStyle();
 		btn.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns);
 			this.rtaskSys.request.updatePage();
 		}
-		pw = 100;
-		div = DivTool.createDivT1(230, 30, pw, ph,"flex", "absolute", true);
-		style = div.style;
+		div = DivTool.createDivT1(1, py, pw, ph,"flex", "absolute", true);
+
+
 		container.appendChild(div);
 		divs.push(div);
 		btn = new ButtonDivItem();
 		btn.initialize(div, "渲染图像", "send_rendering");
+		btn.toRoundedRectangleStyle();
 		btn.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
@@ -149,13 +172,12 @@ class DsrdUI implements IRTJsonData {
 			// for test
 			// this.rtaskSys.request.sendRerenderingReq("", true);
 		}
-		pw = 130;
-		div = DivTool.createDivT1(370, 30, pw, ph, "flex", "absolute", true);
-		style = div.style;
+		div = DivTool.createDivT1(1, py, pw, ph, "flex", "absolute", true);
 		container.appendChild(div);
 		divs.push(div);
 		btn = new ButtonDivItem();
 		btn.initialize(div, "查看渲染原图", "view_rendering_img");
+		btn.toRoundedRectangleStyle();
 		btn.onmouseup = evt => {
 			let currEvt = evt as any;
 			console.log("button_idns: ", currEvt.button_idns, ", this.rtaskSys.isTaskAlive(): ", this.rtaskSys.isTaskAlive());
@@ -277,26 +299,10 @@ class DsrdUI implements IRTJsonData {
 			default:
 				settingPanel = new SettingDataPanel();
 		}
+
+		settingPanel.paramInputPanel = this.m_paramInputPanel;
 		settingPanel.initialize(viewerLayer, areaWidth, areaHeight, data);
 		return settingPanel;
-	}
-	private createDiv(px: number, py: number, pw: number, ph: number, position = "", center: boolean = true): HTMLDivElement {
-		const div = document.createElement("div");
-		let style = div.style;
-		style.left = px + "px";
-		style.top = py + "px";
-		style.width = pw + "px";
-		style.height = ph + "px";
-		style.display = "flex";
-		if (center) {
-			style.alignItems = "center";
-			style.justifyContent = "center";
-		}
-		style.position = "relative";
-		if (position != "") {
-			style.position = position;
-		}
-		return div;
 	}
 }
 export { DsrdUI };

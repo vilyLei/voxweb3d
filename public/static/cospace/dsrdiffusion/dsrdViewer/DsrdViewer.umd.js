@@ -844,6 +844,9 @@ class DsrdViewerBase {
     this.m_graph = null;
     this.m_rscene = null;
     this.m_uiScene = null;
+    this.m_mi = null;
+    this.m_posV0 = null;
+    this.m_posV1 = null;
     this.m_transCtr = null;
     this.m_selectFrame = null;
     this.m_valueFilter = new VecValueFilter_1.VecValueFilter();
@@ -900,7 +903,10 @@ class DsrdViewerBase {
 
   initMouseInteract() {
     const mi = VoxUIInteraction_1.VoxUIInteraction.createMouseInteraction();
-    mi.initialize(this.m_rscene, 2).setAutoRunning(true, 1);
+    mi.initialize(this.m_rscene, 0).setAutoRunning(true, 1);
+    this.m_mi = mi;
+    this.m_posV0 = VoxMath_1.VoxMath.createVec3();
+    this.m_posV1 = VoxMath_1.VoxMath.createVec3();
   }
 
   createDiv(px, py, pw, ph) {
@@ -1056,22 +1062,18 @@ class DsrdViewerBase {
   }
 
   uiMouseDownListener(evt) {
-    console.log("DsrdViewer::uiMouseDownListener(), evt: ", evt);
-    this.m_selectFrame.begin(evt.mouseX, evt.mouseY);
+    console.log("DsrdViewer::uiMouseDownListener(), evt: ", evt); // this.m_selectFrame.begin(evt.mouseX, evt.mouseY);
   }
 
   uiMouseUpListener(evt) {
-    console.log("DsrdViewer::uiMouseUpListener(), evt: ", evt);
-
-    if (this.m_selectFrame.isSelectEnabled()) {
-      let b = this.m_selectFrame.bounds;
-      console.log("DsrdViewer::uiMouseUpListener(), b: ", b);
-      let list = this.m_entityQuery.getEntities(b.min, b.max);
-      console.log("list: ", list);
-      this.selectEntities(list);
-    }
-
-    this.m_selectFrame.end(evt.mouseX, evt.mouseY);
+    console.log("DsrdViewer::uiMouseUpListener(), evt: ", evt); // if (this.m_selectFrame.isSelectEnabled()) {
+    // 	let b = this.m_selectFrame.bounds;
+    // 	console.log("DsrdViewer::uiMouseUpListener(), b: ", b);
+    // 	let list = this.m_entityQuery.getEntities(b.min, b.max);
+    // 	console.log("list: ", list);
+    // 	this.selectEntities(list);
+    // }
+    // this.m_selectFrame.end(evt.mouseX, evt.mouseY);
   }
 
   uiMouseMoveListener(evt) {
@@ -1241,6 +1243,9 @@ class DsrdViewerBase {
 
   mouseDownTargetListener(evt) {
     console.log("mouseDownTargetListener()..., evt: ", evt);
+    this.m_posV0.setXYZ(evt.mouseX, evt.mouseY, 0);
+    this.m_posV1.copyFrom(this.m_posV0);
+    this.m_mi.drager.attach();
   }
 
   selectEntities(list, hitPV = null) {
@@ -1284,13 +1289,18 @@ class DsrdViewerBase {
   }
 
   mouseUpTargetListener(evt) {
-    // console.log("mouseUpTargetListener() mouse up...");
+    this.m_posV1.setXYZ(evt.mouseX, evt.mouseY, 0);
+    this.m_posV0.subtractBy(this.m_posV1);
+
+    if (this.m_posV0.getLength() < 0.5) {
+      let entity = evt.target;
+      this.selectEntities([entity], evt.wpos);
+    } // console.log("mouseUpTargetListener() mouse up...");
+
+
     if (this.m_mouseUpCall) {
       this.m_mouseUpCall(evt);
     }
-
-    let entity = evt.target;
-    this.selectEntities([entity], evt.wpos);
   }
 
   mouseUpListener(evt) {
@@ -2394,7 +2404,7 @@ class URLFilter {
         return "";
       }
 
-      let j = url.indexOf(".", i);
+      let j = url.lastIndexOf(".", url.length);
 
       if (j < 0) {
         return "";
@@ -2417,7 +2427,7 @@ class URLFilter {
   static getFileNameAndSuffixName(url, lowerCase = false, force = false) {
     if (url.indexOf("blob:") < 0 || force) {
       let i = url.lastIndexOf("/");
-      let j = url.indexOf(".", i);
+      let j = url.lastIndexOf(".", url.length);
 
       if (j < 0) {
         return "";
@@ -2437,8 +2447,7 @@ class URLFilter {
 
   static getFileSuffixName(url, lowerCase = false, force = false) {
     if (url.indexOf("blob:") < 0 || force) {
-      let i = url.lastIndexOf("/");
-      let j = url.indexOf(".", i);
+      let j = url.lastIndexOf(".", url.length);
 
       if (j < 0) {
         return "";

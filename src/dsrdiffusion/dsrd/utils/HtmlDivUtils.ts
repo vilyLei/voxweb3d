@@ -1,4 +1,7 @@
 class DivTool {
+	/**
+	 * 水平均匀排列
+	 */
 	static hArrangementDivs(divChildren: HTMLDivElement[]): void {
 		if (divChildren.length > 0) {
 			let parentDiv = divChildren[0].parentElement;

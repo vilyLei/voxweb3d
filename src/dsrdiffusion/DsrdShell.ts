@@ -5,6 +5,9 @@ import { RTaskBeginUI } from "./dsrd/RTaskBeginUI";
 import { ModelScene } from "./dsrd/rscene/ModelScene";
 import { RTaskSystem } from "./dsrd/task/RTaskSystem";
 import { DivTool } from "./dsrd/utils/HtmlDivUtils";
+import RendererDevice from "../vox/render/RendererDevice";
+import DivLog from "../vox/utils/DivLog";
+// declare var CURR_PAGE_ST_INFO_LIST: any;
 class DsrdShell {
 	private m_init = true;
 	private m_rscene = new DsrdScene();
@@ -12,12 +15,20 @@ class DsrdShell {
 	private m_rtaskBeginUI = new RTaskBeginUI();
 	private m_rtaskSys = new RTaskSystem();
 	private m_modelScene: ModelScene = null;
+	private m_isMobileWeb = false;
 	constructor() {}
 	initialize(): void {
+		document.body.onload = evt => {
+			this.init();
+		}
+	}
+	private init(): void {
+
 		console.log("DsrdShell::initialize()......");
 		if (this.m_init) {
 			this.m_init = false;
 
+			this.m_isMobileWeb = RendererDevice.IsMobileWeb();
 			const rsc = this.m_rscene;
 			this.m_modelScene = rsc.modelScene;
 			const rtsys = this.m_rtaskSys;
@@ -88,35 +99,93 @@ class DsrdShell {
 		// this.showInfo("init...");
 		this.initDSRDUI();
 	}
-
-	private initDSRDUI(): void {
-		let width = 512;
-		let height = 512;
+	private m_areaWidth = 512;
+	private m_areaHeight = 512;
+	private m_layoutHorizon = true;
+	private createLayers(width: number, height: number): HTMLDivElement[] {
+		let divs: HTMLDivElement[] = [];
 		let borderWidth = 2;
 		let borderHeight = 2;
 
-		let container = DivTool.createDivT1(0, 0, width * 2 + borderWidth * 2, height + borderHeight * 2, "block");
+		let container: HTMLDivElement;
+		let layerLeft: HTMLDivElement;
+		let layerRight: HTMLDivElement;
+		let beginUILayer: HTMLDivElement;
+
+		if (this.m_layoutHorizon) {
+			console.log("horizon layout ...");
+			this.m_areaWidth = width * 2;
+			this.m_areaHeight = height;
+			container = DivTool.createDivT1(0, 0, this.m_areaWidth + borderWidth * 2, this.m_areaHeight + borderHeight * 2, "block");
+			layerLeft = DivTool.createDivT1(borderWidth, borderHeight, width, height, "block");
+			layerRight = DivTool.createDivT1(width + borderWidth, borderHeight, width, height, "block", "absolute");
+			beginUILayer = DivTool.createDivT1(borderWidth, borderHeight, this.m_areaWidth, this.m_areaHeight, "block", "absolute");
+		} else {
+			this.m_areaWidth = width;
+			this.m_areaHeight = height * 2;
+			console.log("vertical layout ...");
+			container = DivTool.createDivT1(0, 0, this.m_areaWidth + borderWidth * 2, this.m_areaHeight + borderHeight * 2, "block");
+			layerLeft = DivTool.createDivT1(borderWidth, borderHeight, width, height, "block");
+			layerRight = DivTool.createDivT1(borderWidth, borderHeight + height, width, height, "block", "absolute");
+			beginUILayer = DivTool.createDivT1(borderWidth, borderHeight, this.m_areaWidth, this.m_areaHeight, "block", "absolute");
+		}
+
+		divs.push(container);
+		divs.push(layerLeft);
+		divs.push(layerRight);
+		divs.push(beginUILayer);
+
+		container.appendChild(layerLeft);
+		container.appendChild(layerRight);
+		container.appendChild(beginUILayer);
+		this.m_viewerLayer.appendChild(container);
+
+		return divs;
+	}
+	private initDSRDUI(): void {
+		// this.m_isMobileWeb = true;
+		let width = 512;
+		let height = 512;
+		let divs: HTMLDivElement[] = null;
+		let areaRect = this.m_viewerLayer.getBoundingClientRect();
+		if (this.m_isMobileWeb) {
+			let pw = Math.floor(areaRect.width);
+			let ph = Math.floor(areaRect.height);
+			this.m_layoutHorizon = pw > ph;
+			let size = 0;
+			if(pw > ph) {
+				size = Math.floor(0.5 * pw);
+				size = Math.min(size, ph);
+			}else {
+				size = Math.floor(0.5 * ph);
+				size = Math.min(size, pw);
+			}
+			width = height = size - 4;
+		}
+		divs = this.createLayers(width, height);
+
+		this.m_ui.layoutHorizon = this.m_layoutHorizon;
+		// DivLog.SetDebugEnabled( true );
+		// // DivLog.ShowAtTop();
+		// DivLog.ShowLog("win,width: " + areaRect.width);
+		// DivLog.ShowLog("work,width: " + width);
+		// DivLog.ShowLog("work,height: " + height);
+
+		let container = divs[0];
+		let layerLeft = divs[1];
+		let layerRight = divs[2];
+		let beginUILayer = divs[3];
+
 		let style = container.style;
-		// style.backgroundColor = "#2b65cb";
-		// style.backgroundImage = `linear-gradient(to right bottom, #8ba6d5, #12d8fa, #79a3ef)`;
 		style.backgroundImage = `linear-gradient(to right bottom, #5b6f93, #1d91a5, #375283)`;
 
-		let layerLeft = DivTool.createDivT1(borderWidth, borderHeight, width, height, "block");
 		style = layerLeft.style;
 		style.backgroundColor = "#335533";
-		container.appendChild(layerLeft);
-
-		let layerRight = DivTool.createDivT1(width + borderWidth, borderHeight, width, height, "block", "absolute");
 		style = layerRight.style;
 		style.backgroundColor = "#5b9bd5";
-		container.appendChild(layerRight);
-
-		let beginUILayer = DivTool.createDivT1(borderWidth, borderHeight, width * 2, height, "block", "absolute");
 		style = beginUILayer.style;
 		style.backgroundImage = `linear-gradient(to right bottom, #c0e1d1, #aec7dd)`;
 		style.visibility = "hidden";
-		container.appendChild(beginUILayer);
-		this.m_viewerLayer.appendChild(container);
 
 		const data = this.m_rtaskSys.data;
 		let actioncall = (idns: string, type: string): void => {
@@ -168,8 +237,28 @@ class DsrdShell {
 
 		this.m_rtaskBeginUI.rtaskSys = this.m_rtaskSys;
 		this.m_rtaskBeginUI.onaction = actioncall;
-		this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
+		if (this.m_layoutHorizon) {
+			this.m_rtaskBeginUI.initialize(beginUILayer, width * 2, height);
+		} else {
+			this.m_rtaskBeginUI.initialize(beginUILayer, width, height * 2);
+		}
+
+
 		this.m_rtaskBeginUI.open();
+
+		let win = window as any;
+		let flagInfo = win["CURR_PAGE_ST_INFO_LIST"];
+		// console.log("xxxxxxx flagInfo: ", flagInfo);
+		if(flagInfo !== undefined) {
+			this.m_rtaskBeginUI.open();
+		}
+
+		// let info = ``;
+		// info += `<br/>layer.width:${Math.floor(areaRect.width)}`;
+		// info += `<br/>layer.height:${Math.floor(areaRect.height)}`;
+		// info += `<br/>area.width:${this.m_areaWidth}`;
+		// info += `<br/>area.height:${this.m_areaHeight}`;
+		// this.m_rtaskBeginUI.setInnerHTML("Welcome You" + info);
 	}
 	private m_workSpaceStatus = 0;
 	private toWorkSpace(): void {
@@ -183,6 +272,7 @@ class DsrdShell {
 	private initDSRDSys(layerLeft: HTMLDivElement, layerRight: HTMLDivElement, width: number, height: number): void {
 		this.m_rscene.initialize(layerLeft);
 		this.m_ui.initialize(layerRight, width, height);
+		this.m_ui.setTaskName("rendering...");
 	}
 	private elementCenter(ele: HTMLElement, top: string = "50%", left: string = "50%", position: string = "absolute"): void {
 		const s = ele.style;
