@@ -25,7 +25,7 @@ pwin["VoxVerify"] = new VVF();
 // import { DemoGLBParser as Demo } from "./cospace/demo/DemoGLBParser";
 // import { DemoPNGParser as Demo } from "./cospace/demo/DemoPNGParser";
 // import { DemoMixParser as Demo } from "./cospace/demo/DemoMixParser";
-import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
+// import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
 // import { DemoCospaceDeferredInit as Demo } from "./cospace/demo/DemoCospaceDeferredInit";
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
 // import { DemoCTMViewer as Demo } from "./cospace/demo/DemoCTMViewer";
@@ -46,7 +46,7 @@ import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
 // import { DemoPrimitives as Demo } from "./cospace/demo/DemoPrimitives";
 // import { DemoVtxDrawingInfo as Demo } from "./cospace/demo/DemoVtxDrawingInfo";
 
-// import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
+import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 // import { DemoVox3DEditor as Demo } from "./cospace/demo/DemoVox3DEditor";
 
 // import { DemoOutline as Demo } from "./cospace/demo/DemoOutline";
@@ -60,6 +60,7 @@ import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";
 // import { DemoCORS as Demo } from "./cospace/demo/DemoCORS";
 
+document.title = "Vox Cospace";
 
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;

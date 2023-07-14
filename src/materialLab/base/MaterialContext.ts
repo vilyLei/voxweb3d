@@ -16,7 +16,7 @@ import { IMaterialContext } from "./IMaterialContext";
  * 实现 material 构造 pipeline 的上下文
  */
 class MaterialContext implements IMaterialContext {
-    
+
     private m_initFlag: boolean = true;
     private m_texLoader: ImageTextureLoader = null;
     private m_param: MaterialContextParam;
@@ -78,7 +78,7 @@ class MaterialContext implements IMaterialContext {
     createShaderLibConfig(): IShaderLibConfigure {
         return { shaderCodeConfigures: [], version: "" };
     }
-    
+
     protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): IShaderLibConfigure {
 
         if (shaderLibConfigure == null) {
@@ -90,7 +90,7 @@ class MaterialContext implements IMaterialContext {
 
             if (param.loadAllShaderCode) {
 
-                let configure: ShaderCodeConfigure = MaterialContext.ShaderLib.createShaderCodeConfigure(param);
+                let configure = MaterialContext.ShaderLib.createShaderCodeConfigure(param);
                 if (configure != null) {
                     libConfig.shaderCodeConfigures.push(configure);
                 }
@@ -121,7 +121,7 @@ class MaterialContext implements IMaterialContext {
             if (param.loadAllShaderCode) {
                 MaterialContext.ShaderLib.addAllShaderCodeObject();
             }
-            
+
             this.initPipes( this.m_param );
 
             selfT.pipeline = this.createPipeline();
@@ -137,7 +137,7 @@ class MaterialContext implements IMaterialContext {
         }
     }
     protected initPipes(param: MaterialContextParam): void {
-       
+
     }
     protected initEnd(param: MaterialContextParam): void {
 

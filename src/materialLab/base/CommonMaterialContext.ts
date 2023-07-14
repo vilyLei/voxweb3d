@@ -55,7 +55,8 @@ class CommonMaterialContext extends MaterialContext {
         if (this.m_specularEnvMap == null) {
             let envMapUrl: string = "static/bytes/spe.mdf";
             if (hdrBrnEnabled) {
-                envMapUrl = "static/bytes/speBrn.bin";
+                // envMapUrl = "static/bytes/speBrn.bin";
+                envMapUrl = "static/bytes/spb.bin";
             }
             this.m_specularLoader = new SpecularTextureLoader();
             this.m_specularLoader.hdrBrnEnabled = hdrBrnEnabled;

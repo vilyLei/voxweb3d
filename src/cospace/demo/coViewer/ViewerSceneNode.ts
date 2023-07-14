@@ -12,27 +12,31 @@ import IRenderNode from "../../../vox/scene/IRenderNode";
 import IOcclusionPostOutline from "../../../renderingtoy/mcase/outline/IOcclusionPostOutline";
 import { IOccPostOutlineModule } from "../../renderEffect/outline/IOccPostOutlineModule";
 
+import { CoModelTeamLoader } from "../../../cospace/app/common/CoModelTeamLoader";
+import { CoEntityLayouter2 } from "../../../cospace/app/common/CoEntityLayouter2";
 import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 
 declare var CoRScene: ICoRScene;
 declare var OccPostOutlineModule: IOccPostOutlineModule;
-
+class ModelData {
+	models: CoGeomDataType[];
+	transforms: Float32Array[];
+	constructor() {}
+}
 class ViewerSceneNode implements IRenderNode {
 
 	private m_rscene: IRendererScene;
-	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
-	private m_objUnits: CoGeomDataUnit[] = [];
-	private m_postOutline: IOcclusionPostOutline;
+	private m_postOutline: IOcclusionPostOutline = null;
 
-	private m_scale: number = 1.0;
+	private m_modelLoader = new CoModelTeamLoader();
+	protected m_layouter = new CoEntityLayouter2();
+	private m_models: ModelData[] = [];
 
-	constructor(rscene: IRendererScene, vmctx: ViewerMaterialCtx, vcoapp: ViewerCoSApp) {
-		
+	constructor(rscene: IRendererScene, vmctx: ViewerMaterialCtx) {
+
 		this.m_rscene = rscene;
 		this.m_vmctx = vmctx;
-		this.m_vcoapp = vcoapp;
-
 
 		let url = "static/cospace/renderEffect/occPostOutline/OccPostOutlineModule.umd.js";
 
@@ -45,85 +49,53 @@ class ViewerSceneNode implements IRenderNode {
 	}
 
 	private initOutline(): void {
-		this.m_postOutline.initialize(this.m_rscene, 1, [0]);
-		this.m_postOutline.setFBOSizeScaleRatio(0.5);
-		this.m_postOutline.setRGB3f(0.0, 2.0, 0.0);
-		this.m_postOutline.setOutlineDensity(2.5);
-		this.m_postOutline.setOcclusionDensity(0.2);
+		if(this.m_postOutline) {
+			this.m_postOutline.initialize(this.m_rscene, 1, [0]);
+			this.m_postOutline.setFBOSizeScaleRatio(0.5);
+			this.m_postOutline.setRGB3f(0.0, 2.0, 0.0);
+			this.m_postOutline.setOutlineDensity(2.5);
+			this.m_postOutline.setOcclusionDensity(0.2);
+		}
 	}
-	setScale(scale: number): ViewerSceneNode {
-		this.m_scale = scale;
+
+	private m_materialEanbled = false;
+	applyMaterial(): ViewerSceneNode {
+		this.m_materialEanbled = true;
+		this.initScene();
 		return this;
 	}
-	applyMaterial(): ViewerSceneNode {
-
-		let flag: boolean = this.m_vmctx.isMCTXEnabled();
-		if (flag) {
-			console.log("XXXXXXXXXXXX applyMaterial(), this.m_objUnits.length: ",this.m_objUnits.length);
-			for (let i: number = 0; i < this.m_objUnits.length; ++i) {
-				let unit = this.m_objUnits.pop();
-				this.createEntityFromUnit(unit, 0);
+	loadGeomModels(urls: string[]): ViewerSceneNode {
+		if (this.m_modelLoader == null) {
+			this.m_modelLoader = new CoModelTeamLoader();
+		}
+		const loader = this.m_modelLoader;
+		console.log("loadGeomModels(), urls: ", urls);
+		loader.load(urls, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+			for (let i = 0; i < models.length; ++i) {
+				let md = new ModelData();
+				md.models = models;
+				md.transforms = transforms;
+				this.m_models.push(md);
 			}
-			this.buildBGBox();
+			this.initScene();
+		});
+		return this;
+	}
+	private initScene(): void {
+		if (this.m_models.length > 0 && this.m_materialEanbled) {
+			this.m_layouter.layoutReset();
+			for (let i = 0; i < this.m_models.length; ++i) {
+				let model = this.m_models[i];
+				let models = model.models;
+				let transforms = model.transforms;
+				this.createEntity(models[i], transforms != null ? transforms[i] : null, 1.0);
+			}
+			this.m_layouter.layoutUpdate(200);
 			this.buildEnvBox();
 		}
-		return this;
 	}
 
-	loadGeomModel(url: string, format: CoDataFormat): ViewerSceneNode {
-		let ins = this.m_vcoapp.coappIns;
-		if (ins != null) {
-
-			ins.getCPUDataByUrlAndCallback(
-				url,
-				format,
-				(unit: CoGeomDataUnit, status: number): void => {
-					let flag: boolean = this.m_vmctx.isMCTXEnabled();
-					console.log("XXXXXXXXXXXX loadGeomModel(), parsing finish obj model, data: ", unit.data, ", XXXBBB flag: ",flag);
-
-					if (flag) {
-						this.createEntityFromUnit(unit, status);
-					} else {
-						this.m_objUnits.push(unit);
-					}
-				},
-				true
-			);
-		}
-		return this;
-	}
-	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
-
-		let len = unit.data.models.length;
-		let m_scale = this.m_scale;
-
-		for (let i: number = 0; i < len; ++i) {
-			let entity = this.createEntity(unit.data.models[i]);
-			entity.setScaleXYZ(m_scale, m_scale, m_scale);
-		}
-	}
-	private createEntity2(model: CoGeomDataType): ITransformEntity {
-		// let rst = CoRenderer.RendererState;
-
-		let entity: ITransformEntity;
-		let flag: boolean = this.m_vmctx.isMCTXEnabled();
-		if (flag) {
-			let m = this.m_vmctx.pbrModule.createMaterial(true);
-			m.initializeByCodeBuf(true);
-			entity = CoRScene.createDisplayEntityFromModel(model, m);
-		} else {
-			entity = CoRScene.createDisplayEntityFromModel(model, new CoNormalMaterial().build().material);
-		}
-
-		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
-		this.m_rscene.addEntity(entity);
-
-		// const MouseEvent = CoRScene.MouseEvent;
-
-		return entity;
-	}
-
-	private createEntity(model: CoGeomDataType): ITransformEntity {
+	private createEntity(model: CoGeomDataType, transform: Float32Array = null, index: number = 1.0, url = ""): ITransformEntity {
 		// let rst = CoRenderer.RendererState;
 		const MouseEvent = CoRScene.MouseEvent;
 		// let entity: ITransformEntity;
@@ -150,6 +122,7 @@ class ViewerSceneNode implements IRenderNode {
 		entity.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
 		entity.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
 
+		this.m_layouter.layoutAppendItem(entity, CoRScene.createMat4(transform));
 		return entity;
 	}
 	private buildBGBox(): void {

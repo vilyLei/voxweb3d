@@ -6,6 +6,7 @@ import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import IMaterialModule from "../../voxengine/material/IMaterialModule";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { HttpFileLoader } from "../../modules/loaders/HttpFileLoader";
+import { IPBRMaterialDecorator } from "../../../pbr/material/IPBRMaterialDecorator";
 
 declare var PBREffect: IPBREffect;
 type PBRMapUrl = {
@@ -61,6 +62,7 @@ export default class PBRModule implements IMaterialModule {
 	private m_loadSpecCallback: () => void = null;
 	private m_materialData: any;
 	private m_pbrMapUrl: PBRMapUrl;
+	private m_hdrBrnEnabled = true;
 	constructor() {}
 	initialize(materialData: any): void {
 		this.m_materialData = materialData;
@@ -82,6 +84,7 @@ export default class PBRModule implements IMaterialModule {
 	}
 	private loadSpecularData(hdrBrnEnabled: boolean): void {
 		if (this.m_loadSpecularData) {
+			this.m_hdrBrnEnabled = hdrBrnEnabled;
 			let url: string = this.m_pbrMapUrl.envBrnMap;
 			if (hdrBrnEnabled) {
 				url = this.m_pbrMapUrl.envBrnMap;
@@ -131,14 +134,15 @@ export default class PBRModule implements IMaterialModule {
 			this.m_specEnvMap.__$attachThis();
 		}
 
+		const mctx = this.m_materialCtx;
 		let tmUrl = this.m_pbrMapUrl;
 		let mapData: PBRMap = {
 			envMap: this.m_specEnvMap,
-			diffuseMap: tmUrl.diffuseMap != undefined ? this.m_materialCtx.getTextureByUrl(tmUrl.diffuseMap) : null,
-			normalMap: tmUrl.normalMap != undefined ? this.m_materialCtx.getTextureByUrl(tmUrl.normalMap) : null,
-			armMap: tmUrl.armMap != undefined ? this.m_materialCtx.getTextureByUrl(tmUrl.armMap) : null,
-			displacementMap: tmUrl.displacementMap != undefined ? this.m_materialCtx.getTextureByUrl(tmUrl.displacementMap) : null,
-			parallaxMap: tmUrl.parallaxMap != undefined ? this.m_materialCtx.getTextureByUrl(tmUrl.parallaxMap) : null,
+			diffuseMap: tmUrl.diffuseMap != undefined ? mctx.getTextureByUrl(tmUrl.diffuseMap) : null,
+			normalMap: tmUrl.normalMap != undefined ? mctx.getTextureByUrl(tmUrl.normalMap) : null,
+			armMap: tmUrl.armMap != undefined ? mctx.getTextureByUrl(tmUrl.armMap) : null,
+			displacementMap: tmUrl.displacementMap != undefined ? mctx.getTextureByUrl(tmUrl.displacementMap) : null,
+			parallaxMap: tmUrl.parallaxMap != undefined ? mctx.getTextureByUrl(tmUrl.parallaxMap) : null,
 			aoMap: null
 		};
 
@@ -149,8 +153,8 @@ export default class PBRModule implements IMaterialModule {
 			param = this.m_materialData.pbr.defaultParam;
 		}
 		let m = this.m_effect.createMaterial();
-		let decor: any = m.getDecorator();
-		let vertUniform = decor.vertUniform;
+		let decor = m.getDecorator() as IPBRMaterialDecorator;
+		let vertUniform = decor.vertUniform as any;
 
 		m.setMaterialPipeline(this.m_materialCtx.pipeline);
 
@@ -162,6 +166,7 @@ export default class PBRModule implements IMaterialModule {
 		decor.setMetallic(param.metallic);
 		decor.setRoughness(param.roughness);
 		decor.setAO(param.ao);
+		decor.hdrBrnEnabled = this.m_hdrBrnEnabled;
 
 		decor.shadowReceiveEnabled = param.shadowReceiveEnabled && shadowReceiveEnabled && this.m_shadowEnabled;
 		decor.fogEnabled = this.m_materialData.fog !== undefined && param.fogEnabled;
@@ -175,6 +180,15 @@ export default class PBRModule implements IMaterialModule {
 		decor.parallaxMap = mapData.parallaxMap;
 		vertUniform.displacementMap = mapData.displacementMap;
 
+		// decor.shadowReceiveEnabled = false;
+		// decor.scatterEnabled = false;
+		// decor.fogEnabled = false;
+		// decor.setMetallic(0.1);
+		// console.log("param.roughness: ", param.roughness);
+		// decor.setRoughness(param.roughness);
+		// decor.setAO(1.0);
+
+
 		decor.initialize();
 		vertUniform.initialize();
 
@@ -186,11 +200,11 @@ export default class PBRModule implements IMaterialModule {
 		vs = param.parallaxParams;
 		decor.setParallaxParams(vs[0], vs[1], vs[2], vs[3]);
 		decor.setSideIntensity(param.sideIntensity);
-		
+
 		return m;
 	}
 	destroy(): void {
-		
+
 		this.m_rscene = null;
 		if(this.m_effect != null) {
 			this.m_effect.destroy();

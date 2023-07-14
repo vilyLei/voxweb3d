@@ -10,6 +10,7 @@ import IRendererScene from "../../vox/scene/IRendererScene";
  */
 class DebugMaterialContext extends CommonMaterialContext {
 
+	debugEnabled = true;
     constructor() {
         super();
     }
@@ -19,12 +20,19 @@ class DebugMaterialContext extends CommonMaterialContext {
         if(param == null) {
             param = new MaterialContextParam();
         }
-        param.shaderCodeBinary = false;
-        param.loadAllShaderCode = false;
+		if(this.debugEnabled) {
+			param.shaderCodeBinary = false;
+			param.loadAllShaderCode = false;
+			param.shaderLibVersion = '';
+			param.shaderFileNickname = false;
+		}
         super.initialize(rscene, param, shaderLibConfigure);
     }
     protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): IShaderLibConfigure {
-        return null;
+		if(this.debugEnabled) {
+			return null;
+		}
+        return super.buildConfigure(param, shaderLibConfigure);
     }
     protected initEnd(param: MaterialContextParam): void {
         super.initEnd( param );

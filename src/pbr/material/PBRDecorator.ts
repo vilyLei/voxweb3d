@@ -12,13 +12,14 @@ import IVector3D from "../../vox/math/IVector3D";
 import IColor4 from "../../vox/material/IColor4";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
-import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
+// import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
+import { IPBRMaterialDecorator } from "./IPBRMaterialDecorator";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { IShaderTextureBuilder } from "../../vox/material/IShaderTextureBuilder";
 import { UniformComp } from "../../vox/material/component/UniformComp";
 
-class PBRDecorator implements IMaterialDecorator {
+class PBRDecorator implements IPBRMaterialDecorator {
 
     private m_uniqueName: string = "PBR";
     private m_envMapWidth: number = 128;
@@ -184,7 +185,7 @@ class PBRDecorator implements IMaterialDecorator {
         base = Math.min(Math.max(base, -7.0), 12.0);
         this.m_pbrParams[15] = Math.round(maxMipLevel) * 0.01 + base;
     }
-    
+
     private log2(f: number): number {
         return Math.log(f) / Math.LN2;
     }
@@ -398,7 +399,7 @@ class PBRDecorator implements IMaterialDecorator {
      * @returns unique name string
      */
     getUniqueName(): string {
-        
+
         let ns: string = this.m_uniqueName;
 
         if (this.woolEnabled) ns += "_wl";
@@ -409,16 +410,16 @@ class PBRDecorator implements IMaterialDecorator {
         if (this.gammaCorrection) ns += "GmaCorr";
         if (this.absorbEnabled) ns += "Absorb";
         if (this.pixelNormalNoiseEnabled) ns += "PNNoise";
-        
+
         if (this.normalNoiseEnabled) ns += "NNoise";
         if (this.indirectEnvMap != null) ns += "IndirEnv";
         if (this.shadowReceiveEnabled) ns += "Shadow";
-        
+
         if (this.fogEnabled) ns += "Fog";
         if (this.hdrBrnEnabled) ns += "HdrBrn";
         if (this.vtxFlatNormal) ns += "vtxFlagN";
         if (this.mirrorMapLodEnabled) ns += "MirLod";
-        
+
         this.m_uniqueName = ns;
 
         return this.m_uniqueName;

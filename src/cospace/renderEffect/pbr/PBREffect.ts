@@ -3,6 +3,7 @@ import { IMaterial } from "../../../vox/material/IMaterial";
 import { VertUniformComp } from "../../../vox/material/component/VertUniformComp";
 import { IPBREffectInstance } from "./IPBREffect";
 import { PBRDecorator } from "../../../pbr/material/PBRDecorator";
+import { IPBRMaterialDecorator } from "../../../pbr/material/IPBRMaterialDecorator";
 import { IBytesCubeTexture } from "../../../vox/render/texture/IBytesCubeTexture";
 import TextureConst from "../../../vox/texture/TextureConst";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";

@@ -254,7 +254,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 
- import {RModelSCViewer as Demo} from "./demo/RModelSCViewer";
+//  import {RModelSCViewer as Demo} from "./demo/RModelSCViewer";
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   thread    /////////////////////////////////////
@@ -502,7 +502,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
-//  import {DemoPBRViewer2 as Demo} from "./pbr/DemoPBRViewer2";
+ import {DemoPBRViewer2 as Demo} from "./pbr/DemoPBRViewer2";
 
 //  import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
 

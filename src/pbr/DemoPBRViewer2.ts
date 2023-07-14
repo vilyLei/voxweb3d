@@ -1,65 +1,45 @@
 import Vector3D from "../vox/math/Vector3D";
 import MouseEvent from "../vox/event/MouseEvent";
 import RendererDevice from "../vox/render/RendererDevice";
-import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import CameraTrack from "../vox/view/CameraTrack";
 
 import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
-import ProfileInstance from "../voxprofile/entity/ProfileInstance";
-import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-import CameraZoomController from "../voxeditor/control/CameraZoomController";
-
-import RendererSubScene from "../vox/scene/RendererSubScene";
 import DebugFlag from "../vox/debug/DebugFlag";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 import PBRMaterial from "./material/PBRMaterial";
 import PBRShaderDecorator from "./material/PBRShaderDecorator";
-import TextureConst from "../vox/texture/TextureConst";
-import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
-
-import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
 import DracoMesh from "../voxmesh/draco/DracoMesh";
 import { DracoWholeModuleLoader } from "../voxmesh/draco/DracoModuleLoader";
 import DisplayEntity from "../vox/entity/DisplayEntity";
-import ThreadSystem from "../thread/ThreadSystem";
-
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
 import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
 import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
-import Box3DEntity from "../vox/entity/Box3DEntity";
-import DataMesh from "../vox/mesh/DataMesh";
-import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
-import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
+import { EntityLayouter } from "../vox/utils/EntityLayouter";
 
+import { CoModuleVersion, CoGeomDataType, CoModelTeamLoader } from "../cospace/app/common/CoModelTeamLoader";
+import Matrix4 from "../vox/math/Matrix4";
+import MeshFactory from "../vox/mesh/MeshFactory";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 export class DemoPBRViewer2 implements IShaderLibListener {
-	constructor() {}
 	private m_rscene: RendererScene = null;
-	private m_camTrack: CameraTrack = null;
-	private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+	private m_materialCtx = new DebugMaterialContext();
 
-	private m_profileInstance: ProfileInstance = new ProfileInstance();
-	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+	fogEnabled = false;
+	hdrBrnEnabled = true;
+	vtxFlatNormal = false;
+	aoMapEnabled = false;
 
-	private m_reflectPlaneY: number = -220;
+	private m_layouter = new EntityLayouter();
+	private m_modelLoader = new CoModelTeamLoader();
 
-	//private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
-	private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
-
-	fogEnabled: boolean = false;
-	hdrBrnEnabled: boolean = true;
-	vtxFlatNormal: boolean = false;
-	aoMapEnabled: boolean = false;
-
+	constructor() {}
 	initialize(): void {
 		console.log("DemoPBRViewer2::initialize()......");
 		if (this.m_rscene == null) {
@@ -69,13 +49,13 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 
 			let rparam: RendererParam = new RendererParam();
 			//rparam.maxWebGLVersion = 1;
-            // rparam.cameraPerspectiveEnabled = false;
+			// rparam.cameraPerspectiveEnabled = false;
 			rparam.setCamProject(45, 50.0, 10000.0);
 			rparam.setAttriStencil(true);
 			rparam.setAttriAntialias(true);
 			//rparam.setCamPosition(2000.0, 2000.0, 2000.0);
 			rparam.setCamPosition(800.0, 800.0, 800.0);
-			//rparam.setCamLookAtPos( this.m_lookV.x, this.m_lookV.y, this.m_lookV.z );
+
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam, 5);
 			this.m_rscene.updateCamera();
@@ -84,29 +64,15 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 			this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
 
 			this.m_rscene.enableMouseEvent(true);
-			this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
-			this.m_camTrack = new CameraTrack();
-			this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-
-			this.m_statusDisp.initialize();
-
-			//this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true, 0);
 
 			this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
 
 			this.initMaterialCtx();
-			// for(let i: number = 0; i < this.m_materialCtx.lightModule.getPointLightsTotal(); ++i) {
-			//     let crossAxis: Axis3DEntity = new Axis3DEntity();
-			//     crossAxis.initializeCross(30);
-			//     crossAxis.setPosition(this.m_materialCtx.lightModule.getPointLightAt(i).position);
-			//     this.m_rscene.addEntity(crossAxis);
-			// }
 		}
 	}
 	private initMaterialCtx(): void {
-		let mcParam: MaterialContextParam = new MaterialContextParam();
+		let mcParam = new MaterialContextParam();
 		mcParam.pointLightsTotal = 1;
 		mcParam.directionLightsTotal = 2;
 		mcParam.spotLightsTotal = 0;
@@ -114,6 +80,10 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 		mcParam.shaderCodeBinary = true;
 		mcParam.lambertMaterialEnabled = false;
 		mcParam.pbrMaterialEnabled = true;
+		mcParam.shaderLibVersion = 'v101';
+		mcParam.shaderFileNickname = true;
+		// 下面这一句设置为false的时候，则会启用外部编译好的shader代码
+		this.m_materialCtx.debugEnabled = true;
 		this.m_materialCtx.addShaderLibListener(this);
 		this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
@@ -147,83 +117,54 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 		this.m_materialCtx.lightModule.update();
 		//  this.m_materialCtx.lightModule.showInfo();
 	}
-	private initScene(): void {
-		// this.createEntity();
-		this.createObjEntity();
-		/*
-        this.m_dracoMeshLoader.initialize(2);
-        this.m_dracoModule = new ViewerDracoModule();
-        this.m_dracoModule.materialCtx = this.m_materialCtx;
-        this.m_dracoModule.viewer = this;
-        this.m_dracoModule.specularEnvMap = this.m_specularEnvMap;
-        this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
-        this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
-        // this.m_dracoModule.loadNext();
-        //*/
-	}
-    private m_objDisp: DisplayEntity = null;
-	private createObjEntity(): void {
-
-		let objUrl: string = "static/assets/obj/box01.obj";
-		objUrl = "static/assets/obj/building_001.obj";
-		objUrl = "static/assets/obj/torus01.obj";
-		// objUrl = "static/private/obj/test01/S.obj";
-		let objDisp = new ObjData3DEntity();
-		objDisp.normalEnabled = true;
-		objDisp.moduleScale = 3;
-		objDisp.initializeByObjDataUrl(objUrl, [this.m_materialCtx.getTextureByUrl("static/assets/default.jpg")]);
-		//objDisp.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
-        // let scale = 0.2;
-        // objDisp.setScaleXYZ(scale, scale, scale);
-        // objDisp.setXYZ(0, -100, 0);
-		// this.m_rscene.addEntity(objDisp);
-
-        let bounds = objDisp.getGlobalBounds();
-        // let min = bounds.min;
-        // let max = bounds.max;
-        // let h = 0.5 * bounds.getHeight();
-        // let y = 
-        
-        this.m_objDisp = objDisp;
-	}
 	shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
 		console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
-		this.initScene();
+
+		let urls = ["static/assets/obj/apple_01.obj"];
+		let loader = this.m_modelLoader;
+		loader.load(urls, (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+			this.m_layouter.layoutReset();
+			for (let i = 0; i < models.length; ++i) {
+				// this.createEntity(models[i], transforms != null ? transforms[i] : null, 2.0);
+				this.createPBREntity(models[i], transforms != null ? transforms[i] : null, 2.0);
+			}
+			this.m_layouter.layoutUpdate(200, new Vector3D(0, 0, 0));
+		});
 	}
-	private createMeshPlane(material: PBRMaterial): void {
-		let size: number = 400.0;
+	// private createMeshPlane(material: PBRMaterial): void {
+	// 	let size: number = 400.0;
 
-		let gridGeom: QuadGridMeshGeometry = new QuadGridMeshGeometry();
-		gridGeom.normalEnabled = true;
-		//gridGeom.normalScale = -1.0;
-		gridGeom.initializeXOZPlane(new Vector3D(-0.5 * size, 0, -0.5 * size), size, size, 200, 200);
-		//console.log("gridGeom: ", gridGeom);
+	// 	let gridGeom: QuadGridMeshGeometry = new QuadGridMeshGeometry();
+	// 	gridGeom.normalEnabled = true;
+	// 	//gridGeom.normalScale = -1.0;
+	// 	gridGeom.initializeXOZPlane(new Vector3D(-0.5 * size, 0, -0.5 * size), size, size, 200, 200);
+	// 	//console.log("gridGeom: ", gridGeom);
 
-		let dataMesh: DataMesh = new DataMesh();
-		//dataMesh.wireframe = true;
-		dataMesh.setBufSortFormat(material.getBufSortFormat());
-		dataMesh.initializeFromGeometry(gridGeom);
+	// 	let dataMesh: DataMesh = new DataMesh();
+	// 	//dataMesh.wireframe = true;
+	// 	dataMesh.setBufSortFormat(material.getBufSortFormat());
+	// 	dataMesh.initializeFromGeometry(gridGeom);
 
-		let entity: DisplayEntity = new DisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(dataMesh);
-		//entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-		//entity.setScaleXYZ(4.0,12.0,4.0);
-		//entity.setXYZ(0,-400,0);
-		this.m_rscene.addEntity(entity);
-	}
+	// 	let entity: DisplayEntity = new DisplayEntity();
+	// 	entity.setMaterial(material);
+	// 	entity.setMesh(dataMesh);
+	// 	//entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+	// 	//entity.setScaleXYZ(4.0,12.0,4.0);
+	// 	//entity.setXYZ(0,-400,0);
+	// 	this.m_rscene.addEntity(entity);
+	// }
 	private m_rotV: Vector3D = new Vector3D(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
-	private createPBREntity(mdisp: DisplayEntity): void {
+	private createPBREntity(model: CoGeomDataType, transform: Float32Array = null, uvScale: number = 1.0): void {
 		let axis = new Axis3DEntity();
 		//  axis.initialize(300.0);
 		//  this.m_rscene.addEntity(axis);
 		this.aoMapEnabled = true;
 		let ns: string = "lava_03";
-		let diffuseMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
-        diffuseMap.flipY = true;
+		let diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
+		diffuseMap.flipY = true;
 		//diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
-		let normalMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
-        normalMap.flipY = true;
+		let normalMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_NRM.png");
+		normalMap.flipY = true;
 		let aoMap: IRenderTexture = null;
 		if (this.aoMapEnabled) {
 			//aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
@@ -237,17 +178,23 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 		//parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
 		parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
 
-		let disSize: number = 700.0;
+		// for test
+		// displacementMap = null;
+		// parallaxMap = null;
+		// diffuseMap = null;
+		// aoMap = null;
+		// normalMap = null;
+		this.aoMapEnabled = aoMap != null
+
 
 		let material: PBRMaterial;
-		let sph: Sphere3DEntity;
-		///*
+
 		let vertUniform: VertUniformComp;
 		material = this.createMaterial();
 		vertUniform = material.vertUniform as VertUniformComp;
 
 		//material.decorator.normalMapEnabled = false;
-		material.decorator.aoMapEnabled = this.aoMapEnabled;
+		// material.decorator.aoMapEnabled = this.aoMapEnabled;
 		//material.decorator.aoMapEnabled = false;
 		material.decorator.scatterEnabled = false;
 
@@ -260,53 +207,44 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 		// material.decorator.parallaxMap = parallaxMap;
 
 		material.initializeByCodeBuf(true);
-		vertUniform.setDisplacementParams(50.0, 0.0);
-        material.setToneMapingExposure(5.0);
+
+		vertUniform.setDisplacementParams(1.0, 0.0);
+		material.setToneMapingExposure(1.0);
 		material.setAlbedoColor(1.0, 1.0, 1.0);
-		material.setRoughness(0.6);
-		material.setScatterIntensity(64.0);
+		material.setScatterIntensity(2.0);
 		material.setParallaxParams(1, 10, 5.0, 0.02);
-		material.setSideIntensity(8);
+		material.setSideIntensity(1.0);
+		material.setRoughness(0.3);
 		material.setMetallic(0.1);
+		material.setAO(1.0);
 
 		//material.setTextureList(texList);
-        /*
+		/*
 		let srcSph = new Sphere3DEntity();
 		srcSph.setMaterial(material);
 		srcSph.initialize(100.0, 150, 150);
 		srcSph.setRotation3(this.m_rotV);
 		this.m_rscene.addEntity(srcSph);
         //*/
-        let clothDisp = new DisplayEntity();
-        clothDisp.setMesh(mdisp.getMesh());
-        clothDisp.setMaterial(material);
-        // let scale = 0.2;
-        // clothDisp.setScaleXYZ(scale, scale, scale);
-        // clothDisp.setXYZ(0, -100, 0);
-        let scale = 0.9;
-        // clothDisp.setScaleXYZ(scale, scale, scale);
-        // clothDisp.setXYZ(0, -300, 0);
-		this.m_rscene.addEntity(clothDisp);
-
+		let mesh = MeshFactory.createDataMeshFromModel(model, material);
+		let entity = new DisplayEntity();
+		entity.setMesh(mesh);
+		entity.setMaterial(material);
+		this.m_rscene.addEntity(entity);
+		this.m_layouter.layoutAppendItem(entity, new Matrix4(transform));
 	}
 	private mouseDown(evt: any): void {
 		DebugFlag.Flag_0 = 1;
 	}
 	private mouseUp(evt: any): void {}
-	private update(): void {
-		this.m_statusDisp.update(true);
-	}
+	// private update(): void {
+	// 	this.m_statusDisp.update(true);
+	// }
 	private m_lookV: Vector3D = new Vector3D(0.0, 300.0, 0.0);
 	run(): void {
-        if(this.m_objDisp != null && this.m_objDisp.getMesh() != null) {
-            let mesh = this.m_objDisp.getMesh();
-            console.log("XXX obj mesh: ", mesh);
-            this.createPBREntity( this.m_objDisp );
-            this.m_objDisp = null;            
-        }
-		this.update();
-		this.m_stageDragSwinger.runWithYAxis();
-		this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+		// this.update();
+		// this.m_stageDragSwinger.runWithYAxis();
+		// this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
 		this.m_rscene.run();
 

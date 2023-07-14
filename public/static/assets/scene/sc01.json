@@ -39,7 +39,7 @@
             },
             "defaultParam": {
                 "metallic": 1,
-                "roughness": 0.4,
+                "roughness": 0.3,
                 "ao": 1,
                 "scatterIntensity": 8,
                 "sideIntensity": 8,
