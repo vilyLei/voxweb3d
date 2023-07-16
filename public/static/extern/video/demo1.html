@@ -8,15 +8,27 @@
     <title>video-test</title>
     <script>
         console.log("test ...");
+        document.onmousedown = (evt) => {
+            // this.mouseDown(evt);
+            console.log("mouse down ...");
+            videoEle = document.getElementById("video_01");
+            let style = videoEle.style;
+            style.width = 800 + "px";
+            style.height = 600 + "px";
+        };
     </script>
 </head>
 
 <body>
-    <video controls>
-        <source src="https://mdn.github.io/learning-area/html/multimedia-and-embedding/video-and-audio-content/rabbit320.mp4" type="video/mp4">
+    <video id="video_01" controls width="480" height="320">
+        <!--
+            http://localhost:9001/static/extern/video/demo1.html
+        -->
+        <!-- <source src="https://mdn.github.io/learning-area/html/multimedia-and-embedding/video-and-audio-content/rabbit320.mp4" type="video/mp4"> -->
+        <source src="../../private/video/rabbit320.mp4" type="video/mp4">
+        <!-- <source src="../../private/video/tt01.mp4" type="video/mp4"> -->
         <!-- <source src="rabbit320.webm" type="video/webm"> -->
-        <p>Your browser doesn't support HTML5 video. Here is a <a href="rabbit320.mp4">link to the video</a> instead.</p>
-      </video>
+    </video>
 </body>
 
 </html>
