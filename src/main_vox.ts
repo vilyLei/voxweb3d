@@ -502,7 +502,9 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
- import {DemoPBRViewer2 as Demo} from "./pbr/DemoPBRViewer2";
+//  import {DemoPBRViewer2 as Demo} from "./pbr/DemoPBRViewer2";
+
+ import {DemoPBRViewer3 as Demo} from "./pbr/DemoPBRViewer3";
 
 //  import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
 

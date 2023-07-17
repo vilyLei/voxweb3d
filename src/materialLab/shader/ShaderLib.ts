@@ -50,7 +50,7 @@ class ShaderCodeObjectLoader {
     private loadedShdCode(code: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void): void {
 
         this.m_loadingTotal++;
-        
+
         if(this.m_configure.buildBinaryFile && !this.m_configure.binary) {
             let u8arr: Uint8Array = this.encodeUint8Arr(code);
             for(let i: number = 0; i < u8arr.length; ++i) {
@@ -83,7 +83,7 @@ class ShaderCodeObjectLoader {
             this.m_configure = null;
         }
     }
-    
+
     async loadBinCode(url: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void) {
         const reader = new FileReader();
         reader.onload = e => {
@@ -94,7 +94,7 @@ class ShaderCodeObjectLoader {
             }
             this.loadedShdCode(this.decodeUint8Arr(u8arr), type, loadedCallback);
         };
-        
+
         const request = new XMLHttpRequest();
         request.open("GET", url, true);
         request.responseType = "blob";
@@ -111,7 +111,7 @@ class ShaderCodeObjectLoader {
         };
         request.send();
     }
-    
+
     private loadTextCode(url: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void): void {
 
         let request: XMLHttpRequest = new XMLHttpRequest();
@@ -133,7 +133,7 @@ class ShaderCodeObjectLoader {
         request.send();
     }
     private loadCode(url: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void): void {
-        
+
         if(this.m_configure.binary) {
             this.loadBinCode(url, type, loadedCallback);
         }
@@ -188,7 +188,7 @@ class ShaderLib implements IShaderLib{
             let configure: ShaderCodeConfigure;
             let list: ShaderCodeConfigure[] = null;
             if (shaderLibConfigure != null) {
-                list = shaderLibConfigure.shaderCodeConfigures;
+                list = shaderLibConfigure.shaderCodeConfigures as ShaderCodeConfigure[];
                 this.m_version = shaderLibConfigure.version;
             }
             if(list != null) {
@@ -230,7 +230,7 @@ class ShaderLib implements IShaderLib{
             loader.version = this.m_version;
             loader.load((uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject): void => {
 
-                this.m_shaderCodeMap.set(uuid, shaderCodeobject);                
+                this.m_shaderCodeMap.set(uuid, shaderCodeobject);
                 this.m_loadedTotal ++;
 
                 if(this.m_listener != null) this.m_listener.shaderLibLoadComplete(this.m_loadingTotal, this.m_loadedTotal);
