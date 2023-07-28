@@ -107,7 +107,6 @@ class RenderAdapter implements IRenderAdapter {
 		this.m_gl.enable(this.m_gl.CULL_FACE);
 		this.m_gl.cullFace(this.m_gl.BACK);
 		this.m_gl.enable(this.m_gl.BLEND);
-		this.m_gl.enable(this.m_gl.BLEND);
 
 		if (param.getDitherEanbled()) this.m_gl.enable(this.m_gl.DITHER);
 		else this.m_gl.disable(this.m_gl.DITHER);
