@@ -15,7 +15,7 @@ pwin["VoxVerify"] = new VVF();
 // import { DemoOBJParser as Demo } from "./cospace/demo/DemoOBJParser";
 
 // import { DemoCTMLoad as Demo } from "./cospace/demo/DemoCTMLoad";
-// import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
+import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
 // import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
 // import { DemoShowCTMAndDraco as Demo } from "./cospace/demo/DemoShowCTMAndDraco";
 // import { DemoCTMToDraco as Demo } from "./cospace/demo/DemoCTMToDraco";
@@ -46,7 +46,7 @@ pwin["VoxVerify"] = new VVF();
 // import { DemoPrimitives as Demo } from "./cospace/demo/DemoPrimitives";
 // import { DemoVtxDrawingInfo as Demo } from "./cospace/demo/DemoVtxDrawingInfo";
 
-import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
+// import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 // import { DemoVox3DEditor as Demo } from "./cospace/demo/DemoVox3DEditor";
 
 // import { DemoOutline as Demo } from "./cospace/demo/DemoOutline";

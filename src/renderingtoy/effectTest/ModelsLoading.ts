@@ -52,8 +52,28 @@ export class ModelsLoading {
 
             this.initSys();
 
-            this.initModels();
+            this.initModels1();
         }
+    }
+    private initModels1(): void {
+        //let vsUrl = "static/private/bake/oldIndexUnwrap/vertex.bin";
+        let url0 = "static/assets/fbx/base4.fbx";
+        let url1 = "static/private/bake/oldIndexUnwrap/6.ctm";
+        // let url2 = "static/private/bake/ios01/ios01_unwrap.fbx";
+        // let url2 = "static/private/bake/cyl01/cly01.ctm";
+        let url2 = "static/private/bake/hat_a_01/model.ctm";
+        let url3 = "static/private/bake/hat_a_02/model.ctm";
+        let loader = this.m_teamLoader;
+		url2 = "static/private/bake/box1/e8cfa2ddcccd955327d8e7f24f0f0438.ctm";
+        loader.load([url2], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+
+            this.m_layouter.layoutReset();
+            for (let i = 0; i < models.length; ++i) {
+                this.createEntity(models[i], transforms != null ? transforms[i] : null, 1.0);
+            }
+            this.m_layouter.layoutUpdate(300);
+
+        });
     }
     private initModels2(): void {
         //let vsUrl = "static/private/bake/oldIndexUnwrap/vertex.bin";
@@ -130,12 +150,15 @@ export class ModelsLoading {
 
 			// fio.downloadBinFile(model.uvsList[0], "uvs2","bin");
 
+			let tex = this.getTexByUrl("static/assets/box.jpg");
+			tex.flipY = true;
 
             let material = new Default3DMaterial();
             material.normalEnabled = true;
             material.setUVScale(uvScale, uvScale);
             material.setTextureList([
-                this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+                // this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+                tex
             ]);
 
             let mesh = MeshFactory.createDataMeshFromModel(model, material);

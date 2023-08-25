@@ -57,8 +57,8 @@ export class DemoCTMParser {
 		this.initRenderer();
 
 		this.m_lossTime = Date.now();
-		// this.loadCTM01();
-		this.loadCTM02();
+		this.loadCTM01();
+		// this.loadCTM02();
 	}
 
 	private m_lossTime: number = 0;
@@ -85,6 +85,7 @@ export class DemoCTMParser {
 		urls = [baseUrl + "sh202/sh202_25.ctm"];
 		urls = [baseUrl + "sh202/sh202_26.ctm"];
 		urls = ["static/private/test/tst.ctm"];
+		urls = ["static/private/bake/three_box/285f9af37ce172cf067f9ae155cfa8d6.ctm"];
 
 		// urls = [baseUrl + "sh202/sh202_5.ctm"];
 		//let ctmUrl: string = "static/assets/ctm/hand.ctm";

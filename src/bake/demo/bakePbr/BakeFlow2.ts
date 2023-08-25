@@ -31,7 +31,7 @@ import { BakedViewer } from "./BakedViewer";
 import { Bin4DataLoader } from "./Bin4DataLoader";
 import VtxDrawingInfo from "../../../vox/render/vtx/VtxDrawingInfo";
 
-type BakingParamType = { su: number; sv: number; bakeUrl: string; bakeType: number, drawLine: boolean, drawShape: boolean, flipY: boolean };
+type BakingParamType = { su: number; sv: number; bakeUrl: string; bakeType: number, drawLine: boolean, drawShape: boolean, flipY: boolean, useInitUV: boolean };
 
 export class BakeFlow2 {
 	constructor() {}
@@ -107,7 +107,7 @@ export class BakeFlow2 {
 		this.m_bakedViewer = new BakedViewer(this.m_rscene, this.m_texLoader);
 
 		let bakeUrl = "static/private/bake/ctmUnwrap2/ctmUnwrap2.png";
-		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true, flipY: false };
+		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true, flipY: false, useInitUV: false };
 
 		let modelLoader = new ModelDataLoader();
 		modelLoader.setListener((modelData: ModelData, uv2ModelData: ModelData, uvData: Float32Array): void => {
@@ -210,6 +210,30 @@ export class BakeFlow2 {
 		nvsUrl = "static/private/bake/soleBig01/normal.bin";
 		bakeUrl = "static/private/bake/soleBig01/soleBig01_baked.png";
 
+		vsUrl = "static/private/bake/test02/vertices.bin";
+		uvs1Url = "static/private/bake/test02/uv1.bin";
+		uvs2Url = "static/private/bake/test02/uv2.bin";
+		nvsUrl = "static/private/bake/test02/normal.bin";
+		bakeUrl = "static/private/bake/soleBig01/soleBig01_baked.png";
+
+		vsUrl = "static/private/bake/three_box/vertices.bin";
+		uvs1Url = "static/private/bake/three_box/uv1.bin";
+		uvs2Url = "static/private/bake/three_box/uv2.bin";
+		nvsUrl = "static/private/bake/three_box/normal.bin";
+		bakeUrl = "static/private/bake/soleBig01/soleBig01_baked.png";
+
+		vsUrl = "static/private/bake/box1/vertices.bin";
+		uvs1Url = "static/private/bake/box1/uv1.bin";
+		uvs2Url = "static/private/bake/box1/uv2.bin";
+		nvsUrl = "static/private/bake/box1/normal.bin";
+		bakeUrl = "static/private/bake/box1/baker.png";
+
+		// vsUrl = "static/private/bake/box1b/vertices.bin";
+		// uvs1Url = "static/private/bake/box1b/uv1.bin";
+		// uvs2Url = "static/private/bake/box1b/uv2.bin";
+		// nvsUrl = "static/private/bake/box1b/normal.bin";
+		// bakeUrl = "static/private/bake/box1b/baker.png";
+
 		// vsUrl = "static/private/bake/soleBigErr02/vertices.bin";
 		// uvs1Url = "static/private/bake/soleBigErr02/uv1.bin";
 		// uvs2Url = "static/private/bake/soleBigErr02/uv2.bin";
@@ -254,12 +278,19 @@ export class BakeFlow2 {
 		this.m_drawTimes = 1;
 		this.m_circleTimes = 1;
 		this.m_offsetR = 0.0002;
+		let scale = 8616.4389;
+		let useBakerUV = false;
 
-		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true, flipY: false };
-		uvParams = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: false, drawShape: true, flipY: false };
+		scale = 1.0;
+		useBakerUV = true;
+
+		let useInitUV = !useBakerUV;
+		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true, flipY: false, useInitUV: useInitUV };
+		uvParams = { su: scale, sv: scale, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: false, drawShape: true, flipY: true, useInitUV: useInitUV };
 		// uvParams = { su: 0.01, sv: 0.01, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: false, drawShape: true, flipY: false };
 
 		let loader = new Bin4DataLoader();
+		loader.logEnabled = true;
 		loader.setListener((model: CoGeomDataType): void => {
 			console.log("Bin4DataLoader loaded model: ", model);
 			this.createEntity(model, null, uvParams);
@@ -311,7 +342,7 @@ export class BakeFlow2 {
 		console.log("#### uvs[0].length: ", uvs[0].length);
 		if (uvs.length > 1) console.log("#### uvs[1].length: ", uvs[1].length);
 		if (bakeType < 0) {
-			let entity = this.m_bakedViewer.createEntity(model, bvParam.bakeUrl, bvParam.flipY);
+			let entity = this.m_bakedViewer.createEntity(model, bvParam.bakeUrl, bvParam.flipY,[bvParam.su, bvParam.sv], bvParam.useInitUV);
 			entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 			let mat4 = transform != null ? new Matrix4(transform) : null;
 			this.m_layouter.layoutAppendItem(entity, mat4);

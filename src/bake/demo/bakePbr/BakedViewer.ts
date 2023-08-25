@@ -28,7 +28,7 @@ class BakedViewer {
 
     //layouter = new EntityLayouter
 
-    createEntity(model: CoGeomDataType, texUrl: string, flipY: boolean = false): DisplayEntity {
+    createEntity(model: CoGeomDataType, texUrl: string, flipY: boolean = false, uvScales: number[] = null, useInitUV: boolean = false): DisplayEntity {
 
         let vs = model.vertices;
         let ivs = model.indices;
@@ -39,13 +39,18 @@ class BakedViewer {
             SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
         }
         let material: MaterialBase;
-        if (model.uvsList.length > 1) model.uvsList[0] = model.uvsList[1];
+		if(!useInitUV) {
+			if (model.uvsList.length > 1) model.uvsList[0] = model.uvsList[1];
+		}
         // let tex = this.getTexByUrl("static/private/bake/icoSph_0.png");
         // let tex = this.getTexByUrl("static/private/bake/icoSph_1.png");
         let tex = this.getTexByUrl(texUrl);
         // let tex = this.getTexByUrl("static/private/bake/sph_mapping02b.png");
         tex.flipY = flipY;
         let materialShow = new Default3DMaterial();
+		if(uvScales != null && uvScales.length == 2) {
+			materialShow.setUVScale(uvScales[0], uvScales[1]);
+		}
         materialShow.setTextureList([tex]);
         materialShow.initializeByCodeBuf(true);
         material = materialShow;

@@ -59,7 +59,7 @@ export class DemoFBXFastParser {
 
 		DivLog.SetDebugEnabled(true);
 
-		let wsft = ThreadWFST.Build(0, 0, 0, 9);
+		let wsft = ThreadWFST.Build(0, 0, 0, TransST.Finish);
 		console.log("step0 wsft: ", wsft);
 		wsft = ThreadWFST.ModifyTransStatus(wsft, TransST.Finish);
 		console.log("step1 wsft: ", wsft);
@@ -81,6 +81,7 @@ export class DemoFBXFastParser {
 		url = "static/private/fbx/base3.fbx";
 		url = "static/private/fbx/hat_ok.fbx";
 		url = "static/private/fbx/Mat_Ball.fbx";
+		url = "static/private/ctm/three_box.fbx";
 		// url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/hat_hasNormal.fbx";
 		// url = "static/private/fbx/hat_hasNotNormal.fbx";
