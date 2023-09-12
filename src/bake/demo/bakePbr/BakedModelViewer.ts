@@ -51,7 +51,7 @@ export class BakedModelViewer {
 
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+			// RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 			let rparam = new RendererParam(this.createCurrDiv(px, py, pw, ph));
 			rparam.autoSyncRenderBufferAndWindowSize = false;
 			rparam.setCamPosition(1500.0, 1500.0, 1500.0);
