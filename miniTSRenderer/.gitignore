@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2020 vilyLei
+Copyright (c) 2023 vily
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,33 +19,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 dist/
 node_modules/
 *.code-workspace
-src/large/
-public/test/
-public/static/modules/
 public/static/private/
-public/static/otherProj/
-public/static/cospace/modules/ctm/
-public/static/cospace/modules/draco/
-public/static/cospace/modules/dracoEncode/
-public/static/cospace/modules/obj/
-public/static/cospace/modules/fbxFast/
-public/static/cospace/modules/png/
-public/static/cospace/core/
-public/static/cospace/engine/
-public/static/cospace/renderEffect/
-public/static/cospace/particle/
-public/static/cospace/math/
-public/static/cospace/ageom/
-public/static/cospace/coMaterial/
-public/static/cospace/coui/
-public/static/cospace/cotext/
-public/static/cospace/comesh/
-public/static/cospace/coentity/
-public/static/cospace/cotexture/
-public/static/cospace/coedit/
-public/static/cospace/engineBase/
-
-miniTSRenderer/node_modules/
