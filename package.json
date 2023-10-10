@@ -78,6 +78,7 @@
     "dev:animation": "vue-cli-service serve --type=dev[./src/main_animation.ts]",
     "dev:tool": "vue-cli-service serve --type=dev[./src/main_tool.ts]",
     "dev:pixeltoy": "vue-cli-service serve --type=dev[./src/main_pixeltoy.ts]",
+    "dev:miniro": "vue-cli-service serve --type=dev[./src/main_miniro.ts]",
     "dev:dsrdiffusion": "vue-cli-service serve --type=dev[./src/main_dsrdiffusion.ts]"
   },
   "dependencies": {
