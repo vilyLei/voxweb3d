@@ -1,5 +1,5 @@
+import Color4 from "../../../vox/material/Color4";
 import { RenderableUnit } from "../entity/RenderableUnit";
-import { Color4 } from "../material/Color4";
 
 /**
  * 实时图形渲染器
