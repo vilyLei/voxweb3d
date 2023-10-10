@@ -37,16 +37,7 @@ export class WGPUSimulation {
 		}
 	}
 	private mUniformObj: any = {uniformArray: null, uniformBuffer: null};
-	private mStateObj: any = {cellStateArray: null, cellStateStorage: null};
 
-	private simulate(state: Uint32Array): void {
-		for (let i = 1; i < state.length; ++i) {
-			if (state[i] == 1) {
-				state[i] = 0;
-				state[i-1] = 1;
-			}
-		}
-	}
 	private createStorage(device: any): any {
 		// Create an array representing the active state of each cell.
 		const cellStateArray = new Uint32Array(this.mGridSize * this.mGridSize);
@@ -77,15 +68,6 @@ export class WGPUSimulation {
 		return cellStateStorage;
 	}
 
-	private updateUniform(device: any): void {
-		let n = Math.round(Math.random() * 3);
-		this.mGridSize = 2 + n;
-		this.mGridSize = 8;
-		const obj = this.mUniformObj;
-		obj.uniformArray[0] = this.mGridSize;
-		obj.uniformArray[1] = this.mGridSize;
-		device.queue.writeBuffer(obj.uniformBuffer, 0, obj.uniformArray);
-	}
 	private createUniform(device: any): any {
 		// Create a uniform buffer that describes the grid.
 		const uniformArray = new Float32Array([this.mGridSize, this.mGridSize]);
@@ -104,7 +86,7 @@ export class WGPUSimulation {
 			label: "Cell Bind Group Layout",
 			entries: [{
 				binding: 0,
-				visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
+				visibility: GPUShaderStage.FRAGMENT | GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
 				buffer: {} // Grid uniform buffer
 			}, {
 				binding: 1,
@@ -119,7 +101,6 @@ export class WGPUSimulation {
 		const bindGroups = [
 			device.createBindGroup({
 				label: "Cell renderer bind group A",
-				// layout: pipeline.getBindGroupLayout(0),
 				layout: bindGroupLayout,
 				entries: [
 					{
@@ -136,7 +117,6 @@ export class WGPUSimulation {
 			}),
 			device.createBindGroup({
 				label: "Cell renderer bind group B",
-				// layout: pipeline.getBindGroupLayout(0),
 				layout: bindGroupLayout,
 				entries: [
 					{
@@ -152,7 +132,9 @@ export class WGPUSimulation {
 				],
 			})
 		];
+
 		this.mUniformBindGroups = bindGroups;
+
 		const obj = this.mUniformObj;
 		obj.uniformArray = uniformArray;
 		obj.uniformBuffer = uniformBuffer;
