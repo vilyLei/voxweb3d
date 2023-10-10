@@ -146,8 +146,7 @@ export class WGPUSimulation {
 				return cell.y * u32(grid.x) + cell.x;
 			}
 
-			@compute
-			@workgroup_size(${sgs}, ${sgs})
+			@compute @workgroup_size(${sgs}, ${sgs})
 			fn computeMain(@builtin(global_invocation_id) cell: vec3u) {
 				if (cellStateIn[cellIndex(cell.xy)] == 1) {
 					cellStateOut[cellIndex(cell.xy)] = 0;
