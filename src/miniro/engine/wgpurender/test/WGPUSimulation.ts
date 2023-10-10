@@ -3,11 +3,13 @@ import Color4 from "../../../../vox/material/Color4";
 // thanks: https://codelabs.developers.google.com/your-first-webgpu-app?hl=zh-cn#7
 
 declare var GPUBufferUsage: any;
+declare var GPUShaderStage: any;
 
 export class WGPUSimulation {
 
 	private mRVertices: Float32Array = null;
 	private mRPipeline: any | null = null;
+	private mRSimulationPipeline: any | null = null;
 	private mVtxBuffer: any | null = null;
 	private mCanvasFormat: any | null = null;
 	private mWGPUDevice: any | null = null;
@@ -84,7 +86,7 @@ export class WGPUSimulation {
 		obj.uniformArray[1] = this.mGridSize;
 		device.queue.writeBuffer(obj.uniformBuffer, 0, obj.uniformArray);
 	}
-	private createUniform(device: any, pipeline: any): void {
+	private createUniform(device: any): any {
 		// Create a uniform buffer that describes the grid.
 		const uniformArray = new Float32Array([this.mGridSize, this.mGridSize]);
 		const uniformBuffer = device.createBuffer({
@@ -97,41 +99,68 @@ export class WGPUSimulation {
 
 		const cellStateStorage = this.createStorage(device);
 
+		// Create the bind group layout and pipeline layout.
+		const bindGroupLayout = device.createBindGroupLayout({
+			label: "Cell Bind Group Layout",
+			entries: [{
+				binding: 0,
+				visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
+				buffer: {} // Grid uniform buffer
+			}, {
+				binding: 1,
+				visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
+				buffer: { type: "read-only-storage"} // Cell state input buffer
+			}, {
+				binding: 2,
+				visibility: GPUShaderStage.COMPUTE,
+				buffer: { type: "storage"} // Cell state output buffer
+			}]
+		});
 		const bindGroups = [
-		device.createBindGroup({
-			label: "Cell renderer bind group A",
-			layout: pipeline.getBindGroupLayout(0),
-			entries: [
-				{
-					binding: 0,
-					resource: { buffer: uniformBuffer }
-				}, {
-					binding: 1,
-					resource: { buffer: cellStateStorage[0] }
-				}
-			],
+			device.createBindGroup({
+				label: "Cell renderer bind group A",
+				// layout: pipeline.getBindGroupLayout(0),
+				layout: bindGroupLayout,
+				entries: [
+					{
+						binding: 0,
+						resource: { buffer: uniformBuffer }
+					}, {
+						binding: 1,
+						resource: { buffer: cellStateStorage[0] }
+					}, {
+						binding: 2,
+						resource: { buffer: cellStateStorage[1] }
+					}
+				],
 			}),
 			device.createBindGroup({
-			label: "Cell renderer bind group B",
-			layout: pipeline.getBindGroupLayout(0),
-			entries: [
-				{
-					binding: 0,
-					resource: { buffer: uniformBuffer }
-				}, {
-					binding: 1,
-					resource: { buffer: cellStateStorage[1] }
-				}
-			],
-		})
+				label: "Cell renderer bind group B",
+				// layout: pipeline.getBindGroupLayout(0),
+				layout: bindGroupLayout,
+				entries: [
+					{
+						binding: 0,
+						resource: { buffer: uniformBuffer }
+					}, {
+						binding: 1,
+						resource: { buffer: cellStateStorage[1] }
+					}, {
+						binding: 2,
+						resource: { buffer: cellStateStorage[0] }
+					}
+				],
+			})
 		];
 		this.mUniformBindGroups = bindGroups;
 		const obj = this.mUniformObj;
 		obj.uniformArray = uniformArray;
 		obj.uniformBuffer = uniformBuffer;
+
+		return bindGroupLayout;
 	}
 	private mStep = 0;
-	private createComputeShader(device: any): void {
+	private createComputeShader(device: any): any {
 		let sgs = this.mShdWorkGroupSize;
 		// Create the compute shader that will process the simulation.
 		const simulationShaderModule = device.createShaderModule({
@@ -156,8 +185,9 @@ export class WGPUSimulation {
 			}`
 		});
 
+		return simulationShaderModule;
 	}
-	private createRectGeometryData(device: any, pass: any): void {
+	private createRectGeometryData(device: any, pass: any, computePass: any): void {
 		// WGSL: https://gpuweb.github.io/gpuweb/wgsl/
 		// webGPU Source github: https://github.com/vilyLei/gpuweb
 
@@ -167,6 +197,7 @@ export class WGPUSimulation {
 		let vertices = this.mRVertices;
 		let vertexBuffer = this.mVtxBuffer;
 		let cellPipeline = this.mRPipeline;
+		let simulationPipeline = this.mRSimulationPipeline;
 		if(!cellPipeline) {
 			let hsize = 0.8;
 			vertices = new Float32Array([
@@ -222,26 +253,6 @@ export class WGPUSimulation {
 				output.cell = cell;
 				return output;
 			}
-			// @fragment
-			// fn fragmentMain() -> @location(0) vec4f {
-			// 	return vec4f(0.8, 0.1, 0.1, 1);
-			// }
-
-			// @fragment
-			// fn fragmentMain(@location(0) cell: vec2f) -> @location(0) vec4f {
-			// 	// Remember, fragment return values are (Red, Green, Blue, Alpha)
-			// 	// and since cell is a 2D vector, this is equivalent to:
-			// 	// (Red = cell.x, Green = cell.y, Blue = 0, Alpha = 1)
-			// 	return vec4f(cell, 0, 1);
-			// }
-
-			// struct FragInput {
-			// 	@location(0) cellA: vec2f,
-			// };
-			// @fragment
-			// fn fragmentMain(input: FragInput) -> @location(0) vec4f {
-			// 	return vec4f(input.cellA, 0, 1);
-			// }
 
 			@fragment
 			fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
@@ -250,13 +261,18 @@ export class WGPUSimulation {
 				return vec4f(c, 1.0 - c.x, 1);
 			}
 			`;
+			const bindGroupLayout = this.createUniform(device);
+			const pipelineLayout = device.createPipelineLayout({
+				label: "Cell Pipeline Layout",
+				bindGroupLayouts: [ bindGroupLayout ],
+			});
 			const cellShaderModule = device.createShaderModule({
 				label: "Cell shader",
 				code: shaderCodes
 				});
 			cellPipeline = device.createRenderPipeline({
 				label: "Cell pipeline",
-				layout: "auto",
+				layout: pipelineLayout,
 				vertex: {
 					module: cellShaderModule,
 					entryPoint: "vertexMain",
@@ -270,17 +286,35 @@ export class WGPUSimulation {
 					}]
 				},
 			});
+
+			const simulationShaderModule = this.createComputeShader( device );
+			// Create a compute pipeline that updates the game state.
+			simulationPipeline = device.createComputePipeline({
+					label: "Simulation pipeline",
+					layout: pipelineLayout,
+					compute: {
+					module: simulationShaderModule,
+					entryPoint: "computeMain",
+				}
+			});
 			this.mRVertices = vertices;
 			this.mVtxBuffer = vertexBuffer;
 			this.mRPipeline = cellPipeline;
-
-			this.createUniform(device, cellPipeline);
+			this.mRSimulationPipeline = simulationPipeline;
 		}
+		const bindGroups = this.mUniformBindGroups;
+
+		computePass.setPipeline(simulationPipeline),
+		computePass.setBindGroup(0, bindGroups[this.mStep % 2]);
+		const workgroupCount = Math.ceil(this.mGridSize / this.mShdWorkGroupSize);
+		computePass.dispatchWorkgroups(workgroupCount, workgroupCount);
+
 		pass.setPipeline(cellPipeline);
 		pass.setVertexBuffer(0, vertexBuffer);
 		// pass.setBindGroup(0, this.mUniformBindGroup);
-		pass.setBindGroup(0, this.mUniformBindGroups[this.mStep % 2]);
+		pass.setBindGroup(0, bindGroups[this.mStep % 2]);
 		pass.draw(vertices.length / 2, this.mGridSize * this.mGridSize);
+
 		this.mStep ++;
 	}
 
@@ -308,10 +342,16 @@ export class WGPUSimulation {
 		const encoder = device.createCommandEncoder();
 		const pass = encoder.beginRenderPass( rpassParam );
 
-		this.createRectGeometryData(device, pass);
+		const computeEncoder = device.createCommandEncoder();
+		const computePass = computeEncoder.beginComputePass()
+
+		this.createRectGeometryData(device, pass, computePass);
+
 		pass.end();
+		computePass.end();
 
 		device.queue.submit([ encoder.finish() ]);
+		device.queue.submit([ computeEncoder.finish() ]);
 	}
 	private async initWebGPU(canvas: HTMLCanvasElement) {
 		// thanks: https://codelabs.developers.google.com/your-first-webgpu-app?hl=zh-cn#2
