@@ -18,7 +18,8 @@
 // import { WGPURColorGrid as Demo } from "./miniro/engine/wgpurender/test/WGPURColorGrid";
 // import { WGPURStorage as Demo } from "./miniro/engine/wgpurender/test/WGPURStorage";
 // import { WGPURStorage2 as Demo } from "./miniro/engine/wgpurender/test/WGPURStorage2";
-import { WGPUSimulation as Demo } from "./miniro/engine/wgpurender/test/WGPUSimulation";
+// import { WGPUSimulation as Demo } from "./miniro/engine/wgpurender/test/WGPUSimulation";
+import { WGPUGameOfLife as Demo } from "./miniro/engine/wgpurender/test/WGPUGameOfLife";
 
 // import { WGPURSampler as Demo } from "./miniro/engine/wgpurender/test/WGPURSampler";
 
