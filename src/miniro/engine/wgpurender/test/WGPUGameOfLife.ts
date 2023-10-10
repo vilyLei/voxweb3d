@@ -15,7 +15,7 @@ export class WGPUGameOfLife {
 	private mWGPUDevice: any | null = null;
 	private mWGPUContext: any | null = null;
 	private mUniformBindGroups: any | null = null;
-	private mGridSize = 32;
+	private mGridSize = 64;
 	private mShdWorkGroupSize = 8;
 	constructor() {}
 	initialize(): void {
@@ -30,14 +30,26 @@ export class WGPUGameOfLife {
 		this.initWebGPU(canvas).then(() => {
 			console.log("webgpu initialization finish ...");
 
-			this.updateWGPUCanvas();
+			// this.updateWGPUCanvas();
+			
+			// document.onmousedown = (evt):void => {
+			// 	this.updateWGPUCanvas( new Color4(0.05, 0.05, 0.1) );
+			// }
+
+			this.autoUpdate();
 		});
-		document.onmousedown = (evt):void => {
-			this.updateWGPUCanvas( new Color4(0.05, 0.05, 0.1) );
-		}
 	}
 	private mUniformObj: any = {uniformArray: null, uniformBuffer: null};
 
+    private m_timeoutId: any = -1;
+
+    private autoUpdate(): void {
+        if (this.m_timeoutId > -1) {
+            clearTimeout(this.m_timeoutId);
+        }
+        this.m_timeoutId = setTimeout(this.autoUpdate.bind(this), 100);// 20 fps
+        this.updateWGPUCanvas();
+    }
 	private createStorage(device: any): any {
 		// Create an array representing the active state of each cell.
 		const cellStateArray = new Uint32Array(this.mGridSize * this.mGridSize);

@@ -68,7 +68,6 @@ class RenderStatusDisplay {
         this.updateDo(false);
     }
     private m_timeoutId: any = -1;
-
     private autoUpdate(): void {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
