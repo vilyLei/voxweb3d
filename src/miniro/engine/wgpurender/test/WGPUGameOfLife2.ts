@@ -7,7 +7,7 @@ import { WGContext } from "./wgrender/WGContext";
 
 export class WGPUGameOfLife2 {
 
-	private mGridSize = 128;
+	private mGridSize = 64;
 	private mShdWorkGroupSize = 8;
 	private mWGCtx = new WGContext();
 
