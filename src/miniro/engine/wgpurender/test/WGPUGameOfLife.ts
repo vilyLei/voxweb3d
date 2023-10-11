@@ -31,7 +31,7 @@ export class WGPUGameOfLife {
 			console.log("webgpu initialization finish ...");
 
 			// this.updateWGPUCanvas();
-			
+
 			// document.onmousedown = (evt):void => {
 			// 	this.updateWGPUCanvas( new Color4(0.05, 0.05, 0.1) );
 			// }
@@ -237,7 +237,7 @@ export class WGPUGameOfLife {
 			usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
 		});
 		device.queue.writeBuffer(vertexBuffer, /*bufferOffset=*/0, vertices);
-		
+
 		this.mRVertices = vertices;
 		this.mVtxBuffer = vertexBuffer;
 	}
@@ -254,7 +254,7 @@ export class WGPUGameOfLife {
 		let simulationPipeline = this.mRSimulationPipeline;
 
 		if(!cellPipeline) {
-			
+
 			this.createRectGeometryData( device );
 
 			const vertexBufferLayout = {
@@ -309,7 +309,7 @@ export class WGPUGameOfLife {
 			const cellShaderModule = device.createShaderModule({
 				label: "Cell shader",
 				code: shaderCodes
-				});
+			});
 			cellPipeline = device.createRenderPipeline({
 				label: "Cell pipeline",
 				layout: pipelineLayout,
@@ -354,7 +354,7 @@ export class WGPUGameOfLife {
 
 		pass.setPipeline(cellPipeline);
 		pass.setVertexBuffer(0, vertexBuffer);
-		
+
 		pass.setBindGroup(0, bindGroups[this.mStep % 2]);
 		pass.draw(vertices.length / 2, this.mGridSize * this.mGridSize);
 
