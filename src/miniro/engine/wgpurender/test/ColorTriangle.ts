@@ -36,7 +36,7 @@ const vertShaderCode = `
 struct VSOut {
     @builtin(position) Position: vec4f,
     @location(0) color: vec3f,
- };
+};
 
 @vertex
 fn main(@location(0) inPos: vec3f,
@@ -55,22 +55,18 @@ fn main(@location(0) inColor: vec3f) -> @location(0) vec4f {
 `;
 // 📈 Position Vertex Buffer Data
 const positions = new Float32Array([
-    1.0, -1.0, 0.0, -1.0, -1.0, 0.0, 0.0, 1.0, 0.0
+    1.0, -1.0, 0.0,
+    -1.0, -1.0, 0.0,
+    0.0, 1.0, 0.0
 ]);
 // 🎨 Color Vertex Buffer Data
 const colors = new Float32Array([
-    1.0,
-    0.0,
-    0.0, // 🔴
-    0.0,
-    1.0,
-    0.0, // 🟢
-    0.0,
-    0.0,
-    1.0 // 🔵
+    1.0,0.0,0.0,
+    0.0,1.0,0.0,
+    0.0,0.0,1.0
 ]);
 
-// 📇 Index Buffer Data
+// Index Buffer Data
 const indices = new Uint16Array([0, 1, 2]);
 
 export class ColorTriangle {
@@ -273,7 +269,7 @@ export class ColorTriangle {
             storeOp: 'store'
         };
 
-        const depthAttachment: GPURenderPassDepthStencilAttachment = {
+        const depthStencilAttachment: GPURenderPassDepthStencilAttachment = {
             view: this.depthTextureView,
             depthClearValue: 1,
             depthLoadOp: 'clear',
@@ -285,15 +281,17 @@ export class ColorTriangle {
 
         const renderPassDesc: GPURenderPassDescriptor = {
             colorAttachments: [colorAttachment],
-            depthStencilAttachment: depthAttachment
+            depthStencilAttachment: depthStencilAttachment
         };
 
         this.commandEncoder = this.device.createCommandEncoder();
 
         // Encode drawing commands
         this.passEncoder = this.commandEncoder.beginRenderPass(renderPassDesc);
-        this.passEncoder.setPipeline(this.pipeline);
-        this.passEncoder.setViewport(
+        const pass = this.passEncoder;
+        
+        pass.setPipeline(this.pipeline);
+        pass.setViewport(
             0,
             0,
             this.canvas.width,
@@ -301,17 +299,18 @@ export class ColorTriangle {
             0,
             1
         );
-        this.passEncoder.setScissorRect(
+        pass.setScissorRect(
             0,
             0,
             this.canvas.width,
             this.canvas.height
         );
-        this.passEncoder.setVertexBuffer(0, this.positionBuffer);
-        this.passEncoder.setVertexBuffer(1, this.colorBuffer);
-        this.passEncoder.setIndexBuffer(this.indexBuffer, 'uint16');
-        this.passEncoder.drawIndexed(3, 1);
-        this.passEncoder.end();
+        pass.setVertexBuffer(0, this.positionBuffer);
+        pass.setVertexBuffer(1, this.colorBuffer);
+        pass.setIndexBuffer(this.indexBuffer, indices.BYTES_PER_ELEMENT == 2 ? 'uint16' : 'uint32');
+        // pass.drawIndexed(positions.length / 3, 1);
+        pass.drawIndexed(positions.length / 3);
+        pass.end();
 
         this.queue.submit([this.commandEncoder.finish()]);
     }
