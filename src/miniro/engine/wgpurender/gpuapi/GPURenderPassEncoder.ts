@@ -1,6 +1,7 @@
 import { GPURenderPipeline } from "./GPURenderPipeline";
 import { GPUBuffer } from "./GPUBuffer";
 import { GPUBindGroup } from "./GPUBindGroup";
+import { GPURenderBundle } from "./GPURenderBundle";
 interface GPURenderPassEncoder {
 	label?: string;
 	// see: https://gpuweb.github.io/gpuweb/#gpurenderpassencoder
@@ -8,9 +9,11 @@ interface GPURenderPassEncoder {
 
 	setBlendConstant(color: { r: number; g: number; b: number; a: number } | number[] | Float32Array): void;
 
-	setPipeline(pipeline: GPURenderPipeline): void;
 	setViewport(x: number, y:number, width: number, height: number, minDepth?: number, maxDepth?: number): void;
 	setScissorRect(x: number, y:number, width: number, height: number): void;
+
+	setPipeline(pipeline: GPURenderPipeline): void;
+	setBindGroup(index: number, bindGroup: GPUBindGroup, dynamicOffsets?: number, dynamicOffsetsStart?: number,dynamicOffsetsLength?: number):void;
 	setVertexBuffer(index: number, vtxBuffer: GPUBuffer, offset?: number, size?: number): void;
 
 	/**
@@ -22,11 +25,16 @@ interface GPURenderPassEncoder {
 	 */
 	setIndexBuffer(indexBuffer: GPUBuffer, indexFormat: string, offset?: number, size?: number): void;
 
-	setBindGroup(index: number, bindGroup: GPUBindGroup, dynamicOffsets?: number, dynamicOffsetsStart?: number,dynamicOffsetsLength?: number):void;
-
-	drawIndirect(indirectBuffer: GPUBuffer , indirectOffset?: number): void;
 	draw(vertexCount: number, instanceCount?: number, firstVertex?: number, firstInstance?: number): void;
+	drawIndirect(indirectBuffer: GPUBuffer , indirectOffset?: number): void;
 	drawIndexed(indexCount: number, instanceCount?: number, firstIndex?: number, baseVertex?: number, firstInstance?: number): void;
+	drawIndexedIndirect(indirectBuffer: GPUBuffer, indirectOffset?: number): void;
+
+	executeBundles(bundles: GPURenderBundle[]): void;
 	end(): void;
+
+	insertDebugMarker(markerLabel: string): void;
+	popDebugGroup(): void;
+	pushDebugGroup(groupLabel: string): void;
 }
 export { GPURenderPassEncoder };

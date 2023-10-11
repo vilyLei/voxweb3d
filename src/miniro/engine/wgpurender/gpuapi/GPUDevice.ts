@@ -19,6 +19,7 @@ import { GPUCommandEncoder } from "./GPUCommandEncoder";
 import { GPUQuerySetDescriptor } from "./GPUQuerySetDescriptor";
 import { GPUPipelineLayout } from "./GPUPipelineLayout";
 import { GPUQuerySet } from "./GPUQuerySet";
+import { GPURenderBundleEncoder } from "./GPURenderBundleEncoder";
 
 interface GPUDevice {
 
@@ -37,6 +38,7 @@ interface GPUDevice {
 	createRenderPipeline(descriptor: GPURenderPipelineDescriptor): GPURenderPipeline;
 	createComputePipeline(descriptor: GPUComputePipelineDescriptor): GPUComputePipeline;
 
+	createRenderBundleEncoder(): GPURenderBundleEncoder;
 	createQuerySet(descriptor: GPUQuerySetDescriptor): GPUQuerySet;
 	createCommandEncoder(): GPUCommandEncoder;
 }
