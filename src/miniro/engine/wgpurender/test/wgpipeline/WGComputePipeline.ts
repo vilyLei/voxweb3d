@@ -1,5 +1,5 @@
-import { GPUComputePipeline } from "../../gpuapi/GPUComputePipeline";
-import { GPUDevice } from "../../gpuapi/GPUDevice";
+import { GPUComputePipeline } from "../../../../../voxgpu/gpu/GPUComputePipeline";
+import { GPUDevice } from "../../../../../voxgpu/gpu/GPUDevice";
 import { WGUniformObject } from "../wgmaterial/WGUniformObject";
 
 class WGComputePipeline {

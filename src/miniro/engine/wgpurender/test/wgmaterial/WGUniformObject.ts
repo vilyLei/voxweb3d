@@ -1,4 +1,4 @@
-import { GPUDevice } from "../../gpuapi/GPUDevice";
+import { GPUDevice } from "../../../../../voxgpu/gpu/GPUDevice";
 
 declare var GPUBufferUsage: any;
 declare var GPUShaderStage: any;

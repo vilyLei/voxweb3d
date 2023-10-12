@@ -1,10 +1,10 @@
 
-import { GPU } from "../../gpuapi/GPU";
-import { GPUDevice } from "../../gpuapi/GPUDevice";
-import { GPUAdapter } from "../../gpuapi/GPUAdapter";
-import { GPUQueue } from "../../gpuapi/GPUQueue";
-import { GPUCanvasContext } from "../../gpuapi/GPUCanvasContext";
-import { GPUCanvasConfiguration } from "../../gpuapi/GPUCanvasConfiguration";
+import { GPU } from "../../../../../voxgpu/gpu/GPU";
+import { GPUDevice } from "../../../../../voxgpu/gpu/GPUDevice";
+import { GPUAdapter } from "../../../../../voxgpu/gpu/GPUAdapter";
+import { GPUQueue } from "../../../../../voxgpu/gpu/GPUQueue";
+import { GPUCanvasContext } from "../../../../../voxgpu/gpu/GPUCanvasContext";
+import { GPUCanvasConfiguration } from "../../../../../voxgpu/gpu/GPUCanvasConfiguration";
 
 class WGContext {
 

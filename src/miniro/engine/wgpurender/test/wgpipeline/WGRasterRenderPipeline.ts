@@ -1,5 +1,5 @@
-import { GPUDevice } from "../../gpuapi/GPUDevice";
-import { GPURenderPipeline } from "../../gpuapi/GPURenderPipeline";
+import { GPUDevice } from "../../../../../voxgpu/gpu/GPUDevice";
+import { GPURenderPipeline } from "../../../../../voxgpu/gpu/GPURenderPipeline";
 import { WGUniformObject } from "../wgmaterial/WGUniformObject";
 import { WGVertexObject } from "../wgmesh/WGVertexObject";
 
