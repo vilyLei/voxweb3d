@@ -5,6 +5,9 @@ import { GPUAdapter } from "./GPUAdapter";
 import { GPUQueue } from "./GPUQueue";
 import { GPUCanvasContext } from "./GPUCanvasContext";
 import { GPUCanvasConfiguration } from "./GPUCanvasConfiguration";
+import { GPUDeviceDescriptor } from "./GPUDeviceDescriptor";
+import { GPUTextureView } from "./GPUTextureView";
+import { checkGPUTextureFormat, GPUTextureFormat } from "./GPUTextureFormat";
 
 class WebGPUContext {
 
@@ -18,7 +21,7 @@ class WebGPUContext {
 	readonly gpuAdapter: GPUAdapter = null;
 
 	constructor(){}
-	async initialize(canvas: HTMLCanvasElement, wgConfig: GPUCanvasConfiguration | null = null) {
+	async initialize(canvas: HTMLCanvasElement, wgConfig?: GPUCanvasConfiguration, deviceDescriptor?: GPUDeviceDescriptor) {
 
 		const selfT = this as any;
 		selfT.canvas = canvas;
@@ -32,23 +35,32 @@ class WebGPUContext {
 			if (adapter) {
 				selfT.gpuAdapter = adapter;
 				console.log("Appropriate GPUAdapter found, adapter: ", adapter);
-				const device = await adapter.requestDevice();
+				const device = await adapter.requestDevice(deviceDescriptor);
 				if (device) {
 
 					selfT.device = device;
 					selfT.queue = device.queue;
 					console.log("Appropriate GPUDevice found.");
-					const context = canvas.getContext("webgpu") as any;
 					let canvasFormat = gpu.getPreferredCanvasFormat();
-					selfT.context = context;
 					selfT.canvasFormat = canvasFormat;
-					console.log("canvasFormat: ", canvasFormat);
+
+					selfT.context = canvas.getContext("webgpu") as any;
+					const context = this.context;
+
+					const format = canvasFormat;
+					if(checkGPUTextureFormat(format)) {
+						console.log("Given canvasFormat('"+format+"') is a valid gpu texture format.");
+					}else {
+						console.error("Given canvasFormat('"+format+"') is an invalid gpu texture format.");
+						canvasFormat = "bgra8unorm";
+					}
+
 					if(wgConfig) {
 						wgConfig.device = device;
-						if(wgConfig.format === undefined) {
-							wgConfig.format = canvasFormat;
-						}else {
+						if(wgConfig.format) {
 							canvasFormat = wgConfig.format;
+						}else {
+							wgConfig.format = canvasFormat;
 						}
 					}
 					context.configure(wgConfig ? wgConfig : {
@@ -68,7 +80,7 @@ class WebGPUContext {
 			throw new Error("WebGPU is not supported on this browser.");
 		}
 	}
-	createCurrentView(): any {
+	createCurrentView(): GPUTextureView {
 		return this.context.getCurrentTexture().createView();
 	}
 }

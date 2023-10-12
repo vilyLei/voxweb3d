@@ -2,18 +2,30 @@ import { GPURenderPipeline } from "./GPURenderPipeline";
 import { GPUBuffer } from "./GPUBuffer";
 import { GPUBindGroup } from "./GPUBindGroup";
 import { GPURenderBundle } from "./GPURenderBundle";
+/**
+ * see: https://gpuweb.github.io/gpuweb/#gpurenderpassencoder
+ * 		https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPassEncoder
+ */
 interface GPURenderPassEncoder {
 	label?: string;
-	// see: https://gpuweb.github.io/gpuweb/#gpurenderpassencoder
-	//		https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPassEncoder
 
+	/**
+	 * Sets the constant blend color and alpha values used with "constant" and "one-minus-constant" blend factors
+	 * (as set in the descriptor of the GPUDevice.createRenderPipeline() method, in the blend property).
+	 */
 	setBlendConstant(color: { r: number; g: number; b: number; a: number } | number[] | Float32Array): void;
 
-	setViewport(x: number, y:number, width: number, height: number, minDepth?: number, maxDepth?: number): void;
-	setScissorRect(x: number, y:number, width: number, height: number): void;
+	setViewport(x: number, y: number, width: number, height: number, minDepth?: number, maxDepth?: number): void;
+	setScissorRect(x: number, y: number, width: number, height: number): void;
+	/**
+	 * Sets the stencil reference value using during stencil tests with the "replace" stencil
+	 * operation (as set in the descriptor of the GPUDevice.createRenderPipeline() method, in the
+	 * properties defining the various stencil operations).
+	 */
+	setStencilReference(): void;
 
 	setPipeline(pipeline: GPURenderPipeline): void;
-	setBindGroup(index: number, bindGroup: GPUBindGroup, dynamicOffsets?: number, dynamicOffsetsStart?: number,dynamicOffsetsLength?: number):void;
+	setBindGroup(index: number, bindGroup: GPUBindGroup, dynamicOffsets?: number, dynamicOffsetsStart?: number, dynamicOffsetsLength?: number): void;
 	setVertexBuffer(index: number, vtxBuffer: GPUBuffer, offset?: number, size?: number): void;
 
 	/**
@@ -26,7 +38,7 @@ interface GPURenderPassEncoder {
 	setIndexBuffer(indexBuffer: GPUBuffer, indexFormat: string, offset?: number, size?: number): void;
 
 	draw(vertexCount: number, instanceCount?: number, firstVertex?: number, firstInstance?: number): void;
-	drawIndirect(indirectBuffer: GPUBuffer , indirectOffset?: number): void;
+	drawIndirect(indirectBuffer: GPUBuffer, indirectOffset?: number): void;
 	drawIndexed(indexCount: number, instanceCount?: number, firstIndex?: number, baseVertex?: number, firstInstance?: number): void;
 	drawIndexedIndirect(indirectBuffer: GPUBuffer, indirectOffset?: number): void;
 

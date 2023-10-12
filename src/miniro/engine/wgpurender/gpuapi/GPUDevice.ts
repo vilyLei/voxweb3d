@@ -41,5 +41,6 @@ interface GPUDevice {
 	createRenderBundleEncoder(): GPURenderBundleEncoder;
 	createQuerySet(descriptor: GPUQuerySetDescriptor): GPUQuerySet;
 	createCommandEncoder(): GPUCommandEncoder;
+	destroy(): void;
 }
 export { GPUDevice };

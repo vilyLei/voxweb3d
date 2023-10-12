@@ -147,7 +147,7 @@ export class ColorTriangle {
                 size: (arr.byteLength + 3) & ~3,
                 usage,
                 mappedAtCreation: true
-            };
+            } as GPUBufferDescriptor;
             let buffer = this.device.createBuffer(desc);
             const writeArray =
                 arr instanceof Uint16Array
@@ -248,14 +248,14 @@ export class ColorTriangle {
     // Resize swapchain, frame buffer attachments
     private resizeBackings() {
 
-        const depthTextureDesc: GPUTextureDescriptor = {
+        const depthStencilTextureDesc: GPUTextureDescriptor = {
             size: [this.canvas.width, this.canvas.height, 1],
-            dimension: '2d',
+            // dimension: '2d',
             format: 'depth24plus-stencil8',
             usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC
         };
 
-        this.depthTexture = this.device.createTexture(depthTextureDesc);
+        this.depthTexture = this.device.createTexture(depthStencilTextureDesc);
         this.depthTextureView = this.depthTexture.createView();
     }
 
@@ -289,7 +289,7 @@ export class ColorTriangle {
         // Encode drawing commands
         this.passEncoder = this.commandEncoder.beginRenderPass(renderPassDesc);
         const pass = this.passEncoder;
-        
+
         pass.setPipeline(this.pipeline);
         pass.setViewport(
             0,

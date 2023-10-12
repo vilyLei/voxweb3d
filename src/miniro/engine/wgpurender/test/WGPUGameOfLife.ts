@@ -358,6 +358,8 @@ export class WGPUGameOfLife {
 		pass.setBindGroup(0, bindGroups[this.mStep % 2]);
 		pass.draw(vertices.length / 2, this.mGridSize * this.mGridSize);
 
+		pass.end();
+		computePass.end();
 		this.mStep ++;
 	}
 
@@ -390,8 +392,6 @@ export class WGPUGameOfLife {
 
 		this.renderpass(device, pass, computePass);
 
-		pass.end();
-		computePass.end();
 
 		device.queue.submit([ encoder.finish() ]);
 		device.queue.submit([ computeEncoder.finish() ]);

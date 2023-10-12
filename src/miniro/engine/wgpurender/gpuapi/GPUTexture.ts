@@ -1,4 +1,5 @@
 import { GPUTextureView } from "./GPUTextureView";
+import { GPUTextureViewDescriptor } from "./GPUTextureViewDescriptor";
 
 interface GPUTexture {
 	label?: string;
@@ -9,7 +10,7 @@ interface GPUTexture {
 	 */
 	dimension: string;
 	/**
-	 * see: https://gpuweb.github.io/gpuweb/#enumdef-gputextureformat
+	 * In GPUTextureFormat: https://gpuweb.github.io/gpuweb/#enumdef-gputextureformat
 	 */
 	format: string;
 
@@ -23,7 +24,7 @@ interface GPUTexture {
 	height: number;
 	/**
 	 * The bitwise flags representing the allowed usages of the GPUTexture
-	 * see: 
+	 * In GPUTextureUsage: https://gpuweb.github.io/gpuweb/#typedefdef-gputextureusageflags
 	 */
 	usage: number;
 	/**
@@ -35,7 +36,7 @@ interface GPUTexture {
 	 */
 	sampleCount: number;
 
-	createView(): GPUTextureView;
+	createView(descriptor?: GPUTextureViewDescriptor): GPUTextureView;
 	destroy(): void;
 }
 export { GPUTexture };
