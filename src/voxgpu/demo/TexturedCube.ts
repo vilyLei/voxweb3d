@@ -36,7 +36,7 @@ export class TexturedCube {
 	private mEnabled = false;
 
 	msaaEnabled = true;
-	entitiesTotal = 1;
+	entitiesTotal = 10;
 
 	constructor() {}
 	initialize(): void {
@@ -89,6 +89,7 @@ export class TexturedCube {
 			this.createTexture().then(() => {
 				console.log("webgpu texture res build success ...");
 				this.createUniforms(this.mRPipeline, total);
+				this.mEnabled = true;
 			});
 		});
 	}
@@ -235,7 +236,15 @@ export class TexturedCube {
 							buffer: uniformBuffer,
 							size: matrixSize
 						}
-					}
+					},
+					{
+					  binding: 1,
+					  resource: sampler,
+					},
+					{
+					  binding: 2,
+					  resource: this.mTexture.createView(),
+					},
 				]
 			});
 			this.mUniformBindGroups[i] = uniformBindGroup;
@@ -312,7 +321,7 @@ export class TexturedCube {
 		if(this.mEnabled) {
 			this.mFPS.update();
 
-			// this.renderPreCalc();
+			this.renderPreCalc();
 			this.renderFrame();
 		}
 	}
