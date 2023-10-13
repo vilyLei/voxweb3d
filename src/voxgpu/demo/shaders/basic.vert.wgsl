@@ -1,7 +1,7 @@
 struct Uniforms {
   modelViewProjectionMatrix : mat4x4<f32>,
 }
-@binding(0) @group(0) var<uniform> uniforms : Uniforms;
+@group(0) @binding(0) var<uniform> uniforms : Uniforms;
 
 struct VertexOutput {
   @builtin(position) Position : vec4<f32>,
