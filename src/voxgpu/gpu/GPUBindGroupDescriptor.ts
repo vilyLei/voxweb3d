@@ -1,13 +1,15 @@
 import { GPUBindGroupLayout } from "./GPUBindGroupLayout";
 import { GPUBuffer } from "./GPUBuffer";
+import { GPUTextureView } from "./GPUTextureView";
+import { GPUSampler } from "./GPUSampler";
 interface GPUBindGroupDescriptorEntityResource {
-	buffer: GPUBuffer;
+	buffer?: GPUBuffer;
 	offset?: number;
 	size?: number;
 }
 interface GPUBindGroupDescriptorEntity {
 	binding: number;
-	resource: GPUBindGroupDescriptorEntityResource;
+	resource: GPUBindGroupDescriptorEntityResource | GPUTextureView | GPUSampler;
 }
 interface GPUBindGroupDescriptor {
 	label?: string;

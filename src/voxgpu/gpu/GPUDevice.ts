@@ -20,6 +20,8 @@ import { GPUQuerySetDescriptor } from "./GPUQuerySetDescriptor";
 import { GPUPipelineLayout } from "./GPUPipelineLayout";
 import { GPUQuerySet } from "./GPUQuerySet";
 import { GPURenderBundleEncoder } from "./GPURenderBundleEncoder";
+import { GPUSamplerDescriptor } from "./GPUSamplerDescriptor";
+import { GPUSampler } from "./GPUSampler";
 
 interface GPUDevice {
 
@@ -37,6 +39,8 @@ interface GPUDevice {
 	createPipelineLayout(descriptor: GPUPipelineLayoutDescriptor): GPUPipelineLayout;
 	createRenderPipeline(descriptor: GPURenderPipelineDescriptor): GPURenderPipeline;
 	createComputePipeline(descriptor: GPUComputePipelineDescriptor): GPUComputePipeline;
+
+	createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
 
 	createRenderBundleEncoder(): GPURenderBundleEncoder;
 	createQuerySet(descriptor: GPUQuerySetDescriptor): GPUQuerySet;

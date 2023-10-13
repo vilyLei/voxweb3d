@@ -20,7 +20,7 @@ import { GPURenderPassColorAttachment } from "../gpu/GPURenderPassColorAttachmen
 import { GPUTextureDescriptor } from "../gpu/GPUTextureDescriptor";
 import { GPURenderPipelineDescriptor } from "../gpu/GPURenderPipelineDescriptor";
 
-class CubeEntity extends TransEntity {}
+class CubeEntity extends TransEntity { }
 export class TexturedCube {
 	private mWGCtx = new WebGPUContext();
 	private mRPipeline: GPURenderPipeline | null = null;
@@ -36,9 +36,9 @@ export class TexturedCube {
 	private mEnabled = false;
 
 	msaaEnabled = true;
-	entitiesTotal = 10;
+	entitiesTotal = 1;
 
-	constructor() {}
+	constructor() { }
 	initialize(): void {
 		console.log("TexturedCube::initialize() ...");
 
@@ -84,6 +84,9 @@ export class TexturedCube {
 				let entity = new CubeEntity();
 				entity.intialize(this.mCam);
 				this.mEntities.push(entity);
+			}
+			if(total == 1) {
+				this.mEntities[0].scaleFactor = 1.0;
 			}
 			this.mRPipeline = this.createRenderPipeline(4);
 			this.createTexture().then(() => {
@@ -222,10 +225,12 @@ export class TexturedCube {
 		this.mUniformBindGroups = new Array(entitiesTotal);
 
 		for (let i = 0; i < entitiesTotal; ++i) {
-			const sampler = (device as any).createSampler({
+			const sampler = device.createSampler({
 				magFilter: 'linear',
 				minFilter: 'linear',
-			  });
+				mipmapFilter: 'linear',
+			});
+			console.log("sampler: ", sampler, "descriptor: ",(sampler as any).descriptor);
 			let uniformBindGroup = device.createBindGroup({
 				layout: pipeline.getBindGroupLayout(0),
 				entries: [
@@ -238,12 +243,12 @@ export class TexturedCube {
 						}
 					},
 					{
-					  binding: 1,
-					  resource: sampler,
+						binding: 1,
+						resource: sampler,
 					},
 					{
-					  binding: 2,
-					  resource: this.mTexture.createView(),
+						binding: 2,
+						resource: this.mTexture.createView(),
 					},
 				]
 			});
@@ -318,7 +323,7 @@ export class TexturedCube {
 	}
 
 	run(): void {
-		if(this.mEnabled) {
+		if (this.mEnabled) {
 			this.mFPS.update();
 
 			this.renderPreCalc();
