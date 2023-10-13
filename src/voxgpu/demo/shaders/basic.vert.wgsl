@@ -11,9 +11,6 @@ struct VertexOutput {
 fn invertedColor( color : vec4f ) -> vec4f { // return the inverted color
    return vec4f( 1 - color.rgb, color.a );
 }
-// fn normalizeT( v4 : vec4<f32> ) -> vec4<f32> {
-//    return vec4f( 1 - v4.xyz, 1.0 );
-// }
 @vertex
 fn main(
   @location(0) position : vec4<f32>,

@@ -1,7 +1,6 @@
 import { cubeVertexArray, cubeVertexSize, cubeUVOffset, cubePositionOffset, cubeVertexCount } from "./mesh/cubeData";
 
 import basicVertWGSL from "./shaders/basic.vert.wgsl";
-import vertexPositionColorWGSL from "./shaders/vertexPositionColor.frag.wgsl";
 import sampleTextureMixColorWGSL from "./shaders/sampleTextureMixColor.frag.wgsl";
 
 import { WebGPUContext } from "../gpu/WebGPUContext";
@@ -242,7 +241,7 @@ export class TexturedCube {
 				minFilter: 'linear',
 				mipmapFilter: 'linear',
 			});
-			console.log("sampler: ", sampler, "descriptor: ",(sampler as any).descriptor);
+			console.log("sampler: ", sampler);
 			let uniformBindGroup = device.createBindGroup({
 				layout: pipeline.getBindGroupLayout(0),
 				entries: [

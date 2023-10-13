@@ -14,7 +14,7 @@ import { TexSizeDescriptor, GPUTextureDescriptor } from "../gpu/GPUTextureDescri
  * @param {number} height of texture level 0.
  * @returns {number} Ideal number of mip levels.
  */
- export function calculateMipLevels(width: number, height: number): number {
+export function calculateMipLevels(width: number, height: number): number {
 	return Math.floor(Math.log2(Math.max(width, height))) + 1;
 }
 /**
@@ -27,13 +27,16 @@ export class WebGPUMipmapGenerator {
 	private mipmapShaderModule: GPUShaderModule | null = null;
 	private bindGroupLayout: GPUBindGroupLayout | null = null;
 	private pipelineLayout: GPUPipelineLayout | null = null;
-	private pipelines: any = null;
-	
-	constructor(device: GPUDevice) {
-		this.device = device;
-		this.sampler = device.createSampler({ minFilter: 'linear' });
-		// We'll need a new pipeline for every texture format used.
-		this.pipelines = {};
+	private pipelines: any = {};
+
+	constructor(device?: GPUDevice) {
+		this.initialize( device );
+	}
+	initialize(device?: GPUDevice): void {
+		if(device && !this.device) {
+			this.device = device;
+			this.sampler = device.createSampler({ minFilter: 'linear' });
+		}
 	}
 	/**
 	 * @param {string} format - format of the texture
@@ -122,7 +125,22 @@ export class WebGPUMipmapGenerator {
 		if (textureDescriptor.dimension == '3d' || textureDescriptor.dimension == '1d') {
 			throw new Error('Generating mipmaps for non-2d textures is currently unsupported!');
 		}
-		const texSizeDesc = textureDescriptor.size as TexSizeDescriptor;
+
+		let texSizeDesc = textureDescriptor.size as TexSizeDescriptor;
+		const sizeArr = textureDescriptor.size as number[];
+		if (sizeArr.length !== undefined) {
+			const len = sizeArr.length;
+			texSizeDesc = { depthOrArrayLayers: 1 };
+			if (len >= 0) {
+				texSizeDesc.width = sizeArr[0];
+				if (len >= 1) {
+					texSizeDesc.height = sizeArr[1];
+					if (len >= 2) {
+						texSizeDesc.depthOrArrayLayers = sizeArr[2];
+					}
+				}
+			}
+		}
 		let mipTexture = texture;
 		const arrayLayerCount = texSizeDesc.depthOrArrayLayers || 1; // Only valid for 2D textures.
 
