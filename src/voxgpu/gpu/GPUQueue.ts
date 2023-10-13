@@ -1,11 +1,11 @@
 import { GPUBuffer } from "./GPUBuffer";
 import { GPUTexture } from "./GPUTexture";
 import { GPUCommandBuffer } from "./GPUCommandBuffer";
+import { GPUImageCopyTexture } from "./GPUImageCopyTexture";
 
 type SrcType = {source: ImageBitmap | HTMLVideoElement | HTMLCanvasElement, origin?:number[] | {x: number, y: number}, flipY?: boolean};
 type DstType = {texture: GPUTexture, premultipliedAlpha?:boolean, origin?:number[] | {x: number, y: number}, mipLevel?: number, colorSpace?: string, aspect?: string};
 type SizeType = {width:number, height: number, depthOrArrayLayers?: number} | number[];
-type GPUOrigin3D = {x: number, y: number, z: number} | number[]
 /**
  * See: https://gpuweb.github.io/gpuweb/#dictdef-gpuimagedatalayout
  * An object that defines the layout of the content contained in data
@@ -29,30 +29,7 @@ type GPUOrigin3D = {x: number, y: number, z: number} | number[]
 	 * This is required if there are multiple images to copy.
 	 */
     rowsPerImage?: number;
-}
-/**
- * See: https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture
- */
-interface GPUImageCopyTexture {
-	texture: GPUTexture;
-	/**
-	 * The default value is 0
-	 */
-    mipLevel?: number;
-    origin?: GPUOrigin3D;
-	/**
-	 * An enumerated value defining which aspects of the texture to write the data to.
-	 * Possible values are:
-	 * 		"all"
-	 * 		All available aspects of the texture format will be written to, which can mean all or any of color, depth, and stencil, depending on what kind of format you are dealing with.
-	 * 		"depth-only"
-	 * 		Only the depth aspect of a depth-or-stencil format will be written to.
-	 * 		"stencil-only"
-	 * 		Only the stencil aspect of a depth-or-stencil format will be written to.
-	 * The default value is "all".
-	 */
-    aspect?: string;
-}
+ }
 interface GPUQueue {
 	/**
 	 * see: https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyExternalImageToTexture
