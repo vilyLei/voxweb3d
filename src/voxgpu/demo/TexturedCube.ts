@@ -18,7 +18,7 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import { GPURenderPassColorAttachment } from "../gpu/GPURenderPassColorAttachment";
 import { GPUTextureDescriptor } from "../gpu/GPUTextureDescriptor";
 import { GPURenderPipelineDescriptor } from "../gpu/GPURenderPipelineDescriptor";
-import { calculateMipLevels, WebGPUMipmapGenerator } from "../texture/WebGPUMipmapGenerator";
+import { calculateMipLevels, GPUMipmapGenerator } from "../texture/GPUMipmapGenerator";
 
 class CubeEntity extends TransEntity { }
 export class TexturedCube {
@@ -35,7 +35,7 @@ export class TexturedCube {
 	private mTexture: GPUTexture | null = null;
 	private mEnabled = false;
 
-	private mipmapGenerator: WebGPUMipmapGenerator | null;
+	private mipmapGenerator = new GPUMipmapGenerator();
 	generateMipmaps = true;
 	msaaEnabled = true;
 	entitiesTotal = 1;
@@ -87,10 +87,11 @@ export class TexturedCube {
 				entity.intialize(this.mCam);
 				this.mEntities.push(entity);
 			}
-			if(total == 1) {
+			if (total == 1) {
 				this.mEntities[0].scaleFactor = 1.0;
 			}
 			this.mRPipeline = this.createRenderPipeline(4);
+			this.mipmapGenerator.initialize( this.mWGCtx.device );
 			this.createTexture().then(() => {
 				console.log("webgpu texture res build success ...");
 				this.createUniforms(this.mRPipeline, total);
@@ -195,28 +196,23 @@ export class TexturedCube {
 	private async createTexture() {
 		const ctx = this.mWGCtx;
 		const device = ctx.device;
-		if(!this.mipmapGenerator) {
-			this.mipmapGenerator = new WebGPUMipmapGenerator(device);
-		}
-		// fetch("static/assets/box.jpg").then((res: Response): void => {
-		// 	console.log("loaded an img data.");
-		// });
+
 		let tex: GPUTexture;
 		const response = await fetch("static/assets/box.jpg");
 		const imageBitmap = await createImageBitmap(await response.blob());
 		const mipLevelCount = this.generateMipmaps ? calculateMipLevels(imageBitmap.width, imageBitmap.height) : 1;
 		const textureDescriptor = {
-			size: {width: imageBitmap.width, height: imageBitmap.height, depthOrArrayLayers: 1},
+			size: { width: imageBitmap.width, height: imageBitmap.height, depthOrArrayLayers: 1 },
 			format: "rgba8unorm",
 			mipLevelCount,
 			usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT
 		};
-		tex = device.createTexture( textureDescriptor );
+		tex = device.createTexture(textureDescriptor);
 		device.queue.copyExternalImageToTexture({ source: imageBitmap }, { texture: tex }, [imageBitmap.width, imageBitmap.height]);
 		if (this.generateMipmaps) {
 			this.mipmapGenerator.generateMipmap(tex, textureDescriptor);
-		  }
-	  
+		}
+
 		this.mTexture = tex;
 	}
 	private createUniforms(pipeline: GPURenderPipeline, entitiesTotal: number): void {
@@ -307,10 +303,12 @@ export class TexturedCube {
 			let entitiesTotal = entities.length;
 			for (let i = 0; i < entitiesTotal; ++i) {
 				const et = entities[i];
-				const transData = et.transData;
-				device.queue.writeBuffer(uniformBuffer, i * 256, transData.buffer, transData.byteOffset, transData.byteLength);
-				passEncoder.setBindGroup(0, this.mUniformBindGroups[i]);
-				passEncoder.draw(cubeVertexCount);
+				if (et.enabled) {
+					const transData = et.transData;
+					device.queue.writeBuffer(uniformBuffer, i * 256, transData.buffer, transData.byteOffset, transData.byteLength);
+					passEncoder.setBindGroup(0, this.mUniformBindGroups[i]);
+					passEncoder.draw(cubeVertexCount);
+				}
 			}
 
 			passEncoder.end();

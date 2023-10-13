@@ -20,7 +20,7 @@ export function calculateMipLevels(width: number, height: number): number {
 /**
  * thanks: https://github.com/toji/web-texture-tool/blob/main/src/webgpu-mipmap-generator.js
  */
-export class WebGPUMipmapGenerator {
+export class GPUMipmapGenerator {
 
 	private device: GPUDevice | null = null;
 	private sampler: GPUSampler | null = null;
