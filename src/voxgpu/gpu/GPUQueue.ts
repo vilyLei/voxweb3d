@@ -2,9 +2,14 @@ import { GPUBuffer } from "./GPUBuffer";
 import { GPUTexture } from "./GPUTexture";
 import { GPUCommandBuffer } from "./GPUCommandBuffer";
 import { GPUImageCopyTexture } from "./GPUImageCopyTexture";
+import { GPUImageCopyExternalImage } from "./GPUImageCopyExternalImage";
+import { GPUImageCopyTextureTagged } from "./GPUImageCopyTextureTagged";
+import { GPUExtent3D } from "./GPUExtent3D";
 
-type SrcType = {source: ImageBitmap | HTMLVideoElement | HTMLCanvasElement, origin?:number[] | {x: number, y: number}, flipY?: boolean};
-type DstType = {texture: GPUTexture, premultipliedAlpha?:boolean, origin?:number[] | {x: number, y: number}, mipLevel?: number, colorSpace?: string, aspect?: string};
+declare type OffscreenCanvas = {width: number, height: number};
+
+// type SrcType = {source: ImageBitmap | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas, origin?:number[] | {x: number, y: number}, flipY?: boolean};
+// type DstType = {texture: GPUTexture, premultipliedAlpha?:boolean, origin?:number[] | {x: number, y: number}, mipLevel?: number, colorSpace?: string, aspect?: string};
 type SizeType = {width:number, height: number, depthOrArrayLayers?: number} | number[];
 /**
  * See: https://gpuweb.github.io/gpuweb/#dictdef-gpuimagedatalayout
@@ -32,9 +37,10 @@ type SizeType = {width:number, height: number, depthOrArrayLayers?: number} | nu
  }
 interface GPUQueue {
 	/**
-	 * see: https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyExternalImageToTexture
+	 * See: https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyExternalImageToTexture
+	 * 		https://gpuweb.github.io/gpuweb/#dom-gpuqueue-copyexternalimagetotexture
 	 */
-	copyExternalImageToTexture(source: SrcType, destination: DstType, copySize: SizeType): void;
+	copyExternalImageToTexture(source: GPUImageCopyExternalImage, destination: GPUImageCopyTextureTagged, copySize: GPUExtent3D): void;
 	writeBuffer(buffer: GPUBuffer, bufferOffset: number, data: ArrayBuffer | DataView, dataOffset?: number, size?: number): void;
 	/**
 	 * This is a convenience function,

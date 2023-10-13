@@ -1,9 +1,5 @@
-interface TexSizeDescriptor {
-	width?: number;
-	height?: number;
-	depthOrArrayLayers?: number;
-}
-type TexSizeDescType  =  TexSizeDescriptor | number[];
+import { GPUExtent3DDict, GPUExtent3D } from "./GPUExtent3D";
+
 /**
  * see: https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createTexture
  * 		https://gpuweb.github.io/gpuweb/#gputexturedescriptor
@@ -18,7 +14,7 @@ interface GPUTextureDescriptor {
 	 *
 	 * for example: [16, 16, 2] or { width: 16, height: 16, depthOrArrayLayers: 2 }
 	 */
-	size: TexSizeDescType;
+	size: GPUExtent3D;
 	/**
 	 * Whether the texture is one-dimensional, an array of two-dimensional layers, or three-dimensional.
 	 * The default value is "2d".
@@ -51,4 +47,4 @@ interface GPUTextureDescriptor {
 	 */
 	viewFormats?: string[];
 }
-export { TexSizeDescriptor, GPUTextureDescriptor };
+export { GPUExtent3DDict, GPUTextureDescriptor };

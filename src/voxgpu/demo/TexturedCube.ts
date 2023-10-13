@@ -89,6 +89,7 @@ export class TexturedCube {
 			}
 			if (total == 1) {
 				this.mEntities[0].scaleFactor = 1.0;
+				this.mEntities[0].posV.setXYZ(0,0,0);
 			}
 			this.mRPipeline = this.createRenderPipeline(4);
 			this.mipmapGenerator.initialize( this.mWGCtx.device );

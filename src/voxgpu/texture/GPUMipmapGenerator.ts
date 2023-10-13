@@ -5,7 +5,7 @@ import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
 import { GPUSampler } from "../gpu/GPUSampler";
 import { GPUShaderModule } from "../gpu/GPUShaderModule";
 import { GPUTexture } from "../gpu/GPUTexture";
-import { TexSizeDescriptor, GPUTextureDescriptor } from "../gpu/GPUTextureDescriptor";
+import { GPUExtent3DDict, GPUTextureDescriptor } from "../gpu/GPUTextureDescriptor";
 
 /**
  * Determines the number of mip levels needed for a full mip chain given the width and height of texture level 0.
@@ -126,7 +126,7 @@ export class GPUMipmapGenerator {
 			throw new Error('Generating mipmaps for non-2d textures is currently unsupported!');
 		}
 
-		let texSizeDesc = textureDescriptor.size as TexSizeDescriptor;
+		let texSizeDesc = textureDescriptor.size as GPUExtent3DDict;
 		const sizeArr = textureDescriptor.size as number[];
 		if (sizeArr.length !== undefined) {
 			const len = sizeArr.length;
