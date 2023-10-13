@@ -19,7 +19,7 @@ class WebGPUContext {
 	readonly presentationFormat: string = "";
 	readonly gpu: GPU = null;
 	readonly gpuAdapter: GPUAdapter = null;
-
+	readonly enabled = false;
 	constructor(){}
 	async initialize(canvas: HTMLCanvasElement, wgConfig?: GPUCanvasConfiguration, deviceDescriptor?: GPUDeviceDescriptor) {
 
@@ -71,6 +71,7 @@ class WebGPUContext {
 						// usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
 						alphaMode: "premultiplied"
 					});
+					selfT.enabled = true;
 					console.log("WebGPUContext instance initialization success ...");
 				} else {
 					throw new Error("No appropriate GPUDevice found.");

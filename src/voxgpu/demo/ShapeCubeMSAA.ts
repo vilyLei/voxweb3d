@@ -10,8 +10,13 @@ import { GPUTextureView } from "../gpu/GPUTextureView";
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { GPUBindGroup } from "../gpu/GPUBindGroup";
 import { GPUTexture } from "../gpu/GPUTexture";
+import CameraBase from "../../vox/view/CameraBase";
+import Vector3D from "../../vox/math/Vector3D";
+import ROTransform from "../../vox/display/ROTransform";
+import Matrix4 from "../../vox/math/Matrix4";
 
-export class ShapeCubeRotating {
+export class ShapeCubeMSAA {
+
 	private mWGCtx = new WebGPUContext();
 	private mRPipeline: GPURenderPipeline | null = null;
 	private mRTexView: GPUTextureView | null = null;
@@ -19,9 +24,12 @@ export class ShapeCubeRotating {
 	private mUniformBuffer: GPUBuffer | null = null;
 	private mUniformBindGroup: GPUBindGroup | null = null;
 	private mDepthTexture: GPUTexture | null = null;
+	private mCam = new CameraBase();
+	private mEntityTrans: ROTransform | null;
+
 	constructor() {}
 	initialize(): void {
-		console.log("ShapeCubeRotating::initialize() ...");
+		console.log("ShapeCubeMSAA::initialize() ...");
 
 		const canvas = document.createElement("canvas");
 		canvas.width = 512;
@@ -34,6 +42,27 @@ export class ShapeCubeRotating {
 
 		const ctx = this.mWGCtx;
 
+		let scale = 100.0;
+		const vs = cubeVertexArray;
+		for(let i = 0; i < vs.length; i+=10) {
+			vs[i] *= scale;
+			vs[i+1] *= scale;
+			vs[i+2] *= scale;
+		}
+		// console.log("cubeVertexArray: ", cubeVertexArray);
+
+		const cam = this.mCam;
+		const camPosition = new Vector3D(1000.0, 1000.0, 1000.0);
+		const camLookAtPos = new Vector3D(0.0, 0.0, 0.0);
+		const camUpDirect = new Vector3D(0.0, 1.0, 0.0);
+		cam.perspectiveRH((Math.PI * 45) / 180.0, canvas.width / canvas.height, 0.1, 5000);
+		cam.lookAtRH(camPosition, camLookAtPos, camUpDirect);
+		cam.setViewXY(0, 0);
+        cam.setViewSize(canvas.width, canvas.height);
+		cam.update();
+		this.mEntityTrans = ROTransform.Create();
+		this.mEntityTrans.update();
+
 		const cfg = {
 			alphaMode: "premultiplied"
 		};
@@ -42,7 +71,7 @@ export class ShapeCubeRotating {
 
 			this.mRPipeline = this.createRenderPipeline(4);
 
-			this.renderFrame();
+			// this.renderFrame();
 		});
 	}
 	private createRenderPipeline(sampleCount: number): GPURenderPipeline {
@@ -50,13 +79,13 @@ export class ShapeCubeRotating {
 		const device = ctx.device;
 		const canvas = ctx.canvas;
 
-		// const texture = device.createTexture({
-		// 	size: [ctx.canvas.width, ctx.canvas.height],
-		// 	sampleCount,
-		// 	format: ctx.presentationFormat,
-		// 	usage: GPUTextureUsage.RENDER_ATTACHMENT
-		// });
-		// this.mRTexView = texture.createView();
+		const texture = device.createTexture({
+			size: [ctx.canvas.width, ctx.canvas.height],
+			sampleCount,
+			format: ctx.presentationFormat,
+			usage: GPUTextureUsage.RENDER_ATTACHMENT
+		});
+		this.mRTexView = texture.createView();
 
 		// Create a vertex buffer from the cube data.
 		const verticesBuffer = device.createBuffer({
@@ -71,6 +100,7 @@ export class ShapeCubeRotating {
 		const depthTexture = device.createTexture({
 			size: [canvas.width, canvas.height],
 			format: "depth24plus",
+			sampleCount,
 			usage: GPUTextureUsage.RENDER_ATTACHMENT
 		});
 		this.mDepthTexture = depthTexture;
@@ -124,9 +154,9 @@ export class ShapeCubeRotating {
 				topology: "triangle-list",
 				cullMode: "back"
 			},
-			// multisample: {
-			// 	count: sampleCount
-			// },
+			multisample: {
+				count: sampleCount
+			},
 			depthStencil: {
 				depthWriteEnabled: true,
 				depthCompare: "less",
@@ -149,80 +179,98 @@ export class ShapeCubeRotating {
 
 		return pipeline;
 	}
-	private mMatVS = new Float32Array([
-		1.368185043334961,
-		0.07154789566993713,
-		-0.09674333035945892,
-		-0.09577590227127075,
-		0.07154789566993713,
-		0.751859188079834,
-		0.8444470763206482,
-		0.8360026478767395,
-		-0.13182421028614044,
-		1.1506588459014893,
-		-0.5457598567008972,
-		-0.5403022766113281,
-		0,
-		0,
-		3.0303030014038086,
-		4
-	]);
-	private renderFrame(): void {
+	private mTransMat = new Matrix4();
+	private mRotateV = new Vector3D();
+	private mScaleV = new Vector3D(1.0,1.0,1.0);
+	private rotate(pv?: Vector3D): void {
+
 		const ctx = this.mWGCtx;
 		const device = ctx.device;
-		const context = ctx.context;
-		const pipeline = this.mRPipeline;
 
-		const commandEncoder = device.createCommandEncoder();
-		// const currTexView = context.getCurrentTexture().createView();
+		const rv = this.mRotateV;
+		const sv = this.mScaleV;
+		const s = 2.0 * Math.abs(Math.cos(sv.w += 0.01)) + 0.2;
+		sv.setXYZ(s, s, s);
 
+		const trans = this.mEntityTrans;
+		rv.x += 1.0;
+		rv.y += 0.5;
+		trans.setRotationV3( rv );
+		trans.setScaleV3( sv );
+		if(pv) {
+			trans.setPosition(pv);
+		}
+		trans.update();
+
+		const mat = this.mTransMat;
+		mat.copyFrom(trans.getMatrix());
+		mat.append(this.mCam.getVPMatrix());
 		const uniformBuffer = this.mUniformBuffer;
-		const transformationMatrix = this.mMatVS;
+		let transformationMatrix = this.mCam.getVPMatrix().getLocalFS32();
+		transformationMatrix = mat.getLocalFS32();
 		device.queue.writeBuffer(uniformBuffer, 0, transformationMatrix.buffer, transformationMatrix.byteOffset, transformationMatrix.byteLength);
 
-		// const renderPassDescriptor: GPURenderPassDescriptor = {
-		// 	colorAttachments: [
-		// 		{
-		// 			view: this.mRTexView,
-		// 			resolveTarget: currTexView,
-		// 			clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-		// 			loadOp: "clear",
-		// 			storeOp: "store"
-		// 		}
-		// 	]
-		// };
-
-		const renderPassDescriptor: GPURenderPassDescriptor = {
-			colorAttachments: [
-				{
-					// view: undefined, // Assigned later
-					view: ctx.createCurrentView(),
-
-					clearValue: { r: 0.5, g: 0.5, b: 0.5, a: 1.0 },
-					loadOp: "clear",
-					storeOp: "store"
-				}
-			],
-			depthStencilAttachment: {
-				view: this.mDepthTexture.createView(),
-
-				depthClearValue: 1.0,
-				depthLoadOp: "clear",
-				depthStoreOp: "store"
-			}
-		};
-
-		// renderPassDescriptor.colorAttachments[0].view = ctx.createCurrentView();
-
-		const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
-		passEncoder.setPipeline(pipeline);
-		passEncoder.setBindGroup(0, this.mUniformBindGroup);
-		passEncoder.setVertexBuffer(0, this.mVerticesBuffer);
-		passEncoder.draw(cubeVertexCount);
-		passEncoder.draw(3);
-		passEncoder.end();
-
-		device.queue.submit([commandEncoder.finish()]);
 	}
-	run(): void {}
+	private mCurrTexView: GPUTextureView | null = null;
+	private renderFrame(): void {
+		const ctx = this.mWGCtx;
+		if(ctx.enabled) {
+
+			const device = ctx.device;
+			const context = ctx.context;
+			const pipeline = this.mRPipeline;
+
+
+			const commandEncoder = device.createCommandEncoder();
+
+			this.mCurrTexView = ctx.createCurrentView();
+
+			const renderPassDescriptor: GPURenderPassDescriptor = {
+				colorAttachments: [
+					{
+						view: this.mRTexView,
+						resolveTarget: this.mCurrTexView,
+
+						clearValue: { r: 0.5, g: 0.5, b: 0.5, a: 1.0 },
+						loadOp: "clear",
+						storeOp: "store"
+					}
+				],
+				depthStencilAttachment: {
+					view: this.mDepthTexture.createView(),
+
+					depthClearValue: 1.0,
+					depthLoadOp: "clear",
+					depthStoreOp: "store"
+				}
+			};
+
+			// const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
+
+			// passEncoder.setPipeline(pipeline);
+			// passEncoder.setBindGroup(0, this.mUniformBindGroup);
+			// passEncoder.setVertexBuffer(0, this.mVerticesBuffer);
+			// this.rotate(new Vector3D(-400, -400, 0));
+			// passEncoder.draw(cubeVertexCount);
+			// passEncoder.end();
+			// device.queue.submit([commandEncoder.finish()]);
+
+			let passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
+
+			passEncoder.setPipeline(pipeline);
+			passEncoder.setBindGroup(0, this.mUniformBindGroup);
+			passEncoder.setVertexBuffer(0, this.mVerticesBuffer);
+			this.rotate(new Vector3D(-400, -400, 0));
+			passEncoder.draw(cubeVertexCount);
+
+			passEncoder.end();
+
+			const cmd0 = commandEncoder.finish();
+
+			device.queue.submit([cmd0]);
+		}
+	}
+	run(): void {
+		this.renderFrame();
+	}
 }

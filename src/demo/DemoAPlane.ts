@@ -8,6 +8,7 @@ export class DemoAPlane {
     constructor() {}
 
     initialize(): void {
+
         this.m_rscene = new RendererScene();
         this.m_rscene.initialize();
         this.createPlane();
@@ -23,7 +24,7 @@ export class DemoAPlane {
         this.m_plane.initializeXOZSquare(800, [tex]);
         this.m_rscene.addEntity(this.m_plane);
     }
-    
+
     run(): void {
 
         this.m_plane.setRotationXYZ(0.0, this.m_degreeY += 0.5, 0.0);

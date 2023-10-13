@@ -2,6 +2,8 @@ import { GPUBindGroupLayout } from "./GPUBindGroupLayout";
 import { GPUBuffer } from "./GPUBuffer";
 interface GPUBindGroupDescriptorEntityResource {
 	buffer: GPUBuffer;
+	offset?: number;
+	size?: number;
 }
 interface GPUBindGroupDescriptorEntity {
 	binding: number;

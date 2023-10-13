@@ -57,13 +57,13 @@ class RenderStatusDisplay {
                 let pwith = this.m_preWidth - 20;
                 this.createCanvas(pwith);
             }
-            if(rsc != null && this.m_auto) {
+            if(rsc && this.m_auto) {
                 this.m_rsc.addEventListener(EventBase.ENTER_FRAME, this, this.enterFrame);
                 this.autoUpdate();
             }
         }
     }
-    private enterFrame(evt: IEventBase): void {
+    private enterFrame(evt?: IEventBase): void {
 
         this.updateDo(false);
     }
