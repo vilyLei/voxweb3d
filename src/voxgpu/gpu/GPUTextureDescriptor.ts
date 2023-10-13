@@ -1,8 +1,9 @@
-type TexSizeDescType  =  {
-	width: number;
-	height: number;
-	depthOrArrayLayers: number;
-} | number[];
+interface TexSizeDescriptor {
+	width?: number;
+	height?: number;
+	depthOrArrayLayers?: number;
+}
+type TexSizeDescType  =  TexSizeDescriptor | number[];
 /**
  * see: https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createTexture
  * 		https://gpuweb.github.io/gpuweb/#gputexturedescriptor
@@ -30,12 +31,12 @@ interface GPUTextureDescriptor {
 	 * The format of the texture view. Must be either the format of the texture or one of the viewFormats specified during its creation.
 	 * see: https://gpuweb.github.io/gpuweb/#enumdef-gputextureformat
 	 */
-	format: string;
+	format?: string;
 	/**
 	 * The allowed usages for the texture.
 	 * In GPUTextureUsage: https://gpuweb.github.io/gpuweb/#typedefdef-gputextureusageflags
 	 */
-	usage: number;
+	usage?: number;
 	/**
 	 * the default value is 1.
 	 */
@@ -50,4 +51,4 @@ interface GPUTextureDescriptor {
 	 */
 	viewFormats?: string[];
 }
-export { GPUTextureDescriptor };
+export { TexSizeDescriptor, GPUTextureDescriptor };

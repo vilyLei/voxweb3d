@@ -10,7 +10,7 @@ interface GPUTextureViewDescriptor {
 	 * The format of the texture view. Must be either the format of the texture or one of the viewFormats specified during its creation.
 	 * see: https://gpuweb.github.io/gpuweb/#enumdef-gputextureformat
 	 */
-	format: string;
+	format?: string;
 	/**
 	 * The dimension to view the texture as.
 	 * Possible values are(in GPUTextureViewDimension: https://gpuweb.github.io/gpuweb/#enumdef-gputextureviewdimension):

@@ -19,6 +19,7 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import { GPURenderPassColorAttachment } from "../gpu/GPURenderPassColorAttachment";
 import { GPUTextureDescriptor } from "../gpu/GPUTextureDescriptor";
 import { GPURenderPipelineDescriptor } from "../gpu/GPURenderPipelineDescriptor";
+import { WebGPUMipmapGenerator } from "../texture/WebGPUMipmapGenerator";
 
 class CubeEntity extends TransEntity { }
 export class TexturedCube {
@@ -190,22 +191,33 @@ export class TexturedCube {
 		const pipeline = device.createRenderPipeline(pipelineDesc);
 		return pipeline;
 	}
+	mipmapGenerator: WebGPUMipmapGenerator | null;// = new WebGPUMipmapGenerator
+	generateMipmaps = true;
 	private async createTexture() {
+		const ctx = this.mWGCtx;
+		const device = ctx.device;
+		if(!this.mipmapGenerator) {
+			this.mipmapGenerator = new WebGPUMipmapGenerator(device);
+		}
 		// fetch("static/assets/box.jpg").then((res: Response): void => {
 		// 	console.log("loaded an img data.");
 		// });
-		const ctx = this.mWGCtx;
-		const device = ctx.device;
 		let tex: GPUTexture;
 		const response = await fetch("static/assets/box.jpg");
 		const imageBitmap = await createImageBitmap(await response.blob());
-
-		tex = device.createTexture({
-			size: [imageBitmap.width, imageBitmap.height, 1],
+		const mipLevelCount = this.generateMipmaps ? this.mipmapGenerator.calculateMipLevels(imageBitmap.width, imageBitmap.height) : 1;
+		const textureDescriptor = {
+			size: {width: imageBitmap.width, height: imageBitmap.height, depthOrArrayLayers: 1},
 			format: "rgba8unorm",
+			mipLevelCount,
 			usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT
-		});
+		};
+		tex = device.createTexture( textureDescriptor );
 		device.queue.copyExternalImageToTexture({ source: imageBitmap }, { texture: tex }, [imageBitmap.width, imageBitmap.height]);
+		if (this.generateMipmaps) {
+			this.mipmapGenerator.generateMipmap(tex, textureDescriptor);
+		  }
+	  
 		this.mTexture = tex;
 	}
 	private createUniforms(pipeline: GPURenderPipeline, entitiesTotal: number): void {

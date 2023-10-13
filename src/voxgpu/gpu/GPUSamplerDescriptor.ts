@@ -31,12 +31,12 @@ interface GPUSamplerDescriptor {
 	 * 		"linear": Select two texels in each dimension and return a linear interpolation between their values.
 	 * If omitted, magFilter defaults to "nearest".
 	 */
-    magFilter: string;				// = "nearest";
+    magFilter?: string;				// = "nearest";
 	/**
 	 * An enumerated value specifying the sampling behavior when the sample footprint is larger than one texel.
 	 * Possible and default values are the same as for magFilter: nearest".
 	 */
-    minFilter: string;				// = "nearest";
+    minFilter?: string;				// = "nearest";
 	/**
 	 * An enumerated value specifying the behavior when sampling between mipmap levels.
 	 * Possible and default values are the same as for magFilter: nearest".

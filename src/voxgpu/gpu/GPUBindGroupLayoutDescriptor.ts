@@ -18,7 +18,9 @@ interface GPUBindGroupLayoutEntity {
 	 * See: https://gpuweb.github.io/gpuweb/#typedefdef-gpushaderstageflags
 	 */
 	visibility: number;
-	buffer: GPUBindGroupLayoutDescriptorEntityBuffer;
+	buffer?: GPUBindGroupLayoutDescriptorEntityBuffer;
+	sampler?: any;
+	texture?: any;
 }
 /**
  * see: https://gpuweb.github.io/gpuweb/#dictdef-gpubindgrouplayoutdescriptor
