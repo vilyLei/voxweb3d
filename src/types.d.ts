@@ -8,7 +8,6 @@ declare namespace NodeJS {
 		readonly NODE_ENV: "development" | "production" | "test";
 	}
 }
-
 /**
  * The bitwise flags representing the allowed usages for the GPUBuffer.
  */

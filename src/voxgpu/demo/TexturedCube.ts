@@ -19,7 +19,7 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import { GPURenderPassColorAttachment } from "../gpu/GPURenderPassColorAttachment";
 import { GPUTextureDescriptor } from "../gpu/GPUTextureDescriptor";
 import { GPURenderPipelineDescriptor } from "../gpu/GPURenderPipelineDescriptor";
-import { WebGPUMipmapGenerator } from "../texture/WebGPUMipmapGenerator";
+import { calculateMipLevels, WebGPUMipmapGenerator } from "../texture/WebGPUMipmapGenerator";
 
 class CubeEntity extends TransEntity { }
 export class TexturedCube {
@@ -36,6 +36,8 @@ export class TexturedCube {
 	private mTexture: GPUTexture | null = null;
 	private mEnabled = false;
 
+	private mipmapGenerator: WebGPUMipmapGenerator | null;
+	generateMipmaps = true;
 	msaaEnabled = true;
 	entitiesTotal = 1;
 
@@ -191,8 +193,6 @@ export class TexturedCube {
 		const pipeline = device.createRenderPipeline(pipelineDesc);
 		return pipeline;
 	}
-	mipmapGenerator: WebGPUMipmapGenerator | null;// = new WebGPUMipmapGenerator
-	generateMipmaps = true;
 	private async createTexture() {
 		const ctx = this.mWGCtx;
 		const device = ctx.device;
@@ -205,7 +205,7 @@ export class TexturedCube {
 		let tex: GPUTexture;
 		const response = await fetch("static/assets/box.jpg");
 		const imageBitmap = await createImageBitmap(await response.blob());
-		const mipLevelCount = this.generateMipmaps ? this.mipmapGenerator.calculateMipLevels(imageBitmap.width, imageBitmap.height) : 1;
+		const mipLevelCount = this.generateMipmaps ? calculateMipLevels(imageBitmap.width, imageBitmap.height) : 1;
 		const textureDescriptor = {
 			size: {width: imageBitmap.width, height: imageBitmap.height, depthOrArrayLayers: 1},
 			format: "rgba8unorm",

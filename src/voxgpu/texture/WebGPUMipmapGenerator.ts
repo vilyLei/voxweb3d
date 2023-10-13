@@ -6,6 +6,17 @@ import { GPUSampler } from "../gpu/GPUSampler";
 import { GPUShaderModule } from "../gpu/GPUShaderModule";
 import { GPUTexture } from "../gpu/GPUTexture";
 import { TexSizeDescriptor, GPUTextureDescriptor } from "../gpu/GPUTextureDescriptor";
+
+/**
+ * Determines the number of mip levels needed for a full mip chain given the width and height of texture level 0.
+ *
+ * @param {number} width of texture level 0.
+ * @param {number} height of texture level 0.
+ * @returns {number} Ideal number of mip levels.
+ */
+ export function calculateMipLevels(width: number, height: number): number {
+	return Math.floor(Math.log2(Math.max(width, height))) + 1;
+}
 /**
  * thanks: https://github.com/toji/web-texture-tool/blob/main/src/webgpu-mipmap-generator.js
  */
@@ -17,16 +28,7 @@ export class WebGPUMipmapGenerator {
 	private bindGroupLayout: GPUBindGroupLayout | null = null;
 	private pipelineLayout: GPUPipelineLayout | null = null;
 	private pipelines: any = null;
-	/**
-	 * Determines the number of mip levels needed for a full mip chain given the width and height of texture level 0.
-	 *
-	 * @param {number} width of texture level 0.
-	 * @param {number} height of texture level 0.
-	 * @returns {number} Ideal number of mip levels.
-	 */
-	calculateMipLevels(width: number, height: number): number {
-		return Math.floor(Math.log2(Math.max(width, height))) + 1;
-	}
+	
 	constructor(device: GPUDevice) {
 		this.device = device;
 		this.sampler = device.createSampler({ minFilter: 'linear' });
