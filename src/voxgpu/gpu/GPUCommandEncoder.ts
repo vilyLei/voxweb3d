@@ -7,6 +7,7 @@ import { GPUBuffer } from "./GPUBuffer";
 import { GPUImageCopyBuffer } from "./GPUImageCopyBuffer";
 import { GPUImageCopyTexture } from "./GPUImageCopyTexture";
 import { GPUExtent3D } from "./GPUExtent3D";
+import { GPUQuerySet } from "./GPUQuerySet";
 interface GPUCommandEncoder {
 	label?: string;
 	/**
@@ -49,5 +50,13 @@ interface GPUCommandEncoder {
 	 * See: https://gpuweb.github.io/gpuweb/#dom-gpucommandencoder-copytexturetotexture
 	 */
 	 copyTextureToTexture(source: GPUImageCopyTexture, destination: GPUImageCopyTexture, copySize: GPUExtent3D): void;
+	 /**
+	  * Writes a timestamp value into a querySet when all previous commands have completed executing.
+	  */
+	 writeTimestamp(querySet: GPUQuerySet, queryIndex: number): void;
+	 /**
+	  * Resolves query results from a GPUQuerySet out into a range of a GPUBuffer.
+	  */
+	 resolveQuerySet(querySet: GPUQuerySet, firstQuery: number, queryCount: number, destination: GPUBuffer, destinationOffset: number): void;
 }
 export { GPUCommandEncoder };
