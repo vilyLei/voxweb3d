@@ -28,38 +28,16 @@ import { GPUDevice } from "../../../../voxgpu/gpu/GPUDevice";
 import { GPUCanvasContext } from "../../../../voxgpu/gpu/GPUCanvasContext";
 import { GPUPipelineLayoutDescriptor } from "../../../../voxgpu/gpu/GPUPipelineLayoutDescriptor";
 
-declare var GPUTextureUsage: any;
-declare var GPUBufferUsage: any;
-declare var GPUShaderStage: any;
+import vertShaderCode from './shaders/triangle.vert.wgsl';
+import fragShaderCode from './shaders/triangle.frag.wgsl';
 
-const vertShaderCode = `
-struct VSOut {
-    @builtin(position) Position: vec4f,
-    @location(0) color: vec3f,
-};
-
-@vertex
-fn main(@location(0) inPos: vec3f,
-        @location(1) inColor: vec3f) -> VSOut {
-    var vsOut: VSOut;
-    vsOut.Position = vec4f(inPos, 1);
-    vsOut.color = inColor;
-    return vsOut;
-}
-`;
-const fragShaderCode = `
-@fragment
-fn main(@location(0) inColor: vec3f) -> @location(0) vec4f {
-    return vec4f(inColor, 1);
-}
-`;
-// 📈 Position Vertex Buffer Data
+// Position Vertex Buffer Data
 const positions = new Float32Array([
     1.0, -1.0, 0.0,
     -1.0, -1.0, 0.0,
     0.0, 1.0, 0.0
 ]);
-// 🎨 Color Vertex Buffer Data
+// Color Vertex Buffer Data
 const colors = new Float32Array([
     1.0,0.0,0.0,
     0.0,1.0,0.0,
@@ -100,6 +78,7 @@ export class ColorTriangle {
 	constructor() {}
 
 	initialize(): void {
+		console.log("ColorTriangle::initialize() ...");
 		console.log("ColorTriangle::initialize() ...");
 		let value = (15 + 3) & ~3;
 		console.log("value: ", value);

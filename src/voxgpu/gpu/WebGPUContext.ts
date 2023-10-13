@@ -16,7 +16,7 @@ class WebGPUContext {
 	readonly device: GPUDevice = null;
 	readonly queue: GPUQueue = null;
 	readonly canvasFormat: string = null;
-
+	readonly presentationFormat: string = "";
 	readonly gpu: GPU = null;
 	readonly gpuAdapter: GPUAdapter = null;
 
@@ -63,6 +63,8 @@ class WebGPUContext {
 							wgConfig.format = canvasFormat;
 						}
 					}
+					selfT.presentationFormat = wgConfig.format;
+
 					context.configure(wgConfig ? wgConfig : {
 						device: device,
 						format: canvasFormat,
@@ -79,6 +81,9 @@ class WebGPUContext {
 		} else {
 			throw new Error("WebGPU is not supported on this browser.");
 		}
+	}
+	getPreferredCanvasFormat(): string {
+		return this.gpu.getPreferredCanvasFormat();
 	}
 	createCurrentView(): GPUTextureView {
 		return this.context.getCurrentTexture().createView();

@@ -7,7 +7,7 @@ interface GPURenderPassColorAttachment {
 	/**
 	 * A GPUTextureView object representing the texture subresource that will be output to for this color attachment.
 	 */
-	view: GPUTextureView;
+	view?: GPUTextureView;
 	/**
 	 * An enumerated value indicating the load operation to perform on view prior to executing the render pass. Possible values are:
 	 * 		"clear": Loads the clearValue for this attachment into the render pass.

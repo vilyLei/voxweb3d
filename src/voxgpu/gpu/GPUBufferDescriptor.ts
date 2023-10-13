@@ -10,6 +10,7 @@ interface GPUBufferDescriptor {
 	/**
 	 * The allowed usages for the buffer.
 	 * In GPUBufferUsage: https://gpuweb.github.io/gpuweb/#typedefdef-gpubufferusageflags
+	 * See: src\voxgpu\gpu\GPUBufferUsage.d.ts
 	 */
 	usage: number;
 	/**

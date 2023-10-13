@@ -1,4 +1,4 @@
-declare var GPUBufferUsage: any;
+// declare var GPUBufferUsage: any;
 class WGVertexObject {
 	private mLabel = "WGVertexObject";
 	private mVertices: Float32Array = null;

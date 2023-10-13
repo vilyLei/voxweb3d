@@ -1,7 +1,7 @@
 struct VSOut {
     @builtin(position) Position: vec4f,
     @location(0) color: vec3f,
- };
+};
 
 @vertex
 fn main(@location(0) inPos: vec3f,

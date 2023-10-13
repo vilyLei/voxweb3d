@@ -9,7 +9,8 @@
         "es2017",
         "es2018",
         "dom",
-        "dom.iterable"
+        "dom.iterable",
+		"esnext",
       ],
       "resolveJsonModule": true,
       //"baseUrl": "./",
@@ -29,6 +30,9 @@
       "noImplicitAny": true,
       /*"declaration": true,*/
   },
-  "include": ["./src/**/*"],
+  "include": [
+	"src/**/*",
+    "src/**/*.d.ts"
+],
   "exclude": [ "build", "node_modules" ]
 }

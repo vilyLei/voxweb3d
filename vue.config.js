@@ -53,8 +53,8 @@ module.exports = {
 
     chainWebpack: config => {
         config.module
-            .rule('glsl')
-            .test(/\.glsl$/)
+            .rule('glsl-wgsl')
+            .test(/\.(glsl|wgsl)$/)
             .use('raw')
             .loader('raw-loader')
             .end();

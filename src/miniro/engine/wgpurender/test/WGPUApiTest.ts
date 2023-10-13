@@ -23,10 +23,8 @@ import { GPURenderPassEncoder } from "../../../../voxgpu/gpu/GPURenderPassEncode
 import { GPURenderPassColorAttachment } from "../../../../voxgpu/gpu/GPURenderPassColorAttachment";
 import { GPURenderPassDepthStencilAttachment } from "../../../../voxgpu/gpu/GPURenderPassDepthStencilAttachment";
 import { GPURenderPassDescriptor } from "../../../../voxgpu/gpu/GPURenderPassDescriptor";
-
-declare var GPUTextureUsage: any;
-declare var GPUBufferUsage: any;
-declare var GPUShaderStage: any;
+// import { GPUTextureUsage } from "../../../../voxgpu/gpu/GPUTextureUsage";
+// import { GPUBufferUsage } from "../../../../voxgpu/gpu/GPUBufferUsage";
 
 export class WGPUApiTest {
 	private mWGCtx = new WebGPUContext();
@@ -203,29 +201,6 @@ export class WGPUApiTest {
 
 		const ctx = this.mWGCtx;
 		const device = ctx.device;
-		/*
-		let bindGroupLayout: GPUBindGroupLayout = null;
-		let uniformBindGroup: GPUBindGroup = null;
-
-		// 👨‍🔧 Create your graphics pipeline...
-
-		// 🧙‍♂️ Then get your implicit pipeline layout:
-		bindGroupLayout = pipeline.getBindGroupLayout(0);
-
-		// 🗄️ Bind Group
-		// ✍ This would be used when *encoding commands*
-		uniformBindGroup = device.createBindGroup({
-			layout: bindGroupLayout,
-			entries: [
-				{
-					binding: 0,
-					resource: {
-						buffer: uniformBuffer
-					}
-				}
-			]
-		});
-		//*/
 		// ✋ Declare handles
 		let uniformBindGroupLayout: GPUBindGroupLayout = null;
 		let uniformBindGroup: GPUBindGroup = null;

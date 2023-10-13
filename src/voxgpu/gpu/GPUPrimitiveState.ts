@@ -6,11 +6,11 @@ interface GPUPrimitiveState {
 	/**
 	 * Possible values are: "ccw", "cw", the default value is "ccw"
 	 */
-	frontFace: string;
+	frontFace?: string;
 	/**
 	 * Possible values are: "back", "front", "none", the default value is "none"
 	 */
-	cullMode: string;
+	cullMode?: string;
 
 	/**
 	 * Possible values are: "uint16", "uint32"

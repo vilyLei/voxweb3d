@@ -4,25 +4,9 @@ import { RenderableUnit } from "../engine/entity/RenderableUnit";
 import { MiniREngine } from "../engine/MiniREngine";
 import {ImageTexture} from "../engine/texture/ImageTexture";
 
-let vtxGLSLSrc0: string = `
-precision highp float;
-attribute vec3 a_vs;
-void main(){
-    gl_Position = vec4(a_vs,1.0);
-}
-`;
+import vtxGLSLSrc0 from './shaders/glsl1test.vert.glsl';
+import fragGLSLSrc0 from './shaders/glsl1test.frag.glsl';
 
-let fragGLSLSrc0: string = `
-precision mediump float;
-uniform sampler2D tex01;
-uniform vec4 param;
-uniform vec4 color;
-void main(){
-    vec2 pos = gl_FragCoord.xy/param.zw;
-	vec4 tcolor = texture2D( tex01, pos );
-    gl_FragColor = color * tcolor;
-}
-`;
 /**
  * 单纹理功能测试 demo
  */
@@ -47,7 +31,7 @@ export class GLSL1Test {
 		tex.flipY = true;
 		let img = new Image();
         img.onload = (): void => {
-			console.log("load a img.");
+			console.log("loaded an img.");
 			tex.setDataFromImage(img);
 		}
         img.src = "static/assets/default.jpg";

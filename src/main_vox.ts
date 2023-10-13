@@ -488,7 +488,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoTextureCubeUV as Demo} from "./pbr/DemoTextureCubeUV";
 
-//  import {DemoLighting as Demo} from "./pbr/DemoLighting";
+ import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
@@ -583,7 +583,7 @@ pwin["VoxVerify"] = new VVF();
 ///////////////////////     algorithm runtime     ////////////s//////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {SortingTest as Demo} from "./demo/SortingTest";
+// import {SortingTest as Demo} from "./demo/SortingTest";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

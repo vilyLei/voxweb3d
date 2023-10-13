@@ -1,7 +1,7 @@
 import { GPUDevice } from "../../../../../voxgpu/gpu/GPUDevice";
 
-declare var GPUBufferUsage: any;
-declare var GPUShaderStage: any;
+// declare var GPUBufferUsage: any;
+// declare var GPUShaderStage: any;
 
 class WGUniformObject {
 	private mLabel = "WGUniformObject";

@@ -12,6 +12,6 @@ interface GPUVertexState {
 	constants?: any;
 	module: GPUShaderModule;
 	entryPoint: string;
-	buffers: GPUVertexBufferLayout[];
+	buffers?: GPUVertexBufferLayout[];
 }
 export { GPUVertexState };

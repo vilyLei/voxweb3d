@@ -2,8 +2,8 @@ import Color4 from "../../../../vox/material/Color4";
 
 // thanks: https://codelabs.developers.google.com/your-first-webgpu-app?hl=zh-cn#7
 
-declare var GPUBufferUsage: any;
-declare var GPUShaderStage: any;
+// declare var GPUBufferUsage: any;
+// declare var GPUShaderStage: any;
 
 export class WGPUSimulation {
 

@@ -1,6 +1,6 @@
 import Color4 from "../../../../vox/material/Color4";
 
-declare var GPUBufferUsage: any;
+// declare var GPUBufferUsage: any;
 
 export class WGPURUniform {
 	private mRVertices: Float32Array = null;
