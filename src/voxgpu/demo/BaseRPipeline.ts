@@ -4,7 +4,6 @@ import basicVertWGSL from "./shaders/basic.vert.wgsl";
 import sampleTextureMixColorWGSL from "./shaders/sampleTextureMixColor.frag.wgsl";
 
 import { WebGPUContext } from "../gpu/WebGPUContext";
-import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { GPUBindGroup } from "../gpu/GPUBindGroup";
 import { GPUTexture } from "../gpu/GPUTexture";
@@ -24,19 +23,17 @@ export class BaseRPipeline {
 	private mWGCtx = new WebGPUContext();
 
 	private mVerticesBuffer: GPUBuffer | null = null;
-	private mUniformBuffer: GPUBuffer | null = null;
 	private mUniformBindGroups: GPUBindGroup[] | null = null;
 	private mCam = new CameraBase();
 	private mEntities: CubeEntity[] = [];
 	private mFPS = new RenderStatusDisplay();
-	private mTexture: GPUTexture | null = null;
 	private mEnabled = false;
 
 	private mRendererPass = new RRendererPass();
 	private mPipelineModule = new RPipelineModule();
 	generateMipmaps = true;
 	msaaRenderEnabled = true;
-	entitiesTotal = 1;
+	entitiesTotal = 3;
 
 	constructor() { }
 
@@ -84,15 +81,6 @@ export class BaseRPipeline {
 			console.log("msaaRenderEnabled: ", this.msaaRenderEnabled);
 			console.log("entitiesTotal: ", this.entitiesTotal);
 			let total = this.entitiesTotal;
-			for (let i = 0; i < total; ++i) {
-				let entity = new CubeEntity();
-				entity.intialize(this.mCam);
-				this.mEntities.push(entity);
-			}
-			if (total == 1) {
-				this.mEntities[0].scaleFactor = 1.0;
-				this.mEntities[0].posV.setXYZ(0, 0, 0);
-			}
 
 			let pipeParams = new RPipelineParams({
 				sampleCount: 4,
@@ -106,22 +94,26 @@ export class BaseRPipeline {
 
 			this.createRenderGeometry();
 
-			this.mPipelineModule.initialize( this.mWGCtx );
+			this.mPipelineModule.initialize(this.mWGCtx);
 
-			let vtxDescParam = {vertex:{size: cubeVertexSize, params:[
-				{offset: cubePositionOffset, format: "float32x4"},
-				{offset: cubeUVOffset, format: "float32x2"}
-			]}};
-			
-			this.mPipelineModule.createRenderPipeline( pipeParams,  vtxDescParam);
+			let vtxDescParam = {
+				vertex: {
+					size: cubeVertexSize, params: [
+						{ offset: cubePositionOffset, format: "float32x4" },
+						{ offset: cubeUVOffset, format: "float32x2" }
+					]
+				}
+			};
+
+			this.mPipelineModule.createRenderPipeline(pipeParams, vtxDescParam);
 
 			this.mRendererPass.initialize(ctx);
 			this.mRendererPass.build(pipeParams);
 
 			this.mPipelineModule.createMaterialTexture(this.msaaRenderEnabled).then((tex: GPUTexture) => {
-				this.mTexture = tex;
 				console.log("webgpu texture res build success, tex: ", tex);
-				this.createUniforms(this.mPipelineModule.pipeline, total);
+				
+				this.createEntities( total, tex);
 				this.mEnabled = true;
 			});
 		});
@@ -141,53 +133,40 @@ export class BaseRPipeline {
 		verticesBuffer.unmap();
 		this.mVerticesBuffer = verticesBuffer;
 	}
-	private createUniforms(pipeline: GPURenderPipeline, entitiesTotal: number): void {
-		const ctx = this.mWGCtx;
-		const device = ctx.device;
+
+
+	private createEntities(total: number, tex: GPUTexture): void {
 
 		const matrixSize = 4 * 16;		// 4x4 matrix
 		const offsetRange = 256;		// uniformBindGroup offset must be 256-byte aligned
-		const uniformBufferSize = offsetRange * (entitiesTotal - 1) + matrixSize;
+		const uniformBufferSize = offsetRange * (total - 1) + matrixSize;
 
 		const uniformDesc = {
 			size: uniformBufferSize,
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		};
-		// const uniformBuffer = device.createBuffer(uniformDesc);
-		// this.mUniformBuffer = uniformBuffer;
-		this.mUniformBuffer = this.mPipelineModule.createUniformBuffer( uniformDesc );
+		this.mPipelineModule.createUniformBuffer(uniformDesc);
+		
+		for (let i = 0; i < total; ++i) {
+			let entity = new CubeEntity();
+			entity.scaleFactor *= 1.5;
+			entity.intialize(this.mCam);
+			this.mEntities.push(entity);
+		}
+		if (total == 1) {
+			this.mEntities[0].scaleFactor = 1.0;
+			this.mEntities[0].posV.setXYZ(0, 0, 0);
+		}
+		
 
-		this.mUniformBindGroups = new Array(entitiesTotal);
-
-		for (let i = 0; i < entitiesTotal; ++i) {
-			const sampler = device.createSampler({
-				magFilter: 'linear',
-				minFilter: 'linear',
-				mipmapFilter: 'linear',
-			});
-			console.log("sampler: ", sampler);
-			let uniformBindGroup = device.createBindGroup({
-				layout: pipeline.getBindGroupLayout(0),
-				entries: [
-					{
-						binding: 0,
-						resource: {
-							offset: offsetRange * i,
-							buffer: this.mUniformBuffer,
-							size: matrixSize
-						}
-					},
-					{
-						binding: 1,
-						resource: sampler,
-					},
-					{
-						binding: 2,
-						resource: this.mTexture.createView(),
-					},
-				]
-			});
-			this.mUniformBindGroups[i] = uniformBindGroup;
+		this.createUniforms( total, matrixSize, tex );
+	}
+	private createUniforms(total: number, matrixSize: number, tex: GPUTexture): void {
+		
+		this.mUniformBindGroups = new Array(total);
+		const texView = tex ? tex.createView() : null;
+		for (let i = 0; i < total; ++i) {
+			this.mUniformBindGroups[i] = this.mPipelineModule.createUniformBindGroup(i, matrixSize, texView);
 		}
 	}
 	private renderFrame(): void {
@@ -196,7 +175,7 @@ export class BaseRPipeline {
 		if (ctx.enabled) {
 
 			const device = ctx.device;
-			
+
 			const pipeline = this.mPipelineModule.pipeline;
 
 			this.mRendererPass.runBegin();
@@ -206,13 +185,12 @@ export class BaseRPipeline {
 			passEncoder.setPipeline(pipeline);
 			passEncoder.setVertexBuffer(0, this.mVerticesBuffer);
 
-			const uniformBuffer = this.mUniformBuffer;
 			let entities = this.mEntities;
 			let entitiesTotal = entities.length;
 			for (let i = 0; i < entitiesTotal; ++i) {
 				const et = entities[i];
 				if (et.enabled) {
-					this.mPipelineModule.updateUniformBufferAt( et.transData, i);
+					this.mPipelineModule.updateUniformBufferAt(et.transData, i);
 					passEncoder.setBindGroup(0, this.mUniformBindGroups[i]);
 					passEncoder.draw(cubeVertexCount);
 				}
@@ -225,6 +203,7 @@ export class BaseRPipeline {
 	}
 
 	private renderPreCalc(): void {
+
 		const ctx = this.mWGCtx;
 		if (ctx.enabled) {
 			let entities = this.mEntities;

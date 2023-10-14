@@ -16,4 +16,4 @@ interface GPUBindGroupDescriptor {
 	layout: GPUBindGroupLayout;
 	entries: GPUBindGroupDescriptorEntity[];
 }
-export { GPUBindGroupDescriptor };
+export { GPUBindGroupDescriptorEntity, GPUBindGroupDescriptor };
