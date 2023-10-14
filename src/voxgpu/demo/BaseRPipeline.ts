@@ -23,7 +23,7 @@ import { GPUDevice } from "../gpu/GPUDevice";
 import { RPipelineParams } from "./pipeline/RPipelineParams";
 
 class CubeEntity extends TransEntity { }
-export class TexturedCube {
+export class BaseRPipeline {
 	private mWGCtx = new WebGPUContext();
 	private mRPipeline: GPURenderPipeline | null = null;
 	private mRTexView: GPUTextureView | null = null;
@@ -44,7 +44,7 @@ export class TexturedCube {
 
 	constructor() { }
 	initialize(): void {
-		console.log("TexturedCube::initialize() ...");
+		console.log("BaseRPipeline::initialize() ...");
 
 		const canvas = document.createElement("canvas");
 		canvas.width = 512;
@@ -93,12 +93,32 @@ export class TexturedCube {
 				this.mEntities[0].scaleFactor = 1.0;
 				this.mEntities[0].posV.setXYZ(0, 0, 0);
 			}
-			this.mRPipeline = this.createRenderPipeline(new RPipelineParams({
+
+			let pipeParams = new RPipelineParams({
 				sampleCount: 4,
 				multisampleEnabled: this.msaaRenderEnabled,
 				vertShaderSrc: {code: basicVertWGSL},
 				fragShaderSrc: {code: sampleTextureMixColorWGSL},
-			}));
+				depthStencilEnabled: true,
+				fragmentEnabled: true,
+			});
+			pipeParams.setVertexBufferArrayStrideAt(cubeVertexSize);
+			pipeParams.addVertexBufferAttribute({
+				// position
+				shaderLocation: 0,
+				offset: cubePositionOffset,
+				format: "float32x4"
+			});
+			pipeParams.addVertexBufferAttribute({
+				// uv
+				shaderLocation: 1,
+				offset: cubeUVOffset,
+				format: "float32x2"
+			});
+			pipeParams.build( ctx.device );
+
+			this.createRenderPassTexture(pipeParams);
+			this.mRPipeline = this.createRenderPipeline(pipeParams);
 			this.mipmapGenerator.initialize(this.mWGCtx.device);
 			this.createMaterialTexture(ctx.device, this.msaaRenderEnabled).then(() => {
 				console.log("webgpu texture res build success ...");
@@ -108,7 +128,7 @@ export class TexturedCube {
 		});
 	}
 
-	private createRenderPipeline(params: RPipelineParams): GPURenderPipeline {
+	private createRenderPassTexture(params: RPipelineParams): void {
 		const ctx = this.mWGCtx;
 		const device = ctx.device;
 		const canvas = ctx.canvas;
@@ -142,65 +162,17 @@ export class TexturedCube {
 		if (params.multisampleEnabled) {
 			depthTexDesc.sampleCount = params.sampleCount;
 		}
-
+		
 		const depthTexture = device.createTexture(depthTexDesc);
 		this.mDepthTexture = depthTexture;
+	}
+	private createRenderPipeline(params: RPipelineParams): GPURenderPipeline {
+		
+		const ctx = this.mWGCtx;
+		const device = ctx.device;
 
-		let pipelineDesc = {
-			layout: "auto",
-			vertex: {
-				module: device.createShaderModule({
-					code: params.vertShaderSrc.code
-				}),
-				entryPoint: "main",
-				buffers: [
-					{
-						arrayStride: cubeVertexSize,
-						attributes: [
-							{
-								// position
-								shaderLocation: 0,
-								offset: cubePositionOffset,
-								format: "float32x4"
-							},
-							{
-								// uv
-								shaderLocation: 1,
-								offset: cubeUVOffset,
-								format: "float32x2"
-							}
-						]
-					}
-				]
-			},
-			fragment: {
-				module: device.createShaderModule({
-					code: params.fragShaderSrc.code
-				}),
-				entryPoint: "main",
-				targets: [
-					{
-						format: ctx.presentationFormat
-					}
-				]
-			},
-			primitive: {
-				topology: "triangle-list",
-				cullMode: "back"
-			},
-			depthStencil: {
-				depthWriteEnabled: true,
-				depthCompare: "less",
-				format: "depth24plus"
-			}
-		} as GPURenderPipelineDescriptor;
+		const pipeline = device.createRenderPipeline(params);
 
-		if (params.multisampleEnabled) {
-			pipelineDesc.multisample = {
-				count: params.sampleCount
-			};
-		}
-		const pipeline = device.createRenderPipeline(pipelineDesc);
 		return pipeline;
 	}
 	private async createMaterialTexture(device: GPUDevice, generateMipmaps: boolean) {
@@ -217,6 +189,7 @@ export class TexturedCube {
 		};
 		tex = device.createTexture(textureDescriptor);
 		device.queue.copyExternalImageToTexture({ source: imageBitmap }, { texture: tex }, [imageBitmap.width, imageBitmap.height]);
+
 		if (generateMipmaps) {
 			this.mipmapGenerator.generateMipmap(tex, textureDescriptor);
 		}

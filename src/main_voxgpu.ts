@@ -9,8 +9,9 @@
 // import { ShapeCubeRotCam as Demo } from "./voxgpu/demo/ShapeCubeRotCam";
 // import { ShapeCubeMSAA as Demo } from "./voxgpu/demo/ShapeCubeMSAA";
 // import { MultiShapeCube as Demo } from "./voxgpu/demo/MultiShapeCube";
-
 import { TexturedCube as Demo } from "./voxgpu/demo/TexturedCube";
+
+// import { BaseRPipeline as Demo } from "./voxgpu/demo/BaseRPipeline";
 
 let demoIns = new Demo();
 function main(): void {

@@ -16,7 +16,7 @@ class WebGPUContext {
 	readonly device: GPUDevice = null;
 	readonly queue: GPUQueue = null;
 	readonly canvasFormat: string = null;
-	readonly presentationFormat: string = "";
+	readonly presentationFormat = "bgra8unorm";
 	readonly gpu: GPU = null;
 	readonly gpuAdapter: GPUAdapter = null;
 	readonly enabled = false;
