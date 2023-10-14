@@ -21,28 +21,45 @@ import { GPURenderPipelineDescriptor } from "../gpu/GPURenderPipelineDescriptor"
 import { calculateMipLevels, GPUMipmapGenerator } from "../texture/GPUMipmapGenerator";
 import { GPUDevice } from "../gpu/GPUDevice";
 import { RPipelineParams } from "./pipeline/RPipelineParams";
+import { RRendererPass } from "./pipeline/RRendererPass";
 
 class CubeEntity extends TransEntity { }
 export class BaseRPipeline {
+
 	private mWGCtx = new WebGPUContext();
+
 	private mRPipeline: GPURenderPipeline | null = null;
-	private mRTexView: GPUTextureView | null = null;
 	private mVerticesBuffer: GPUBuffer | null = null;
 	private mUniformBuffer: GPUBuffer | null = null;
 	private mUniformBindGroups: GPUBindGroup[] | null = null;
-	private mDepthTexture: GPUTexture | null = null;
 	private mCam = new CameraBase();
 	private mEntities: CubeEntity[] = [];
 	private mFPS = new RenderStatusDisplay();
 	private mTexture: GPUTexture | null = null;
 	private mEnabled = false;
 
+	private mRendererPass = new RRendererPass();
 	private mipmapGenerator = new GPUMipmapGenerator();
 	generateMipmaps = true;
 	msaaRenderEnabled = true;
 	entitiesTotal = 1;
 
 	constructor() { }
+
+	private initCamera(width: number, height: number): void {
+		const cam = this.mCam;
+
+		const camPosition = new Vector3D(1000.0, 1000.0, 1000.0);
+		const camLookAtPos = new Vector3D(0.0, 0.0, 0.0);
+		const camUpDirect = new Vector3D(0.0, 1.0, 0.0);
+		cam.perspectiveRH((Math.PI * 45) / 180.0, width / height, 0.1, 5000);
+		cam.lookAtRH(camPosition, camLookAtPos, camUpDirect);
+		cam.setViewXY(0, 0);
+		cam.setViewSize(width, height);
+
+		cam.update();
+
+	}
 	initialize(): void {
 		console.log("BaseRPipeline::initialize() ...");
 
@@ -52,7 +69,7 @@ export class BaseRPipeline {
 		document.body.appendChild(canvas);
 
 		const ctx = this.mWGCtx;
-
+		this.initCamera(canvas.width, canvas.height);
 		let scale = 100.0;
 		const vs = cubeVertexArray;
 		for (let i = 0; i < vs.length; i += 10) {
@@ -64,16 +81,6 @@ export class BaseRPipeline {
 
 		this.mFPS.initialize(null, false);
 
-		const cam = this.mCam;
-		const camPosition = new Vector3D(1000.0, 1000.0, 1000.0);
-		const camLookAtPos = new Vector3D(0.0, 0.0, 0.0);
-		const camUpDirect = new Vector3D(0.0, 1.0, 0.0);
-		cam.perspectiveRH((Math.PI * 45) / 180.0, canvas.width / canvas.height, 0.1, 5000);
-		cam.lookAtRH(camPosition, camLookAtPos, camUpDirect);
-		cam.setViewXY(0, 0);
-		cam.setViewSize(canvas.width, canvas.height);
-		cam.update();
-
 		const cfg = {
 			alphaMode: "premultiplied"
 		};
@@ -82,6 +89,8 @@ export class BaseRPipeline {
 
 			console.log("msaaRenderEnabled: ", this.msaaRenderEnabled);
 			console.log("entitiesTotal: ", this.entitiesTotal);
+
+			this.mipmapGenerator.initialize(this.mWGCtx.device);
 
 			let total = this.entitiesTotal;
 			for (let i = 0; i < total; ++i) {
@@ -97,29 +106,20 @@ export class BaseRPipeline {
 			let pipeParams = new RPipelineParams({
 				sampleCount: 4,
 				multisampleEnabled: this.msaaRenderEnabled,
-				vertShaderSrc: {code: basicVertWGSL},
-				fragShaderSrc: {code: sampleTextureMixColorWGSL},
+				vertShaderSrc: { code: basicVertWGSL },
+				fragShaderSrc: { code: sampleTextureMixColorWGSL },
 				depthStencilEnabled: true,
 				fragmentEnabled: true,
 			});
 			pipeParams.setVertexBufferArrayStrideAt(cubeVertexSize);
-			pipeParams.addVertexBufferAttribute({
-				// position
-				shaderLocation: 0,
-				offset: cubePositionOffset,
-				format: "float32x4"
-			});
-			pipeParams.addVertexBufferAttribute({
-				// uv
-				shaderLocation: 1,
-				offset: cubeUVOffset,
-				format: "float32x2"
-			});
-			pipeParams.build( ctx.device );
 
-			this.createRenderPassTexture(pipeParams);
+			this.createRenderGeometry();
+
 			this.mRPipeline = this.createRenderPipeline(pipeParams);
-			this.mipmapGenerator.initialize(this.mWGCtx.device);
+
+			this.mRendererPass.initialize(ctx);
+			this.mRendererPass.build(pipeParams);
+
 			this.createMaterialTexture(ctx.device, this.msaaRenderEnabled).then(() => {
 				console.log("webgpu texture res build success ...");
 				this.createUniforms(this.mRPipeline, total);
@@ -128,21 +128,10 @@ export class BaseRPipeline {
 		});
 	}
 
-	private createRenderPassTexture(params: RPipelineParams): void {
+	private createRenderGeometry(): void {
+
 		const ctx = this.mWGCtx;
 		const device = ctx.device;
-		const canvas = ctx.canvas;
-
-		if (params.multisampleEnabled) {
-			const texture = device.createTexture({
-				size: [ctx.canvas.width, ctx.canvas.height],
-				sampleCount: params.sampleCount,
-				format: ctx.presentationFormat,
-				usage: GPUTextureUsage.RENDER_ATTACHMENT
-			});
-			this.mRTexView = texture.createView();
-		}
-
 		// Create a vertex buffer from the cube data.
 		const verticesBuffer = device.createBuffer({
 			size: cubeVertexArray.byteLength,
@@ -152,28 +141,25 @@ export class BaseRPipeline {
 		new Float32Array(verticesBuffer.getMappedRange()).set(cubeVertexArray);
 		verticesBuffer.unmap();
 		this.mVerticesBuffer = verticesBuffer;
-
-		let depthTexDesc = {
-			size: [canvas.width, canvas.height],
-			format: "depth24plus",
-			usage: GPUTextureUsage.RENDER_ATTACHMENT
-		} as GPUTextureDescriptor;
-
-		if (params.multisampleEnabled) {
-			depthTexDesc.sampleCount = params.sampleCount;
-		}
-		
-		const depthTexture = device.createTexture(depthTexDesc);
-		this.mDepthTexture = depthTexture;
 	}
 	private createRenderPipeline(params: RPipelineParams): GPURenderPipeline {
-		
+
 		const ctx = this.mWGCtx;
-		const device = ctx.device;
-
-		const pipeline = device.createRenderPipeline(params);
-
-		return pipeline;
+		params.setVertexBufferArrayStrideAt(cubeVertexSize);
+		params.addVertexBufferAttribute({
+			// position
+			shaderLocation: 0,
+			offset: cubePositionOffset,
+			format: "float32x4"
+		});
+		params.addVertexBufferAttribute({
+			// uv
+			shaderLocation: 1,
+			offset: cubeUVOffset,
+			format: "float32x2"
+		});
+		params.build(ctx.device);
+		return this.mWGCtx.device.createRenderPipeline(params);
 	}
 	private async createMaterialTexture(device: GPUDevice, generateMipmaps: boolean) {
 
@@ -200,8 +186,8 @@ export class BaseRPipeline {
 		const ctx = this.mWGCtx;
 		const device = ctx.device;
 
-		const matrixSize = 4 * 16; // 4x4 matrix
-		const offsetRange = 256; // uniformBindGroup offset must be 256-byte aligned
+		const matrixSize = 4 * 16;		// 4x4 matrix
+		const offsetRange = 256;		// uniformBindGroup offset must be 256-byte aligned
 		const uniformBufferSize = offsetRange * (entitiesTotal - 1) + matrixSize;
 
 		const uniformBuffer = device.createBuffer({
@@ -243,38 +229,17 @@ export class BaseRPipeline {
 			this.mUniformBindGroups[i] = uniformBindGroup;
 		}
 	}
-	private renderFrame(msaaEnabled: boolean): void {
+	private renderFrame(): void {
+
 		const ctx = this.mWGCtx;
 		if (ctx.enabled) {
+
 			const device = ctx.device;
 			const pipeline = this.mRPipeline;
 
-			const commandEncoder = device.createCommandEncoder();
+			this.mRendererPass.runBegin();
 
-			let rpassColorAttachment = {
-				clearValue: { r: 0.5, g: 0.5, b: 0.5, a: 1.0 },
-				loadOp: "clear",
-				storeOp: "store"
-			} as GPURenderPassColorAttachment;
-
-			if (msaaEnabled) {
-				rpassColorAttachment.view = this.mRTexView;
-				rpassColorAttachment.resolveTarget = ctx.createCurrentView();
-			} else {
-				rpassColorAttachment.view = ctx.createCurrentView();
-			}
-			let colorAttachments: GPURenderPassColorAttachment[] = [rpassColorAttachment];
-			const renderPassDescriptor: GPURenderPassDescriptor = {
-				colorAttachments: colorAttachments,
-				depthStencilAttachment: {
-					view: this.mDepthTexture.createView(),
-					depthClearValue: 1.0,
-					depthLoadOp: "clear",
-					depthStoreOp: "store"
-				}
-			};
-
-			let passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
+			const passEncoder = this.mRendererPass.passEncoder;
 
 			passEncoder.setPipeline(pipeline);
 			passEncoder.setVertexBuffer(0, this.mVerticesBuffer);
@@ -285,16 +250,14 @@ export class BaseRPipeline {
 			for (let i = 0; i < entitiesTotal; ++i) {
 				const et = entities[i];
 				if (et.enabled) {
-					const transData = et.transData;
-					device.queue.writeBuffer(uniformBuffer, i * 256, transData.buffer, transData.byteOffset, transData.byteLength);
+					const td = et.transData;
+					device.queue.writeBuffer(uniformBuffer, i * 256, td.buffer, td.byteOffset, td.byteLength);
 					passEncoder.setBindGroup(0, this.mUniformBindGroups[i]);
 					passEncoder.draw(cubeVertexCount);
 				}
 			}
 
-			passEncoder.end();
-
-			const cmd = commandEncoder.finish();
+			const cmd = this.mRendererPass.runEnd();
 
 			device.queue.submit([cmd]);
 		}
@@ -306,8 +269,7 @@ export class BaseRPipeline {
 			let entities = this.mEntities;
 			let entitiesTotal = entities.length;
 			for (let i = 0; i < entitiesTotal; ++i) {
-				const et = entities[i];
-				et.run(this.mCam);
+				entities[i].run(this.mCam);
 			}
 		}
 	}
@@ -315,9 +277,8 @@ export class BaseRPipeline {
 	run(): void {
 		if (this.mEnabled) {
 			this.mFPS.update();
-
 			this.renderPreCalc();
-			this.renderFrame(this.msaaRenderEnabled);
+			this.renderFrame();
 		}
 	}
 }
