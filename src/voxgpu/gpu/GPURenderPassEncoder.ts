@@ -26,6 +26,13 @@ interface GPURenderPassEncoder {
 
 	setPipeline(pipeline: GPURenderPipeline): void;
 	setBindGroup(index: number, bindGroup: GPUBindGroup, dynamicOffsets?: number, dynamicOffsetsStart?: number, dynamicOffsetsLength?: number): void;
+	/**
+	 * A number referencing the vertex buffer slot to set the vertex buffer for.
+	 * @param index A number referencing the vertex buffer slot to set the vertex buffer for.
+	 * @param vtxBuffer GPUBuffer instance
+	 * @param offset A number representing the offset, in bytes, into buffer where the vertex data begins. If omitted, offset defaults to 0.
+	 * @param size A number representing the size, in bytes, of the vertex data contained in buffer. If omitted, size defaults to the buffer's GPUBuffer.size - offset.
+	 */
 	setVertexBuffer(index: number, vtxBuffer: GPUBuffer, offset?: number, size?: number): void;
 
 	/**

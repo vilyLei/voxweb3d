@@ -16,8 +16,10 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import { RPipelineParams } from "./pipeline/RPipelineParams";
 import { RRendererPass } from "./pipeline/RRendererPass";
 import { RPipelineModule } from "./pipeline/RPipelineModule";
+import { WROEntity } from "./entity/WROEntity";
+import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
 
-class CubeEntity extends TransEntity { }
+// class CubeEntity extends TransEntity { }
 export class BaseRPipeline {
 
 	private mWGCtx = new WebGPUContext();
@@ -25,7 +27,7 @@ export class BaseRPipeline {
 	private mVerticesBuffer: GPUBuffer | null = null;
 	private mUniformBindGroups: GPUBindGroup[] | null = null;
 	private mCam = new CameraBase();
-	private mEntities: CubeEntity[] = [];
+	private mEntities: WROEntity[] = [];
 	private mFPS = new RenderStatusDisplay();
 	private mEnabled = false;
 
@@ -146,29 +148,33 @@ export class BaseRPipeline {
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		};
 		this.mPipelineModule.createUniformBuffer(uniformDesc);
-		
+		const texView = tex ? tex.createView() : null;
+
 		for (let i = 0; i < total; ++i) {
-			let entity = new CubeEntity();
-			entity.scaleFactor *= 1.5;
-			entity.intialize(this.mCam);
+			let entity = new WROEntity();
+			entity.trans.scaleFactor *= 1.5;
+			entity.trans.intialize(this.mCam);
+			entity.pipeline = this.mPipelineModule.pipeline;
+			entity.vtxBuffer = this.mVerticesBuffer;
+			entity.vtCount = cubeVertexCount;
+			entity.uniformBindGroup = this.mPipelineModule.createUniformBindGroup(i, matrixSize, texView);
 			this.mEntities.push(entity);
 		}
 		if (total == 1) {
-			this.mEntities[0].scaleFactor = 1.0;
-			this.mEntities[0].posV.setXYZ(0, 0, 0);
+			this.mEntities[0].trans.scaleFactor = 1.0;
+			this.mEntities[0].trans.posV.setXYZ(0, 0, 0);
 		}
 		
-
-		this.createUniforms( total, matrixSize, tex );
+		// this.createUniforms( total, matrixSize, tex );
 	}
-	private createUniforms(total: number, matrixSize: number, tex: GPUTexture): void {
+	// private createUniforms(total: number, matrixSize: number, tex: GPUTexture): void {
 		
-		this.mUniformBindGroups = new Array(total);
-		const texView = tex ? tex.createView() : null;
-		for (let i = 0; i < total; ++i) {
-			this.mUniformBindGroups[i] = this.mPipelineModule.createUniformBindGroup(i, matrixSize, texView);
-		}
-	}
+	// 	this.mUniformBindGroups = new Array(total);
+	// 	const texView = tex ? tex.createView() : null;
+	// 	for (let i = 0; i < total; ++i) {
+	// 		this.mUniformBindGroups[i] = this.mPipelineModule.createUniformBindGroup(i, matrixSize, texView);
+	// 	}
+	// }
 	private renderFrame(): void {
 
 		const ctx = this.mWGCtx;
@@ -176,23 +182,28 @@ export class BaseRPipeline {
 
 			const device = ctx.device;
 
-			const pipeline = this.mPipelineModule.pipeline;
-
 			this.mRendererPass.runBegin();
 
 			const passEncoder = this.mRendererPass.passEncoder;
 
-			passEncoder.setPipeline(pipeline);
-			passEncoder.setVertexBuffer(0, this.mVerticesBuffer);
-
+			let vtxBuffer: GPUBuffer;
+			let pipeline: GPURenderPipeline;
 			let entities = this.mEntities;
 			let entitiesTotal = entities.length;
 			for (let i = 0; i < entitiesTotal; ++i) {
 				const et = entities[i];
 				if (et.enabled) {
-					this.mPipelineModule.updateUniformBufferAt(et.transData, i);
-					passEncoder.setBindGroup(0, this.mUniformBindGroups[i]);
-					passEncoder.draw(cubeVertexCount);
+					if(pipeline != et.pipeline) {
+						pipeline = et.pipeline;
+						passEncoder.setPipeline( pipeline );
+					}
+					if(vtxBuffer != et.vtxBuffer) {
+						vtxBuffer = et.vtxBuffer;
+						passEncoder.setVertexBuffer(et.bindIndex, vtxBuffer );
+					}
+					this.mPipelineModule.updateUniformBufferAt(et.trans.transData, i);
+					passEncoder.setBindGroup(et.bindIndex, et.uniformBindGroup);
+					passEncoder.draw(et.vtCount);
 				}
 			}
 
@@ -209,7 +220,7 @@ export class BaseRPipeline {
 			let entities = this.mEntities;
 			let entitiesTotal = entities.length;
 			for (let i = 0; i < entitiesTotal; ++i) {
-				entities[i].run(this.mCam);
+				entities[i].trans.run(this.mCam);
 			}
 		}
 	}
