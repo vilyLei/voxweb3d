@@ -8,6 +8,7 @@ import { GPUCanvasConfiguration } from "./GPUCanvasConfiguration";
 import { GPUDeviceDescriptor } from "./GPUDeviceDescriptor";
 import { GPUTextureView } from "./GPUTextureView";
 import { checkGPUTextureFormat, GPUTextureFormat } from "./GPUTextureFormat";
+import { calculateMipLevels, GPUMipmapGenerator } from "../texture/GPUMipmapGenerator";
 
 class WebGPUContext {
 
@@ -20,6 +21,8 @@ class WebGPUContext {
 	readonly gpu: GPU = null;
 	readonly gpuAdapter: GPUAdapter = null;
 	readonly enabled = false;
+	
+	readonly mipmapGenerator = new GPUMipmapGenerator();
 	constructor(){}
 	async initialize(canvas: HTMLCanvasElement, wgConfig?: GPUCanvasConfiguration, deviceDescriptor?: GPUDeviceDescriptor) {
 
@@ -37,6 +40,8 @@ class WebGPUContext {
 				console.log("Appropriate GPUAdapter found, adapter: ", adapter);
 				const device = await adapter.requestDevice(deviceDescriptor);
 				if (device) {
+					
+					this.mipmapGenerator.initialize(device);
 
 					selfT.device = device;
 					selfT.queue = device.queue;
@@ -90,4 +95,4 @@ class WebGPUContext {
 		return this.context.getCurrentTexture().createView();
 	}
 }
-export { WebGPUContext };
+export { calculateMipLevels, WebGPUContext };

@@ -5,8 +5,6 @@ import sampleTextureMixColorWGSL from "./shaders/sampleTextureMixColor.frag.wgsl
 
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
-import { GPURenderPassDescriptor } from "../gpu/GPURenderPassDescriptor";
-import { GPUTextureView } from "../gpu/GPUTextureView";
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { GPUBindGroup } from "../gpu/GPUBindGroup";
 import { GPUTexture } from "../gpu/GPUTexture";
@@ -15,20 +13,16 @@ import Vector3D from "../../vox/math/Vector3D";
 import { TransEntity } from "./entity/TransEntity";
 
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
-import { GPURenderPassColorAttachment } from "../gpu/GPURenderPassColorAttachment";
-import { GPUTextureDescriptor } from "../gpu/GPUTextureDescriptor";
-import { GPURenderPipelineDescriptor } from "../gpu/GPURenderPipelineDescriptor";
-import { calculateMipLevels, GPUMipmapGenerator } from "../texture/GPUMipmapGenerator";
-import { GPUDevice } from "../gpu/GPUDevice";
+
 import { RPipelineParams } from "./pipeline/RPipelineParams";
 import { RRendererPass } from "./pipeline/RRendererPass";
+import { RPipelineModule } from "./pipeline/RPipelineModule";
 
 class CubeEntity extends TransEntity { }
 export class BaseRPipeline {
 
 	private mWGCtx = new WebGPUContext();
 
-	private mRPipeline: GPURenderPipeline | null = null;
 	private mVerticesBuffer: GPUBuffer | null = null;
 	private mUniformBuffer: GPUBuffer | null = null;
 	private mUniformBindGroups: GPUBindGroup[] | null = null;
@@ -39,7 +33,7 @@ export class BaseRPipeline {
 	private mEnabled = false;
 
 	private mRendererPass = new RRendererPass();
-	private mipmapGenerator = new GPUMipmapGenerator();
+	private mPipelineModule = new RPipelineModule();
 	generateMipmaps = true;
 	msaaRenderEnabled = true;
 	entitiesTotal = 1;
@@ -89,9 +83,6 @@ export class BaseRPipeline {
 
 			console.log("msaaRenderEnabled: ", this.msaaRenderEnabled);
 			console.log("entitiesTotal: ", this.entitiesTotal);
-
-			this.mipmapGenerator.initialize(this.mWGCtx.device);
-
 			let total = this.entitiesTotal;
 			for (let i = 0; i < total; ++i) {
 				let entity = new CubeEntity();
@@ -115,14 +106,22 @@ export class BaseRPipeline {
 
 			this.createRenderGeometry();
 
-			this.mRPipeline = this.createRenderPipeline(pipeParams);
+			this.mPipelineModule.initialize( this.mWGCtx );
+
+			let vtxDescParam = {vertex:{size: cubeVertexSize, params:[
+				{offset: cubePositionOffset, format: "float32x4"},
+				{offset: cubeUVOffset, format: "float32x2"}
+			]}};
+			
+			this.mPipelineModule.createRenderPipeline( pipeParams,  vtxDescParam);
 
 			this.mRendererPass.initialize(ctx);
 			this.mRendererPass.build(pipeParams);
 
-			this.createMaterialTexture(ctx.device, this.msaaRenderEnabled).then(() => {
-				console.log("webgpu texture res build success ...");
-				this.createUniforms(this.mRPipeline, total);
+			this.mPipelineModule.createMaterialTexture(this.msaaRenderEnabled).then((tex: GPUTexture) => {
+				this.mTexture = tex;
+				console.log("webgpu texture res build success, tex: ", tex);
+				this.createUniforms(this.mPipelineModule.pipeline, total);
 				this.mEnabled = true;
 			});
 		});
@@ -142,46 +141,6 @@ export class BaseRPipeline {
 		verticesBuffer.unmap();
 		this.mVerticesBuffer = verticesBuffer;
 	}
-	private createRenderPipeline(params: RPipelineParams): GPURenderPipeline {
-
-		const ctx = this.mWGCtx;
-		params.setVertexBufferArrayStrideAt(cubeVertexSize);
-		params.addVertexBufferAttribute({
-			// position
-			shaderLocation: 0,
-			offset: cubePositionOffset,
-			format: "float32x4"
-		});
-		params.addVertexBufferAttribute({
-			// uv
-			shaderLocation: 1,
-			offset: cubeUVOffset,
-			format: "float32x2"
-		});
-		params.build(ctx.device);
-		return this.mWGCtx.device.createRenderPipeline(params);
-	}
-	private async createMaterialTexture(device: GPUDevice, generateMipmaps: boolean) {
-
-		let tex: GPUTexture;
-		const response = await fetch("static/assets/box.jpg");
-		const imageBitmap = await createImageBitmap(await response.blob());
-		const mipLevelCount = this.generateMipmaps ? calculateMipLevels(imageBitmap.width, imageBitmap.height) : 1;
-		const textureDescriptor = {
-			size: { width: imageBitmap.width, height: imageBitmap.height, depthOrArrayLayers: 1 },
-			format: "rgba8unorm",
-			mipLevelCount,
-			usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT
-		};
-		tex = device.createTexture(textureDescriptor);
-		device.queue.copyExternalImageToTexture({ source: imageBitmap }, { texture: tex }, [imageBitmap.width, imageBitmap.height]);
-
-		if (generateMipmaps) {
-			this.mipmapGenerator.generateMipmap(tex, textureDescriptor);
-		}
-
-		this.mTexture = tex;
-	}
 	private createUniforms(pipeline: GPURenderPipeline, entitiesTotal: number): void {
 		const ctx = this.mWGCtx;
 		const device = ctx.device;
@@ -190,11 +149,13 @@ export class BaseRPipeline {
 		const offsetRange = 256;		// uniformBindGroup offset must be 256-byte aligned
 		const uniformBufferSize = offsetRange * (entitiesTotal - 1) + matrixSize;
 
-		const uniformBuffer = device.createBuffer({
+		const uniformDesc = {
 			size: uniformBufferSize,
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
-		});
-		this.mUniformBuffer = uniformBuffer;
+		};
+		// const uniformBuffer = device.createBuffer(uniformDesc);
+		// this.mUniformBuffer = uniformBuffer;
+		this.mUniformBuffer = this.mPipelineModule.createUniformBuffer( uniformDesc );
 
 		this.mUniformBindGroups = new Array(entitiesTotal);
 
@@ -212,7 +173,7 @@ export class BaseRPipeline {
 						binding: 0,
 						resource: {
 							offset: offsetRange * i,
-							buffer: uniformBuffer,
+							buffer: this.mUniformBuffer,
 							size: matrixSize
 						}
 					},
@@ -235,7 +196,8 @@ export class BaseRPipeline {
 		if (ctx.enabled) {
 
 			const device = ctx.device;
-			const pipeline = this.mRPipeline;
+			
+			const pipeline = this.mPipelineModule.pipeline;
 
 			this.mRendererPass.runBegin();
 
@@ -250,8 +212,7 @@ export class BaseRPipeline {
 			for (let i = 0; i < entitiesTotal; ++i) {
 				const et = entities[i];
 				if (et.enabled) {
-					const td = et.transData;
-					device.queue.writeBuffer(uniformBuffer, i * 256, td.buffer, td.byteOffset, td.byteLength);
+					this.mPipelineModule.updateUniformBufferAt( et.transData, i);
 					passEncoder.setBindGroup(0, this.mUniformBindGroups[i]);
 					passEncoder.draw(cubeVertexCount);
 				}
