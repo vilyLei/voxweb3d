@@ -1,5 +1,5 @@
 # voxweb3d
-TypeScript WebGL 3D Engine System(High Performence for very many times drawcalls(10000+) and 10 millions+ trangles mesh rendering. Runtime environment support WebGL1 and WebGL2, WebAssembly and Multi-Threads Tasks System, env: pc/web/mobile). The code style like c++/java.
+TypeScript WebGL 3D Engine System(High Performence for very many times drawcalls(10000+) and 10 millions+ trangles mesh rendering. Runtime environment support WebGL1 and WebGL2, WebGPU, WebAssembly and Multi-Threads Tasks System, env: pc/web/mobile). The system code style like c++/java.
 About the "VOX": I(Vily) love(O) my family(X: it is the first letter from their names).
 
 Feature:
@@ -81,8 +81,8 @@ installation and running:
    第一步，全局安装git(https://git-scm.com/downloads)。
    step 1, install global git(https://git-scm.com/downloads).
 
-   第二步，全局安装nodejs(建议大版本为16)(https://nodejs.org/download/release/v16.20.2/)，默认自动安装npm。
-   step 2, install global nodejs(The recommended major version is 16)(https://nodejs.org/download/release/v16.20.2/),auto include npm already.
+   第二步，全局安装nodejs(建议大版本为16)(https://nodejs.org/download/release/v16.20.2/), 默认自动安装npm。
+   step 2, install global nodejs(The recommended major version is 16)(https://nodejs.org/download/release/v16.20.2/), auto include npm already.
 
    第三步，全局安装yarn，在你的系统命令终端执行 npm install -g yarn 命令即可。
    step 3, install global yarn(run the "npm install -g yarn" command in your os terminal)
