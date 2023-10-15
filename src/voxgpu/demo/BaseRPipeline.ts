@@ -2,15 +2,13 @@ import { cubeVertexArray, cubeVertexSize, cubeUVOffset, cubePositionOffset, cube
 
 import basicVertWGSL from "./shaders/basic.vert.wgsl";
 import sampleTextureMixColorWGSL from "./shaders/sampleTextureMixColor.frag.wgsl";
+import vertexPositionColorWGSL from "./shaders/vertexPositionColor.frag.wgsl";
 
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import { GPUBuffer } from "../gpu/GPUBuffer";
-import { GPUBindGroup } from "../gpu/GPUBindGroup";
 import { GPUTexture } from "../gpu/GPUTexture";
 import CameraBase from "../../vox/view/CameraBase";
 import Vector3D from "../../vox/math/Vector3D";
-import { TransEntity } from "./entity/TransEntity";
-
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 
 import { RPipelineParams } from "./pipeline/RPipelineParams";
@@ -19,13 +17,11 @@ import { RPipelineModule } from "./pipeline/RPipelineModule";
 import { WROEntity } from "./entity/WROEntity";
 import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
 
-// class CubeEntity extends TransEntity { }
 export class BaseRPipeline {
 
 	private mWGCtx = new WebGPUContext();
 
 	private mVerticesBuffer: GPUBuffer | null = null;
-	private mUniformBindGroups: GPUBindGroup[] | null = null;
 	private mCam = new CameraBase();
 	private mEntities: WROEntity[] = [];
 	private mFPS = new RenderStatusDisplay();
@@ -84,11 +80,12 @@ export class BaseRPipeline {
 			console.log("entitiesTotal: ", this.entitiesTotal);
 			let total = this.entitiesTotal;
 
+			let texEnabled = false;
 			let pipeParams = new RPipelineParams({
 				sampleCount: 4,
 				multisampleEnabled: this.msaaRenderEnabled,
 				vertShaderSrc: { code: basicVertWGSL },
-				fragShaderSrc: { code: sampleTextureMixColorWGSL },
+				fragShaderSrc: { code: texEnabled ? sampleTextureMixColorWGSL : vertexPositionColorWGSL },
 				depthStencilEnabled: true,
 				fragmentEnabled: true,
 			});
@@ -111,13 +108,18 @@ export class BaseRPipeline {
 
 			this.mRendererPass.initialize(ctx);
 			this.mRendererPass.build(pipeParams);
+			if(texEnabled) {
 
-			this.mPipelineModule.createMaterialTexture(this.msaaRenderEnabled).then((tex: GPUTexture) => {
-				console.log("webgpu texture res build success, tex: ", tex);
-				
-				this.createEntities( total, tex);
+				this.mPipelineModule.createMaterialTexture(this.msaaRenderEnabled).then((tex: GPUTexture) => {
+					console.log("webgpu texture res build success, tex: ", tex);
+					
+					this.createEntities( total, tex);
+					this.mEnabled = true;
+				});
+			}else {
+				this.createEntities( total, null );
 				this.mEnabled = true;
-			});
+			}
 		});
 	}
 
@@ -164,17 +166,7 @@ export class BaseRPipeline {
 			this.mEntities[0].trans.scaleFactor = 1.0;
 			this.mEntities[0].trans.posV.setXYZ(0, 0, 0);
 		}
-		
-		// this.createUniforms( total, matrixSize, tex );
 	}
-	// private createUniforms(total: number, matrixSize: number, tex: GPUTexture): void {
-		
-	// 	this.mUniformBindGroups = new Array(total);
-	// 	const texView = tex ? tex.createView() : null;
-	// 	for (let i = 0; i < total; ++i) {
-	// 		this.mUniformBindGroups[i] = this.mPipelineModule.createUniformBindGroup(i, matrixSize, texView);
-	// 	}
-	// }
 	private renderFrame(): void {
 
 		const ctx = this.mWGCtx;
