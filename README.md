@@ -1,5 +1,5 @@
 # voxweb3d
-TypeScript WebGL 3D Engine Wystem(High Performence for very many times drawcalls(10000+) and 10 millions+ trangles mesh rendering. Runtime environment support WebGL1 and WebGL2, WebAssembly and Multi-Threads Tasks System, env: pc/web/mobile). The code style like c++/java.
+TypeScript WebGL 3D Engine System(High Performence for very many times drawcalls(10000+) and 10 millions+ trangles mesh rendering. Runtime environment support WebGL1 and WebGL2, WebAssembly and Multi-Threads Tasks System, env: pc/web/mobile). The code style like c++/java.
 About the "VOX": I(Vily) love(O) my family(X: it is the first letter from their names).
 
 Feature:
@@ -60,7 +60,16 @@ Feature:
     17.支持3D或2D游戏开发。
        support 2D or 3D game development.
 
-    Some Features that will be supported in the future:
+    18.支持 WebGPU 计算结构。
+      support WebGPU computing sturcture.
+
+    19.支持 WebGPU 实时光追。
+      support WebGPU real-time ray-tracing.
+      
+    20.支持 WebGPU 3D引擎结构。
+      support WebGPU 3D engine structure.
+   
+    Some Features that will be supported or improved in the future:
        RSM, SSDO, VXGI, WebGPU, RayTracing, AI Model
 
 Engine code under the path: "src\vox\"
