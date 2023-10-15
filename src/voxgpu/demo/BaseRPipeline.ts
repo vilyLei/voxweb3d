@@ -28,7 +28,6 @@ export class BaseRPipeline {
 	private mEnabled = false;
 
 	private mRendererPass = new RRendererPass();
-	private mPipelineModule = new RPipelineModule();
 	generateMipmaps = true;
 	msaaRenderEnabled = true;
 	entitiesTotal = 3;
@@ -78,11 +77,14 @@ export class BaseRPipeline {
 
 			console.log("msaaRenderEnabled: ", this.msaaRenderEnabled);
 			console.log("entitiesTotal: ", this.entitiesTotal);
+
+			let sampleCount = 4;
+
 			let total = this.entitiesTotal;
 
 			let texEnabled = false;
 			let pipeParams = new RPipelineParams({
-				sampleCount: 4,
+				sampleCount: sampleCount,
 				multisampleEnabled: this.msaaRenderEnabled,
 				vertShaderSrc: { code: basicVertWGSL },
 				fragShaderSrc: { code: texEnabled ? sampleTextureMixColorWGSL : vertexPositionColorWGSL },
@@ -93,7 +95,8 @@ export class BaseRPipeline {
 
 			this.createRenderGeometry();
 
-			this.mPipelineModule.initialize(this.mWGCtx);
+			let pipelineModule = new RPipelineModule();
+			pipelineModule.initialize(this.mWGCtx);
 
 			let vtxDescParam = {
 				vertex: {
@@ -104,20 +107,23 @@ export class BaseRPipeline {
 				}
 			};
 
-			this.mPipelineModule.createRenderPipeline(pipeParams, vtxDescParam);
+			pipelineModule.createRenderPipeline(pipeParams, vtxDescParam);
 
 			this.mRendererPass.initialize(ctx);
-			this.mRendererPass.build(pipeParams);
+			this.mRendererPass.build( {
+				sampleCount: sampleCount,
+				multisampleEnabled: this.msaaRenderEnabled
+			});
 			if(texEnabled) {
 
-				this.mPipelineModule.createMaterialTexture(this.msaaRenderEnabled).then((tex: GPUTexture) => {
+				pipelineModule.createMaterialTexture(this.msaaRenderEnabled).then((tex: GPUTexture) => {
 					console.log("webgpu texture res build success, tex: ", tex);
 					
-					this.createEntities( total, tex);
+					this.createEntities(pipelineModule, total, tex);
 					this.mEnabled = true;
 				});
 			}else {
-				this.createEntities( total, null );
+				this.createEntities( pipelineModule, total, null );
 				this.mEnabled = true;
 			}
 		});
@@ -139,7 +145,7 @@ export class BaseRPipeline {
 	}
 
 
-	private createEntities(total: number, tex: GPUTexture): void {
+	private createEntities(pipelineModule: RPipelineModule, total: number, tex: GPUTexture): void {
 
 		const matrixSize = 4 * 16;		// 4x4 matrix
 		const offsetRange = 256;		// uniformBindGroup offset must be 256-byte aligned
@@ -149,17 +155,19 @@ export class BaseRPipeline {
 			size: uniformBufferSize,
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		};
-		this.mPipelineModule.createUniformBuffer(uniformDesc);
+		pipelineModule.createUniformBuffer(uniformDesc);
 		const texView = tex ? tex.createView() : null;
 
 		for (let i = 0; i < total; ++i) {
 			let entity = new WROEntity();
 			entity.trans.scaleFactor *= 1.5;
+			entity.trans.dataIndex = i;
 			entity.trans.intialize(this.mCam);
-			entity.pipeline = this.mPipelineModule.pipeline;
+			entity.pipeline = pipelineModule.pipeline;
+			entity.pipelineModule = pipelineModule;
 			entity.vtxBuffer = this.mVerticesBuffer;
 			entity.vtCount = cubeVertexCount;
-			entity.uniformBindGroup = this.mPipelineModule.createUniformBindGroup(i, matrixSize, texView);
+			entity.uniformBindGroup = pipelineModule.createUniformBindGroup(i, matrixSize, texView);
 			this.mEntities.push(entity);
 		}
 		if (total == 1) {
@@ -193,7 +201,7 @@ export class BaseRPipeline {
 						vtxBuffer = et.vtxBuffer;
 						passEncoder.setVertexBuffer(et.bindIndex, vtxBuffer );
 					}
-					this.mPipelineModule.updateUniformBufferAt(et.trans.transData, i);
+					et.pipelineModule.updateUniformBufferAt(et.trans.transData, et.trans.dataIndex);
 					passEncoder.setBindGroup(et.bindIndex, et.uniformBindGroup);
 					passEncoder.draw(et.vtCount);
 				}

@@ -10,10 +10,14 @@ import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { RPipelineParams } from "./RPipelineParams";
 
+interface RRPassParams {
+    multisampleEnabled: boolean;
+    sampleCount: number;
+}
 class RRendererPass {
 
     private mWGCtx: WebGPUContext | null = null;
-    private mParams: RPipelineParams | null = null;
+    private mParams: RRPassParams | null = null;
     private mRTexView: GPUTextureView | null = null;
     private mDepthTexture: GPUTexture | null = null;
 
@@ -29,11 +33,11 @@ class RRendererPass {
         this.mWGCtx = wgCtx;
     }
 
-    build(params: RPipelineParams): void {
+    build(params: RRPassParams): void {
         this.mParams = params;
         this.createRenderPassTexture(params);
     }
-    private createRenderPassTexture(params: RPipelineParams): void {
+    private createRenderPassTexture(params: RRPassParams): void {
 
         const ctx = this.mWGCtx;
         const device = ctx.device;
@@ -97,8 +101,6 @@ class RRendererPass {
             this.passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
         }
     }
-    // render(): void {
-    // }
     runEnd(): GPUCommandBuffer {
 
         const ctx = this.mWGCtx;

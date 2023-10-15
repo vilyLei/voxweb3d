@@ -13,6 +13,7 @@ class TransEntity {
 	transData: Float32Array | null = null;
 	scaleFactor = Math.random() * 0.3 + 0.1;
 	enabled = true;
+	dataIndex = 0;
 	intialize(cam?: CameraBase): void {
 		this.trans = ROTransform.Create();
 		this.trans.update();
