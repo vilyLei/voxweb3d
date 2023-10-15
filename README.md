@@ -81,8 +81,8 @@ installation and running:
    第一步，全局安装git(https://git-scm.com/downloads)。
    step 1, install global git(https://git-scm.com/downloads).
 
-   第二步，全局安装nodejs(建议大版本为16)(https://nodejs.org/en/)，默认自动安装npm。
-   step 2, install global nodejs(The recommended major version is 16)(https://nodejs.org/en/),auto include npm already.
+   第二步，全局安装nodejs(建议大版本为16)(https://nodejs.org/download/release/v16.20.2/)，默认自动安装npm。
+   step 2, install global nodejs(The recommended major version is 16)(https://nodejs.org/download/release/v16.20.2/),auto include npm already.
 
    第三步，全局安装yarn，在你的系统命令终端执行 npm install -g yarn 命令即可。
    step 3, install global yarn(run the "npm install -g yarn" command in your os terminal)
