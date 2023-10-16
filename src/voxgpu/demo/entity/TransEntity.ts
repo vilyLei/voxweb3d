@@ -15,7 +15,7 @@ class TransEntity {
 	enabled = true;
 	dataIndex = 0;
 	upateTimes = 100000000;
-
+	running = true;
 	intialize(cam?: CameraBase): void {
 		this.trans = ROTransform.Create();
 		this.trans.update();
@@ -33,8 +33,11 @@ class TransEntity {
 		this.transData = mat.getLocalFS32();
 	}
 	run(cam: CameraBase): void {
-		if(this.upateTimes > 0) {
+
+		if(this.running && this.upateTimes > 0) {
+			
 			this.upateTimes --;
+			
 			const rv = this.rotateV;
 			const sv = this.scaleV;
 			let s = this.scaleFactor * Math.cos((sv.w += 0.01)) + 0.1;

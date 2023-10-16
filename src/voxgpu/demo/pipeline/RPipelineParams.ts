@@ -1,3 +1,5 @@
+import { GPUBlendComponent } from "../../gpu/GPUBlendComponent";
+import { GPUColorTargetState } from "../../gpu/GPUColorTargetState";
 import { GPUDepthStencilState } from "../../gpu/GPUDepthStencilState";
 import { GPUDevice } from "../../gpu/GPUDevice";
 import { GPUFragmentState } from "../../gpu/GPUFragmentState";
@@ -78,24 +80,49 @@ class RPipelineParams implements GPURenderPipelineDescriptor {
 			}
 		}
 	}
+	setBlendParam(color: GPUBlendComponent, alpha: GPUBlendComponent, targetIndex = 0): void {
+		if (this.fragmentEnabled) {
+			const frag = this.fragment;
+			const target = frag.targets[targetIndex];
+			if (target.blend) {
+				if (color) {
+					target.blend.color = color;
+				}
+				if (alpha) {
+					target.blend.alpha = alpha;
+				}
+			} else {
+				target.blend = {
+					color,
+					alpha
+				};
+			}
+		}
+	}
+	addFragmentColorTarget(colorState: GPUColorTargetState): void {
+		if (this.fragmentEnabled && colorState) {
+			const frag = this.fragment;
+			frag.targets.push(colorState);
+		}
+	}
 	build(device: GPUDevice): void {
 		let shdModule = this.shaderSrc
 			? device.createShaderModule({
-					label: "shd",
-					code: this.shaderSrc.code
-			  })
+				label: "shd",
+				code: this.shaderSrc.code
+			})
 			: null;
 		let vertShdModule = this.vertShaderSrc
 			? device.createShaderModule({
-					label: "vertShd",
-					code: this.vertShaderSrc.code
-			  })
+				label: "vertShd",
+				code: this.vertShaderSrc.code
+			})
 			: shdModule;
 		let fragShdModule = this.fragShaderSrc
 			? device.createShaderModule({
-					label: "fragShd",
-					code: this.fragShaderSrc.code
-			  })
+				label: "fragShd",
+				code: this.fragShaderSrc.code
+			})
 			: shdModule;
 
 		const vert = this.vertex;

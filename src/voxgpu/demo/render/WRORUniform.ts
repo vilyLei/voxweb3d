@@ -1,7 +1,5 @@
 import { GPUBindGroup } from "../../gpu/GPUBindGroup";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
-import { GPUSampler } from "../../gpu/GPUSampler";
-import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WROPipelineContext } from "../pipeline/WROPipelineContext";
 interface RUniformCtx {
 	removeUniform(u: WRORUniform): void;
@@ -12,11 +10,8 @@ class WRORUniform {
     pipelineCtx: WROPipelineContext | null = null;
 
 	index = -1;
-	// usage = 0;
 	layoutName = "";
 
-	// texView?: GPUTextureView;
-	// sampler?: GPUSampler;
 
 	buffers: GPUBuffer[] | null = null;
 	bindGroup: GPUBindGroup | null = null;
