@@ -1,12 +1,15 @@
+import { type } from "jquery";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { GPUSampler } from "../../gpu/GPUSampler";
 import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WROPipelineContext } from "../pipeline/WROPipelineContext";
 import { WRORUniform } from "./WRORUniform";
 
+type BufDataType = { size: number,usage: number, defaultData?: Float32Array | Int32Array | Uint32Array | Uint16Array | Int16Array };
 class WROUniformWrapper {
 	uniform: WRORUniform | null = null;
-	bufDataParams?: { size: number; usage: number }[];
+	bufDataParams?: BufDataType[];
+	bufDataDescs?: {index: number, buffer: GPUBuffer, bufferSize: number}[];
 	texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[];
 	usage = 0;
 	// size = 0;
@@ -61,9 +64,9 @@ class UCtxInstance {
 							for (let j = 0; j < wp.bufDataParams.length; ++j) {
 								dataParams.push({ index: i, buffer: uf.buffers[j], bufferSize: wp.bufDataParams[j].size });
 							}
+							wp.bufDataDescs = dataParams;
 							uf.bindGroup = this.mPipelineCtx.createUniformBindGroup(wp.groupIndex, dataParams, wp.texParams);
 						}else {
-							//createUniformBindGroup(groupIndex: number, dataParams: {index: number, buffer: GPUBuffer, bufferSize: number}[], texParams?: {texView?: GPUTextureView, sampler?: GPUSampler}[])
 							uf.bindGroup = this.mPipelineCtx.createUniformBindGroup(wp.groupIndex, null, wp.texParams);
 						}
 					}
@@ -75,8 +78,8 @@ class UCtxInstance {
 	runEnd(): void {}
 	createUniform(
 		groupIndex: number,
-		bufDataParams?: { size: number; usage: number }[],
-		texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[]
+		bufDataParams?:BufDataType[],
+		texParams?: { texView: GPUTextureView, sampler?: GPUSampler }[]
 	): WRORUniform {
 		const index = this.getFreeIndex();
 		const u = new WRORUniform();
@@ -103,9 +106,7 @@ class UCtxInstance {
 			const wp = this.mList[u.index];
 			const uf = wp.uniform;
 			if (uf) {
-				// wp.texView = texView;
-				// wp.sampler = sampler;
-				// uf.bindGroup = this.mPipelineCtx.createUniformBindGroup(wp.groupIndex, u.index, this.mVtxUniformBuffer, wp.size, texView, sampler);
+				uf.bindGroup = this.mPipelineCtx.createUniformBindGroup(wp.groupIndex, wp.bufDataDescs, texParams);
 			}
 		}
 	}
@@ -176,8 +177,8 @@ class WRORUniformContext {
 	createUniform(
 		layoutName: string,
 		groupIndex: number,
-		bufDataParams?: { size: number; usage: number }[],
-		texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[]
+		bufDataParams?: { size: number, usage: number }[],
+		texParams?: { texView: GPUTextureView, sampler?: GPUSampler }[]
 	): WRORUniform | null {
 		if (this.mPipelineCtx) {
 			const uctx = this.getUCtx(layoutName);
@@ -205,4 +206,4 @@ class WRORUniformContext {
 		}
 	}
 }
-export { WRORUniformContext };
+export { BufDataType, WRORUniformContext };
