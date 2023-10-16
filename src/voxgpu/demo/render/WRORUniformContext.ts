@@ -2,13 +2,12 @@ import { type } from "jquery";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { GPUSampler } from "../../gpu/GPUSampler";
 import { GPUTextureView } from "../../gpu/GPUTextureView";
-import { WROPipelineContext } from "../pipeline/WROPipelineContext";
+import { BufDataParamType, WROPipelineContext } from "../pipeline/WROPipelineContext";
 import { WRORUniform } from "./WRORUniform";
 
-type BufDataType = { size: number,usage: number, defaultData?: Float32Array | Int32Array | Uint32Array | Uint16Array | Int16Array };
 class WROUniformWrapper {
 	uniform: WRORUniform | null = null;
-	bufDataParams?: BufDataType[];
+	bufDataParams?: BufDataParamType[];
 	bufDataDescs?: {index: number, buffer: GPUBuffer, bufferSize: number}[];
 	texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[];
 	usage = 0;
@@ -48,7 +47,7 @@ class UCtxInstance {
 						for (let j = 0; j < ls.length; ++j) {
 							uniformParams.sizes[j] = ls[j].bufDataParams[i].size;
 						}
-						const buffer = this.mPipelineCtx.createUniformBufferBlock(uniformParams);
+						const buffer = this.mPipelineCtx.createUniformsBuffer(uniformParams);
 						this.mBuffers.push(buffer);
 					}
 				}
@@ -78,7 +77,7 @@ class UCtxInstance {
 	runEnd(): void {}
 	createUniform(
 		groupIndex: number,
-		bufDataParams?:BufDataType[],
+		bufDataParams?:BufDataParamType[],
 		texParams?: { texView: GPUTextureView, sampler?: GPUSampler }[]
 	): WRORUniform {
 		const index = this.getFreeIndex();
@@ -206,4 +205,4 @@ class WRORUniformContext {
 		}
 	}
 }
-export { BufDataType, WRORUniformContext };
+export { BufDataParamType, WRORUniformContext };
