@@ -10,6 +10,11 @@ class WRORUnit {
     trans = new TransEntity();
     vtCount: number;
     pipeline: GPURenderPipeline | null = null;
+
+    // indexVtxCount = 0;
+    // indexBufferFormat = "uint32";
+    indexBuffer: GPUBuffer | null = null;
+
     vtxBuffers: GPUBuffer[] | null = null;
     pipelineCtx: WROPipelineContext | null = null;
 	/**

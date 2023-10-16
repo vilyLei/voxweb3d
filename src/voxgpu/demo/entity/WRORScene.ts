@@ -23,7 +23,9 @@ import { GPUTextureView } from "../../gpu/GPUTextureView";
 
 class WRORScene {
 	private mPipelineCtxs: WROPipelineContext[] = [];
-	private mVtxBuffers: GPUBuffer[] | null = null;
+	private mVtxBufs: GPUBuffer[] | null = null;
+	private mIndexBuf: GPUBuffer | null = null;
+	private mIndices: (Uint16Array | Uint32Array) | null = null;
 
 	readonly vtxCtx = new WROBufferContext();
 	readonly texCtx = new WROTextureContext();
@@ -33,8 +35,8 @@ class WRORScene {
 
 	runits: WRORUnit[] = [];
 	enabled = true;
-	camera: CameraBase | null;
-	renderCommand: GPUCommandBuffer | null;
+	camera: CameraBase | null = null;
+	renderCommand: GPUCommandBuffer | null = null;
 
 	msaaRenderEnabled = true;
 	mEnabled = false;
@@ -196,9 +198,17 @@ class WRORScene {
 		let scale = 100.0;
 		const dvs = cubeVertexArray;
 		let vtxTotal = 0;
+
 		for (let i = 0; i < dvs.length; i += 10) {
 			vtxTotal++;
 		}
+		
+		this.mIndices = this.vtxCtx.createIndicesWithSize( vtxTotal );
+		for (let i = 0; i < vtxTotal; ++i) {
+			this.mIndices[i] = i;
+		}
+		this.mIndexBuf = this.vtxCtx.createIndexBuffer( this.mIndices );
+
 		console.log("vtxTotal: ", vtxTotal);
 		let vs = new Float32Array(vtxTotal * 4);
 		let cvs = new Float32Array(vtxTotal * 4);
@@ -231,13 +241,13 @@ class WRORScene {
 
 		if (this.mCombinedBuf) {
 			let buf = this.vtxCtx.createVertexBuffer(dvs);
-			this.mVtxBuffers = [buf];
+			this.mVtxBufs = [buf];
 		} else {
 			// console.log("vs: ", vs);
 			// console.log("uvs: ", uvs);
 			let vsBuf = this.vtxCtx.createVertexBuffer(vs);
 			let uvsBuf = this.vtxCtx.createVertexBuffer(uvs);
-			this.mVtxBuffers = [vsBuf, uvsBuf];
+			this.mVtxBufs = [vsBuf, uvsBuf];
 		}
 	}
 	private createEntities(
@@ -247,8 +257,8 @@ class WRORScene {
 		texView?: GPUTextureView,
 		brnEnabled = false
 	): void {
-		const matrixSize = 4 * 16; // 4x4 matrix
-		const brnSize = 4 * 4; // 4x4 matrix
+		const matrixSize = 4 * 16;	// 4x4 matrix
+		const brnSize = 4 * 4;		// 4x4 matrix
 		const uniformUsage = GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
 
 		for (let i = 0; i < total; ++i) {
@@ -257,8 +267,9 @@ class WRORScene {
 			unit.trans.intialize(this.camera);
 			unit.pipeline = pipelineCtx.pipeline;
 			unit.pipelineCtx = pipelineCtx;
-			unit.vtxBuffers = this.mVtxBuffers;
+			unit.vtxBuffers = this.mVtxBufs;
 			unit.vtCount = cubeVertexCount;
+			unit.indexBuffer = this.mIndexBuf;
 
 			if (brnEnabled) {
 				unit.brnData = new Float32Array([Math.random() * 1.5, Math.random() * 1.5, Math.random() * 1.5, 1]);
@@ -279,7 +290,6 @@ class WRORScene {
 					[{ texView: texView }]
 				);
 			}
-
 			this.runits.push(unit);
 		}
 		if (total == 1) {

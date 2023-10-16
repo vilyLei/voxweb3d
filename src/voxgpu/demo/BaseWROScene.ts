@@ -85,7 +85,15 @@ export class BaseWROScene {
 							uf.updateData(ut.trans.transData);
 						}
 
-						passEncoder.draw(ut.vtCount);
+						if(ut.indexBuffer) {
+
+							passEncoder.setIndexBuffer( ut.indexBuffer, ut.indexBuffer.dataFormat );
+							// passEncoder.drawIndexed( ut.indexVtxCount, 1 );
+							// console.log("ut.indexBuffer.elementCount: ", ut.indexBuffer.elementCount);
+							passEncoder.drawIndexed( ut.indexBuffer.elementCount, 1 );
+						}else {
+							passEncoder.draw(ut.vtCount);
+						}
 					}
 				}
 			}

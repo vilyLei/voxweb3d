@@ -12,17 +12,51 @@ class WROBufferContext {
     initialize(wgCtx: WebGPUContext): void {
         this.mWGCtx = wgCtx;
     }
-	createVertexBuffer(data: Float32Array, offset: number = 0, mappedAtCreation: boolean = true): GPUBuffer {
+	
+	createIndices(dataArray: number[]): Uint32Array | Uint16Array {
+		
+		if(dataArray.length <= 65536) {
+			return new Uint16Array(dataArray);
+		}
+		return new Uint32Array(dataArray);
+	}
+	createIndicesWithSize(size: number): Uint32Array | Uint16Array {
+		
+		if(size <= 65536) {
+			return new Uint16Array(size);
+		}
+		return new Uint32Array(size);
+	}
+
+	createIndexBuffer(data: Uint32Array | Uint16Array, offset = 0, mappedAtCreation = true): GPUBuffer {
+
+		const buf = this.createBuffer(data, offset, mappedAtCreation, GPUBufferUsage.INDEX);
+		buf.dataFormat = data.BYTES_PER_ELEMENT == 2 ? 'uint16' : 'uint32';
+		buf.elementCount = data.length;
+		
+		return buf;
+	}
+	createVertexBuffer(data: Float32Array | Uint32Array | Uint16Array, offset = 0, mappedAtCreation = true): GPUBuffer {
+		return this.createBuffer(data, offset, mappedAtCreation, GPUBufferUsage.VERTEX);
+	}
+
+	createBuffer(data: Float32Array | Uint32Array | Uint16Array, offset = 0, mappedAtCreation = true, usage = GPUBufferUsage.VERTEX): GPUBuffer {
 
 		const ctx = this.mWGCtx;
 
 		const buf = ctx.device.createBuffer({
 			size: data.byteLength,
-			usage: GPUBufferUsage.VERTEX,
+			usage: usage,
 			mappedAtCreation: mappedAtCreation
 		});
 		if(mappedAtCreation) {
-			new Float32Array(buf.getMappedRange()).set(data, offset);
+			if(data instanceof Float32Array) {
+				new Float32Array(buf.getMappedRange()).set(data, offset);
+			}else if(data instanceof Uint16Array) {
+				new Uint16Array(buf.getMappedRange()).set(data, offset);
+			}else if(data instanceof Uint16Array) {
+				new Uint16Array(buf.getMappedRange()).set(data, offset);
+			}
 			buf.unmap();
 		}
 

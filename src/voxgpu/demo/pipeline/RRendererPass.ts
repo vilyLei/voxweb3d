@@ -1,3 +1,4 @@
+import Color4 from "../../../vox/material/Color4";
 import { GPUCommandBuffer } from "../../gpu/GPUCommandBuffer";
 import { GPUCommandEncoder } from "../../gpu/GPUCommandEncoder";
 import { GPURenderPassColorAttachment } from "../../gpu/GPURenderPassColorAttachment";
@@ -18,12 +19,12 @@ class RRendererPass {
 
     private mWGCtx: WebGPUContext | null = null;
     private mParams: RRPassParams | null = null;
-    private mRTexView: GPUTextureView | null = null;
+    colorView: GPUTextureView | null = null;
     private mDepthTexture: GPUTexture | null = null;
 
     passEncoder: GPURenderPassEncoder | null = null;
     commandEncoder: GPUCommandEncoder | null = null;
-
+    clearColor = new Color4(0.0,0.0,0.0,1.0);
     constructor(wgCtx?: WebGPUContext) {
         if (wgCtx) {
             this.initialize(wgCtx);
@@ -50,7 +51,7 @@ class RRendererPass {
                 format: ctx.presentationFormat,
                 usage: GPUTextureUsage.RENDER_ATTACHMENT
             });
-            this.mRTexView = texture.createView();
+            this.colorView = texture.createView();
         }
 
         let depthTexDesc = {
@@ -70,19 +71,18 @@ class RRendererPass {
         const ctx = this.mWGCtx;
         if (ctx.enabled) {
             const device = ctx.device;
-            // const pipeline = this.mRPipeline;
 
             this.commandEncoder = device.createCommandEncoder();
             const commandEncoder = this.commandEncoder;
 
             let rpassColorAttachment = {
-                clearValue: { r: 0.5, g: 0.5, b: 0.5, a: 1.0 },
+                clearValue: this.clearColor,
                 loadOp: "clear",
                 storeOp: "store"
             } as GPURenderPassColorAttachment;
 
             if (this.mParams.multisampleEnabled) {
-                rpassColorAttachment.view = this.mRTexView;
+                rpassColorAttachment.view = this.colorView;
                 rpassColorAttachment.resolveTarget = ctx.createCurrentView();
             } else {
                 rpassColorAttachment.view = ctx.createCurrentView();

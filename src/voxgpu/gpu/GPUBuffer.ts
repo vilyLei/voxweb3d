@@ -1,5 +1,7 @@
 interface GPUBuffer {
-	uid?: number
+	uid?: number;
+	dataFormat?: string;
+	elementCount?: number;
 	label?: string;
 	mapState: string;
 	/**
