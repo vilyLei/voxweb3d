@@ -37,20 +37,22 @@ class WROPipelineContext {
         const buf = this.mWGCtx.device.createBuffer( desc );
         return buf;
     }
-    createUniformBufferWithParam(bufSize: number, usage: number): GPUBuffer {
+    createUniformBufferWithParam(bufSize: number, usage: number, mappedAtCreation = false): GPUBuffer {
 		const desc = {
 			size: bufSize,
-			usage: usage
+			usage: usage,
+			mappedAtCreation
 		};
         const buf = this.mWGCtx.device.createBuffer( desc );
         return buf;
     }
-	createUniformBufferBlock(params: {sizes: number[], usage: number}): GPUBuffer {
+	createUniformBufferBlock(params: {sizes: number[], usage: number}, mappedAtCreation = false): GPUBuffer {
 		let total = params.sizes.length;
 		let size = 256 * (total - 1) + params.sizes[0];
 		const desc = {
 			size: size,
-			usage: params.usage
+			usage: params.usage,
+			mappedAtCreation
 		};
         const buf = this.mWGCtx.device.createBuffer( desc );
 		console.log("createUniformBufferBlock(), size: ", size, ", usage: ", params.usage);
@@ -62,15 +64,6 @@ class WROPipelineContext {
     createUniformBindGroup(groupIndex: number, dataParams?: {index: number, buffer: GPUBuffer, bufferSize: number}[], texParams?: {texView?: GPUTextureView, sampler?: GPUSampler}[]): GPUBindGroup {
 
         const device = this.mWGCtx.device;
-
-        // if(texView && !sampler) {
-        //     sampler = device.createSampler({
-        //         magFilter: 'linear',
-        //         minFilter: 'linear',
-        //         mipmapFilter: 'linear',
-        //     });
-        // }
-
 
 		if(!this.mBindGroupLayouts[groupIndex]) {
 			this.mBindGroupLayouts[groupIndex] = this.pipeline.getBindGroupLayout(groupIndex);
@@ -121,24 +114,6 @@ class WROPipelineContext {
 				}
 			}
 		}
-		/*
-        if(texView) {
-            desc.entries = [
-                et0
-                ,
-                {
-                    binding: 1,
-                    resource: sampler,
-                },
-                {
-                    binding: 2,
-                    resource: texView,
-                },
-            ];
-        }else {
-            desc.entries = [et0];
-        }
-		//*/
 
         return device.createBindGroup(desc);
     }
@@ -164,7 +139,7 @@ class WROPipelineContext {
 				pipelineParams.build(ctx.device);
 			}
 		}
-		console.log("createRenderPipeline(), pipelineParams:\n",pipelineParams);
+		// console.log("createRenderPipeline(), pipelineParams:\n",pipelineParams);
 		this.pipeline = ctx.device.createRenderPipeline(pipelineParams);
         return this.pipeline;
 	}
