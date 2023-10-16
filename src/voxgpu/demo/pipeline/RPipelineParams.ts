@@ -80,6 +80,17 @@ class RPipelineParams implements GPURenderPipelineDescriptor {
 			}
 		}
 	}
+	setTransparentBlendParam(targetIndex = 0): void {
+		let color = {
+			srcFactor: 'src-alpha',
+			dstFactor: 'one-minus-src-alpha',
+		};
+		let alpha = {
+			srcFactor: 'zero',
+			dstFactor: 'one'
+		};
+		this.setBlendParam(color, alpha, targetIndex);
+	}
 	setBlendParam(color: GPUBlendComponent, alpha: GPUBlendComponent, targetIndex = 0): void {
 		if (this.fragmentEnabled) {
 			const frag = this.fragment;
@@ -103,6 +114,12 @@ class RPipelineParams implements GPURenderPipelineDescriptor {
 		if (this.fragmentEnabled && colorState) {
 			const frag = this.fragment;
 			frag.targets.push(colorState);
+		}
+	}
+	setFragmentColorTarget(colorState: GPUColorTargetState, targetIndex = 0): void {
+		if (this.fragmentEnabled && colorState) {
+			const frag = this.fragment;
+			frag.targets[targetIndex] = colorState;
 		}
 	}
 	build(device: GPUDevice): void {
