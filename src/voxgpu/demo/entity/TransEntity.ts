@@ -16,6 +16,7 @@ class TransEntity {
 	dataIndex = 0;
 	upateTimes = 100000000;
 	running = true;
+	version = -1;
 	intialize(cam?: CameraBase): void {
 		this.trans = ROTransform.Create();
 		this.trans.update();
@@ -55,6 +56,7 @@ class TransEntity {
 			trans.update();
 
 			this.applyCamera(cam);
+			this.version ++;
 		}
 	}
 }
