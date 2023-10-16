@@ -118,7 +118,7 @@ export class BaseRPipeline {
 
 				pipelineModule.createMaterialTexture(this.msaaRenderEnabled).then((tex: GPUTexture) => {
 					console.log("webgpu texture res build success, tex: ", tex);
-					
+
 					this.createEntities(pipelineModule, total, tex);
 					this.mEnabled = true;
 				});
@@ -155,7 +155,7 @@ export class BaseRPipeline {
 			size: uniformBufferSize,
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		};
-		pipelineModule.createUniformBuffer(uniformDesc);
+		let buf = pipelineModule.createUniformBuffer(uniformDesc);
 		const texView = tex ? tex.createView() : null;
 
 		for (let i = 0; i < total; ++i) {
@@ -166,8 +166,9 @@ export class BaseRPipeline {
 			entity.pipeline = pipelineModule.pipeline;
 			entity.pipelineModule = pipelineModule;
 			entity.vtxBuffer = this.mVerticesBuffer;
+			entity.vtxUniformBuffer = buf;
 			entity.vtCount = cubeVertexCount;
-			entity.uniformBindGroup = pipelineModule.createUniformBindGroup(i, matrixSize, texView);
+			entity.uniformBindGroup = pipelineModule.createUniformBindGroup(i, buf, matrixSize, texView);
 			this.mEntities.push(entity);
 		}
 		if (total == 1) {
@@ -201,7 +202,7 @@ export class BaseRPipeline {
 						vtxBuffer = et.vtxBuffer;
 						passEncoder.setVertexBuffer(et.bindIndex, vtxBuffer );
 					}
-					et.pipelineModule.updateUniformBufferAt(et.trans.transData, et.trans.dataIndex);
+					et.pipelineModule.updateUniformBufferAt(et.vtxUniformBuffer, et.trans.transData, et.trans.dataIndex);
 					passEncoder.setBindGroup(et.bindIndex, et.uniformBindGroup);
 					passEncoder.draw(et.vtCount);
 				}

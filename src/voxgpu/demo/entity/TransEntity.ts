@@ -14,6 +14,8 @@ class TransEntity {
 	scaleFactor = Math.random() * 0.3 + 0.1;
 	enabled = true;
 	dataIndex = 0;
+	upateTimes = 100000000;
+
 	intialize(cam?: CameraBase): void {
 		this.trans = ROTransform.Create();
 		this.trans.update();
@@ -31,27 +33,26 @@ class TransEntity {
 		this.transData = mat.getLocalFS32();
 	}
 	run(cam: CameraBase): void {
-		const rv = this.rotateV;
-		const sv = this.scaleV;
-		let s = this.scaleFactor * Math.cos((sv.w += 0.01)) + 0.1;
-		if (s < 0.1) {
-			s = 0.1;
+		if(this.upateTimes > 0) {
+			this.upateTimes --;
+			const rv = this.rotateV;
+			const sv = this.scaleV;
+			let s = this.scaleFactor * Math.cos((sv.w += 0.01)) + 0.1;
+			if (s < 0.1) {
+				s = 0.1;
+			}
+			sv.setXYZ(s, s, s);
+
+			const trans = this.trans;
+			rv.x += 1.0;
+			rv.y += 0.5;
+			trans.setRotationV3(rv);
+			trans.setScaleV3(sv);
+			trans.setPosition(this.posV);
+			trans.update();
+
+			this.applyCamera(cam);
 		}
-		sv.setXYZ(s, s, s);
-
-		const trans = this.trans;
-		rv.x += 1.0;
-		rv.y += 0.5;
-		trans.setRotationV3(rv);
-		trans.setScaleV3(sv);
-		trans.setPosition(this.posV);
-		trans.update();
-
-		// const mat = this.mat;
-		// mat.copyFrom(trans.getMatrix());
-		// mat.append(cam.getVPMatrix());
-		// this.transData = mat.getLocalFS32();
-		this.applyCamera(cam);
 	}
 }
 export { TransEntity }

@@ -50,14 +50,6 @@ export class ShapeCubeRotating {
 		const device = ctx.device;
 		const canvas = ctx.canvas;
 
-		// const texture = device.createTexture({
-		// 	size: [ctx.canvas.width, ctx.canvas.height],
-		// 	sampleCount,
-		// 	format: ctx.presentationFormat,
-		// 	usage: GPUTextureUsage.RENDER_ATTACHMENT
-		// });
-		// this.mRTexView = texture.createView();
-
 		// Create a vertex buffer from the cube data.
 		const verticesBuffer = device.createBuffer({
 			size: cubeVertexArray.byteLength,

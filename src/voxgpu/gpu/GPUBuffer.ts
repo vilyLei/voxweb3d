@@ -1,4 +1,5 @@
 interface GPUBuffer {
+	uid?: number
 	label?: string;
 	mapState: string;
 	/**

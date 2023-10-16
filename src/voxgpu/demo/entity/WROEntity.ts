@@ -10,8 +10,9 @@ class WROEntity {
     vtCount: number;
     pipeline: GPURenderPipeline | null = null;
     vtxBuffer: GPUBuffer | null = null;
+    vtxUniformBuffer: GPUBuffer | null = null;
     pipelineModule: RPipelineModule = null;
-    
+
     bindIndex: number = 0;
     enabled = true;
     constructor(){}

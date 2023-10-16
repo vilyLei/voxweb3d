@@ -3,7 +3,6 @@ import { GPUBindGroup } from "../../gpu/GPUBindGroup";
 import { GPUBindGroupDescriptor } from "../../gpu/GPUBindGroupDescriptor";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { GPUBufferDescriptor } from "../../gpu/GPUBufferDescriptor";
-import { GPUDevice } from "../../gpu/GPUDevice";
 import { GPURenderPipeline } from "../../gpu/GPURenderPipeline";
 import { GPUSampler } from "../../gpu/GPUSampler";
 import { GPUTexture } from "../../gpu/GPUTexture";
@@ -13,7 +12,6 @@ import { RPipelineParams } from "./RPipelineParams";
 
 class RPipelineModule {
     private mWGCtx: WebGPUContext | null = null;
-	private mUniformBuffer: GPUBuffer | null = null;
 	pipeline: GPURenderPipeline | null = null;
 
     constructor(wgCtx?: WebGPUContext) {
@@ -24,14 +22,14 @@ class RPipelineModule {
     initialize(wgCtx: WebGPUContext): void {
         this.mWGCtx = wgCtx;
     }
-	async createMaterialTexture(generateMipmaps: boolean) {
+	async createMaterialTexture(generateMipmaps: boolean, url: string = "") {
 
         const device = this.mWGCtx.device;
         const mipmapG = this.mWGCtx.mipmapGenerator;
 
 		let tex: GPUTexture;
-        
-		const response = await fetch("static/assets/box.jpg");
+
+		const response = await fetch( url != "" ? url : "static/assets/box.jpg" );
 		const imageBitmap = await createImageBitmap(await response.blob());
 		const mipLevelCount = generateMipmaps ? calculateMipLevels(imageBitmap.width, imageBitmap.height) : 1;
 		const textureDescriptor = {
@@ -46,17 +44,35 @@ class RPipelineModule {
 		if (generateMipmaps) {
 			mipmapG.generateMipmap(tex, textureDescriptor);
 		}
-        
+
 		return tex;
 	}
     createUniformBuffer(desc: GPUBufferDescriptor): GPUBuffer {
-        this.mUniformBuffer = this.mWGCtx.device.createBuffer( desc );
-        return this.mUniformBuffer;
+        const buf = this.mWGCtx.device.createBuffer( desc );
+        return buf;
     }
-    updateUniformBufferAt(td: DataView | Float32Array | Uint32Array | Uint16Array, index: number): void {
-        this.mWGCtx.device.queue.writeBuffer(this.mUniformBuffer, index * 256, td.buffer, td.byteOffset, td.byteLength);
+    createUniformBufferWithParam(bufSize: number, usage: number): GPUBuffer {
+		const desc = {
+			size: bufSize,
+			usage: usage
+		};
+        const buf = this.mWGCtx.device.createBuffer( desc );
+        return buf;
     }
-    createUniformBindGroup(index: number,dataSize: number, texView: GPUTextureView, sampler?: GPUSampler): GPUBindGroup {
+	createUniformBufferBlock(params: {sizes: number[], usage: number}): GPUBuffer {
+		let total = params.sizes.length;
+		let size = 256 * (total - 1) + params.sizes[0];
+		const desc = {
+			size: size,
+			usage: params.usage
+		};
+        const buf = this.mWGCtx.device.createBuffer( desc );
+        return buf;
+    }
+    updateUniformBufferAt(vtxUniformBuf: GPUBuffer, td: DataView | Float32Array | Uint32Array | Uint16Array, index: number): void {
+        this.mWGCtx.device.queue.writeBuffer(vtxUniformBuf, index * 256, td.buffer, td.byteOffset, td.byteLength);
+    }
+    createUniformBindGroup(index: number, vtxUniformBuf: GPUBuffer, vtxUniformBufSize: number, texView?: GPUTextureView, sampler?: GPUSampler): GPUBindGroup {
 
         const device = this.mWGCtx.device;
 
@@ -71,8 +87,8 @@ class RPipelineModule {
             binding: 0,
             resource: {
                 offset: 256 * index,
-                buffer: this.mUniformBuffer,
-                size: dataSize
+                buffer: vtxUniformBuf,
+                size: vtxUniformBufSize
             }
         };
         let desc = {
@@ -112,7 +128,7 @@ class RPipelineModule {
                 offset: p.offset,
                 format: p.format,
             });
-        }        
+        }
 		pipelineParams.build(ctx.device);
 		this.pipeline = ctx.device.createRenderPipeline(pipelineParams);
         return this.pipeline;
