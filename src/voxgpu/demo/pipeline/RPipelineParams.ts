@@ -91,6 +91,19 @@ class RPipelineParams implements GPURenderPipelineDescriptor {
 		}
 	}
 	setDepthWriteEnabled(enabled: boolean): void {
+		// this.depthStencilEnabled = enabled;
+		// if (this.depthStencil) {
+		// 	this.depthStencil.depthWriteEnabled = enabled;
+		// }
+		// if (enabled) {
+		// 	if (!this.depthStencil) {
+		// 		this.depthStencil = {
+		// 			depthWriteEnabled: true,
+		// 			depthCompare: "less",
+		// 			format: "depth24plus"
+		// 		}
+		// 	}
+		// }
 		if (this.depthStencilEnabled) {
 			this.depthStencil.depthWriteEnabled = enabled;
 		}

@@ -7,7 +7,7 @@ import { GeomRDataType, GeomDataBase } from "../geometry/GeomDataBase";
 import CameraBase from "../../../vox/view/CameraBase";
 import Vector3D from "../../../vox/math/Vector3D";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
-import { RPipelineParams } from "../pipeline/RPipelineParams";
+import { WGRPipelineCtxParams } from "../../render/pipeline/WGRPipelineCtxParams";
 
 // import basicVertWGSL from "../shaders/basic.vert.wgsl";
 import basicVertWGSL from "../shaders/vs3uvs2.vert.wgsl";
@@ -157,12 +157,12 @@ class WRORBlendScene {
 		transparent = false,
 		depthWriteEnabled = false
 	): WGRPipelineContext {
+
 		let fragCodeSrc = this.getFragShdCode(texEnabled, brnEnabled);
-		const pipeParams = new RPipelineParams({
+		const pipeParams = new WGRPipelineCtxParams({
 			vertShaderSrc: { code: basicVertWGSL, uuid: "vtxShdCode" },
 			fragShaderSrc: { code: fragCodeSrc.code, uuid: fragCodeSrc.uuid },
 			depthStencilEnabled: true,
-			fragmentEnabled: true,
 		});
 		if (transparent) {
 			pipeParams.setTransparentBlendParam(0);
@@ -217,19 +217,17 @@ class WRORBlendScene {
 			unit.runit = rblock.createRUnit(rgeom);
 			const ru = unit.runit;
 			ru.pipeline = pipelineCtx.pipeline;
-			let uvalues: WGRUniformValue[];
+			let uvalues: WGRUniformValue[] = [unit.trans.uniformValue];
 			if (brnEnabled) {
 				unit.brnUValue = new WGRUniformValue(new Float32Array([1, 1, 1, 1]), 1);
-				uvalues = [unit.trans.uniformValue, unit.brnUValue];
-			} else {
-				uvalues = [unit.trans.uniformValue];
+				uvalues.push(unit.brnUValue);
 			}
-			
+			let utexValues = [{ texView: texView }];
 			ru.setUniformValues(uvalues);
 			ru.uniforms = [
 				uniformCtx.createUniformWithValues(
 					uniformLayoutName, 0,
-					uvalues, [{ texView: texView }]
+					uvalues, utexValues
 				)
 			];
 			this.runits.push(unit);

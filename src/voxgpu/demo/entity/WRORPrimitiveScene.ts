@@ -6,7 +6,7 @@ import { GeomRDataType, GeomDataBase } from "../geometry/GeomDataBase";
 import CameraBase from "../../../vox/view/CameraBase";
 import Vector3D from "../../../vox/math/Vector3D";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
-import { RPipelineParams } from "../pipeline/RPipelineParams";
+import { WGRPipelineCtxParams } from "../../render/pipeline/WGRPipelineCtxParams";
 
 import basicVertWGSL from "../shaders/vs3uvs2.vert.wgsl";
 import sampleTextureMixColorWGSL from "../shaders/sampleTextureMixColor.frag.wgsl";
@@ -38,7 +38,7 @@ class WRORPrimitiveScene {
 	msaaRenderEnabled = true;
 	mEnabled = false;
 
-	constructor() {}
+	constructor() { }
 
 	private initCamera(width: number, height: number): void {
 		if (this.camera == null) {
@@ -140,7 +140,7 @@ class WRORPrimitiveScene {
 		return code;
 	}
 	private createRenderPipeline(sampleCount: number, texEnabled = false, brnEnabled: boolean = false): WGRPipelineContext {
-		const pipeParams = new RPipelineParams({
+		const pipeParams = new WGRPipelineCtxParams({
 			sampleCount: sampleCount,
 			multisampleEnabled: this.msaaRenderEnabled,
 			vertShaderSrc: { code: basicVertWGSL },
@@ -156,13 +156,13 @@ class WRORPrimitiveScene {
 
 		let minV = new Vector3D(-50, -50, -50);
 		let maxV = minV.clone().scaleBy(-1);
-		this.mGeomDatas.push( this.geomData.createBoxRData(minV, maxV) );
-		this.mGeomDatas.push( this.geomData.createSphereRData(60.0) );
-		this.mGeomDatas.push( this.geomData.createCylinderRData(60.0) );
-		this.mGeomDatas.push( this.geomData.createTorusRData(60.0) );
-		this.mGeomDatas.push( this.geomData.createTorusRData(120.0, 50) );
+		this.mGeomDatas.push(this.geomData.createBoxRData(minV, maxV));
+		this.mGeomDatas.push(this.geomData.createSphereRData(60.0));
+		this.mGeomDatas.push(this.geomData.createCylinderRData(60.0));
+		this.mGeomDatas.push(this.geomData.createTorusRData(60.0));
+		this.mGeomDatas.push(this.geomData.createTorusRData(120.0, 50));
 		console.log("this.mGeomDatas: ", this.mGeomDatas);
-		for(let i = 0; i < this.mGeomDatas.length; ++i) {
+		for (let i = 0; i < this.mGeomDatas.length; ++i) {
 			const rgd = this.mGeomDatas[i];
 			let rgeom = new WGRGeometry();
 			rgeom.ibuf = rgd.ibuf;
@@ -184,7 +184,7 @@ class WRORPrimitiveScene {
 
 		// const rgd = this.mGeomDatas[0];
 		let rgeom = this.mGeomDatas[0].rgeom;
-		
+
 		// const runit = rblock.createRUnit(null, { indexBuffer: rgd.ibuf, vertexBuffers: rgd.vbufs, indexCount: rgd.ibuf.elementCount });
 		for (let i = 0; i < total; ++i) {
 			const unit = new WRORUnit();
