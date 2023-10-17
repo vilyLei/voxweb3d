@@ -13,7 +13,8 @@ import { WRORUniformContext } from "../render/WRORUniformContext";
 // import { WROBufferContext } from "../pipeline/WROBufferContext";
 // import { WROTextureContext } from "../pipeline/WROTextureContext";
 type BufDataParamType = { size: number, usage: number, defaultData?: Float32Array | Int32Array | Uint32Array | Uint16Array | Int16Array };
-
+type VtxDescParam = { vertex: { arrayStride: number, params: { offset: number, format: string }[] } };
+type VtxPipelinDescParam = {vertex: {buffers: GPUBuffer[], attributeIndicesArray: number[][]}}
 class WROPipelineContext {
 	private mWGCtx: WebGPUContext | null = null;
 	private mBindGroupLayouts: GPUBindGroupLayout[] = new Array(8);
@@ -121,7 +122,7 @@ class WROPipelineContext {
 
 		return device.createBindGroup(desc);
 	}
-	createRenderPipeline(pipelineParams: RPipelineParams, descParams: { vertex: { size: number, params: { offset: number, format: string }[] } }[]): GPURenderPipeline {
+	createRenderPipeline(pipelineParams: RPipelineParams, descParams: VtxDescParam[]): GPURenderPipeline {
 
 		const ctx = this.mWGCtx;
 		if (descParams) {
@@ -129,7 +130,7 @@ class WROPipelineContext {
 			for (let k = 0; k < descParams.length; ++k) {
 
 				const vtx = descParams[k].vertex;
-				pipelineParams.addVertexBufferLayout({ arrayStride: vtx.size, attributes: [], stepMode: "vertex" });
+				pipelineParams.addVertexBufferLayout({ arrayStride: vtx.arrayStride, attributes: [], stepMode: "vertex" });
 				const params = vtx.params;
 				for (let i = 0; i < params.length; ++i) {
 					const p = params[i];
@@ -146,6 +147,33 @@ class WROPipelineContext {
 		// console.log("createRenderPipeline(), pipelineParams:\n",pipelineParams);
 		this.pipeline = ctx.device.createRenderPipeline(pipelineParams);
 		return this.pipeline;
+	}
+
+	createRenderPipelineWithBuf(pipelineParams: RPipelineParams, vtxDesc: VtxPipelinDescParam): GPURenderPipeline {
+		const vtx = vtxDesc.vertex;
+		const vtxDescParams = this.createRenderPipelineVtxParams(vtx.buffers, vtx.attributeIndicesArray);
+		return this.createRenderPipeline(pipelineParams, vtxDescParams);
+	}
+	createRenderPipelineVtxParam(vtxBuf: GPUBuffer, attributeIndices: number[]): VtxDescParam {
+		const p: VtxDescParam = {
+			vertex: {
+				arrayStride: vtxBuf.arrayStride,
+				params: []
+			}
+		}
+		const params = p.vertex.params;
+		for(let i = 0; i < attributeIndices.length; ++i) {
+			params.push( { offset: vtxBuf.vectorOffsets[i], format: vtxBuf.vectorFormats[i] } );
+		}
+		return p;
+	}
+	createRenderPipelineVtxParams(vtxBufs: GPUBuffer[], attributeIndicesArray: number[][]): VtxDescParam[] {
+
+		const ls: VtxDescParam[] = new Array( attributeIndicesArray.length );
+		for(let i = 0; i < attributeIndicesArray.length; ++i) {
+			ls[i] = this.createRenderPipelineVtxParam(vtxBufs[i], attributeIndicesArray[i]);
+		}
+		return ls;
 	}
 }
 export { BufDataParamType, WROPipelineContext }

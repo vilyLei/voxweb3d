@@ -33,8 +33,8 @@ class WROBufferContext {
 
 		return buf;
 	}
-	createVertexBuffer(data: Float32Array | Uint32Array | Uint16Array, offset = 0, mappedAtCreation = true): GPUBuffer {
-		return this.createBuffer(data, offset, mappedAtCreation, GPUBufferUsage.VERTEX);
+	createVertexBuffer(data: Float32Array | Uint32Array | Uint16Array, offset = 0, vectorLengths?: number[], mappedAtCreation = true): GPUBuffer {
+		return this.createBuffer(data, offset, mappedAtCreation, GPUBufferUsage.VERTEX, vectorLengths);
 	}
 
 	createBuffer(
@@ -42,44 +42,65 @@ class WROBufferContext {
 		offset = 0,
 		mappedAtCreation = true,
 		usage = GPUBufferUsage.VERTEX,
-		vectorSize = 0
+		vectorLengths?: number[]
 	): GPUBuffer {
 		const ctx = this.mWGCtx;
 		const buf = ctx.device.createBuffer({
 			size: data.byteLength,
 			usage: usage,
-			mappedAtCreation: mappedAtCreation
+			mappedAtCreation
 		});
 		if (mappedAtCreation) {
+
 			const b = buf.getMappedRange();
+			let eleBytes = 0;
 			if (data instanceof Float32Array) {
 				new Float32Array(b).set(data, offset);
 				buf.dataFormat = "float32";
+				eleBytes = 4;
 			} else if (data instanceof Uint32Array) {
 				new Uint32Array(b).set(data, offset);
 				buf.dataFormat = "uint32";
+				eleBytes = 4;
 			} else if (data instanceof Uint16Array) {
 				new Uint16Array(b).set(data, offset);
 				buf.dataFormat = "uint16";
+				eleBytes = 2;
 			} else if (data instanceof Int32Array) {
 				new Int32Array(b).set(data, offset);
 				buf.dataFormat = "int32";
+				eleBytes = 4;
 			} else if (data instanceof Int16Array) {
 				new Int16Array(b).set(data, offset);
 				buf.dataFormat = "int16";
+				eleBytes = 2;
 			} else if (data instanceof Int8Array) {
 				new Int8Array(b).set(data, offset);
 				buf.dataFormat = "int8";
+				eleBytes = 1;
 			} else if (data instanceof Uint8Array) {
 				new Uint8Array(b).set(data, offset);
 				buf.dataFormat = "uint8";
+				eleBytes = 1;
 			} else {
 				throw Error("Illegal data type, need: Float32Array | Uint32Array | Uint16Array  | Int32Array | Int16Array | Uint8Array | Int8Array");
 			}
-			if(vectorSize > 1) {
-				buf.vectorFormat = buf.dataFormat + 'x' + vectorSize;
-			}
 			buf.unmap();
+
+			if (vectorLengths && vectorLengths.length > 0) {
+
+				let arrayStride = 0;
+				const offsets: number[] = new Array(vectorLengths.length);
+				const formats: string[] = new Array(vectorLengths.length);
+				for (let i = 0; i < formats.length; ++i) {
+					offsets[i] = arrayStride;
+					arrayStride += vectorLengths[i] * eleBytes;
+					formats[i] = buf.dataFormat + "x" + vectorLengths[i];
+				}
+				buf.vectorOffsets = offsets;
+				buf.vectorFormats = formats;
+				buf.arrayStride = arrayStride;
+			}
 		}
 
 		buf.uid = WROBufferContext.sVtxUid++;

@@ -85,7 +85,7 @@ class WRORScene {
 		let urls: string[] = ["static/assets/box.jpg", "static/assets/default.jpg", "static/assets/decorativePattern_01.jpg"];
 
 		this.buildTextures(urls, (texs: GPUTexture[]): void => {
-			
+
 			this.createEntities("shapeUniform", shapePipeline, 3);
 
 			// /*
@@ -165,7 +165,7 @@ class WRORScene {
 			let vtxDescParams = [
 				{
 					vertex: {
-						size: cubeVertexSize,
+						arrayStride: cubeVertexSize,
 						params: [
 							{ offset: cubePositionOffset, format: "float32x4" },
 							{ offset: cubeUVOffset, format: "float32x2" }
@@ -178,13 +178,13 @@ class WRORScene {
 			let vtxDescParams = [
 				{
 					vertex: {
-						size: 4 * 4,
+						arrayStride: 4 * 4,
 						params: [{ offset: 0, format: "float32x4" }]
 					}
 				},
 				{
 					vertex: {
-						size: 4 * 2,
+						arrayStride: 4 * 2,
 						params: [{ offset: 0, format: "float32x2" }]
 					}
 				}
@@ -203,7 +203,7 @@ class WRORScene {
 		for (let i = 0; i < dvs.length; i += 10) {
 			vtxTotal++;
 		}
-		
+
 		this.mIndices = this.vtxCtx.createIndicesWithSize( vtxTotal );
 		for (let i = 0; i < vtxTotal; ++i) {
 			this.mIndices[i] = i;

@@ -75,17 +75,16 @@ class WRORBlendScene {
 			multisampleEnabled: this.msaaRenderEnabled
 		});
 
+		this.createRenderGeometry();
+
 		let shapePipeline = this.createRenderPipeline(sampleCount);
 		// let shapeBrnPipeline = this.createRenderPipeline(sampleCount, false, true);
 		// let texPipeline = this.createRenderPipeline(sampleCount, true);
 		// let texBrnPipeline = this.createRenderPipeline(sampleCount, true, true);
 
-		this.createRenderGeometry();
-
 		let urls: string[] = ["static/assets/box.jpg", "static/assets/default.jpg", "static/assets/decorativePattern_01.jpg"];
 
 		this.buildTextures(urls, (texs: GPUTexture[]): void => {
-
 			this.createEntities("shapeUniform", shapePipeline, 3);
 
 			/*
@@ -146,7 +145,7 @@ class WRORBlendScene {
 		let code = texEnabled ? texCode : shapeCode;
 		return code;
 	}
-	private mCombinedBuf = false;
+	private mCombinedBuf = true;
 	private createRenderPipeline(sampleCount: number, texEnabled = false, brnEnabled: boolean = false): WROPipelineContext {
 		let pipeParams = new RPipelineParams({
 			sampleCount: sampleCount,
@@ -161,41 +160,13 @@ class WRORBlendScene {
 		pipelineCtx.initialize(this.wgCtx);
 
 		this.mPipelineCtxs.push(pipelineCtx);
-		if (this.mCombinedBuf) {
-			let vtxDescParams = [
-				{
-					vertex: {
-						size: cubeVertexSize,
-						params: [
-							{ offset: cubePositionOffset, format: "float32x4" },
-							{ offset: cubeUVOffset, format: "float32x2" }
-						]
-					}
-				}
-			];
-			pipelineCtx.createRenderPipeline(pipeParams, vtxDescParams);
-		} else {
-			let vtxDescParams = [
-				{
-					vertex: {
-						size: 4 * 4,
-						params: [{ offset: 0, format: "float32x4" }]
-					}
-				},
-				{
-					vertex: {
-						size: 4 * 2,
-						params: [{ offset: 0, format: "float32x2" }]
-					}
-				}
-			];
-			pipelineCtx.createRenderPipeline(pipeParams, vtxDescParams);
-		}
+
+		const vtxDesc = {vertex: {buffers: this.mVtxBufs, attributeIndicesArray: this.mCombinedBuf ? [[0, 2]] : [[0], [0]]}};
+		pipelineCtx.createRenderPipelineWithBuf(pipeParams, vtxDesc);
 
 		return pipelineCtx;
 	}
 	private createRenderGeometry(): void {
-
 		let scale = 100.0;
 		const dvs = cubeVertexArray;
 		let vtxTotal = 0;
@@ -204,11 +175,11 @@ class WRORBlendScene {
 			vtxTotal++;
 		}
 
-		this.mIndices = this.vtxCtx.createIndicesWithSize( vtxTotal );
+		this.mIndices = this.vtxCtx.createIndicesWithSize(vtxTotal);
 		for (let i = 0; i < vtxTotal; ++i) {
 			this.mIndices[i] = i;
 		}
-		this.mIndexBuf = this.vtxCtx.createIndexBuffer( this.mIndices );
+		this.mIndexBuf = this.vtxCtx.createIndexBuffer(this.mIndices);
 
 		console.log("vtxTotal: ", vtxTotal);
 		let vs = new Float32Array(vtxTotal * 4);
@@ -241,15 +212,16 @@ class WRORBlendScene {
 		}
 
 		if (this.mCombinedBuf) {
-			let buf = this.vtxCtx.createVertexBuffer(dvs);
+			let buf = this.vtxCtx.createVertexBuffer(dvs, 0, [4, 4, 2]);
 			this.mVtxBufs = [buf];
 		} else {
 			// console.log("vs: ", vs);
 			// console.log("uvs: ", uvs);
-			let vsBuf = this.vtxCtx.createVertexBuffer(vs);
-			let uvsBuf = this.vtxCtx.createVertexBuffer(uvs);
+			let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [4]);
+			let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [2]);
 			this.mVtxBufs = [vsBuf, uvsBuf];
 		}
+		console.log("this.mVtxBufs: ", this.mVtxBufs);
 	}
 	private createEntities(
 		uniformLayoutName: string,
@@ -258,8 +230,8 @@ class WRORBlendScene {
 		texView?: GPUTextureView,
 		brnEnabled = false
 	): void {
-		const matrixSize = 4 * 16;	// 4x4 matrix
-		const brnSize = 4 * 4;		// 4x4 matrix
+		const matrixSize = 4 * 16; // 4x4 matrix
+		const brnSize = 4 * 4; // 4x4 matrix
 		const uniformUsage = GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
 
 		for (let i = 0; i < total; ++i) {

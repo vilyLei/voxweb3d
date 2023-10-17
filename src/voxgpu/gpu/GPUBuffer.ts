@@ -5,9 +5,16 @@ interface GPUBuffer {
 	 */
 	dataFormat?: string;
 	/**
-	 * for example: 'float32x4', 'float32x2'
+	 * for example: ['float32x4', 'float32x2']
 	 */
-	vectorFormat?: string;
+	vectorFormats?: string[];
+	vectorOffsets?: number[];
+	// /**
+	//  * If the value is 3, it is a vec3
+	//  */
+	// vectorSize?: number;
+	arrayStride?: number;
+
 	elementCount?: number;
 	label?: string;
 	mapState: string;
