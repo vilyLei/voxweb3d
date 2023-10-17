@@ -1,4 +1,4 @@
-import { WRORUniform } from "../demo/render/WRORUniform";
+import { WGRUniform } from "./uniform/WGRUniform";
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { GPURenderPassEncoder } from "../gpu/GPURenderPassEncoder";
 import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
@@ -15,7 +15,7 @@ const __$urst = new WGRUnitRunSt();
 class WGRUnit {
 	private mUniformValues: WGRUniformValue[];
 	private mFlag = true;
-	uniforms?: WRORUniform[];
+	uniforms?: WGRUniform[];
 	pipeline: GPURenderPipeline;
 	geometry: WGRGeometry;
 

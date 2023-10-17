@@ -1,5 +1,6 @@
 import { GPUTexture } from "../../gpu/GPUTexture";
-import { WROPipelineContext } from "../pipeline/WROPipelineContext";
+// import { WROPipelineContext } from "../pipeline/WROPipelineContext";
+import { WGRPipelineContext } from "../../render/pipeline/WGRPipelineContext";
 import { WRORUnit } from "./WRORUnit";
 
 import { GeomRDataType, GeomDataBase } from "../geometry/GeomDataBase";
@@ -155,7 +156,7 @@ class WRORBlendScene {
 		brnEnabled: boolean = false,
 		transparent = false,
 		depthWriteEnabled = false
-	): WROPipelineContext {
+	): WGRPipelineContext {
 		let fragCodeSrc = this.getFragShdCode(texEnabled, brnEnabled);
 		const pipeParams = new RPipelineParams({
 			vertShaderSrc: { code: basicVertWGSL, uuid: "vtxShdCode" },
@@ -187,7 +188,7 @@ class WRORBlendScene {
 	}
 	private createEntities(
 		uniformLayoutName: string,
-		pipelineCtx: WROPipelineContext,
+		pipelineCtx: WGRPipelineContext,
 		total: number,
 		texView?: GPUTextureView,
 		brnEnabled = false

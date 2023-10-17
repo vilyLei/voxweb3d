@@ -1,6 +1,6 @@
 import { WGRPassParams, WGRendererPass } from "./pipeline/WGRendererPass";
 import { RPipelineParams } from "../demo/pipeline/RPipelineParams";
-import { VtxPipelinDescParam, WROPipelineContext } from "../demo/pipeline/WROPipelineContext";
+import { VtxPipelinDescParam, WGRPipelineContext } from "./pipeline/WGRPipelineContext";
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import { GPUCommandBuffer } from "../gpu/GPUCommandBuffer";
 import { WGRUnit } from "./WGRUnit";
@@ -8,7 +8,7 @@ import { GPUBuffer } from "../gpu/GPUBuffer";
 import { WGRGeometry } from "./WGRGeometry";
 
 class WGRenderPassBlock {
-	private mPipelineCtxs: WROPipelineContext[] = [];
+	private mPipelineCtxs: WGRPipelineContext[] = [];
 	private mUnits: WGRUnit[] = [];
 	private mWGCtx: WebGPUContext | null;
 	private rendererPass = new WGRendererPass();
@@ -49,8 +49,8 @@ class WGRenderPassBlock {
 		}
 		return u;
 	}
-	createRenderPipeline(pipelineParams: RPipelineParams, vtxDesc: VtxPipelinDescParam): WROPipelineContext {
-		let pipelineCtx = new WROPipelineContext(this.mWGCtx);
+	createRenderPipeline(pipelineParams: RPipelineParams, vtxDesc: VtxPipelinDescParam): WGRPipelineContext {
+		let pipelineCtx = new WGRPipelineContext(this.mWGCtx);
 		this.mPipelineCtxs.push(pipelineCtx);
 		pipelineParams.setDepthStencilFormat(this.rendererPass.depthTexture.format);
 
