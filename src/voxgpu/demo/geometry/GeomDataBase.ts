@@ -37,7 +37,7 @@ class GeomDataBase {
 		}
 		return tvs;
 	}
-	createPlaneRData(px: number, py: number, pw: number, ph: number, axisFlag = 0): GeomRDataType {
+	createPlaneRData(px: number, py: number, pw: number, ph: number, axisFlag = 0, expand = true): GeomRDataType {
 
 		let mesh = new RectPlaneMesh();
 		mesh.axisFlag = axisFlag
@@ -49,12 +49,14 @@ class GeomDataBase {
 		let vs = mesh.getVS();
 		let uvs = mesh.getUVS();
 		let ivs = mesh.getIVS();
-		vs = this.expandFS32Data( vs, 3, 4, 1.0 );
+		if(expand) {
+			vs = this.expandFS32Data( vs, 3, 4, 1.0 );
+		}
 		// console.log("vs: ", vs);
 		// console.log("uvs: ", uvs);
 		// console.log("ivs: ", ivs);
 
-		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [4]);
+		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [expand ? 4 : 3]);
 		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [2]);
 		vbufs = [vsBuf, uvsBuf];
 

@@ -8,7 +8,8 @@ import Vector3D from "../../../vox/math/Vector3D";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { RPipelineParams } from "../pipeline/RPipelineParams";
 
-import basicVertWGSL from "../shaders/basic.vert.wgsl";
+// import basicVertWGSL from "../shaders/basic.vert.wgsl";
+import basicVertWGSL from "../shaders/vs3uvs2.vert.wgsl";
 import sampleTextureMixColorWGSL from "../shaders/sampleTextureMixColor.frag.wgsl";
 import sampleTextureMixColorBrnWGSL from "../shaders/sampleTextureMixColorBrn.frag.wgsl";
 import vertexPositionColorWGSL from "../shaders/vertexPositionColor.frag.wgsl";
@@ -62,7 +63,6 @@ class WRORBlendScene {
 		cam.setViewSize(width, height);
 
 		cam.update();
-		console.log(cam.getVPMatrix());
 	}
 	// format: "depth32float"
 	// format: "depth24plus"
@@ -86,7 +86,7 @@ class WRORBlendScene {
 		let shapePipeline = this.createRenderPipeline(sampleCount);
 		// let shapeBrnPipeline = this.createRenderPipeline(sampleCount, false, true);
 		// let texPipeline = this.createRenderPipeline(sampleCount, true, false);
-		let texTransparentPipeline = this.createRenderPipeline(sampleCount, true, false, true, true);
+		// let texTransparentPipeline = this.createRenderPipeline(sampleCount, true, false, true, true);
 		// let texBrnPipeline = this.createRenderPipeline(sampleCount, true, true);
 
 		let urls: string[] = [
@@ -97,6 +97,7 @@ class WRORBlendScene {
 		];
 
 		this.buildTextures(urls, (texs: GPUTexture[]): void => {
+
 			this.createEntities("shapeUniform", shapePipeline, 1);
 
 			console.log("this.mPngTexList: ", this.mPngTexList);
@@ -104,7 +105,7 @@ class WRORBlendScene {
 
 			let pngTexView = this.mPngTexList[0].createView();
 
-			this.createEntities("texTransparentUniform", texTransparentPipeline, 1, pngTexView);
+			// this.createEntities("texTransparentUniform", texTransparentPipeline, 1, pngTexView);
 
 			/*
 			this.createEntities("shapeUniform", shapePipeline, 2);
@@ -196,12 +197,13 @@ class WRORBlendScene {
 		pipeParams.setDepthWriteEnabled(depthWriteEnabled);
 
 		const rgd = this.mGeomData;
+		console.log("rgd.vtxDescParam: ", rgd.vtxDescParam);
 		const pipelineCtx = this.renderer.getRPBlockAt(0).createRenderPipeline(pipeParams, rgd.vtxDescParam);
 		return pipelineCtx;
 	}
 	private createRenderGeometry(): void {
 		// this.mGeomData = this.geomData.createCubeRData(false);
-		this.mGeomData = this.geomData.createPlaneRData(-150, -150, 300, 300, 0);
+		this.mGeomData = this.geomData.createPlaneRData(-150, -150, 300, 300, 0, false);
 		console.log("this.mGeomData: ", this.mGeomData);
 	}
 	private createEntities(
