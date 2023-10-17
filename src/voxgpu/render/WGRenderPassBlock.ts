@@ -28,7 +28,7 @@ class WGRenderPassBlock {
 	createRUnit(
 		geom?: WGRGeometry,
 		geomParam?: { indexBuffer?: GPUBuffer; vertexBuffers: GPUBuffer[]; indexCount?: number; vertexCount?: number },
-		addInfoRendering = true
+		addIntoRendering = true
 	): WGRUnit {
 		const u = new WGRUnit();
 		u.geometry = geom;
@@ -44,7 +44,7 @@ class WGRenderPassBlock {
 				g.vertexCount = geomParam.vertexCount;
 			}
 		}
-		if (addInfoRendering) {
+		if (addIntoRendering) {
 			this.mUnits.push(u);
 		}
 		return u;
