@@ -1,5 +1,5 @@
 import { GPUTexture } from "../../gpu/GPUTexture";
-import { WROPipelineContext } from "../pipeline/WROPipelineContext";
+import { WGRPipelineContext } from "../../render/pipeline/WGRPipelineContext";
 import { WRORUnit } from "./WRORUnit";
 
 import { GeomRDataType, GeomDataBase } from "../geometry/GeomDataBase";
@@ -139,7 +139,7 @@ class WRORPrimitiveScene {
 		let code = texEnabled ? texCode : shapeCode;
 		return code;
 	}
-	private createRenderPipeline(sampleCount: number, texEnabled = false, brnEnabled: boolean = false): WROPipelineContext {
+	private createRenderPipeline(sampleCount: number, texEnabled = false, brnEnabled: boolean = false): WGRPipelineContext {
 		const pipeParams = new RPipelineParams({
 			sampleCount: sampleCount,
 			multisampleEnabled: this.msaaRenderEnabled,
@@ -173,7 +173,7 @@ class WRORPrimitiveScene {
 	}
 	private createEntities(
 		uniformLayoutName: string,
-		pipelineCtx: WROPipelineContext,
+		pipelineCtx: WGRPipelineContext,
 		total: number,
 		texView?: GPUTextureView,
 		brnEnabled = false

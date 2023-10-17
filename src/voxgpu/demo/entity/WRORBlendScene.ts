@@ -41,7 +41,7 @@ class WRORBlendScene {
 	msaaRenderEnabled = true;
 	mEnabled = false;
 
-	constructor() {}
+	constructor() { }
 
 	private initCamera(width: number, height: number): void {
 		if (this.camera == null) {
@@ -55,9 +55,9 @@ class WRORBlendScene {
 		const camPosition = new Vector3D(0.0, 0.0, 1000.0);
 		const camLookAtPos = new Vector3D(0.0, 0.0, 0.0);
 		const camUpDirect = new Vector3D(0.0, 1.0, 0.0);
-		if(perspective) {
+		if (perspective) {
 			cam.perspectiveRH((Math.PI * 45) / 180.0, width / height, 0.1, 5000);
-		}else {
+		} else {
 			cam.orthoRH(0.1, 5000, -0.5 * height, 0.5 * height, -0.5 * width, 0.5 * width);
 		}
 		cam.lookAtRH(camPosition, camLookAtPos, camUpDirect);
@@ -109,7 +109,7 @@ class WRORBlendScene {
 
 			// let pngTexView = this.mPngTexList[0].createView();
 
-			
+
 			let pngViews: GPUTextureView[] = [];
 			for (let i = 0; i < this.mPngTexList.length; ++i) {
 				const tex = this.mPngTexList[i];
@@ -143,7 +143,7 @@ class WRORBlendScene {
 				this.createEntities("texUniform", texPipeline, 1, texViews[Math.round(Math.random() * (texViews.length - 1))]);
 			}
 			// this.createEntities("shapeUniform", shapePipeline, 2);
-			
+
 			this.createEntities("texTransparentUniform", texTransparentPipeline, 2, pngViews[Math.round(Math.random() * (pngViews.length - 1))]);
 			//*/
 
@@ -175,9 +175,9 @@ class WRORBlendScene {
 		return pipelineCtx;
 	}
 	private createRenderGeometry(): void {
-		this.mGeomDatas.push( this.geomData.createPlaneRData(-150, -150, 300, 300, 0) );
+		this.mGeomDatas.push(this.geomData.createPlaneRData(-150, -150, 300, 300, 0));
 		console.log("this.this.mGeomDatas: ", this.mGeomDatas);
-		for(let i = 0; i < this.mGeomDatas.length; ++i) {
+		for (let i = 0; i < this.mGeomDatas.length; ++i) {
 			const rgd = this.mGeomDatas[i];
 			let rgeom = new WGRGeometry();
 			rgeom.ibuf = rgd.ibuf;
@@ -194,19 +194,18 @@ class WRORBlendScene {
 		brnEnabled = false
 	): void {
 		const matrixSize = 4 * 16;
-		const uniformUsage = GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
 		const rblock = this.renderer.getRPBlockAt(0);
 
 		const rgd = this.mGeomDatas[0];
 
-		const rgeom =  rgd.rgeom;
+		const rgeom = rgd.rgeom;
+		const uniformCtx = pipelineCtx.uniform;
+
 		for (let i = 0; i < total; ++i) {
 			const unit = new WRORUnit();
 			const k = this.runits.length;
 			unit.trans.scaleFactor = 1.0;
-			// unit.trans.upateTimes = 1;
 			unit.trans.posV.setXYZ(-100 + k * 80, -100 + k * 80, 0.1 * k);
-			// unit.trans.posV.setXYZ(0, 0, 0);
 			unit.trans.scaleAndRotBoo = false;
 			unit.trans.intialize(this.camera);
 
@@ -215,29 +214,28 @@ class WRORBlendScene {
 
 			unit.trans.uniformValue = new WGRUniformValue(unit.trans.transData, 0);
 			unit.trans.uniformValue.arrayStride = matrixSize;
-			unit.runit = rblock.createRUnit( rgeom );
+			unit.runit = rblock.createRUnit(rgeom);
 			const ru = unit.runit;
 			ru.pipeline = pipelineCtx.pipeline;
 
 			if (brnEnabled) {
-				// unit.brnUValue = new WGRUniformValue(new Float32Array([Math.random() * 1.5, Math.random() * 1.5, Math.random() * 1.5, 1]), 1);
+				const uvalues = [unit.trans.uniformValue, unit.brnUValue];
 				unit.brnUValue = new WGRUniformValue(new Float32Array([1, 1, 1, 1]), 1);
-				ru.setUniformValues([unit.trans.uniformValue, unit.brnUValue]);
+				ru.setUniformValues(uvalues);
 				ru.uniforms = [
-					pipelineCtx.uniform.createUniform(
-						uniformLayoutName,
-						0,
-						[
-							{ size: matrixSize, usage: uniformUsage },
-							{ size: unit.brnUValue.data.byteLength, usage: uniformUsage }
-						],
-						[{ texView: texView }]
+					uniformCtx.createUniformWithValues(
+						uniformLayoutName, 0,
+						uvalues, [{ texView: texView }]
 					)
 				];
 			} else {
-				ru.setUniformValues([unit.trans.uniformValue]);
+				const uvalues = [unit.trans.uniformValue];
+				ru.setUniformValues(uvalues);
 				ru.uniforms = [
-					pipelineCtx.uniform.createUniform(uniformLayoutName, 0, [{ size: matrixSize, usage: uniformUsage }], [{ texView: texView }])
+					uniformCtx.createUniformWithValues(
+						uniformLayoutName, 0,
+						uvalues, [{ texView: texView }]
+					)
 				];
 			}
 			this.runits.push(unit);

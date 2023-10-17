@@ -3,6 +3,7 @@ import { GPUSampler } from "../../gpu/GPUSampler";
 import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WGRUniform } from "./WGRUniform";
 import { BufDataParamType, IWGRPipelineContext } from "../pipeline/IWGRPipelineContext";
+import { WGRUniformValue } from "./WGRUniformValue";
 
 class WROUniformWrapper {
 	uniform: WGRUniform | null = null;
@@ -172,11 +173,23 @@ class WGRUniformContext {
 			}
 		}
 	}
+	
+	createUniformWithValues(layoutName: string,groupIndex: number,values: WGRUniformValue[], texParams?: { texView: GPUTextureView, sampler?: GPUSampler }[]): WGRUniform | null {
+		if (this.mPipelineCtx) {
+			const uctx = this.getUCtx(layoutName);
+			const bufDataParams: { size: number, usage: number }[] = [];
+			for(let i = 0; i < values.length; ++i) {
+				bufDataParams.push( { size: values[i].arrayStride, usage: values[i].usage } );
+			}
+			return uctx.createUniform(groupIndex, bufDataParams, texParams);
+		}
+		return null;
+	}
 	createUniform(
 		layoutName: string,
 		groupIndex: number,
-		bufDataParams?: { size: number; usage: number }[],
-		texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[]
+		bufDataParams?: { size: number, usage: number }[],
+		texParams?: { texView: GPUTextureView, sampler?: GPUSampler }[]
 	): WGRUniform | null {
 		if (this.mPipelineCtx) {
 			const uctx = this.getUCtx(layoutName);
