@@ -51,26 +51,27 @@ class WROBufferContext {
 			mappedAtCreation: mappedAtCreation
 		});
 		if (mappedAtCreation) {
+			const b = buf.getMappedRange();
 			if (data instanceof Float32Array) {
-				new Float32Array(buf.getMappedRange()).set(data, offset);
+				new Float32Array(b).set(data, offset);
 				buf.dataFormat = "float32";
 			} else if (data instanceof Uint32Array) {
-				new Uint32Array(buf.getMappedRange()).set(data, offset);
+				new Uint32Array(b).set(data, offset);
 				buf.dataFormat = "uint32";
 			} else if (data instanceof Uint16Array) {
-				new Uint16Array(buf.getMappedRange()).set(data, offset);
+				new Uint16Array(b).set(data, offset);
 				buf.dataFormat = "uint16";
 			} else if (data instanceof Int32Array) {
-				new Int32Array(buf.getMappedRange()).set(data, offset);
+				new Int32Array(b).set(data, offset);
 				buf.dataFormat = "int32";
 			} else if (data instanceof Int16Array) {
-				new Int16Array(buf.getMappedRange()).set(data, offset);
+				new Int16Array(b).set(data, offset);
 				buf.dataFormat = "int16";
 			} else if (data instanceof Int8Array) {
-				new Int8Array(buf.getMappedRange()).set(data, offset);
+				new Int8Array(b).set(data, offset);
 				buf.dataFormat = "int8";
 			} else if (data instanceof Uint8Array) {
-				new Uint8Array(buf.getMappedRange()).set(data, offset);
+				new Uint8Array(b).set(data, offset);
 				buf.dataFormat = "uint8";
 			} else {
 				throw Error("Illegal data type, need: Float32Array | Uint32Array | Uint16Array  | Int32Array | Int16Array | Uint8Array | Int8Array");
