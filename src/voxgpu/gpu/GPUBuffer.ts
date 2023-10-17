@@ -9,6 +9,8 @@ interface GPUBuffer {
 	 */
 	vectorFormats?: string[];
 	vectorOffsets?: number[];
+	vectorLengths?: number[];
+	vectorCount?: number;
 	// /**
 	//  * If the value is 3, it is a vec3
 	//  */

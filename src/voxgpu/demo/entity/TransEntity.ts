@@ -3,6 +3,7 @@ import CameraBase from "../../../vox/view/CameraBase";
 import Vector3D from "../../../vox/math/Vector3D";
 import ROTransform from "../../../vox/display/ROTransform";
 import Matrix4 from "../../../vox/math/Matrix4";
+import { WGRUniformValue } from "../../render/uniform/WGRUniformValue";
 
 class TransEntity {
 	trans: ROTransform | null = null;
@@ -17,6 +18,9 @@ class TransEntity {
 	upateTimes = 100000000;
 	running = true;
 	version = -1;
+	delayPhase0Times = 0;
+	delayPhase1Times = Math.round(Math.random() * 700) + 300;
+	uniformValue: WGRUniformValue;
 	intialize(cam?: CameraBase): void {
 		this.trans = ROTransform.Create();
 		this.trans.update();
@@ -36,9 +40,23 @@ class TransEntity {
 	run(cam: CameraBase): void {
 
 		if(this.running && this.upateTimes > 0) {
-			
+
+			if(this.delayPhase0Times > 0) {
+				this.delayPhase0Times --;
+				if(this.delayPhase0Times == 0) {
+					this.delayPhase1Times = Math.round(Math.random() * 300) + 700;
+				}
+				return
+			}
+			if(this.delayPhase1Times > 0) {
+				this.delayPhase1Times --;
+				if(this.delayPhase1Times == 0) {
+					this.delayPhase0Times = Math.round(Math.random() * 300) + 700;
+				}
+			}
+
 			this.upateTimes --;
-			
+
 			const rv = this.rotateV;
 			const sv = this.scaleV;
 			let s = this.scaleFactor * Math.cos((sv.w += 0.01)) + 0.1;
@@ -57,6 +75,9 @@ class TransEntity {
 
 			this.applyCamera(cam);
 			this.version ++;
+			if(this.uniformValue) {
+				this.uniformValue.upate();
+			}
 		}
 	}
 }

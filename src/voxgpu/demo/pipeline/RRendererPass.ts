@@ -33,7 +33,9 @@ class RRendererPass {
     initialize(wgCtx: WebGPUContext): void {
         this.mWGCtx = wgCtx;
     }
-
+	getPassParams(): RRPassParams {
+		return this.mParams;
+	}
     build(params: RRPassParams): void {
         this.mParams = params;
         this.createRenderPassTexture(params);
@@ -44,7 +46,7 @@ class RRendererPass {
         const device = ctx.device;
         const canvas = ctx.canvas;
 
-        if (params.multisampleEnabled) {
+        if (params && params.multisampleEnabled) {
             const texture = device.createTexture({
                 size: [ctx.canvas.width, ctx.canvas.height],
                 sampleCount: params.sampleCount,
@@ -60,7 +62,7 @@ class RRendererPass {
             usage: GPUTextureUsage.RENDER_ATTACHMENT
         } as GPUTextureDescriptor;
 
-        if (params.multisampleEnabled) {
+        if (params && params.multisampleEnabled) {
             depthTexDesc.sampleCount = params.sampleCount;
         }
 

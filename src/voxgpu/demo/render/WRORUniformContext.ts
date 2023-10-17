@@ -8,10 +8,9 @@ import { WRORUniform } from "./WRORUniform";
 class WROUniformWrapper {
 	uniform: WRORUniform | null = null;
 	bufDataParams?: BufDataParamType[];
-	bufDataDescs?: {index: number, buffer: GPUBuffer, bufferSize: number}[];
+	bufDataDescs?: { index: number; buffer: GPUBuffer; bufferSize: number }[];
 	texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[];
 	usage = 0;
-	// size = 0;
 	groupIndex = 0;
 }
 
@@ -55,9 +54,10 @@ class UCtxInstance {
 				for (let i = 0; i < ls.length; ++i) {
 					const uf = this.mList[i].uniform;
 					if (uf) {
-						uf.pipelineCtx = this.mPipelineCtx;
 						wp = ls[i];
 						uf.buffers = this.mBuffers;
+						uf.versions = new Array(uf.buffers.length);
+						uf.versions.fill(-1);
 						if (wp.bufDataParams) {
 							const dataParams = [];
 							for (let j = 0; j < wp.bufDataParams.length; ++j) {
@@ -65,7 +65,7 @@ class UCtxInstance {
 							}
 							wp.bufDataDescs = dataParams;
 							uf.bindGroup = this.mPipelineCtx.createUniformBindGroup(wp.groupIndex, dataParams, wp.texParams);
-						}else {
+						} else {
 							uf.bindGroup = this.mPipelineCtx.createUniformBindGroup(wp.groupIndex, null, wp.texParams);
 						}
 					}
@@ -77,13 +77,12 @@ class UCtxInstance {
 	runEnd(): void {}
 	createUniform(
 		groupIndex: number,
-		bufDataParams?:BufDataParamType[],
-		texParams?: { texView: GPUTextureView, sampler?: GPUSampler }[]
+		bufDataParams?: BufDataParamType[],
+		texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[]
 	): WRORUniform {
 		const index = this.getFreeIndex();
-		const u = new WRORUniform();
+		const u = new WRORUniform(this.mPipelineCtx, this);
 		u.groupIndex = groupIndex;
-		// u.usage = usage;
 
 		if (index >= 0) {
 			this.mList[index].uniform = u;
@@ -176,8 +175,8 @@ class WRORUniformContext {
 	createUniform(
 		layoutName: string,
 		groupIndex: number,
-		bufDataParams?: { size: number, usage: number }[],
-		texParams?: { texView: GPUTextureView, sampler?: GPUSampler }[]
+		bufDataParams?: { size: number; usage: number }[],
+		texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[]
 	): WRORUniform | null {
 		if (this.mPipelineCtx) {
 			const uctx = this.getUCtx(layoutName);

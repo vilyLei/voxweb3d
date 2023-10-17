@@ -26,30 +26,27 @@ class WROBufferContext {
 		return new Uint32Array(size);
 	}
 
-	createIndexBuffer(data: Uint32Array | Uint16Array, offset = 0, mappedAtCreation = true): GPUBuffer {
-		const buf = this.createBuffer(data, offset, mappedAtCreation, GPUBufferUsage.INDEX);
-		buf.dataFormat = data.BYTES_PER_ELEMENT == 2 ? "uint16" : "uint32";
-		buf.elementCount = data.length;
-
-		return buf;
+	createIndexBuffer(data: IndexArrayViewType, offset = 0, mappedAtCreation = true): GPUBuffer {
+		return this.createBuffer(data, offset, GPUBufferUsage.INDEX, mappedAtCreation);
 	}
-	createVertexBuffer(data: Float32Array | Uint32Array | Uint16Array, offset = 0, vectorLengths?: number[], mappedAtCreation = true): GPUBuffer {
-		return this.createBuffer(data, offset, mappedAtCreation, GPUBufferUsage.VERTEX, vectorLengths);
+	createVertexBuffer(data: NumberArrayViewType, offset = 0, vectorLengths?: number[], mappedAtCreation = true): GPUBuffer {
+		return this.createBuffer(data, offset, GPUBufferUsage.VERTEX, mappedAtCreation, vectorLengths);
 	}
 
 	createBuffer(
-		data: Float32Array | Uint32Array | Uint16Array | Int32Array | Int16Array | Uint8Array | Int8Array,
+		data: NumberArrayViewType,
 		offset = 0,
-		mappedAtCreation = true,
 		usage = GPUBufferUsage.VERTEX,
+		mappedAtCreation = true,
 		vectorLengths?: number[]
 	): GPUBuffer {
-		const ctx = this.mWGCtx;
-		const buf = ctx.device.createBuffer({
+
+		const buf = this.mWGCtx.device.createBuffer({
 			size: data.byteLength,
 			usage: usage,
 			mappedAtCreation
 		});
+
 		if (mappedAtCreation) {
 
 			const b = buf.getMappedRange();
@@ -87,6 +84,8 @@ class WROBufferContext {
 			}
 			buf.unmap();
 
+			buf.elementCount = data.length;
+
 			if (vectorLengths && vectorLengths.length > 0) {
 
 				let arrayStride = 0;
@@ -100,6 +99,8 @@ class WROBufferContext {
 				buf.vectorOffsets = offsets;
 				buf.vectorFormats = formats;
 				buf.arrayStride = arrayStride;
+				buf.vectorLengths = vectorLengths.slice();
+				buf.vectorCount = buf.elementCount / vectorLengths[0];
 			}
 		}
 
