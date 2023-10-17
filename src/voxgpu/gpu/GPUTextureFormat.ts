@@ -121,9 +121,9 @@ enum GPUTextureFormat {
     "astc-12x12-unorm",
     "astc-12x12-unorm-srgb",
 };
-const GPUTextureFormatMap = GPUTextureFormat as Object;
+const __$WGTFMap = GPUTextureFormat as Object;
 function checkGPUTextureFormat(format: string, error: boolean = true): boolean {
-	const flag = GPUTextureFormatMap.hasOwnProperty(format);
+	const flag = __$WGTFMap.hasOwnProperty(format);
 	if(!flag && error) {
 		console.error(`Error: invalid gpu texture format "${format}"`);
 	}

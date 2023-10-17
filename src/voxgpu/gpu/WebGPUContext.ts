@@ -21,9 +21,17 @@ class WebGPUContext {
 	readonly gpu: GPU = null;
 	readonly gpuAdapter: GPUAdapter = null;
 	readonly enabled = false;
-	
+
 	readonly mipmapGenerator = new GPUMipmapGenerator();
 	constructor(){}
+	/**
+	 * @param format GPU texture format string.
+	 * @param error The default value is true.
+	 * @returns GPU texture format is correct or wrong.
+	 */
+	checkGPUTextureFormat(format: string, error: boolean = true): boolean {
+		return checkGPUTextureFormat(format, error);
+	}
 	async initialize(canvas: HTMLCanvasElement, wgConfig?: GPUCanvasConfiguration, deviceDescriptor?: GPUDeviceDescriptor) {
 
 		const selfT = this as any;
@@ -40,7 +48,7 @@ class WebGPUContext {
 				console.log("Appropriate GPUAdapter found, adapter: ", adapter);
 				const device = await adapter.requestDevice(deviceDescriptor);
 				if (device) {
-					
+
 					this.mipmapGenerator.initialize(device);
 
 					selfT.device = device;
