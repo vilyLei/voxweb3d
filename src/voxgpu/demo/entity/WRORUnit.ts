@@ -1,3 +1,4 @@
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { GPURenderPipeline } from "../../gpu/GPURenderPipeline";
 import { WROPipelineContext } from "../pipeline/WROPipelineContext";
@@ -11,12 +12,12 @@ class WRORUnit {
     vtCount: number;
     pipeline: GPURenderPipeline | null = null;
 
-    // indexVtxCount = 0;
-    // indexBufferFormat = "uint32";
     indexBuffer: GPUBuffer | null = null;
 
     vtxBuffers: GPUBuffer[] | null = null;
     pipelineCtx: WROPipelineContext | null = null;
+
+	dispEntity: DisplayEntity | null = null;
 	/**
 	 * bind group index
 	 */
@@ -26,5 +27,8 @@ class WRORUnit {
 	uniform: WRORUniform | null = null;
 
     constructor(){}
+	destroy(): void {
+
+	}
 }
 export { WRORUnit }

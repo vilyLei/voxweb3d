@@ -1,6 +1,13 @@
 interface GPUBuffer {
 	uid?: number;
+	/**
+	 * for example: 'uint16', 'uint32'
+	 */
 	dataFormat?: string;
+	/**
+	 * for example: 'float32x4', 'float32x2'
+	 */
+	vectorFormat?: string;
 	elementCount?: number;
 	label?: string;
 	mapState: string;

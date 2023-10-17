@@ -76,19 +76,19 @@ class WRORBlendScene {
 		});
 
 		let shapePipeline = this.createRenderPipeline(sampleCount);
-		let shapeBrnPipeline = this.createRenderPipeline(sampleCount, false, true);
-		let texPipeline = this.createRenderPipeline(sampleCount, true);
-		let texBrnPipeline = this.createRenderPipeline(sampleCount, true, true);
+		// let shapeBrnPipeline = this.createRenderPipeline(sampleCount, false, true);
+		// let texPipeline = this.createRenderPipeline(sampleCount, true);
+		// let texBrnPipeline = this.createRenderPipeline(sampleCount, true, true);
 
 		this.createRenderGeometry();
 
 		let urls: string[] = ["static/assets/box.jpg", "static/assets/default.jpg", "static/assets/decorativePattern_01.jpg"];
 
 		this.buildTextures(urls, (texs: GPUTexture[]): void => {
-			
+
 			this.createEntities("shapeUniform", shapePipeline, 3);
 
-			// /*
+			/*
 			this.createEntities("shapeUniform", shapePipeline, 3);
 			this.createEntities("shapeBrnUniform", shapeBrnPipeline, 3, null, true);
 
@@ -203,7 +203,7 @@ class WRORBlendScene {
 		for (let i = 0; i < dvs.length; i += 10) {
 			vtxTotal++;
 		}
-		
+
 		this.mIndices = this.vtxCtx.createIndicesWithSize( vtxTotal );
 		for (let i = 0; i < vtxTotal; ++i) {
 			this.mIndices[i] = i;

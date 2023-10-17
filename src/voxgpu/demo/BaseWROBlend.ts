@@ -1,5 +1,4 @@
 import { WebGPUContext } from "../gpu/WebGPUContext";
-import { GPUBuffer } from "../gpu/GPUBuffer";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import { WRORBlendScene } from "./entity/WRORBlendScene";
 import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
