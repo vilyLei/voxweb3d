@@ -83,8 +83,8 @@ class WRORPrimitiveScene {
 			this.createEntities("shapeUniform", shapePipeline, 1);
 
 			// /*
-			this.createEntities("shapeUniform", shapePipeline, 2);
-			this.createEntities("shapeBrnUniform", shapeBrnPipeline, 2, null, true);
+			this.createEntities("shapeUniform", shapePipeline, 3);
+			this.createEntities("shapeBrnUniform", shapeBrnPipeline, 3, null, true);
 
 			let texViews: GPUTextureView[] = [];
 			for (let i = 0; i < texs.length; ++i) {
@@ -97,10 +97,10 @@ class WRORPrimitiveScene {
 			}
 
 			for (let i = 0; i < 1; ++i) {
-				this.createEntities("texBrnUniform", texBrnPipeline, 2, texViews[Math.round(Math.random() * (texViews.length - 1))], true);
+				this.createEntities("texBrnUniform", texBrnPipeline, 3, texViews[Math.round(Math.random() * (texViews.length - 1))], true);
 			}
 			for (let i = 0; i < 1; ++i) {
-				this.createEntities("texUniform", texPipeline, 2, texViews[Math.round(Math.random() * (texViews.length - 1))]);
+				this.createEntities("texUniform", texPipeline, 3, texViews[Math.round(Math.random() * (texViews.length - 1))]);
 			}
 			this.createEntities("shapeUniform", shapePipeline, 2);
 			//*/
@@ -154,13 +154,13 @@ class WRORPrimitiveScene {
 	}
 	private createRenderGeometry(): void {
 
-		// this.mGeomData = this.geomData.createPlaneRData(-50,-50, 100, 100, 0);
-
 		let minV = new Vector3D(-50, -50, -50);
 		let maxV = minV.clone().scaleBy(-1);
 		this.mGeomDatas.push( this.geomData.createBoxRData(minV, maxV) );
 		this.mGeomDatas.push( this.geomData.createSphereRData(60.0) );
 		this.mGeomDatas.push( this.geomData.createCylinderRData(60.0) );
+		this.mGeomDatas.push( this.geomData.createTorusRData(60.0) );
+		this.mGeomDatas.push( this.geomData.createTorusRData(120.0, 50) );
 		console.log("this.mGeomDatas: ", this.mGeomDatas);
 		for(let i = 0; i < this.mGeomDatas.length; ++i) {
 			const rgd = this.mGeomDatas[i];

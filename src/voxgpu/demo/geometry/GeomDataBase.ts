@@ -3,6 +3,7 @@ import Box3DMesh from "../../../vox/mesh/Box3DMesh";
 import Cylinder3DMesh from "../../../vox/mesh/Cylinder3DMesh";
 import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
 import Sphere3DMesh from "../../../vox/mesh/Sphere3DMesh";
+import Torus3DMesh from "../../../vox/mesh/Torus3DMesh";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { WGRGeometry } from "../../render/WGRGeometry";
@@ -43,6 +44,28 @@ class GeomDataBase {
 		return tvs;
 	}
 	
+	createTorusRData(ringRadius: number, axisRadius: number = 20, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {
+		let mesh = new Torus3DMesh();
+		mesh.setBufSortFormat(0xfffffff);
+		mesh.initialize(ringRadius, axisRadius, longitudeNumSegments, latitudeNumSegments);
+
+		let vbufs: GPUBuffer[];
+		let ibuf: GPUBuffer;
+		let vs = mesh.getVS();
+		let uvs = mesh.getUVS();
+		let nvs = mesh.getNVS();
+		let ivs = mesh.getIVS();
+
+		let vtTotal = vs.length / 3;
+		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [3]);
+		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
+		vbufs = [vsBuf, uvsBuf];
+
+		ibuf = this.vtxCtx.createIndexBuffer(ivs);
+
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
+		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
+	}
 	createCylinderRData(radius: number, height = 200, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {
 		let mesh = new Cylinder3DMesh();
 		mesh.setBufSortFormat(0xfffffff);
