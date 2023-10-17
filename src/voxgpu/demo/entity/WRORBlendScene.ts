@@ -20,9 +20,10 @@ import { WROTextureContext } from "../pipeline/WROTextureContext";
 import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WGRUniformValue } from "../../render/uniform/WGRUniformValue";
 import { WGRenderer } from "../../rscene/WGRenderer";
+import { WGRGeometry } from "../../render/WGRGeometry";
 
 class WRORBlendScene {
-	private mGeomData: GeomRDataType;
+	private mGeomDatas: GeomRDataType[] = [];
 	private runits: WRORUnit[] = [];
 	private mPngTexList: GPUTexture[] = [];
 	private mJpgTexList: GPUTexture[] = [];
@@ -196,15 +197,22 @@ class WRORBlendScene {
 		}
 		pipeParams.setDepthWriteEnabled(depthWriteEnabled);
 
-		const rgd = this.mGeomData;
+		const rgd = this.mGeomDatas[0];
 		console.log("rgd.vtxDescParam: ", rgd.vtxDescParam);
 		const pipelineCtx = this.renderer.getRPBlockAt(0).createRenderPipeline(pipeParams, rgd.vtxDescParam);
 		return pipelineCtx;
 	}
 	private createRenderGeometry(): void {
-		// this.mGeomData = this.geomData.createCubeRData(false);
-		this.mGeomData = this.geomData.createPlaneRData(-150, -150, 300, 300, 0, false);
-		console.log("this.mGeomData: ", this.mGeomData);
+		this.mGeomDatas.push( this.geomData.createPlaneRData(-150, -150, 300, 300, 0) );
+		console.log("this.this.mGeomDatas: ", this.mGeomDatas);
+		for(let i = 0; i < this.mGeomDatas.length; ++i) {
+			const rgd = this.mGeomDatas[i];
+			let rgeom = new WGRGeometry();
+			rgeom.ibuf = rgd.ibuf;
+			rgeom.vbufs = rgd.vbufs;
+			rgeom.indexCount = rgd.ibuf.elementCount;
+			rgd.rgeom = rgeom;
+		}
 	}
 	private createEntities(
 		uniformLayoutName: string,
@@ -217,9 +225,9 @@ class WRORBlendScene {
 		const uniformUsage = GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
 		const rblock = this.renderer.getRPBlockAt(0);
 
-		const rgd = this.mGeomData;
+		const rgd = this.mGeomDatas[0];
 
-		const runit = rblock.createRUnit(null, { indexBuffer: rgd.ibuf, vertexBuffers: rgd.vbufs, indexCount: rgd.ibuf.elementCount });
+		const rgeom =  rgd.rgeom;
 		for (let i = 0; i < total; ++i) {
 			const unit = new WRORUnit();
 			const k = this.runits.length;
@@ -234,7 +242,7 @@ class WRORBlendScene {
 			unit.trans.running = false;
 
 			unit.trans.uniformValue = new WGRUniformValue(unit.trans.transData, 0);
-			unit.runit = rblock.createRUnit(runit.geometry);
+			unit.runit = rblock.createRUnit( rgeom );
 			const ru = unit.runit;
 			ru.pipeline = pipelineCtx.pipeline;
 
