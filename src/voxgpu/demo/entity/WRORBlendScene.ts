@@ -84,17 +84,19 @@ class WRORBlendScene {
 
 		this.createRenderGeometry();
 
-		let shapePipeline = this.createRenderPipeline(sampleCount);
-		// let shapeBrnPipeline = this.createRenderPipeline(sampleCount, false, true);
-		// let texPipeline = this.createRenderPipeline(sampleCount, true, false);
-		// let texTransparentPipeline = this.createRenderPipeline(sampleCount, true, false, true, true);
-		// let texBrnPipeline = this.createRenderPipeline(sampleCount, true, true);
+		let shapePipeline = this.createRenderPipeline();
+		// let shapeBrnPipeline = this.createRenderPipeline(false, true);
+		let texPipeline = this.createRenderPipeline(true, false);
+		let texTransparentPipeline = this.createRenderPipeline(true, false, true, true);
+		// let texBrnPipeline = this.createRenderPipeline(true, true);
 
 		let urls: string[] = [
 			"static/assets/box.jpg",
 			"static/assets/default.jpg",
 			"static/assets/decorativePattern_01.jpg",
-			"static/assets/glsles3.png"
+			"static/assets/letterA.png",
+			"static/assets/xulie_08_61.png",
+			"static/assets/blueTransparent.png",
 		];
 
 		this.buildTextures(urls, (texs: GPUTexture[]): void => {
@@ -104,75 +106,51 @@ class WRORBlendScene {
 			console.log("this.mPngTexList: ", this.mPngTexList);
 			console.log("this.mJpgTexList: ", this.mJpgTexList);
 
-			let pngTexView = this.mPngTexList[0].createView();
+			// let pngTexView = this.mPngTexList[0].createView();
 
-			// this.createEntities("texTransparentUniform", texTransparentPipeline, 1, pngTexView);
-
-			/*
-			this.createEntities("shapeUniform", shapePipeline, 2);
-			this.createEntities("shapeBrnUniform", shapeBrnPipeline, 2, null, true);
-
-			let texViews: GPUTextureView[] = [];
-			for (let i = 0; i < texs.length; ++i) {
-				const tex = texs[i];
+			
+			let pngViews: GPUTextureView[] = [];
+			for (let i = 0; i < this.mPngTexList.length; ++i) {
+				const tex = this.mPngTexList[i];
 				const texView = tex ? tex.createView() : null;
 				if (texView) {
-					texView.label = "(view)" + tex.label;
+					texView.label = "png(view)" + tex.label;
+					pngViews.push(texView);
+				}
+			}
+
+			this.createEntities("texTransparentUniform", texTransparentPipeline, 1, pngViews[Math.round(Math.random() * (pngViews.length - 1))]);
+
+			// /*
+			// this.createEntities("shapeUniform", shapePipeline, 2);
+			// this.createEntities("shapeBrnUniform", shapeBrnPipeline, 2, null, true);
+
+			let texViews: GPUTextureView[] = [];
+			for (let i = 0; i < this.mJpgTexList.length; ++i) {
+				const tex = this.mJpgTexList[i];
+				const texView = tex ? tex.createView() : null;
+				if (texView) {
+					texView.label = "jpg(view)" + tex.label;
 					texViews.push(texView);
 				}
 			}
 
+			// for (let i = 0; i < 1; ++i) {
+			// 	this.createEntities("texBrnUniform", texBrnPipeline, 2, texViews[Math.round(Math.random() * (texViews.length - 1))], true);
+			// }
 			for (let i = 0; i < 1; ++i) {
-				this.createEntities("texBrnUniform", texBrnPipeline, 2, texViews[Math.round(Math.random() * (texViews.length - 1))], true);
+				this.createEntities("texUniform", texPipeline, 1, texViews[Math.round(Math.random() * (texViews.length - 1))]);
 			}
-			for (let i = 0; i < 1; ++i) {
-				this.createEntities("texUniform", texPipeline, 2, texViews[Math.round(Math.random() * (texViews.length - 1))]);
-			}
-			this.createEntities("shapeUniform", shapePipeline, 2);
+			// this.createEntities("shapeUniform", shapePipeline, 2);
+			
+			this.createEntities("texTransparentUniform", texTransparentPipeline, 2, pngViews[Math.round(Math.random() * (pngViews.length - 1))]);
 			//*/
 
 			console.log("runitsTotal: ", this.runits.length);
 			this.mEnabled = true;
 		});
 	}
-	private buildTextures(urls: string[], callback: (texs: GPUTexture[]) => void, mipmap: boolean = true): void {
-		if (urls && urls.length > 0) {
-			let texs: GPUTexture[] = [];
-			let total = urls.length;
-			for (let i = 0; i < urls.length; ++i) {
-				this.texCtx.createMaterialTexture(mipmap, urls[i], true).then((tex: GPUTexture) => {
-					if (tex.url.indexOf(".png") > 0) {
-						this.mPngTexList.push(tex);
-					} else {
-						this.mJpgTexList.push(tex);
-					}
-					texs.push(tex);
-					total--;
-					if (total < 1) {
-						if (callback) {
-							callback(texs);
-						}
-					}
-				});
-			}
-		} else {
-			this.texCtx.createMaterialTexture(true).then((tex: GPUTexture) => {
-				if (callback) {
-					callback([tex]);
-				}
-			});
-		}
-	}
-	private getFragShdCode(texEnabled = false, brnEnabled: boolean = false): { code: string; uuid: string } {
-		const shapeCode = brnEnabled ? vertexPositionColorBrnWGSL : vertexPositionColorWGSL;
-		const texCode = brnEnabled ? sampleTextureMixColorBrnWGSL : sampleTextureMixColorWGSL;
-		let code = texEnabled ? texCode : shapeCode;
-		let uuid = "fragShd" + (brnEnabled ? "Brn" : "");
-		uuid += brnEnabled ? "Tex" : "";
-		return { code: code, uuid: uuid };
-	}
 	private createRenderPipeline(
-		sampleCount: number,
 		texEnabled = false,
 		brnEnabled: boolean = false,
 		transparent = false,
@@ -180,17 +158,10 @@ class WRORBlendScene {
 	): WROPipelineContext {
 		let fragCodeSrc = this.getFragShdCode(texEnabled, brnEnabled);
 		const pipeParams = new RPipelineParams({
-			sampleCount: sampleCount,
-			multisampleEnabled: this.msaaRenderEnabled,
 			vertShaderSrc: { code: basicVertWGSL, uuid: "vtxShdCode" },
 			fragShaderSrc: { code: fragCodeSrc.code, uuid: fragCodeSrc.uuid },
 			depthStencilEnabled: true,
 			fragmentEnabled: true,
-			depthStencil: {
-				depthWriteEnabled: true,
-				depthCompare: "less",
-				format: "depth24plus" // 会依据当前的RenderPass自动匹配format
-			}
 		});
 		if (transparent) {
 			pipeParams.setTransparentBlendParam(0);
@@ -233,7 +204,7 @@ class WRORBlendScene {
 			const k = this.runits.length;
 			unit.trans.scaleFactor = 1.0;
 			// unit.trans.upateTimes = 1;
-			unit.trans.posV.setXYZ(-10 + k * 40, -15 + k * 40, 0.1 * k);
+			unit.trans.posV.setXYZ(-100 + k * 80, -100 + k * 80, 0.1 * k);
 			// unit.trans.posV.setXYZ(0, 0, 0);
 			unit.trans.scaleAndRotBoo = false;
 			unit.trans.intialize(this.camera);
@@ -288,6 +259,42 @@ class WRORBlendScene {
 			}
 			// console.log("loss time: ", Date.now() - time);
 		}
+	}
+	private buildTextures(urls: string[], callback: (texs: GPUTexture[]) => void, mipmap: boolean = true): void {
+		if (urls && urls.length > 0) {
+			let texs: GPUTexture[] = [];
+			let total = urls.length;
+			for (let i = 0; i < urls.length; ++i) {
+				this.texCtx.createMaterialTexture(mipmap, urls[i], true).then((tex: GPUTexture) => {
+					if (tex.url.indexOf(".png") > 0) {
+						this.mPngTexList.push(tex);
+					} else {
+						this.mJpgTexList.push(tex);
+					}
+					texs.push(tex);
+					total--;
+					if (total < 1) {
+						if (callback) {
+							callback(texs);
+						}
+					}
+				});
+			}
+		} else {
+			this.texCtx.createMaterialTexture(true).then((tex: GPUTexture) => {
+				if (callback) {
+					callback([tex]);
+				}
+			});
+		}
+	}
+	private getFragShdCode(texEnabled = false, brnEnabled: boolean = false): { code: string; uuid: string } {
+		const shapeCode = brnEnabled ? vertexPositionColorBrnWGSL : vertexPositionColorWGSL;
+		const texCode = brnEnabled ? sampleTextureMixColorBrnWGSL : sampleTextureMixColorWGSL;
+		let code = texEnabled ? texCode : shapeCode;
+		let uuid = "fragShd" + (brnEnabled ? "Brn" : "");
+		uuid += brnEnabled ? "Tex" : "";
+		return { code: code, uuid: uuid };
 	}
 }
 export { WRORBlendScene };

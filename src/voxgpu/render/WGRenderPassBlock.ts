@@ -53,6 +53,14 @@ class WGRenderPassBlock {
 		let pipelineCtx = new WROPipelineContext(this.mWGCtx);
 		this.mPipelineCtxs.push(pipelineCtx);
 		pipelineParams.setDepthStencilFormat(this.rendererPass.depthTexture.format);
+
+		let passParam = this.rendererPass.getPassParams();
+		if(passParam.multisampleEnabled) {
+			pipelineParams.multisample = {
+				count: passParam.sampleCount
+			}
+		}
+
 		pipelineCtx.createRenderPipelineWithBuf(pipelineParams, vtxDesc);
 		return pipelineCtx;
 	}
