@@ -217,27 +217,21 @@ class WRORBlendScene {
 			unit.runit = rblock.createRUnit(rgeom);
 			const ru = unit.runit;
 			ru.pipeline = pipelineCtx.pipeline;
-
+			let uvalues: WGRUniformValue[];
 			if (brnEnabled) {
-				const uvalues = [unit.trans.uniformValue, unit.brnUValue];
 				unit.brnUValue = new WGRUniformValue(new Float32Array([1, 1, 1, 1]), 1);
-				ru.setUniformValues(uvalues);
-				ru.uniforms = [
-					uniformCtx.createUniformWithValues(
-						uniformLayoutName, 0,
-						uvalues, [{ texView: texView }]
-					)
-				];
+				uvalues = [unit.trans.uniformValue, unit.brnUValue];
 			} else {
-				const uvalues = [unit.trans.uniformValue];
-				ru.setUniformValues(uvalues);
-				ru.uniforms = [
-					uniformCtx.createUniformWithValues(
-						uniformLayoutName, 0,
-						uvalues, [{ texView: texView }]
-					)
-				];
+				uvalues = [unit.trans.uniformValue];
 			}
+			
+			ru.setUniformValues(uvalues);
+			ru.uniforms = [
+				uniformCtx.createUniformWithValues(
+					uniformLayoutName, 0,
+					uvalues, [{ texView: texView }]
+				)
+			];
 			this.runits.push(unit);
 		}
 		// if (total == 1) {
