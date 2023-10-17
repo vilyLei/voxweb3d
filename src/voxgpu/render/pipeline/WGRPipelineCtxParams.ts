@@ -92,12 +92,22 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 		}
 	}
 	setDepthWriteEnabled(enabled: boolean): void {
-		if (this.depthStencilEnabled) {
+		this.depthStencilEnabled = enabled;
+		if (this.depthStencil) {
 			this.depthStencil.depthWriteEnabled = enabled;
+		}
+		if (enabled) {
+			if (!this.depthStencil) {
+				this.depthStencil = {
+					depthWriteEnabled: true,
+					depthCompare: "less",
+					format: "depth24plus"
+				}
+			}
 		}
 	}
 	setDepthStencilFormat(format: string): void {
-		if (this.depthStencilEnabled) {
+		if (this.depthStencil) {
 			this.depthStencil.format = format;
 		}
 	}

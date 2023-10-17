@@ -149,7 +149,7 @@ class WGRPipelineContext implements IWGRPipelineContext {
 				pipelineParams.build(ctx.device);
 			}
 		}
-		// console.log("createRenderPipeline(), pipelineParams:\n",pipelineParams);
+		console.log("createRenderPipeline(), pipelineParams:\n",pipelineParams);
 		this.pipeline = ctx.device.createRenderPipeline(pipelineParams);
 		return this.pipeline;
 	}

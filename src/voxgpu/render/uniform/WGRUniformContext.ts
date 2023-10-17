@@ -5,7 +5,9 @@ import { WGRUniform } from "./WGRUniform";
 import { BufDataParamType, IWGRPipelineContext } from "../pipeline/IWGRPipelineContext";
 import { WGRUniformValue } from "./WGRUniformValue";
 
-class WROUniformWrapper {
+type WGRUniformTexParam = { texView: GPUTextureView, sampler?: GPUSampler };
+type WGRUniformParam = { layoutName: string, groupIndex: number, values: WGRUniformValue[], texParams?: WGRUniformTexParam[] };
+class WGRUniformWrapper {
 	uniform: WGRUniform | null = null;
 	bufDataParams?: BufDataParamType[];
 	bufDataDescs?: { index: number; buffer: GPUBuffer; bufferSize: number }[];
@@ -15,10 +17,10 @@ class WROUniformWrapper {
 }
 
 class UCtxInstance {
-	private mList: WROUniformWrapper[] = [];
+	private mList: WGRUniformWrapper[] = [];
 	private mPipelineCtx: IWGRPipelineContext | null = null;
 	private mBuffers: GPUBuffer[] | null = null;
-	constructor() {}
+	constructor() { }
 
 	private getFreeIndex(): number {
 		for (let i = 0; i < this.mList.length; ++i) {
@@ -75,7 +77,7 @@ class UCtxInstance {
 			}
 		}
 	}
-	runEnd(): void {}
+	runEnd(): void { }
 	createUniform(
 		groupIndex: number,
 		bufDataParams?: BufDataParamType[],
@@ -89,7 +91,7 @@ class UCtxInstance {
 			this.mList[index].uniform = u;
 			u.index = index;
 		} else {
-			const wrapper = new WROUniformWrapper();
+			const wrapper = new WGRUniformWrapper();
 			u.index = this.mList.length;
 			wrapper.uniform = u;
 			wrapper.bufDataParams = bufDataParams;
@@ -139,7 +141,7 @@ class WGRUniformContext {
 	private mInit = true;
 	private mMap: Map<string, UCtxInstance> = new Map();
 	private mPipelineCtx: IWGRPipelineContext | null = null;
-	constructor() {}
+	constructor() { }
 
 	private getUCtx(layoutName: string, creation: boolean = true): UCtxInstance | null {
 		let uctx: UCtxInstance = null;
@@ -173,16 +175,25 @@ class WGRUniformContext {
 			}
 		}
 	}
-	
-	createUniformWithValues(layoutName: string,groupIndex: number,values: WGRUniformValue[], texParams?: { texView: GPUTextureView, sampler?: GPUSampler }[]): WGRUniform | null {
+
+	createUniformsWithValues(params: WGRUniformParam[]): WGRUniform[] {
+		let uniforms: WGRUniform[] = [];
+		for (let i = 0; i < params.length; ++i) {
+			const p = params[i];
+			uniforms.push(this.createUniformWithValues(p.layoutName, p.groupIndex, p.values, p.texParams));
+		}
+		return uniforms;
+	}
+	createUniformWithValues(layoutName: string, groupIndex: number, values: WGRUniformValue[], texParams?: WGRUniformTexParam[]): WGRUniform | null {
 		if (this.mPipelineCtx) {
 			const uctx = this.getUCtx(layoutName);
 			const bufDataParams: { size: number, usage: number }[] = [];
-			for(let i = 0; i < values.length; ++i) {
-				bufDataParams.push( { size: values[i].arrayStride, usage: values[i].usage } );
+			for (let i = 0; i < values.length; ++i) {
+				bufDataParams.push({ size: values[i].arrayStride, usage: values[i].usage });
 			}
 			return uctx.createUniform(groupIndex, bufDataParams, texParams);
 		}
+		throw Error('Illegal operation !!!');
 		return null;
 	}
 	createUniform(

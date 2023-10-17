@@ -1,5 +1,4 @@
 import { GPUTexture } from "../../gpu/GPUTexture";
-// import { WROPipelineContext } from "../pipeline/WROPipelineContext";
 import { WGRPipelineContext } from "../../render/pipeline/WGRPipelineContext";
 import { WRORUnit } from "./WRORUnit";
 
@@ -9,7 +8,6 @@ import Vector3D from "../../../vox/math/Vector3D";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { WGRPipelineCtxParams } from "../../render/pipeline/WGRPipelineCtxParams";
 
-// import basicVertWGSL from "../shaders/basic.vert.wgsl";
 import basicVertWGSL from "../shaders/vs3uvs2.vert.wgsl";
 import sampleTextureMixColorWGSL from "../shaders/sampleTextureMixColor.frag.wgsl";
 import sampleTextureMixColorBrnWGSL from "../shaders/sampleTextureMixColorBrn.frag.wgsl";
@@ -106,9 +104,6 @@ class WRORBlendScene {
 
 			console.log("this.mPngTexList: ", this.mPngTexList);
 			console.log("this.mJpgTexList: ", this.mJpgTexList);
-
-			// let pngTexView = this.mPngTexList[0].createView();
-
 
 			let pngViews: GPUTextureView[] = [];
 			for (let i = 0; i < this.mPngTexList.length; ++i) {
@@ -222,14 +217,13 @@ class WRORBlendScene {
 				unit.brnUValue = new WGRUniformValue(new Float32Array([1, 1, 1, 1]), 1);
 				uvalues.push(unit.brnUValue);
 			}
-			let utexValues = [{ texView: texView }];
+			let utexes = [{ texView: texView }];
 			ru.setUniformValues(uvalues);
-			ru.uniforms = [
-				uniformCtx.createUniformWithValues(
-					uniformLayoutName, 0,
-					uvalues, utexValues
-				)
-			];
+			ru.uniforms = uniformCtx.createUniformsWithValues([{
+				layoutName: uniformLayoutName, groupIndex: 0,
+				values: uvalues, texParams: utexes
+			}]
+			)
 			this.runits.push(unit);
 		}
 		// if (total == 1) {
