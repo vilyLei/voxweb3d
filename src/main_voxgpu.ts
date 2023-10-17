@@ -15,7 +15,8 @@
 // import { BaseRPipeline2 as Demo } from "./voxgpu/demo/BaseRPipeline2";
 // import { BaseWROScene as Demo } from "./voxgpu/demo/BaseWROScene";
 // import { DemoWROPrimitive as Demo } from "./voxgpu/demo/DemoWROPrimitive";
-import { BaseWROBlend as Demo } from "./voxgpu/demo/BaseWROBlend";
+// import { BaseWROBlend as Demo } from "./voxgpu/demo/BaseWROBlend";
+import { DemoDrawInstance as Demo } from "./voxgpu/demo/DemoDrawInstance";
 
 let demoIns = new Demo();
 function main(): void {
