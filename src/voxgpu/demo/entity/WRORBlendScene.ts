@@ -213,6 +213,7 @@ class WRORBlendScene {
 			unit.trans.running = false;
 
 			unit.trans.uniformValue = new WGRUniformValue(unit.trans.transData, 0);
+			unit.trans.uniformValue.arrayStride = matrixSize;
 			unit.runit = rblock.createRUnit( rgeom );
 			const ru = unit.runit;
 			ru.pipeline = pipelineCtx.pipeline;
