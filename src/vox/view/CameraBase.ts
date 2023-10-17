@@ -69,6 +69,7 @@ class CameraBase implements IRenderCamera {
     private m_viewFieldZoom = 1.0;
     private m_changed = true;
     private m_unlock = true;
+	inversePerspectiveZ = false;
     // 不允许外界修改camera数据
     lock(): void {
         this.m_unlock = false;
@@ -82,9 +83,6 @@ class CameraBase implements IRenderCamera {
             this.m_camPos.copyFrom(camPos);
             this.m_lookAtPos.copyFrom(lookAtPos);
             this.m_up.copyFrom(up);
-            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
 			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookRHEnabled = false;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
@@ -100,9 +98,6 @@ class CameraBase implements IRenderCamera {
         if (this.m_unlock) {
             this.m_camPos.copyFrom(camPos);
             this.m_lookAtPos.copyFrom(lookAtPos);
-            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
 			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookRHEnabled = true;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
@@ -188,7 +183,7 @@ class CameraBase implements IRenderCamera {
             this.m_zNear = zNear;
             this.m_zFar = zFar;
             this.m_b = b; this.m_t = t; this.m_l = l; this.m_r = r;
-            this.m_projMat.orthoRH(b, t, l, r, zNear, zFar);
+            this.m_projMat.orthoRH(b, t, l, r, zNear, zFar, this.inversePerspectiveZ ? -1 : 1);
             this.m_perspectiveEnabled = false;
             this.m_rightHandEnabled = true;
             this.m_changed = true;
@@ -199,7 +194,7 @@ class CameraBase implements IRenderCamera {
             this.m_zNear = zNear;
             this.m_zFar = zFar;
             this.m_b = b; this.m_t = t; this.m_l = l; this.m_r = r;
-            this.m_projMat.orthoLH(b, t, l, r, zNear, zFar);
+            this.m_projMat.orthoLH(b, t, l, r, zNear, zFar, this.inversePerspectiveZ ? -1 : 1);
             this.m_perspectiveEnabled = false;
             this.m_rightHandEnabled = false;
             this.m_changed = true;
@@ -220,12 +215,12 @@ class CameraBase implements IRenderCamera {
     setViewSize(pw: number, ph: number): void {
         if (this.m_unlock) {
             if (pw != this.m_viewW || ph != this.m_viewH) {
+
                 this.m_viewW = pw;
                 this.m_viewH = ph;
                 this.m_viewHalfW = pw * 0.5;
                 this.m_viewHalfH = ph * 0.5;
 
-                //console.log("setViewSize, pw:"+pw+",ph:"+ph);
                 if (this.m_perspectiveEnabled) {
                     if (this.m_project2Enabled) {
                         if (this.m_rightHandEnabled) this.perspectiveRH2(this.m_fovRadian, pw, ph, this.m_zNear, this.m_zFar);

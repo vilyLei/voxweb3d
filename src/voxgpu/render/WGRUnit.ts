@@ -1,55 +1,90 @@
 import { WRORUniform } from "../demo/render/WRORUniform";
+import { GPUBuffer } from "../gpu/GPUBuffer";
 import { GPURenderPassEncoder } from "../gpu/GPURenderPassEncoder";
 import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
 import { WGRGeometry } from "./WGRGeometry";
 import { WGRUniformValue } from "./uniform/WGRUniformValue";
 
+class WGRUnitRunSt {
+	pipeline: GPURenderPipeline;
+	rc: GPURenderPassEncoder;
+	gt: WGRGeometry;
+	ibuf: GPUBuffer;
+}
+const __$urst = new WGRUnitRunSt();
 class WGRUnit {
 	private mUniformValues: WGRUniformValue[];
+	private mFlag = true;
 	uniforms?: WRORUniform[];
 	pipeline: GPURenderPipeline;
-	geometry = new WGRGeometry();
+	geometry: WGRGeometry;
 
 	enabled = true;
 	setUniformValues(values: WGRUniformValue[]): void {
 		this.mUniformValues = values;
 	}
 	runBegin(rc: GPURenderPassEncoder): void {
-		const gt = this.geometry;
-		gt.run(rc);
-		rc.setPipeline(this.pipeline);
-		const ufs = this.uniforms;
-		if (ufs) {
-			for (let i = 0, ln = ufs.length; i < ln; i++) {
-				const uf = ufs[i];
-				// 这种判断逻辑不应该出现，加入渲染器内部渲染流程之前必须处理好
-				if (uf.isEnabled()) {
-					rc.setBindGroup(uf.groupIndex, uf.bindGroup);
-				} else {
-					this.enabled = false;
+		this.mFlag = this.enabled;
+		if (this.mFlag) {
+			const gt = this.geometry;
+			if (gt && this.pipeline) {
+				// 这里面的诸多判断逻辑不应该出现，加入渲染器内部渲染流程之前必须处理好， 后续优化
+
+				const st = __$urst;
+				if (st.rc != rc) {
+					st.pipeline = null;
+					st.ibuf = null;
+					st.gt = null;
+					st.rc = rc;
 				}
-			}
-			if (this.enabled) {
-				const uvs = this.mUniformValues;
-				if (uvs) {
-					for (let i = 0, ln = uvs.length; i < ln; i++) {
-						ufs[uvs[i].index].setValue(uvs[i]);
+
+				if (st.gt != gt) {
+					st.gt = gt;
+					gt.run(rc);
+				}
+				if (st.pipeline != this.pipeline) {
+					st.pipeline = this.pipeline;
+					rc.setPipeline(st.pipeline);
+				}
+
+				const ufs = this.uniforms;
+				if (ufs) {
+					for (let i = 0, ln = ufs.length; i < ln; i++) {
+						const uf = ufs[i];
+						if (uf.isEnabled()) {
+							rc.setBindGroup(uf.groupIndex, uf.bindGroup);
+						} else {
+							this.mFlag = false;
+						}
+					}
+					if (this.mFlag) {
+						const uvs = this.mUniformValues;
+						if (uvs) {
+							for (let i = 0, ln = uvs.length; i < ln; i++) {
+								ufs[uvs[i].index].setValue(uvs[i]);
+							}
+						}
 					}
 				}
+			} else {
+				this.mFlag = false;
 			}
 		}
 	}
 	run(rc: GPURenderPassEncoder): void {
-		if (this.enabled) {
+		if (this.mFlag) {
 			const gt = this.geometry;
+			const st = __$urst;
 			if (gt.ibuf) {
-				rc.setIndexBuffer(gt.ibuf, gt.ibuf.dataFormat);
+				if(st.ibuf != gt.ibuf) {
+					st.ibuf = gt.ibuf;
+					rc.setIndexBuffer(gt.ibuf, gt.ibuf.dataFormat);
+				}
 				rc.drawIndexed(gt.indexCount, gt.instanceCount);
 			} else {
 				rc.draw(gt.vertexCount, gt.instanceCount);
 			}
 		}
-		this.enabled = true;
 	}
 }
 

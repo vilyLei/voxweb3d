@@ -2,8 +2,8 @@ import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 
 class WROBufferContext {
-	private mWGCtx: WebGPUContext | null = null;
 	private static sVtxUid = 0;
+	private mWGCtx: WebGPUContext | null = null;
 	constructor(wgCtx?: WebGPUContext) {
 		if (wgCtx) {
 			this.initialize(wgCtx);

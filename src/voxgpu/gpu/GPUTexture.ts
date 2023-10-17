@@ -2,6 +2,7 @@ import { GPUTextureView } from "./GPUTextureView";
 import { GPUTextureViewDescriptor } from "./GPUTextureViewDescriptor";
 
 interface GPUTexture {
+	url?: string;
 	uid?: number;
 	label?: string;
 

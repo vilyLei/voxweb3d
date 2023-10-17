@@ -1,11 +1,11 @@
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { GPUSampler } from "../../gpu/GPUSampler";
 import { GPUTextureView } from "../../gpu/GPUTextureView";
-import { BufDataParamType, WROPipelineContext } from "../pipeline/WROPipelineContext";
-import { WRORUniform } from "./WRORUniform";
+import { WGRUniform } from "./WGRUniform";
+import { BufDataParamType, IWGRPipelineContext } from "../pipeline/IWGRPipelineContext";
 
 class WROUniformWrapper {
-	uniform: WRORUniform | null = null;
+	uniform: WGRUniform | null = null;
 	bufDataParams?: BufDataParamType[];
 	bufDataDescs?: { index: number; buffer: GPUBuffer; bufferSize: number }[];
 	texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[];
@@ -15,7 +15,7 @@ class WROUniformWrapper {
 
 class UCtxInstance {
 	private mList: WROUniformWrapper[] = [];
-	private mPipelineCtx: WROPipelineContext | null = null;
+	private mPipelineCtx: IWGRPipelineContext | null = null;
 	private mBuffers: GPUBuffer[] | null = null;
 	constructor() {}
 
@@ -27,10 +27,11 @@ class UCtxInstance {
 		}
 		return -1;
 	}
-	initialize(pipelineCtx: WROPipelineContext | null): void {
+	initialize(pipelineCtx: IWGRPipelineContext | null): void {
 		this.mPipelineCtx = pipelineCtx;
 	}
 	runBegin(): void {
+
 		if (!this.mBuffers) {
 			let ls = this.mList;
 			if (ls.length > 0) {
@@ -78,9 +79,9 @@ class UCtxInstance {
 		groupIndex: number,
 		bufDataParams?: BufDataParamType[],
 		texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[]
-	): WRORUniform {
+	): WGRUniform {
 		const index = this.getFreeIndex();
-		const u = new WRORUniform(this.mPipelineCtx, this);
+		const u = new WGRUniform(this.mPipelineCtx, this);
 		u.groupIndex = groupIndex;
 
 		if (index >= 0) {
@@ -98,7 +99,7 @@ class UCtxInstance {
 
 		return u;
 	}
-	updateUniformTextureView(u: WRORUniform, texParams: { texView: GPUTextureView; sampler?: GPUSampler }[]): void {
+	updateUniformTextureView(u: WGRUniform, texParams: { texView: GPUTextureView; sampler?: GPUSampler }[]): void {
 		if (u && u.index >= 0 && this.mList[u.index]) {
 			const wp = this.mList[u.index];
 			const uf = wp.uniform;
@@ -107,7 +108,7 @@ class UCtxInstance {
 			}
 		}
 	}
-	removeUniform(u: WRORUniform): void {
+	removeUniform(u: WGRUniform): void {
 		if (u && u.index >= 0 && this.mList[u.index]) {
 			const wp = this.mList[u.index];
 			wp.uniform = null;
@@ -133,10 +134,10 @@ class UCtxInstance {
 		}
 	}
 }
-class WRORUniformContext {
+class WGRUniformContext {
 	private mInit = true;
 	private mMap: Map<string, UCtxInstance> = new Map();
-	private mPipelineCtx: WROPipelineContext | null = null;
+	private mPipelineCtx: IWGRPipelineContext | null = null;
 	constructor() {}
 
 	private getUCtx(layoutName: string, creation: boolean = true): UCtxInstance | null {
@@ -153,7 +154,7 @@ class WRORUniformContext {
 		}
 		return uctx;
 	}
-	initialize(pipelineCtx: WROPipelineContext | null): void {
+	initialize(pipelineCtx: IWGRPipelineContext): void {
 		this.mPipelineCtx = pipelineCtx;
 	}
 	runBegin(): void {
@@ -176,14 +177,15 @@ class WRORUniformContext {
 		groupIndex: number,
 		bufDataParams?: { size: number; usage: number }[],
 		texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[]
-	): WRORUniform | null {
+	): WGRUniform | null {
 		if (this.mPipelineCtx) {
 			const uctx = this.getUCtx(layoutName);
 			return uctx.createUniform(groupIndex, bufDataParams, texParams);
 		}
 		return null;
 	}
-	removeUniform(u: WRORUniform): void {
+
+	removeUniform(u: WGRUniform): void {
 		if (this.mPipelineCtx) {
 			if (u.layoutName) {
 				const m = this.mMap;
@@ -203,4 +205,4 @@ class WRORUniformContext {
 		}
 	}
 }
-export { BufDataParamType, WRORUniformContext };
+export { BufDataParamType, WGRUniformContext };

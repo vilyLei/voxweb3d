@@ -21,6 +21,7 @@ class TransEntity {
 	delayPhase0Times = 0;
 	delayPhase1Times = Math.round(Math.random() * 700) + 300;
 	uniformValue: WGRUniformValue;
+	scaleAndRotBoo = true;
 	intialize(cam?: CameraBase): void {
 		this.trans = ROTransform.Create();
 		this.trans.update();
@@ -33,6 +34,7 @@ class TransEntity {
 
 		const trans = this.trans;
 		const mat = this.mat;
+		// console.log("cam.getVPMatrix(): ", cam.getVPMatrix().toString());
 		mat.copyFrom(trans.getMatrix());
 		mat.append(cam.getVPMatrix());
 		this.transData = mat.getLocalFS32();
@@ -68,8 +70,10 @@ class TransEntity {
 			const trans = this.trans;
 			rv.x += 1.0;
 			rv.y += 0.5;
-			trans.setRotationV3(rv);
-			trans.setScaleV3(sv);
+			if(this.scaleAndRotBoo) {
+				trans.setRotationV3(rv);
+				trans.setScaleV3(sv);
+			}
 			trans.setPosition(this.posV);
 			trans.update();
 

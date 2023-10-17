@@ -1,37 +1,58 @@
-import { RRendererPass } from "../demo/pipeline/RRendererPass";
+import { WGRPassParams, WGRendererPass } from "./pipeline/WGRendererPass";
 import { RPipelineParams } from "../demo/pipeline/RPipelineParams";
 import { VtxPipelinDescParam, WROPipelineContext } from "../demo/pipeline/WROPipelineContext";
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import { GPUCommandBuffer } from "../gpu/GPUCommandBuffer";
 import { WGRUnit } from "./WGRUnit";
+import { GPUBuffer } from "../gpu/GPUBuffer";
+import { WGRGeometry } from "./WGRGeometry";
 
 class WGRenderPassBlock {
 	private mPipelineCtxs: WROPipelineContext[] = [];
 	private mUnits: WGRUnit[] = [];
 	private mWGCtx: WebGPUContext | null;
-	private rendererPass = new RRendererPass();
+	private rendererPass = new WGRendererPass();
 
 	enabled = true;
 	rcommands: GPUCommandBuffer[];
-	constructor(wgCtx?: WebGPUContext, param?: {sampleCount: number, multisampleEnabled: boolean}) {
+	constructor(wgCtx?: WebGPUContext, param?: WGRPassParams) {
 		this.initialize(wgCtx, param);
 	}
-	initialize(wgCtx: WebGPUContext, param?: {sampleCount: number, multisampleEnabled: boolean}): void {
+	initialize(wgCtx: WebGPUContext, param?: WGRPassParams): void {
 		if (!this.mWGCtx && wgCtx) {
 			this.mWGCtx = wgCtx;
 			this.rendererPass.initialize(wgCtx);
 			this.rendererPass.build(param);
 		}
 	}
-
-	createRUnit(): WGRUnit {
-		let u = new WGRUnit();
-		this.mUnits.push(u);
+	createRUnit(
+		geom?: WGRGeometry,
+		geomParam?: { indexBuffer?: GPUBuffer; vertexBuffers: GPUBuffer[]; indexCount?: number; vertexCount?: number },
+		addInfoRendering = true
+	): WGRUnit {
+		const u = new WGRUnit();
+		u.geometry = geom;
+		if (geomParam) {
+			u.geometry = new WGRGeometry();
+			const g = u.geometry;
+			g.ibuf = geomParam.indexBuffer;
+			g.vbufs = geomParam.vertexBuffers;
+			if (geomParam.indexCount) {
+				g.indexCount = geomParam.indexCount;
+			}
+			if (geomParam.vertexCount) {
+				g.vertexCount = geomParam.vertexCount;
+			}
+		}
+		if (addInfoRendering) {
+			this.mUnits.push(u);
+		}
 		return u;
 	}
 	createRenderPipeline(pipelineParams: RPipelineParams, vtxDesc: VtxPipelinDescParam): WROPipelineContext {
 		let pipelineCtx = new WROPipelineContext(this.mWGCtx);
 		this.mPipelineCtxs.push(pipelineCtx);
+		pipelineParams.setDepthStencilFormat(this.rendererPass.depthTexture.format);
 		pipelineCtx.createRenderPipelineWithBuf(pipelineParams, vtxDesc);
 		return pipelineCtx;
 	}
@@ -73,4 +94,4 @@ class WGRenderPassBlock {
 		}
 	}
 }
-export { WGRenderPassBlock };
+export { WGRPassParams, WGRenderPassBlock };

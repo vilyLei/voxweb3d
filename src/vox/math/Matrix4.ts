@@ -1375,16 +1375,16 @@ class Matrix4 implements IMatrix4 {
 	///////
 	// view etc..
 	///////////////////////////////////////////
-	perspectiveRH(fovy: number, aspect: number, zNear: number, zFar: number): void {
+	perspectiveRH(fovy: number, aspect: number, zNear: number, zFar: number, zfactor = 1.0): void {
 		//assert(abs(aspect - std::numeric_limits<float>::epsilon()) > minFloatValue)
 		const fs = this.m_localFS32;
 		let tanHalfFovy = Math.tan(fovy * 0.5);
 		this.identity();
 		fs[0] = 1.0 / (aspect * tanHalfFovy);
 		fs[5] = 1.0 / tanHalfFovy;
-		fs[10] = -(zFar + zNear) / (zFar - zNear);
+		fs[10] = -zfactor * (zFar + zNear) / (zFar - zNear);
 		fs[11] = -1.0;
-		fs[14] = -(2.0 * zFar * zNear) / (zFar - zNear);
+		fs[14] = -zfactor * (2.0 * zFar * zNear) / (zFar - zNear);
 	}
 	perspectiveRH2(fovy: number, pw: number, ph: number, zNear: number, zFar: number): void {
 		let focalLength: number = pw / Math.tan(fovy * 0.5);
@@ -1400,19 +1400,19 @@ class Matrix4 implements IMatrix4 {
 		fs[11] = -1.0;
 		fs[14] = m14;
 	}
-	orthoRH(b: number, t: number, l: number, r: number, zNear: number, zFar: number): void {
+	orthoRH(b: number, t: number, l: number, r: number, zNear: number, zFar: number, zfactor = 1.0): void {
 
 		this.identity();
 		const fs = this.m_localFS32;
 		fs[0] = 2.0 / (r - l);
 		fs[5] = 2.0 / (t - b);
-		fs[10] = -2.0 / (zFar - zNear);
+		fs[10] = -zfactor * 2.0 / (zFar - zNear);
 		fs[12] = -(r + l) / (r - l);
 		fs[13] = -(t + b) / (t - b);
-		fs[14] = -(zFar + zNear) / (zFar - zNear);
+		fs[14] = -zfactor * (zFar + zNear) / (zFar - zNear);
 		fs[15] = 1.0;
 	}
-	perspectiveLH(fovy: number, aspect: number, zNear: number, zFar: number): void {
+	perspectiveLH(fovy: number, aspect: number, zNear: number, zFar: number, zfactor = 1.0): void {
 		//assert(abs(aspect - std::numeric_limits<float>::epsilon()) > minFloatValue)
 
 		let tanHalfFovy: number = Math.tan(fovy * 0.5);
@@ -1420,19 +1420,19 @@ class Matrix4 implements IMatrix4 {
 		const fs = this.m_localFS32;
 		fs[0] = 1.0 / (aspect * tanHalfFovy);
 		fs[5] = 1.0 / tanHalfFovy;
-		fs[10] = (zFar + zNear) / (zFar - zNear);
+		fs[10] = zfactor * (zFar + zNear) / (zFar - zNear);
 		fs[11] = 1.0;
-		fs[14] = (2.0 * zFar * zNear) / (zFar - zNear);
+		fs[14] = zfactor * (2.0 * zFar * zNear) / (zFar - zNear);
 	}
-	orthoLH(b: number, t: number, l: number, r: number, zNear: number, zFar: number): void {
+	orthoLH(b: number, t: number, l: number, r: number, zNear: number, zFar: number, zfactor = 1.0): void {
 		this.identity();
 		const fs = this.m_localFS32;
 		fs[0] = 2.0 / (r - l);// / (aspect * tanHalfFovy);
 		fs[5] = 2.0 / (t - b);// / tanHalfFovy;
-		fs[10] = 2.0 / (zFar - zNear);
+		fs[10] = zfactor * 2.0 / (zFar - zNear);
 		fs[12] = -(r + l) / (r - l);
 		fs[13] = -(t + b) / (t - b);
-		fs[14] = -(zFar + zNear) / (zFar - zNear);
+		fs[14] = -zfactor * (zFar + zNear) / (zFar - zNear);
 		fs[15] = 1.0;
 	}
 	lookAtRH(eyePos: Vector3D, atPos: Vector3D, up: Vector3D): void {

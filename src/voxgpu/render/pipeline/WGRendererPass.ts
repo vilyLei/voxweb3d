@@ -9,15 +9,15 @@ import { GPUTextureDescriptor } from "../../gpu/GPUTextureDescriptor";
 import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 
-interface RRPassParams {
+interface WGRPassParams {
     multisampleEnabled: boolean;
     sampleCount: number;
 	depthFormat?: string;
 }
-class RRendererPass {
+class WGRendererPass {
 
     private mWGCtx: WebGPUContext;
-    private mParams: RRPassParams | null = null;
+    private mParams: WGRPassParams;
     colorView: GPUTextureView | null = null;
     private mDepthTexture: GPUTexture;
 
@@ -35,14 +35,14 @@ class RRendererPass {
     initialize(wgCtx: WebGPUContext): void {
         this.mWGCtx = wgCtx;
     }
-	getPassParams(): RRPassParams {
+	getPassParams(): WGRPassParams {
 		return this.mParams;
 	}
-    build(params: RRPassParams): void {
+    build(params: WGRPassParams): void {
         this.mParams = params;
         this.createRenderPassTexture(params);
     }
-    private createRenderPassTexture(params: RRPassParams): void {
+    private createRenderPassTexture(params: WGRPassParams): void {
 
         const ctx = this.mWGCtx;
         const device = ctx.device;
@@ -70,6 +70,7 @@ class RRendererPass {
 
         const depthTexture = device.createTexture(depthTexDesc);
         this.mDepthTexture = depthTexture;
+		console.log(this);
 		console.log("depthTexDesc: ", depthTexDesc, ", depthTexture: ", depthTexture);
     }
     runBegin(): void {
@@ -116,4 +117,4 @@ class RRendererPass {
         return null;
     }
 }
-export { RRPassParams, RRendererPass }
+export { WGRPassParams, WGRendererPass }

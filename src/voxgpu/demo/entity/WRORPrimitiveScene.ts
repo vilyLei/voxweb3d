@@ -20,11 +20,10 @@ import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WGRUniformValue } from "../../render/uniform/WGRUniformValue";
 import { WGRenderer } from "../../rscene/WGRenderer";
 
-class WRORBlendScene {
+class WRORPrimitiveScene {
 	private mGeomData: GeomRDataType;
 	private runits: WRORUnit[] = [];
-	private mPngTexList: GPUTexture[] = [];
-	private mJpgTexList: GPUTexture[] = [];
+
 	readonly vtxCtx = new WROBufferContext();
 	readonly texCtx = new WROTextureContext();
 	readonly geomData = new GeomDataBase();
@@ -45,28 +44,17 @@ class WRORBlendScene {
 			this.camera = new CameraBase();
 		}
 		const cam = this.camera;
-		cam.inversePerspectiveZ = true;
 
-		let perspective = true;
-
-		const camPosition = new Vector3D(0.0, 0.0, 1000.0);
+		const camPosition = new Vector3D(1000.0, 1000.0, 1000.0);
 		const camLookAtPos = new Vector3D(0.0, 0.0, 0.0);
 		const camUpDirect = new Vector3D(0.0, 1.0, 0.0);
-		if(perspective) {
-			cam.perspectiveRH((Math.PI * 45) / 180.0, width / height, 0.1, 5000);
-		}else {
-			cam.orthoRH(0.1, 5000, -0.5 * height, 0.5 * height, -0.5 * width, 0.5 * width);
-		}
+		cam.perspectiveRH((Math.PI * 45) / 180.0, width / height, 0.1, 5000);
 		cam.lookAtRH(camPosition, camLookAtPos, camUpDirect);
 		cam.setViewXY(0, 0);
 		cam.setViewSize(width, height);
 
 		cam.update();
-		console.log(cam.getVPMatrix());
 	}
-	// format: "depth32float"
-	// format: "depth24plus"
-	// private mDepthFormat = "depth32float";
 	initialize(canvas: HTMLCanvasElement): void {
 		this.initCamera(canvas.width, canvas.height);
 
@@ -79,34 +67,21 @@ class WRORBlendScene {
 		this.texCtx.initialize(this.wgCtx);
 
 		this.renderer.initialize(this.wgCtx);
-		this.renderer.createRenderBlock({ sampleCount: sampleCount, multisampleEnabled: this.msaaRenderEnabled, depthFormat: "depth32float" });
+		this.renderer.createRenderBlock({ sampleCount: sampleCount, multisampleEnabled: this.msaaRenderEnabled });
 
 		this.createRenderGeometry();
 
 		let shapePipeline = this.createRenderPipeline(sampleCount);
-		// let shapeBrnPipeline = this.createRenderPipeline(sampleCount, false, true);
-		// let texPipeline = this.createRenderPipeline(sampleCount, true, false);
-		let texTransparentPipeline = this.createRenderPipeline(sampleCount, true, false, true, true);
-		// let texBrnPipeline = this.createRenderPipeline(sampleCount, true, true);
+		let shapeBrnPipeline = this.createRenderPipeline(sampleCount, false, true);
+		let texPipeline = this.createRenderPipeline(sampleCount, true);
+		let texBrnPipeline = this.createRenderPipeline(sampleCount, true, true);
 
-		let urls: string[] = [
-			"static/assets/box.jpg",
-			"static/assets/default.jpg",
-			"static/assets/decorativePattern_01.jpg",
-			"static/assets/glsles3.png"
-		];
+		let urls: string[] = ["static/assets/box.jpg", "static/assets/default.jpg", "static/assets/decorativePattern_01.jpg"];
 
 		this.buildTextures(urls, (texs: GPUTexture[]): void => {
 			this.createEntities("shapeUniform", shapePipeline, 1);
 
-			console.log("this.mPngTexList: ", this.mPngTexList);
-			console.log("this.mJpgTexList: ", this.mJpgTexList);
-
-			let pngTexView = this.mPngTexList[0].createView();
-
-			this.createEntities("texTransparentUniform", texTransparentPipeline, 1, pngTexView);
-
-			/*
+			// /*
 			this.createEntities("shapeUniform", shapePipeline, 2);
 			this.createEntities("shapeBrnUniform", shapeBrnPipeline, 2, null, true);
 
@@ -138,12 +113,8 @@ class WRORBlendScene {
 			let texs: GPUTexture[] = [];
 			let total = urls.length;
 			for (let i = 0; i < urls.length; ++i) {
-				this.texCtx.createMaterialTexture(mipmap, urls[i], true).then((tex: GPUTexture) => {
-					if (tex.url.indexOf(".png") > 0) {
-						this.mPngTexList.push(tex);
-					} else {
-						this.mJpgTexList.push(tex);
-					}
+				this.texCtx.createMaterialTexture(mipmap, urls[i]).then((tex: GPUTexture) => {
+					tex.label = urls[i];
 					texs.push(tex);
 					total--;
 					if (total < 1) {
@@ -161,47 +132,28 @@ class WRORBlendScene {
 			});
 		}
 	}
-	private getFragShdCode(texEnabled = false, brnEnabled: boolean = false): { code: string; uuid: string } {
+	private getFragShdCode(texEnabled = false, brnEnabled: boolean = false): string {
 		const shapeCode = brnEnabled ? vertexPositionColorBrnWGSL : vertexPositionColorWGSL;
 		const texCode = brnEnabled ? sampleTextureMixColorBrnWGSL : sampleTextureMixColorWGSL;
 		let code = texEnabled ? texCode : shapeCode;
-		let uuid = "fragShd" + (brnEnabled ? "Brn" : "");
-		uuid += brnEnabled ? "Tex" : "";
-		return { code: code, uuid: uuid };
+		return code;
 	}
-	private createRenderPipeline(
-		sampleCount: number,
-		texEnabled = false,
-		brnEnabled: boolean = false,
-		transparent = false,
-		depthWriteEnabled = false
-	): WROPipelineContext {
-		let fragCodeSrc = this.getFragShdCode(texEnabled, brnEnabled);
+	private createRenderPipeline(sampleCount: number, texEnabled = false, brnEnabled: boolean = false): WROPipelineContext {
 		const pipeParams = new RPipelineParams({
 			sampleCount: sampleCount,
 			multisampleEnabled: this.msaaRenderEnabled,
-			vertShaderSrc: { code: basicVertWGSL, uuid: "vtxShdCode" },
-			fragShaderSrc: { code: fragCodeSrc.code, uuid: fragCodeSrc.uuid },
+			vertShaderSrc: { code: basicVertWGSL },
+			fragShaderSrc: { code: this.getFragShdCode(texEnabled, brnEnabled) },
 			depthStencilEnabled: true,
-			fragmentEnabled: true,
-			depthStencil: {
-				depthWriteEnabled: true,
-				depthCompare: "less",
-				format: "depth24plus" // 会依据当前的RenderPass自动匹配format
-			}
+			fragmentEnabled: true
 		});
-		if (transparent) {
-			pipeParams.setTransparentBlendParam(0);
-		}
-		pipeParams.setDepthWriteEnabled(depthWriteEnabled);
-
 		const rgd = this.mGeomData;
 		const pipelineCtx = this.renderer.getRPBlockAt(0).createRenderPipeline(pipeParams, rgd.vtxDescParam);
 		return pipelineCtx;
 	}
 	private createRenderGeometry(): void {
-		// this.mGeomData = this.geomData.createCubeRData(false);
-		this.mGeomData = this.geomData.createPlaneRData(-150, -150, 300, 300, 0);
+		this.mGeomData = this.geomData.createCubeRData(false);
+		// this.mGeomData = this.geomData.createPlaneRData(-50,-50, 100, 100);
 		console.log("this.mGeomData: ", this.mGeomData);
 	}
 	private createEntities(
@@ -220,25 +172,16 @@ class WRORBlendScene {
 		const runit = rblock.createRUnit(null, { indexBuffer: rgd.ibuf, vertexBuffers: rgd.vbufs, indexCount: rgd.ibuf.elementCount });
 		for (let i = 0; i < total; ++i) {
 			const unit = new WRORUnit();
-			const k = this.runits.length;
-			unit.trans.scaleFactor = 1.0;
+			unit.trans.scaleFactor *= 1.5;
 			// unit.trans.upateTimes = 1;
-			unit.trans.posV.setXYZ(-10 + k * 40, -15 + k * 40, 0.1 * k);
-			// unit.trans.posV.setXYZ(0, 0, 0);
-			unit.trans.scaleAndRotBoo = false;
 			unit.trans.intialize(this.camera);
-
-			unit.trans.run(this.camera);
-			unit.trans.running = false;
-
 			unit.trans.uniformValue = new WGRUniformValue(unit.trans.transData, 0);
 			unit.runit = rblock.createRUnit(runit.geometry);
 			const ru = unit.runit;
 			ru.pipeline = pipelineCtx.pipeline;
 
 			if (brnEnabled) {
-				// unit.brnUValue = new WGRUniformValue(new Float32Array([Math.random() * 1.5, Math.random() * 1.5, Math.random() * 1.5, 1]), 1);
-				unit.brnUValue = new WGRUniformValue(new Float32Array([1, 1, 1, 1]), 1);
+				unit.brnUValue = new WGRUniformValue(new Float32Array([Math.random() * 1.5, Math.random() * 1.5, Math.random() * 1.5, 1]), 1);
 				ru.setUniformValues([unit.trans.uniformValue, unit.brnUValue]);
 				ru.uniforms = [
 					pipelineCtx.uniform.createUniform(
@@ -259,10 +202,10 @@ class WRORBlendScene {
 			}
 			this.runits.push(unit);
 		}
-		// if (total == 1) {
-		// 	this.runits[0].trans.scaleFactor = 1.0;
-		// 	this.runits[0].trans.posV.setXYZ(-200, -250, 0);
-		// }
+		if (total == 1) {
+			this.runits[0].trans.scaleFactor = 1.0;
+			this.runits[0].trans.posV.setXYZ(0, 0, 0);
+		}
 	}
 	private delayTimes = 500000000;
 	update(): void {
@@ -280,4 +223,4 @@ class WRORBlendScene {
 		}
 	}
 }
-export { WRORBlendScene };
+export { WRORPrimitiveScene };

@@ -9,7 +9,8 @@ import { GPURenderPipelineDescriptor } from "../../gpu/GPURenderPipelineDescript
 import { GPUVertexAttribute } from "../../gpu/GPUVertexAttribute";
 import { GPUVertexBufferLayout } from "../../gpu/GPUVertexBufferLayout";
 import { GPUVertexState } from "../../gpu/GPUVertexState";
-interface IRShadeSrcParam {
+
+interface IWGRShadeSrcParam {
 	uuid?: string;
 	vertEntryPoint?: string;
 	fragEntryPoint?: string;
@@ -22,21 +23,21 @@ interface IRPipelineParam {
 	multisampleEnabled?: boolean;
 	depthStencilEnabled?: boolean;
 	fragmentEnabled?: boolean;
-	shaderSrc?: IRShadeSrcParam;
-	vertShaderSrc?: IRShadeSrcParam;
-	fragShaderSrc?: IRShadeSrcParam;
-	compShaderSrc?: IRShadeSrcParam;
+	shaderSrc?: IWGRShadeSrcParam;
+	vertShaderSrc?: IWGRShadeSrcParam;
+	fragShaderSrc?: IWGRShadeSrcParam;
+	compShaderSrc?: IWGRShadeSrcParam;
 	depthStencil?: GPUDepthStencilState;
 }
-class RPipelineParams implements GPURenderPipelineDescriptor {
+class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 	sampleCount = 1;
 	multisampleEnabled = false;
 	depthStencilEnabled = false;
 	fragmentEnabled = true;
-	shaderSrc?: IRShadeSrcParam;
-	vertShaderSrc?: IRShadeSrcParam;
-	fragShaderSrc?: IRShadeSrcParam;
-	compShaderSrc?: IRShadeSrcParam;
+	shaderSrc?: IWGRShadeSrcParam;
+	vertShaderSrc?: IWGRShadeSrcParam;
+	fragShaderSrc?: IWGRShadeSrcParam;
+	compShaderSrc?: IWGRShadeSrcParam;
 	layout = "auto";
 	vertex: GPUVertexState = {
 		module: null,
@@ -211,4 +212,4 @@ class RPipelineParams implements GPURenderPipelineDescriptor {
 		vert.buffers.push(vtxBufLayout);
 	}
 }
-export { RPipelineParams };
+export { WGRPipelineCtxParams };

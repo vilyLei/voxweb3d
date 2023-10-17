@@ -20,6 +20,8 @@ interface GPUDepthStencilState {
 	depthCompare: string;
 	/**
 	 * An enumerated value specifying the depthStencilAttachment format that the GPURenderPipeline will be compatible with.
+	 * Possible flag values are:
+	 * 		"stencil8","depth16unorm","depth24plus","depth24plus-stencil8","depth32float","depth32float-stencil8",
 	 * See the specification's Texture Formats section for all the available format values(in GPUTextureFormat):
 	 * https://gpuweb.github.io/gpuweb/#enumdef-gputextureformat
 	 */
