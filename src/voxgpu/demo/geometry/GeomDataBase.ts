@@ -1,11 +1,16 @@
+import Vector3D from "../../../vox/math/Vector3D";
+import Box3DMesh from "../../../vox/mesh/Box3DMesh";
+import Cylinder3DMesh from "../../../vox/mesh/Cylinder3DMesh";
 import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
+import Sphere3DMesh from "../../../vox/mesh/Sphere3DMesh";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
+import { WGRGeometry } from "../../render/WGRGeometry";
 import { cubeVertexArray } from "../mesh/cubeData";
 import { WROBufferContext } from "../pipeline/WROBufferContext";
 import { VtxPipelinDescParam } from "../pipeline/WROPipelineContext";
 
-type GeomRDataType = {vbufs: GPUBuffer[], ibuf: GPUBuffer, vtxDescParam: VtxPipelinDescParam};
+type GeomRDataType = {vbufs: GPUBuffer[], ibuf: GPUBuffer, vtxDescParam: VtxPipelinDescParam, rgeom?: WGRGeometry};
 class GeomDataBase {
 
 	readonly vtxCtx = new WROBufferContext();
@@ -37,7 +42,74 @@ class GeomDataBase {
 		}
 		return tvs;
 	}
-	createPlaneRData(px: number, py: number, pw: number, ph: number, axisFlag = 0, expand = true): GeomRDataType {
+	
+	createCylinderRData(radius: number, height = 200, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {
+		let mesh = new Cylinder3DMesh();
+		mesh.setBufSortFormat(0xfffffff);
+		mesh.initialize(radius, height, longitudeNumSegments, latitudeNumSegments);
+
+		let vbufs: GPUBuffer[];
+		let ibuf: GPUBuffer;
+		let vs = mesh.getVS();
+		let uvs = mesh.getUVS();
+		let nvs = mesh.getNVS();
+		let ivs = mesh.getIVS();
+
+		let vtTotal = vs.length / 3;
+		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [3]);
+		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
+		vbufs = [vsBuf, uvsBuf];
+
+		ibuf = this.vtxCtx.createIndexBuffer(ivs);
+
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
+		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
+	}
+	createSphereRData(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {
+		let mesh = new Sphere3DMesh();
+		mesh.setBufSortFormat(0xfffffff);
+		mesh.initialize(radius, longitudeNumSegments, latitudeNumSegments, false);
+
+		let vbufs: GPUBuffer[];
+		let ibuf: GPUBuffer;
+		let vs = mesh.getVS();
+		let uvs = mesh.getUVS();
+		let nvs = mesh.getNVS();
+		let ivs = mesh.getIVS();
+
+		let vtTotal = vs.length / 3;
+		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [3]);
+		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
+		vbufs = [vsBuf, uvsBuf];
+
+		ibuf = this.vtxCtx.createIndexBuffer(ivs);
+
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
+		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
+	}
+	createBoxRData(minV: Vector3D, maxV: Vector3D): GeomRDataType {
+		let mesh = new Box3DMesh();
+		mesh.setBufSortFormat(0xfffffff);
+		mesh.initialize(minV, maxV);
+
+		let vbufs: GPUBuffer[];
+		let ibuf: GPUBuffer;
+		let vs = mesh.getVS();
+		let uvs = mesh.getUVS();
+		let nvs = mesh.getNVS();
+		let ivs = mesh.getIVS();
+
+		let vtTotal = vs.length / 3;
+		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [3]);
+		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
+		vbufs = [vsBuf, uvsBuf];
+
+		ibuf = this.vtxCtx.createIndexBuffer(ivs);
+
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
+		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
+	}
+	createPlaneRData(px: number, py: number, pw: number, ph: number, axisFlag = 0, expand = false): GeomRDataType {
 
 		let mesh = new RectPlaneMesh();
 		mesh.axisFlag = axisFlag

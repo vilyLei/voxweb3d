@@ -8,7 +8,7 @@ import Vector3D from "../../../vox/math/Vector3D";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { RPipelineParams } from "../pipeline/RPipelineParams";
 
-import basicVertWGSL from "../shaders/basic.vert.wgsl";
+import basicVertWGSL from "../shaders/vs3uvs2.vert.wgsl";
 import sampleTextureMixColorWGSL from "../shaders/sampleTextureMixColor.frag.wgsl";
 import sampleTextureMixColorBrnWGSL from "../shaders/sampleTextureMixColorBrn.frag.wgsl";
 import vertexPositionColorWGSL from "../shaders/vertexPositionColor.frag.wgsl";
@@ -19,9 +19,10 @@ import { WROTextureContext } from "../pipeline/WROTextureContext";
 import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WGRUniformValue } from "../../render/uniform/WGRUniformValue";
 import { WGRenderer } from "../../rscene/WGRenderer";
+import { WGRGeometry } from "../../render/WGRGeometry";
 
 class WRORPrimitiveScene {
-	private mGeomData: GeomRDataType;
+	private mGeomDatas: GeomRDataType[] = [];
 	private runits: WRORUnit[] = [];
 
 	readonly vtxCtx = new WROBufferContext();
@@ -147,14 +148,28 @@ class WRORPrimitiveScene {
 			depthStencilEnabled: true,
 			fragmentEnabled: true
 		});
-		const rgd = this.mGeomData;
+		const rgd = this.mGeomDatas[0];
 		const pipelineCtx = this.renderer.getRPBlockAt(0).createRenderPipeline(pipeParams, rgd.vtxDescParam);
 		return pipelineCtx;
 	}
 	private createRenderGeometry(): void {
-		this.mGeomData = this.geomData.createCubeRData(false);
-		// this.mGeomData = this.geomData.createPlaneRData(-50,-50, 100, 100);
-		console.log("this.mGeomData: ", this.mGeomData);
+
+		// this.mGeomData = this.geomData.createPlaneRData(-50,-50, 100, 100, 0);
+
+		let minV = new Vector3D(-50, -50, -50);
+		let maxV = minV.clone().scaleBy(-1);
+		this.mGeomDatas.push( this.geomData.createBoxRData(minV, maxV) );
+		this.mGeomDatas.push( this.geomData.createSphereRData(60.0) );
+		this.mGeomDatas.push( this.geomData.createCylinderRData(60.0) );
+		console.log("this.mGeomDatas: ", this.mGeomDatas);
+		for(let i = 0; i < this.mGeomDatas.length; ++i) {
+			const rgd = this.mGeomDatas[i];
+			let rgeom = new WGRGeometry();
+			rgeom.ibuf = rgd.ibuf;
+			rgeom.vbufs = rgd.vbufs;
+			rgeom.indexCount = rgd.ibuf.elementCount;
+			rgd.rgeom = rgeom;
+		}
 	}
 	private createEntities(
 		uniformLayoutName: string,
@@ -167,16 +182,18 @@ class WRORPrimitiveScene {
 		const uniformUsage = GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
 		const rblock = this.renderer.getRPBlockAt(0);
 
-		const rgd = this.mGeomData;
-
-		const runit = rblock.createRUnit(null, { indexBuffer: rgd.ibuf, vertexBuffers: rgd.vbufs, indexCount: rgd.ibuf.elementCount });
+		// const rgd = this.mGeomDatas[0];
+		let rgeom = this.mGeomDatas[0].rgeom;
+		
+		// const runit = rblock.createRUnit(null, { indexBuffer: rgd.ibuf, vertexBuffers: rgd.vbufs, indexCount: rgd.ibuf.elementCount });
 		for (let i = 0; i < total; ++i) {
 			const unit = new WRORUnit();
 			unit.trans.scaleFactor *= 1.5;
 			// unit.trans.upateTimes = 1;
 			unit.trans.intialize(this.camera);
 			unit.trans.uniformValue = new WGRUniformValue(unit.trans.transData, 0);
-			unit.runit = rblock.createRUnit(runit.geometry);
+			rgeom = this.mGeomDatas[Math.round(Math.random() * (this.mGeomDatas.length - 1))].rgeom;
+			unit.runit = rblock.createRUnit(rgeom);
 			const ru = unit.runit;
 			ru.pipeline = pipelineCtx.pipeline;
 
