@@ -23,10 +23,5 @@ fn main(
   var pv: vec4<f32>;
   pv = 0.5 * (vec4(normalize(position.xyz) * 2.0, 1) + vec4(1.0, 1.0, 1.0, 1.0));
   output.fragPosition = pv;
-
-//   var output : VertexOutput;
-//   output.Position = uniforms.modelViewProjectionMatrix[instanceIdx] * position;
-//   output.fragUV = uv;
-//   output.fragPosition = 0.5 * (position + vec4(1.0));
   return output;
 }

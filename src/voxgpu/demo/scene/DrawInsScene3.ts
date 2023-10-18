@@ -240,8 +240,11 @@ class DrawInsScene3 {
 		transparent = false,
 		depthWriteEnabled = false
 	): WGRPipelineContext {
+
+		let vertUUID = "vtxShdCode_ins"+instanceCount;
 		let fragCodeSrc = this.getFragShdCode(texEnabled, brnEnabled);
 		let vertCode: string;
+
 		if(instanceCount < 2) {
 			vertCode = basicVertWGSL;
 		}else {
@@ -252,7 +255,7 @@ class DrawInsScene3 {
 			}
 		}
 		const pipeParams = new WGRPipelineCtxParams({
-			vertShaderSrc: { code: vertCode, uuid: "vtxShdCode" },
+			vertShaderSrc: { code: vertCode, uuid: vertUUID },
 			fragShaderSrc: { code: fragCodeSrc.code, uuid: fragCodeSrc.uuid },
 			depthStencilEnabled: true
 		});
