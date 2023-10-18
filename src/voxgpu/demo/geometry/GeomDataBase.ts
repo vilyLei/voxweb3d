@@ -14,7 +14,7 @@ import { VtxPipelinDescParam } from "../pipeline/WROPipelineContext";
 type GeomRDataType = {vbufs: GPUBuffer[], ibuf: GPUBuffer, vtxDescParam: VtxPipelinDescParam, rgeom?: WGRGeometry};
 class GeomDataBase {
 
-	readonly vtxCtx = new WROBufferContext();
+	// readonly vtxCtx = new WROBufferContext();
 
 	private mWGCtx: WebGPUContext;
 	constructor(wgCtx?: WebGPUContext) {
@@ -24,7 +24,7 @@ class GeomDataBase {
 	}
 	initialize(wgCtx: WebGPUContext): void {
 		this.mWGCtx = wgCtx;
-		this.vtxCtx.initialize(wgCtx);
+		// this.mWGCtx.buffer.initialize(wgCtx);
 	}
 	expandFS32Data(vs: Float32Array, srcStride: number, dstStride: number, value = 1.0): Float32Array {
 
@@ -43,7 +43,7 @@ class GeomDataBase {
 		}
 		return tvs;
 	}
-	
+
 	createTorusRData(ringRadius: number, axisRadius: number = 20, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {
 		let mesh = new Torus3DMesh();
 		mesh.setBufSortFormat(0xfffffff);
@@ -57,11 +57,11 @@ class GeomDataBase {
 		let ivs = mesh.getIVS();
 
 		let vtTotal = vs.length / 3;
-		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [3]);
-		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
+		let vsBuf = this.mWGCtx.buffer.createVertexBuffer(vs, 0, [3]);
+		let uvsBuf = this.mWGCtx.buffer.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
 		vbufs = [vsBuf, uvsBuf];
 
-		ibuf = this.vtxCtx.createIndexBuffer(ivs);
+		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
@@ -79,11 +79,11 @@ class GeomDataBase {
 		let ivs = mesh.getIVS();
 
 		let vtTotal = vs.length / 3;
-		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [3]);
-		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
+		let vsBuf = this.mWGCtx.buffer.createVertexBuffer(vs, 0, [3]);
+		let uvsBuf = this.mWGCtx.buffer.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
 		vbufs = [vsBuf, uvsBuf];
 
-		ibuf = this.vtxCtx.createIndexBuffer(ivs);
+		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
@@ -101,11 +101,11 @@ class GeomDataBase {
 		let ivs = mesh.getIVS();
 
 		let vtTotal = vs.length / 3;
-		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [3]);
-		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
+		let vsBuf = this.mWGCtx.buffer.createVertexBuffer(vs, 0, [3]);
+		let uvsBuf = this.mWGCtx.buffer.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
 		vbufs = [vsBuf, uvsBuf];
 
-		ibuf = this.vtxCtx.createIndexBuffer(ivs);
+		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
@@ -123,11 +123,11 @@ class GeomDataBase {
 		let ivs = mesh.getIVS();
 
 		let vtTotal = vs.length / 3;
-		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [3]);
-		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
+		let vsBuf = this.mWGCtx.buffer.createVertexBuffer(vs, 0, [3]);
+		let uvsBuf = this.mWGCtx.buffer.createVertexBuffer(uvs, 0, [uvs.length / vtTotal]);
 		vbufs = [vsBuf, uvsBuf];
 
-		ibuf = this.vtxCtx.createIndexBuffer(ivs);
+		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
@@ -151,11 +151,11 @@ class GeomDataBase {
 		// console.log("uvs: ", uvs);
 		// console.log("ivs: ", ivs);
 
-		let vsBuf = this.vtxCtx.createVertexBuffer(vs, 0, [expand ? 4 : 3]);
-		let uvsBuf = this.vtxCtx.createVertexBuffer(uvs, 0, [2]);
+		let vsBuf = this.mWGCtx.buffer.createVertexBuffer(vs, 0, [expand ? 4 : 3]);
+		let uvsBuf = this.mWGCtx.buffer.createVertexBuffer(uvs, 0, [2]);
 		vbufs = [vsBuf, uvsBuf];
 
-		ibuf = this.vtxCtx.createIndexBuffer(ivs);
+		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
@@ -166,14 +166,14 @@ class GeomDataBase {
 		let ibuf: GPUBuffer;
 		const data = this.createRawCubeGeometry( combined, scale );
 		if (combined) {
-			let buf = this.vtxCtx.createVertexBuffer(data.vs, 0, [4, 4, 2]);
+			let buf = this.mWGCtx.buffer.createVertexBuffer(data.vs, 0, [4, 4, 2]);
 			vbufs = [buf];
 		} else {
-			let vsBuf = this.vtxCtx.createVertexBuffer(data.vs, 0, [4]);
-			let uvsBuf = this.vtxCtx.createVertexBuffer(data.uvs, 0, [2]);
+			let vsBuf = this.mWGCtx.buffer.createVertexBuffer(data.vs, 0, [4]);
+			let uvsBuf = this.mWGCtx.buffer.createVertexBuffer(data.uvs, 0, [2]);
 			vbufs = [vsBuf, uvsBuf];
 		}
-		ibuf = this.vtxCtx.createIndexBuffer(data.ivs);
+		ibuf = this.mWGCtx.buffer.createIndexBuffer(data.ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: combined ? [[0, 2]] : [[0], [0]] } };
 		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
@@ -188,7 +188,7 @@ class GeomDataBase {
 			vtxTotal++;
 		}
 
-		let indices = this.vtxCtx.createIndicesWithSize(vtxTotal);
+		let indices = this.mWGCtx.buffer.createIndicesWithSize(vtxTotal);
 		for (let i = 0; i < vtxTotal; ++i) {
 			indices[i] = i;
 		}

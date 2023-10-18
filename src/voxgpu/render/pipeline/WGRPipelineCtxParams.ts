@@ -10,6 +10,11 @@ import { GPUVertexAttribute } from "../../gpu/GPUVertexAttribute";
 import { GPUVertexBufferLayout } from "../../gpu/GPUVertexBufferLayout";
 import { GPUVertexState } from "../../gpu/GPUVertexState";
 
+type WGRPipelineContextDefParam = {blendMode?: string, depthWriteEnabled?: boolean, faceCullMode?: string, depthStencilEnabled?:boolean};
+interface WGRShderSrcType {
+	vertShaderSrc: { code: string; uuid: string };
+	fragShaderSrc: { code: string; uuid: string };
+}
 interface IWGRShadeSrcParam {
 	uuid?: string;
 	vertEntryPoint?: string;
@@ -17,7 +22,7 @@ interface IWGRShadeSrcParam {
 	compEntryPoint?: string;
 	code: string;
 }
-interface IRPipelineParam {
+interface WGRPipelineParamType {
 	sampleCount?: number;
 	// msaaEnabled?: boolean;
 	multisampleEnabled?: boolean;
@@ -30,6 +35,7 @@ interface IRPipelineParam {
 	depthStencil?: GPUDepthStencilState;
 }
 class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
+	buildDeferred = true;
 	sampleCount = 1;
 	multisampleEnabled = false;
 	depthStencilEnabled = false;
@@ -48,7 +54,7 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 	primitive?: GPUPrimitiveState;
 	depthStencil?: GPUDepthStencilState;
 	multisample?: GPUMultisampleObject;
-	constructor(param?: IRPipelineParam) {
+	constructor(param?: WGRPipelineParamType) {
 		if (param) {
 			const selfT = this as any;
 			for (var k in param) {
@@ -102,7 +108,7 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 					depthWriteEnabled: true,
 					depthCompare: "less",
 					format: "depth24plus"
-				}
+				};
 			}
 		}
 	}
@@ -115,16 +121,22 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 	 * Possible values are: "back", "front", "none", the default value is "none"
 	 */
 	setCullMode(mode: string): void {
-		this.primitive.cullMode = mode;
+		switch (mode) {
+			case "back":
+			case "front":
+			case "none":
+				this.primitive.cullMode = mode;
+				break;
+		}
 	}
 	setTransparentBlendParam(targetIndex = 0): void {
 		let color = {
-			srcFactor: 'src-alpha',
-			dstFactor: 'one-minus-src-alpha',
+			srcFactor: "src-alpha",
+			dstFactor: "one-minus-src-alpha"
 		};
 		let alpha = {
-			srcFactor: 'zero',
-			dstFactor: 'one'
+			srcFactor: "zero",
+			dstFactor: "one"
 		};
 		this.setBlendParam(color, alpha, targetIndex);
 	}
@@ -162,21 +174,21 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 	build(device: GPUDevice): void {
 		let shdModule = this.shaderSrc
 			? device.createShaderModule({
-				label: "shd",
-				code: this.shaderSrc.code
-			})
+					label: "shd",
+					code: this.shaderSrc.code
+			  })
 			: null;
 		let vertShdModule = this.vertShaderSrc
 			? device.createShaderModule({
-				label: "vertShd",
-				code: this.vertShaderSrc.code
-			})
+					label: "vertShd",
+					code: this.vertShaderSrc.code
+			  })
 			: shdModule;
 		let fragShdModule = this.fragShaderSrc
 			? device.createShaderModule({
-				label: "fragShd",
-				code: this.fragShaderSrc.code
-			})
+					label: "fragShd",
+					code: this.fragShaderSrc.code
+			  })
 			: shdModule;
 
 		const vert = this.vertex;
@@ -222,4 +234,4 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 		vert.buffers.push(vtxBufLayout);
 	}
 }
-export { WGRPipelineCtxParams };
+export { WGRPipelineContextDefParam, WGRShderSrcType, WGRPipelineParamType, WGRPipelineCtxParams };

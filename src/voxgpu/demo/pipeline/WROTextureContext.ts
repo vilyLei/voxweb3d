@@ -46,5 +46,6 @@ class WROTextureContext {
 		tex.uid = WROTextureContext.sUid++;
 		return tex;
 	}
+
 }
 export { WROTextureContext };

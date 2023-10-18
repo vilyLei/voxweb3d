@@ -14,9 +14,13 @@
 // import { BaseRPipeline as Demo } from "./voxgpu/demo/BaseRPipeline";
 // import { BaseRPipeline2 as Demo } from "./voxgpu/demo/BaseRPipeline2";
 // import { BaseWROScene as Demo } from "./voxgpu/demo/BaseWROScene";
+
 // import { DemoWROPrimitive as Demo } from "./voxgpu/demo/DemoWROPrimitive";
+
 // import { BaseWROBlend as Demo } from "./voxgpu/demo/BaseWROBlend";
-import { DemoDrawInstance as Demo } from "./voxgpu/demo/DemoDrawInstance";
+// import { DemoDrawInstance as Demo } from "./voxgpu/demo/DemoDrawInstance";
+// import { DemoMultiTexture as Demo } from "./voxgpu/demo/DemoMultiTexture";
+import { DemoMaterial as Demo } from "./voxgpu/demo/DemoMaterial";
 
 let demoIns = new Demo();
 function main(): void {

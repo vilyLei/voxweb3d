@@ -242,6 +242,7 @@ class DrawInsScene2 {
 			fragShaderSrc: { code: fragCodeSrc.code, uuid: fragCodeSrc.uuid },
 			depthStencilEnabled: true
 		});
+		pipeParams.buildDeferred = false;
 		if (transparent) {
 			pipeParams.setTransparentBlendParam(0);
 		}

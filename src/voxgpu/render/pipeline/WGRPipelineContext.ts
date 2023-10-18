@@ -4,32 +4,45 @@ import { GPUBindGroupLayout } from "../../gpu/GPUBindGroupLayout";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { GPUBufferDescriptor } from "../../gpu/GPUBufferDescriptor";
 import { GPURenderPipeline } from "../../gpu/GPURenderPipeline";
+import { GPURenderPipelineEmpty } from "../../gpu/GPURenderPipelineEmpty";
 import { GPUSampler } from "../../gpu/GPUSampler";
 import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { BufDataParamType, VtxDescParam, VtxPipelinDescParam, IWGRPipelineContext } from "./IWGRPipelineContext";
 import { WGRPipelineCtxParams } from "./WGRPipelineCtxParams";
-// import { WRORUniformContext } from "../../demo/render/WRORUniformContext";
 import { WGRUniformParam, WGRUniformContext } from "../uniform/WGRUniformContext";
 
-// type BufDataParamType = { size: number; usage: number; defaultData?: Float32Array | Int32Array | Uint32Array | Uint16Array | Int16Array };
-// type VtxDescParam = { vertex: { arrayStride: number; params: { offset: number; format: string }[] } };
-// type VtxPipelinDescParam = { vertex: { buffers: GPUBuffer[]; attributeIndicesArray: number[][] } };
 class WGRPipelineContext implements IWGRPipelineContext {
-	private mWGCtx: WebGPUContext | null = null;
-	private mBGLayouts: GPUBindGroupLayout[] = new Array(8);
 
-	pipeline: GPURenderPipeline | null = null;
+	private mInit = true;
+	private mWGCtx: WebGPUContext;
+	private mBGLayouts: GPUBindGroupLayout[] = new Array(8);
+	private mPipelineParams: WGRPipelineCtxParams;
+
+	pipeline: GPURenderPipeline = new GPURenderPipelineEmpty();
 
 	uid = 0;
 	name = "PipelineContext";
 	readonly uniform = new WGRUniformContext();
+
 	constructor(wgCtx?: WebGPUContext) {
 		if (wgCtx) {
 			this.initialize(wgCtx);
 		}
 	}
+	private init(): void {
+		if (this.mInit) {
+			this.mInit = false;
+			const ctx = this.mWGCtx;
+			const p = this.mPipelineParams;
+			if (p) {
+				p.build(ctx.device);
+				this.pipeline = ctx.device.createRenderPipeline(p);
+			}
+		}
+	}
 	runBegin(): void {
+		this.init();
 		this.uniform.runBegin();
 	}
 	runEnd(): void {
@@ -57,16 +70,17 @@ class WGRPipelineContext implements IWGRPipelineContext {
 			let total = params.sizes.length;
 			let size = params.sizes[0];
 			let bufSize = size;
-			let segs: {index: number, size: number}[] = new Array( total );
-			segs[0] = {index: 0, size: size};
-			for(let i = 1; i < total; ++i) {
+			let segs: { index: number; size: number }[] = new Array(total);
+			segs[0] = { index: 0, size: size };
+
+			for (let i = 1; i < total; ++i) {
+
 				size = size <= 256 ? size : size % 256;
 				size = size > 0 ? 256 - size : 0;
 
-				// bufSize += size <= 256 ? (256 - size) : (size % 256 > 0 ? size % 256 : 0);
 				bufSize += size;
 				size = params.sizes[i];
-				segs[i] = {index: bufSize, size: size};
+				segs[i] = { index: bufSize, size: size };
 				bufSize += size;
 			}
 			const desc = {
@@ -75,8 +89,8 @@ class WGRPipelineContext implements IWGRPipelineContext {
 			};
 			const buf = this.mWGCtx.device.createBuffer(desc);
 			buf.segs = segs;
-			console.log("createUniformsBuffer(), segs: ", segs);
-			console.log("createUniformsBuffer(), bufSize: ", bufSize, ", usage: ", params.usage);
+			// console.log("createUniformsBuffer(), segs: ", segs);
+			// console.log("createUniformsBuffer(), bufSize: ", bufSize, ", usage: ", params.usage);
 			return buf;
 		}
 		return null;
@@ -163,11 +177,17 @@ class WGRPipelineContext implements IWGRPipelineContext {
 						k
 					);
 				}
-				pipelineParams.build(ctx.device);
+				if (pipelineParams.buildDeferred) {
+					this.mPipelineParams = pipelineParams;
+				} else {
+					pipelineParams.build(ctx.device);
+				}
 			}
 		}
-		console.log("createRenderPipeline(), pipelineParams:\n",pipelineParams);
-		this.pipeline = ctx.device.createRenderPipeline(pipelineParams);
+		console.log("createRenderPipeline(), pipelineParams:\n", pipelineParams);
+		if (!this.mPipelineParams) {
+			this.pipeline = ctx.device.createRenderPipeline(pipelineParams);
+		}
 		return this.pipeline;
 	}
 

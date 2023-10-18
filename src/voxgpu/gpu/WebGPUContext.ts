@@ -9,8 +9,11 @@ import { GPUDeviceDescriptor } from "./GPUDeviceDescriptor";
 import { GPUTextureView } from "./GPUTextureView";
 import { checkGPUTextureFormat, GPUTextureFormat } from "./GPUTextureFormat";
 import { calculateMipLevels, GPUMipmapGenerator } from "../texture/GPUMipmapGenerator";
+import { WebGPUContextImpl } from "./WebGPUContextImpl";
+import { WebGPUTextureContext } from "./WebGPUTextureContext";
+import { WebGPUBufferContext } from "./WebGPUBufferContext";
 
-class WebGPUContext {
+class WebGPUContext implements WebGPUContextImpl {
 
 	readonly canvas: HTMLCanvasElement = null;
 	readonly context: GPUCanvasContext = null;
@@ -23,6 +26,8 @@ class WebGPUContext {
 	readonly enabled = false;
 
 	readonly mipmapGenerator = new GPUMipmapGenerator();
+	readonly texture = new WebGPUTextureContext();
+	readonly buffer = new WebGPUBufferContext();
 	constructor(){}
 	/**
 	 * @param format GPU texture format string.
@@ -84,6 +89,8 @@ class WebGPUContext {
 						// usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
 						alphaMode: "premultiplied"
 					});
+					selfT.texture.initialize( this );
+					selfT.buffer.initialize( this );
 					selfT.enabled = true;
 					console.log("WebGPUContext instance initialization success ...");
 				} else {

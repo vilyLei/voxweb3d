@@ -1,50 +1,44 @@
 import { GPUTexture } from "../../gpu/GPUTexture";
 import { WGRPipelineContext } from "../../render/pipeline/WGRPipelineContext";
-import { WRORUnit } from "./WRORUnit";
+import { WRORUnit } from "../entity/WRORUnit";
 
 import { GeomRDataType, GeomDataBase } from "../geometry/GeomDataBase";
 import CameraBase from "../../../vox/view/CameraBase";
 import Vector3D from "../../../vox/math/Vector3D";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
-import { WGRPipelineCtxParams } from "../../render/pipeline/WGRPipelineCtxParams";
+import { WGRShderSrcType } from "../../render/pipeline/WGRPipelineCtxParams";
 
 import basicVertWGSL from "../shaders/vs3uvs2.vert.wgsl";
 import sampleTextureMixColorWGSL from "../shaders/sampleTextureMixColor.frag.wgsl";
-import sampleTextureMixColorBrnWGSL from "../shaders/sampleTextureMixColorBrn.frag.wgsl";
-import vertexPositionColorWGSL from "../shaders/vertexPositionColor.frag.wgsl";
-import vertexPositionColorBrnWGSL from "../shaders/vertexPositionColorBrn.frag.wgsl";
+import sampleTwoTextureWGSL from "../shaders/sampleTwoTexture.frag.wgsl";
 
 import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WGRUniformValue } from "../../render/uniform/WGRUniformValue";
 import { WGRenderer } from "../../rscene/WGRenderer";
 import { WGRGeometry } from "../../render/WGRGeometry";
 
-class WRORBlendScene {
+class MultiTextureScene {
 	private mGeomDatas: GeomRDataType[] = [];
 	private runits: WRORUnit[] = [];
-	private mPngTexList: GPUTexture[] = [];
-	private mJpgTexList: GPUTexture[] = [];
 	readonly geomData = new GeomDataBase();
 
-	wgCtx: WebGPUContext | null = null;
+	wgCtx: WebGPUContext = null;
 
 	renderer = new WGRenderer();
 	enabled = true;
-	camera: CameraBase | null = null;
+	camera = new CameraBase();
 
 	msaaRenderEnabled = true;
 	mEnabled = false;
 
-	constructor() { }
+	constructor() {}
 
 	private initCamera(width: number, height: number): void {
-		if (this.camera == null) {
-			this.camera = new CameraBase();
-		}
+
 		const cam = this.camera;
 		cam.inversePerspectiveZ = true;
 
-		let perspective = true;
+		let perspective = false;
 
 		const camPosition = new Vector3D(0.0, 0.0, 1000.0);
 		const camLookAtPos = new Vector3D(0.0, 0.0, 0.0);
@@ -60,9 +54,6 @@ class WRORBlendScene {
 
 		cam.update();
 	}
-	// format: "depth32float"
-	// format: "depth24plus"
-	// private mDepthFormat = "depth32float";
 	initialize(canvas: HTMLCanvasElement): void {
 		this.initCamera(canvas.width, canvas.height);
 
@@ -77,11 +68,17 @@ class WRORBlendScene {
 
 		this.createRenderGeometry();
 
-		let shapePipeline = this.createRenderPipeline();
-		// let shapeBrnPipeline = this.createRenderPipeline(false, true);
-		let texPipeline = this.createRenderPipeline(true, false);
-		let texTransparentPipeline = this.createRenderPipeline(true, false, true, true);
-		// let texBrnPipeline = this.createRenderPipeline(true, true);
+		let rblock = this.renderer.getRPBlockAt(0);
+		const rgd = this.mGeomDatas[0];
+		let pipelineVtxParam = rgd.vtxDescParam;
+
+		let texPipeline = rblock.createRenderPipelineCtx(this.getShaderSrc(1), pipelineVtxParam);
+		let twoTexPipeline = rblock.createRenderPipelineCtx(this.getShaderSrc(2), pipelineVtxParam);
+		let texTransparentPipeline = rblock.createRenderPipelineCtx(this.getShaderSrc(2), pipelineVtxParam, {
+			blendMode: "transparent",
+			depthWriteEnabled: false,
+			faceCullMode: "back"
+		});
 
 		let urls: string[] = [
 			"static/assets/box.jpg",
@@ -89,80 +86,24 @@ class WRORBlendScene {
 			"static/assets/decorativePattern_01.jpg",
 			"static/assets/letterA.png",
 			"static/assets/xulie_08_61.png",
-			"static/assets/blueTransparent.png",
+			"static/assets/blueTransparent.png"
 		];
 
 		this.buildTextures(urls, (texs: GPUTexture[]): void => {
 
-			this.createEntities("shapeUniform", shapePipeline, 1);
-
 			console.log("this.mPngTexList: ", this.mPngTexList);
 			console.log("this.mJpgTexList: ", this.mJpgTexList);
 
-			let pngViews: GPUTextureView[] = [];
-			for (let i = 0; i < this.mPngTexList.length; ++i) {
-				const tex = this.mPngTexList[i];
-				const texView = tex ? tex.createView() : null;
-				if (texView) {
-					texView.label = "png(view)" + tex.label;
-					pngViews.push(texView);
-				}
-			}
+			let pngViews: GPUTextureView[] = this.mPngViews;
+			let jpgViews: GPUTextureView[] = this.mJpgViews;
 
-			this.createEntities("texTransparentUniform", texTransparentPipeline, 1, pngViews[Math.round(Math.random() * (pngViews.length - 1))]);
-
-			// /*
-			// this.createEntities("shapeUniform", shapePipeline, 2);
-			// this.createEntities("shapeBrnUniform", shapeBrnPipeline, 2, null, true);
-
-			let texViews: GPUTextureView[] = [];
-			for (let i = 0; i < this.mJpgTexList.length; ++i) {
-				const tex = this.mJpgTexList[i];
-				const texView = tex ? tex.createView() : null;
-				if (texView) {
-					texView.label = "jpg(view)" + tex.label;
-					texViews.push(texView);
-				}
-			}
-
-			// for (let i = 0; i < 1; ++i) {
-			// 	this.createEntities("texBrnUniform", texBrnPipeline, 2, texViews[Math.round(Math.random() * (texViews.length - 1))], true);
-			// }
-			for (let i = 0; i < 1; ++i) {
-				this.createEntities("texUniform", texPipeline, 1, texViews[Math.round(Math.random() * (texViews.length - 1))]);
-			}
-			// this.createEntities("shapeUniform", shapePipeline, 2);
-
-			this.createEntities("texTransparentUniform", texTransparentPipeline, 2, pngViews[Math.round(Math.random() * (pngViews.length - 1))]);
-			//*/
+			this.createEntities("texUniform", texPipeline, 1, [jpgViews[0]]);
+			this.createEntities("twoTexUniform", twoTexPipeline, 1, [jpgViews[0], jpgViews[1]]);
+			this.createEntities("texTransparentUniform", texTransparentPipeline, 1, [pngViews[0], pngViews[1]]);
 
 			console.log("runitsTotal: ", this.runits.length);
 			this.mEnabled = true;
 		});
-	}
-	private createRenderPipeline(
-		texEnabled = false,
-		brnEnabled: boolean = false,
-		transparent = false,
-		depthWriteEnabled = false
-	): WGRPipelineContext {
-
-		let fragCodeSrc = this.getFragShdCode(texEnabled, brnEnabled);
-		const pipeParams = new WGRPipelineCtxParams({
-			vertShaderSrc: { code: basicVertWGSL, uuid: "vtxShdCode" },
-			fragShaderSrc: { code: fragCodeSrc.code, uuid: fragCodeSrc.uuid },
-			depthStencilEnabled: true,
-		});
-		pipeParams.buildDeferred = false;
-		if (transparent) {
-			pipeParams.setTransparentBlendParam(0);
-		}
-		pipeParams.setDepthWriteEnabled(depthWriteEnabled);
-		pipeParams.setCullMode("none");
-		const rgd = this.mGeomDatas[0];
-		console.log("rgd.vtxDescParam: ", rgd.vtxDescParam);
-		const pipelineCtx = this.renderer.getRPBlockAt(0).createRenderPipeline(pipeParams, rgd.vtxDescParam);
-		return pipelineCtx;
 	}
 	private createRenderGeometry(): void {
 		this.mGeomDatas.push(this.geomData.createPlaneRData(-150, -150, 300, 300, 0));
@@ -176,13 +117,7 @@ class WRORBlendScene {
 			rgd.rgeom = rgeom;
 		}
 	}
-	private createEntities(
-		uniformLayoutName: string,
-		pipelineCtx: WGRPipelineContext,
-		total: number,
-		texView?: GPUTextureView,
-		brnEnabled = false
-	): void {
+	private createEntities(uniformLayoutName: string, pipelineCtx: WGRPipelineContext, total: number, texViews?: GPUTextureView[]): void {
 		const matrixSize = 4 * 16;
 		const rblock = this.renderer.getRPBlockAt(0);
 
@@ -191,6 +126,13 @@ class WRORBlendScene {
 		const rgeom = rgd.rgeom;
 		const uniformCtx = pipelineCtx.uniform;
 
+		let utexes = [{ texView: texViews[0] }];
+		utexes = [];
+		for (let i = 0; i < texViews.length; ++i) {
+			utexes.push({ texView: texViews[i] });
+		}
+		let layoutName = uniformLayoutName;
+		let groupIndex = 0;
 		for (let i = 0; i < total; ++i) {
 			const unit = new WRORUnit();
 			const k = this.runits.length;
@@ -205,20 +147,20 @@ class WRORBlendScene {
 			unit.trans.uniformValue = new WGRUniformValue(unit.trans.transData, 0);
 			unit.trans.uniformValue.arrayStride = matrixSize;
 			unit.runit = rblock.createRUnit(rgeom);
+			unit.runit.pipelinectx = pipelineCtx;
 			const ru = unit.runit;
-			ru.pipeline = pipelineCtx.pipeline;
+
 			let uvalues: WGRUniformValue[] = [unit.trans.uniformValue];
-			if (brnEnabled) {
-				unit.brnUValue = new WGRUniformValue(new Float32Array([1, 1, 1, 1]), 1);
-				uvalues.push(unit.brnUValue);
-			}
-			let utexes = [{ texView: texView }];
+
 			ru.setUniformValues(uvalues);
-			ru.uniforms = uniformCtx.createUniformsWithValues([{
-				layoutName: uniformLayoutName, groupIndex: 0,
-				values: uvalues, texParams: utexes
-			}]
-			)
+			ru.uniforms = uniformCtx.createUniformsWithValues([
+				{
+					layoutName: layoutName,
+					groupIndex: groupIndex,
+					values: uvalues,
+					texParams: utexes
+				}
+			]);
 			this.runits.push(unit);
 		}
 		// if (total == 1) {
@@ -241,16 +183,25 @@ class WRORBlendScene {
 			// console.log("loss time: ", Date.now() - time);
 		}
 	}
+
+	private mPngTexList: GPUTexture[] = [];
+	private mJpgTexList: GPUTexture[] = [];
+	private mPngViews: GPUTextureView[] = [];
+	private mJpgViews: GPUTextureView[] = [];
 	private buildTextures(urls: string[], callback: (texs: GPUTexture[]) => void, mipmap: boolean = true): void {
 		if (urls && urls.length > 0) {
 			let texs: GPUTexture[] = [];
 			let total = urls.length;
 			for (let i = 0; i < urls.length; ++i) {
 				this.wgCtx.texture.createTexByUrl(urls[i], mipmap, true).then((tex: GPUTexture) => {
+					const view = tex.createView();
+					view.label = "(view)" + tex.url;
 					if (tex.url.indexOf(".png") > 0) {
 						this.mPngTexList.push(tex);
+						this.mPngViews.push(view);
 					} else {
 						this.mJpgTexList.push(tex);
+						this.mJpgViews.push(view);
 					}
 					texs.push(tex);
 					total--;
@@ -269,13 +220,14 @@ class WRORBlendScene {
 			});
 		}
 	}
-	private getFragShdCode(texEnabled = false, brnEnabled: boolean = false): { code: string; uuid: string } {
-		const shapeCode = brnEnabled ? vertexPositionColorBrnWGSL : vertexPositionColorWGSL;
-		const texCode = brnEnabled ? sampleTextureMixColorBrnWGSL : sampleTextureMixColorWGSL;
-		let code = texEnabled ? texCode : shapeCode;
-		let uuid = "fragShd" + (brnEnabled ? "Brn" : "");
-		uuid += brnEnabled ? "Tex" : "";
-		return { code: code, uuid: uuid };
+	private getShaderSrc(texTotal: number): WGRShderSrcType {
+		const code = texTotal > 1 ? sampleTwoTextureWGSL : sampleTextureMixColorWGSL;
+		const uuid = "fragShdTex" + texTotal;
+		const params: WGRShderSrcType = {
+			vertShaderSrc: { code: basicVertWGSL, uuid: "vtxShdCode" },
+			fragShaderSrc: { code: code, uuid: uuid }
+		};
+		return params;
 	}
 }
-export { WRORBlendScene };
+export { MultiTextureScene };

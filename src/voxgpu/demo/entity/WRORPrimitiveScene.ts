@@ -15,7 +15,6 @@ import vertexPositionColorWGSL from "../shaders/vertexPositionColor.frag.wgsl";
 import vertexPositionColorBrnWGSL from "../shaders/vertexPositionColorBrn.frag.wgsl";
 
 import { WROBufferContext } from "../pipeline/WROBufferContext";
-import { WROTextureContext } from "../pipeline/WROTextureContext";
 import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WGRUniformValue } from "../../render/uniform/WGRUniformValue";
 import { WGRenderer } from "../../rscene/WGRenderer";
@@ -24,9 +23,6 @@ import { WGRGeometry } from "../../render/WGRGeometry";
 class WRORPrimitiveScene {
 	private mGeomDatas: GeomRDataType[] = [];
 	private runits: WRORUnit[] = [];
-
-	readonly vtxCtx = new WROBufferContext();
-	readonly texCtx = new WROTextureContext();
 	readonly geomData = new GeomDataBase();
 
 	wgCtx: WebGPUContext | null = null;
@@ -64,8 +60,6 @@ class WRORPrimitiveScene {
 		let sampleCount = 4;
 
 		this.geomData.initialize(this.wgCtx);
-		this.vtxCtx.initialize(this.wgCtx);
-		this.texCtx.initialize(this.wgCtx);
 
 		this.renderer.initialize(this.wgCtx);
 		this.renderer.createRenderBlock({ sampleCount: sampleCount, multisampleEnabled: this.msaaRenderEnabled });
@@ -114,7 +108,7 @@ class WRORPrimitiveScene {
 			let texs: GPUTexture[] = [];
 			let total = urls.length;
 			for (let i = 0; i < urls.length; ++i) {
-				this.texCtx.createMaterialTexture(mipmap, urls[i]).then((tex: GPUTexture) => {
+				this.wgCtx.texture.createTexByUrl(urls[i], mipmap).then((tex: GPUTexture) => {
 					tex.label = urls[i];
 					texs.push(tex);
 					total--;
@@ -126,7 +120,7 @@ class WRORPrimitiveScene {
 				});
 			}
 		} else {
-			this.texCtx.createMaterialTexture(true).then((tex: GPUTexture) => {
+			this.wgCtx.texture.createTexByUrl("static/assets/box.jpg", true).then((tex: GPUTexture) => {
 				if (callback) {
 					callback([tex]);
 				}
@@ -148,6 +142,7 @@ class WRORPrimitiveScene {
 			depthStencilEnabled: true,
 			fragmentEnabled: true
 		});
+		pipeParams.buildDeferred = false;
 		const rgd = this.mGeomDatas[0];
 		const pipelineCtx = this.renderer.getRPBlockAt(0).createRenderPipeline(pipeParams, rgd.vtxDescParam);
 		return pipelineCtx;

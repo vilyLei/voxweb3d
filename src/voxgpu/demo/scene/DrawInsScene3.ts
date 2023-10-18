@@ -106,13 +106,11 @@ class DrawInsScene3 {
 			// this.createEntities(1, "shapeUniform", shapePipeline, 1);
 			// error call 2 times
 			// this.createEntities(16, "instancedShapeUniform", instancedShapePipeline, 2);
-			let batchTotal = 2;
+			let batchTotal = 2 * 3;
 			for (let i = 0; i < batchTotal; ++i) {
 			this.createEntities(insTotal, "instancedShapeUniform"+i, instancedShapePipeline, 1);
 			}
 			console.log("entities total: batchTotal * insTotal: ", batchTotal * insTotal);
-			this.mPosV.x += 25;
-			this.mPosV.y += 25;
 			// this.createEntities(16, "instancedShapeUniform2", instancedShapePipeline, 1);
 
 			console.log("this.mPngTexList: ", this.mPngTexList);
@@ -212,10 +210,10 @@ class DrawInsScene3 {
 				// unit.trans.trans.setScaleV3(unit.trans.scaleV);
 
 
-				// unit.trans.run(this.camera);
-				// unit.trans.running = false;
+				unit.trans.run(this.camera);
+				unit.trans.running = false;
 
-				this.runits.push(unit);
+				// this.runits.push(unit);
 			}
 
 
@@ -259,6 +257,7 @@ class DrawInsScene3 {
 			fragShaderSrc: { code: fragCodeSrc.code, uuid: fragCodeSrc.uuid },
 			depthStencilEnabled: true
 		});
+		pipeParams.buildDeferred = false;
 		if (transparent) {
 			pipeParams.setTransparentBlendParam(0);
 		}

@@ -4,17 +4,18 @@ import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WGRUniform } from "./WGRUniform";
 import { BufDataParamType, IWGRPipelineContext } from "../pipeline/IWGRPipelineContext";
 import { WGRUniformValue } from "./WGRUniformValue";
+import { WGRUniformParam, WGRUniformTexParam, WGRUniformWrapper, IWGRUniformContext } from "./IWGRUniformContext";
 
-type WGRUniformTexParam = { texView: GPUTextureView, sampler?: GPUSampler };
-type WGRUniformParam = { layoutName: string, groupIndex: number, values: WGRUniformValue[], texParams?: WGRUniformTexParam[] };
-class WGRUniformWrapper {
-	uniform: WGRUniform | null = null;
-	bufDataParams?: BufDataParamType[];
-	bufDataDescs?: { index: number; buffer: GPUBuffer; bufferSize: number }[];
-	texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[];
-	usage = 0;
-	groupIndex = 0;
-}
+// type WGRUniformTexParam = { texView: GPUTextureView, sampler?: GPUSampler };
+// type WGRUniformParam = { layoutName: string, groupIndex: number, values: WGRUniformValue[], texParams?: WGRUniformTexParam[] };
+// class WGRUniformWrapper {
+// 	uniform: WGRUniform | null = null;
+// 	bufDataParams?: BufDataParamType[];
+// 	bufDataDescs?: { index: number; buffer: GPUBuffer; bufferSize: number }[];
+// 	texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[];
+// 	usage = 0;
+// 	groupIndex = 0;
+// }
 
 class UCtxInstance {
 	private mList: WGRUniformWrapper[] = [];
@@ -137,7 +138,7 @@ class UCtxInstance {
 		}
 	}
 }
-class WGRUniformContext {
+class WGRUniformContext implements IWGRUniformContext {
 	private mMap: Map<string, UCtxInstance> = new Map();
 	private mPipelineCtx: IWGRPipelineContext | null = null;
 	constructor() { }

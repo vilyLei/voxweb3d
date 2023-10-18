@@ -4,6 +4,7 @@ import { GPURenderPassEncoder } from "../gpu/GPURenderPassEncoder";
 import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
 import { WGRGeometry } from "./WGRGeometry";
 import { WGRUniformValue } from "./uniform/WGRUniformValue";
+import { IWGRPipelineContext } from "./pipeline/IWGRPipelineContext";
 
 class WGRUnitRunSt {
 	pipeline: GPURenderPipeline;
@@ -17,6 +18,7 @@ class WGRUnit {
 	private mFlag = true;
 	uniforms?: WGRUniform[];
 	pipeline: GPURenderPipeline;
+	pipelinectx: IWGRPipelineContext;
 	geometry: WGRGeometry;
 
 	enabled = true;
@@ -27,6 +29,9 @@ class WGRUnit {
 		this.mFlag = this.enabled;
 		if (this.mFlag) {
 			const gt = this.geometry;
+			if (this.pipelinectx) {
+				this.pipeline = this.pipelinectx.pipeline;
+			}
 			if (gt && this.pipeline) {
 				// 这里面的诸多判断逻辑不应该出现，加入渲染器内部渲染流程之前必须处理好， 后续优化
 
@@ -78,7 +83,7 @@ class WGRUnit {
 			const gt = this.geometry;
 			const st = __$urst;
 			if (gt.ibuf) {
-				if(st.ibuf != gt.ibuf) {
+				if (st.ibuf != gt.ibuf) {
 					st.ibuf = gt.ibuf;
 					rc.setIndexBuffer(gt.ibuf, gt.ibuf.dataFormat);
 				}

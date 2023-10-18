@@ -1,11 +1,12 @@
 import { WGRPassParams, WGRendererPass } from "./pipeline/WGRendererPass";
-import { WGRPipelineCtxParams } from "./pipeline/WGRPipelineCtxParams";
+import { WGRPipelineContextDefParam, WGRShderSrcType, WGRPipelineCtxParams } from "./pipeline/WGRPipelineCtxParams";
 import { VtxPipelinDescParam, WGRPipelineContext } from "./pipeline/WGRPipelineContext";
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import { GPUCommandBuffer } from "../gpu/GPUCommandBuffer";
 import { WGRUnit } from "./WGRUnit";
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { WGRGeometry } from "./WGRGeometry";
+import { WGMaterialDescripter } from "../material/WGMaterialDescripter";
 
 class WGRenderPassBlock {
 	private mPipelineCtxs: WGRPipelineContext[] = [];
@@ -48,6 +49,31 @@ class WGRenderPassBlock {
 			this.mUnits.push(u);
 		}
 		return u;
+	}
+
+	createRenderPipelineCtxWithMaterial(material: WGMaterialDescripter): WGRPipelineContext {
+		return this.createRenderPipelineCtx(material.shaderCodeSrc, material.pipelineVtxParam, material.pipelineDefParam);
+	}
+	// pipelineParam value likes {blendMode: "transparent", depthWriteEnabled: false, faceCullMode: "back"}
+	createRenderPipelineCtx(
+		shdSrc: WGRShderSrcType,
+		pipelineVtxParam: VtxPipelinDescParam,
+		pipelineParam?: WGRPipelineContextDefParam
+	): WGRPipelineContext {
+		const pipeParams = new WGRPipelineCtxParams({
+			vertShaderSrc: shdSrc.vertShaderSrc,
+			fragShaderSrc: shdSrc.fragShaderSrc,
+			depthStencilEnabled: pipelineParam ? (pipelineParam.depthStencilEnabled === false ? false : true) : true
+		});
+		if (pipelineParam) {
+			if (pipelineParam.blendMode === "transparent") {
+				pipeParams.setTransparentBlendParam(0);
+			}
+			pipeParams.setDepthWriteEnabled(pipelineParam.depthWriteEnabled === true);
+			pipeParams.setCullMode(pipelineParam.faceCullMode);
+		}
+
+		return this.createRenderPipeline(pipeParams, pipelineVtxParam);
 	}
 	createRenderPipeline(pipelineParams: WGRPipelineCtxParams, vtxDesc: VtxPipelinDescParam): WGRPipelineContext {
 		let pipelineCtx = new WGRPipelineContext(this.mWGCtx);
@@ -102,4 +128,4 @@ class WGRenderPassBlock {
 		}
 	}
 }
-export { WGRPassParams, WGRenderPassBlock };
+export { WGRPipelineContextDefParam, WGRPassParams, WGRenderPassBlock };
