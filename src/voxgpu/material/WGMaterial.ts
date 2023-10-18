@@ -3,6 +3,7 @@ import { WGTextureWrapper, WGTexture } from "../texture/WGtexture";
 import { WGRPipelineContextDefParam, WGRShderSrcType, WGRPipelineCtxParams } from "../render/pipeline/WGRPipelineCtxParams";
 import { VtxPipelinDescParam, IWGRPipelineContext } from "../render/pipeline/IWGRPipelineContext";
 import { WGMaterialDescripter } from "./WGMaterialDescripter";
+import { WGRUniform } from "../render/uniform/WGRUniform";
 
 class WGMaterial implements WGMaterialDescripter {
 
@@ -15,6 +16,8 @@ class WGMaterial implements WGMaterialDescripter {
 	shaderCodeSrc?: WGRShderSrcType;
 	pipelineVtxParam?: VtxPipelinDescParam;
 	pipelineDefParam?: WGRPipelineContextDefParam;
+
+	uniforms: WGRUniform[];
 
 	readonly textures: { [key: string]: WGTextureWrapper } = {};
 
