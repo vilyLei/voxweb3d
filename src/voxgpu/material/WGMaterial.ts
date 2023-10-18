@@ -19,7 +19,8 @@ class WGMaterial implements WGMaterialDescripter {
 
 	uniforms: WGRUniform[];
 
-	readonly textures: { [key: string]: WGTextureWrapper } = {};
+	// readonly textures: { [key: string]: WGTextureWrapper } = {};
+	readonly textures: WGTextureWrapper[];
 
 	constructor(descriptor?: WGMaterialDescripter) {
 		this.setDescriptor(descriptor);

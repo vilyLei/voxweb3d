@@ -5,6 +5,7 @@ import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
 import { WGRGeometry } from "./WGRGeometry";
 import { WGRUniformValue } from "./uniform/WGRUniformValue";
 import { IWGRPipelineContext } from "./pipeline/IWGRPipelineContext";
+import { IWGRUnit } from "./IWGRUnit";
 
 class WGRUnitRunSt {
 	pipeline: GPURenderPipeline;
@@ -13,9 +14,11 @@ class WGRUnitRunSt {
 	ibuf: GPUBuffer;
 }
 const __$urst = new WGRUnitRunSt();
-class WGRUnit {
+class WGRUnit implements IWGRUnit {
+
 	private mUniformValues: WGRUniformValue[];
 	private mFlag = true;
+
 	uniforms?: WGRUniform[];
 	pipeline: GPURenderPipeline;
 	pipelinectx: IWGRPipelineContext;

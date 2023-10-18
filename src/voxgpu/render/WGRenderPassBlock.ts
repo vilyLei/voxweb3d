@@ -3,15 +3,16 @@ import { WGRPipelineContextDefParam, WGRShderSrcType, WGRPipelineCtxParams } fro
 import { VtxPipelinDescParam, WGRPipelineContext } from "./pipeline/WGRPipelineContext";
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import { GPUCommandBuffer } from "../gpu/GPUCommandBuffer";
+import { IWGRUnit } from "./IWGRUnit";
 import { WGRUnit } from "./WGRUnit";
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { WGRGeometry } from "./WGRGeometry";
 import { WGMaterialDescripter } from "../material/WGMaterialDescripter";
 
 class WGRenderPassBlock {
+	private mWGCtx: WebGPUContext;
 	private mPipelineCtxs: WGRPipelineContext[] = [];
-	private mUnits: WGRUnit[] = [];
-	private mWGCtx: WebGPUContext | null;
+	private mUnits: IWGRUnit[] = [];
 	private rendererPass = new WGRendererPass();
 
 	enabled = true;
@@ -24,6 +25,14 @@ class WGRenderPassBlock {
 			this.mWGCtx = wgCtx;
 			this.rendererPass.initialize(wgCtx);
 			this.rendererPass.build(param);
+		}
+	}
+	addRUnit(unit: IWGRUnit): void {
+		/**
+		 * 正式加入渲染器之前，对shader等的分析已经做好了
+		 */
+		if(unit) {
+			this.mUnits.push(unit);
 		}
 	}
 	createRUnit(

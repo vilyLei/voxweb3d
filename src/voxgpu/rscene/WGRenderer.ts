@@ -1,9 +1,10 @@
+import { Entity3D } from "../entity/Entity3D";
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import { WGMaterial } from "../material/WGMaterial";
 import { WGRPipelineContextDefParam, WGRPassParams, WGRenderPassBlock } from "../render/WGRenderPassBlock";
 class WGRenderer {
 	private mRPBlocks: WGRenderPassBlock[] = [];
-	private mWGCtx: WebGPUContext | null;
+	private mWGCtx: WebGPUContext;
 
 	enabled = true;
 	constructor(wgCtx?: WebGPUContext) {
@@ -14,12 +15,17 @@ class WGRenderer {
 			this.mWGCtx = wgCtx;
 		}
 	}
+	addEntity(entity: Entity3D, processIndex: number = 0, deferred: boolean = true): void {
+        if (entity) {
+			const rb = this.mRPBlocks[ processIndex ];
+		}
+	}
 	getRPBlockAt(i: number): WGRenderPassBlock {
 		return this.mRPBlocks[i];
 	}
 	createRenderBlock(param?: WGRPassParams): WGRenderPassBlock {
 		if (this.mWGCtx) {
-			let rb = new WGRenderPassBlock(this.mWGCtx, param);
+			const rb = new WGRenderPassBlock(this.mWGCtx, param);
 			this.mRPBlocks.push(rb);
 			return rb;
 		}
