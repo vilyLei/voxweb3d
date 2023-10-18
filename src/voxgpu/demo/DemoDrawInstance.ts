@@ -1,12 +1,17 @@
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import { DrawInsScene } from "./scene/DrawInsScene";
+import { DrawInsScene2 } from "./scene/DrawInsScene2";
+import { DrawInsScene3 } from "./scene/DrawInsScene3";
 
 export class DemoDrawInstance {
 	private mRenderingFlag = 0;
+	private mUpateFlag = 0;
 	private mWGCtx = new WebGPUContext();
 	private mFPS = new RenderStatusDisplay();
-	private mRsc = new DrawInsScene();
+	// private mRsc = new DrawInsScene();
+	// private mRsc = new DrawInsScene2();
+	private mRsc = new DrawInsScene3();
 
 	constructor() {}
 
@@ -28,6 +33,7 @@ export class DemoDrawInstance {
 			document.onmousedown = evt => {
 				// this.mRenderingFlag = 1;
 				// this.runDo();
+				this.mUpateFlag = this.mUpateFlag > 0 ? 0 : 1;
 			};
 		});
 	}
@@ -44,7 +50,9 @@ export class DemoDrawInstance {
 	private runDo(): void {
 		if (this.mRsc.enabled) {
 			this.mFPS.update();
-			this.mRsc.update();
+			if(this.mUpateFlag < 1) {
+				this.mRsc.update();
+			}
 			this.renderFrame();
 		}
 	}

@@ -34,7 +34,6 @@ class UCtxInstance {
 		this.mPipelineCtx = pipelineCtx;
 	}
 	runBegin(): void {
-
 		if (!this.mBuffers) {
 			let ls = this.mList;
 			if (ls.length > 0) {
@@ -71,6 +70,7 @@ class UCtxInstance {
 						} else {
 							uf.bindGroup = this.mPipelineCtx.createUniformBindGroup(wp.groupIndex, null, wp.texParams);
 						}
+						uf.__$$updateSubUniforms();
 					}
 				}
 				// console.log("UCtxInstance::runBegin(), this.mList: ", this.mList);
@@ -138,7 +138,6 @@ class UCtxInstance {
 	}
 }
 class WGRUniformContext {
-	private mInit = true;
 	private mMap: Map<string, UCtxInstance> = new Map();
 	private mPipelineCtx: IWGRPipelineContext | null = null;
 	constructor() { }
@@ -158,21 +157,18 @@ class WGRUniformContext {
 		return uctx;
 	}
 	initialize(pipelineCtx: IWGRPipelineContext): void {
-		this.mPipelineCtx = pipelineCtx;
+		if(!this.mPipelineCtx && pipelineCtx) {
+			this.mPipelineCtx = pipelineCtx;
+		}
 	}
 	runBegin(): void {
-		if (this.mInit) {
-			this.mInit = false;
-			for (var [k, v] of this.mMap) {
-				v.runBegin();
-			}
+		for (var [k, v] of this.mMap) {
+			v.runBegin();
 		}
 	}
 	runEnd(): void {
-		if (!this.mInit) {
-			for (var [k, v] of this.mMap) {
-				v.runBegin();
-			}
+		for (var [k, v] of this.mMap) {
+			v.runEnd();
 		}
 	}
 
@@ -229,4 +225,4 @@ class WGRUniformContext {
 		}
 	}
 }
-export { BufDataParamType, WGRUniformContext };
+export { WGRUniformParam, BufDataParamType, WGRUniformContext };

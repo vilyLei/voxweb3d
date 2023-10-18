@@ -80,9 +80,9 @@ class WRORPrimitiveScene {
 		let urls: string[] = ["static/assets/box.jpg", "static/assets/default.jpg", "static/assets/decorativePattern_01.jpg"];
 
 		this.buildTextures(urls, (texs: GPUTexture[]): void => {
-			this.createEntities("shapeUniform", shapePipeline, 1);
+			this.createEntities("shapeUniform", shapePipeline, 2);
 
-			// /*
+			///*
 			this.createEntities("shapeUniform", shapePipeline, 3);
 			this.createEntities("shapeBrnUniform", shapeBrnPipeline, 3, null, true);
 

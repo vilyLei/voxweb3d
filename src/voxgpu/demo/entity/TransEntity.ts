@@ -12,6 +12,7 @@ class TransEntity {
 	rotateV = new Vector3D(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
 	scaleV = new Vector3D(1.0, 1.0, 1.0);
 	transData: Float32Array | null = null;
+	transData2: Float32Array | null = null;
 	scaleFactor = Math.random() * 0.3 + 0.1;
 	enabled = true;
 	dataIndex = 0;
@@ -22,6 +23,7 @@ class TransEntity {
 	delayPhase1Times = Math.round(Math.random() * 700) + 300;
 	uniformValue: WGRUniformValue;
 	scaleAndRotBoo = true;
+
 	intialize(cam?: CameraBase): void {
 		this.trans = ROTransform.Create();
 		this.trans.update();
@@ -38,6 +40,9 @@ class TransEntity {
 		mat.copyFrom(trans.getMatrix());
 		mat.append(cam.getVPMatrix());
 		this.transData = mat.getLocalFS32();
+		if(this.transData2) {
+			this.transData2.set(this.transData, 0);
+		}
 	}
 	run(cam: CameraBase): void {
 
@@ -76,7 +81,6 @@ class TransEntity {
 			}
 			trans.setPosition(this.posV);
 			trans.update();
-
 			this.applyCamera(cam);
 			this.version ++;
 			if(this.uniformValue) {

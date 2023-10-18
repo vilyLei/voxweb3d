@@ -77,7 +77,7 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 			}
 			this.primitive = {
 				topology: "triangle-list",
-				cullMode: "none"
+				cullMode: "back"
 			};
 			if (this.multisampleEnabled) {
 				this.multisample = {

@@ -26,5 +26,15 @@ class WGRGeometry {
 			this.vertexCount = this.vertexCount > 0 ? this.vertexCount : this.vbufs[0].vectorCount;
 		}
 	}
+	clone(): WGRGeometry {
+		const g = new WGRGeometry();
+		g.layoutUid = this.layoutUid;
+		g.vbufs = this.vbufs;
+		g.ibuf = this.ibuf;
+		g.indexCount = this.indexCount;
+		g.instanceCount = this.instanceCount;
+		g.vertexCount = this.vertexCount;
+		return g;
+	}
 }
 export { WGRGeometry }

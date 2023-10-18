@@ -1,7 +1,6 @@
 import { GPUBindGroupLayout } from "../gpu/GPUBindGroupLayout";
 import { GPUDevice } from "../gpu/GPUDevice";
 import { GPUPipelineLayout } from "../gpu/GPUPipelineLayout";
-import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
 import { GPUSampler } from "../gpu/GPUSampler";
 import { GPUShaderModule } from "../gpu/GPUShaderModule";
 import { GPUTexture } from "../gpu/GPUTexture";

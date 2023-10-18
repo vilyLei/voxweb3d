@@ -10,14 +10,14 @@ import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { BufDataParamType, VtxDescParam, VtxPipelinDescParam, IWGRPipelineContext } from "./IWGRPipelineContext";
 import { WGRPipelineCtxParams } from "./WGRPipelineCtxParams";
 // import { WRORUniformContext } from "../../demo/render/WRORUniformContext";
-import { WGRUniformContext } from "../uniform/WGRUniformContext";
+import { WGRUniformParam, WGRUniformContext } from "../uniform/WGRUniformContext";
 
 // type BufDataParamType = { size: number; usage: number; defaultData?: Float32Array | Int32Array | Uint32Array | Uint16Array | Int16Array };
 // type VtxDescParam = { vertex: { arrayStride: number; params: { offset: number; format: string }[] } };
 // type VtxPipelinDescParam = { vertex: { buffers: GPUBuffer[]; attributeIndicesArray: number[][] } };
 class WGRPipelineContext implements IWGRPipelineContext {
 	private mWGCtx: WebGPUContext | null = null;
-	private mBindGroupLayouts: GPUBindGroupLayout[] = new Array(8);
+	private mBGLayouts: GPUBindGroupLayout[] = new Array(8);
 
 	pipeline: GPURenderPipeline | null = null;
 
@@ -55,19 +55,36 @@ class WGRPipelineContext implements IWGRPipelineContext {
 	createUniformsBuffer(params: { sizes: number[]; usage: number }, mappedAtCreation = false): GPUBuffer | null {
 		if (params && params.sizes.length > 0) {
 			let total = params.sizes.length;
-			let size = 256 * (total - 1) + params.sizes[0];
+			let size = params.sizes[0];
+			let bufSize = size;
+			let segs: {index: number, size: number}[] = new Array( total );
+			segs[0] = {index: 0, size: size};
+			for(let i = 1; i < total; ++i) {
+				size = size <= 256 ? size : size % 256;
+				size = size > 0 ? 256 - size : 0;
+
+				// bufSize += size <= 256 ? (256 - size) : (size % 256 > 0 ? size % 256 : 0);
+				bufSize += size;
+				size = params.sizes[i];
+				segs[i] = {index: bufSize, size: size};
+				bufSize += size;
+			}
 			const desc = {
-				size: size,
+				size: bufSize,
 				usage: params.usage
 			};
 			const buf = this.mWGCtx.device.createBuffer(desc);
-			console.log("createUniformsBuffer(), size: ", size, ", usage: ", params.usage);
+			buf.segs = segs;
+			console.log("createUniformsBuffer(), segs: ", segs);
+			console.log("createUniformsBuffer(), bufSize: ", bufSize, ", usage: ", params.usage);
 			return buf;
 		}
 		return null;
 	}
-	updateUniformBufferAt(buffer: GPUBuffer, td: NumberArrayDataType, index: number): void {
-		this.mWGCtx.device.queue.writeBuffer(buffer, index * 256, td.buffer, td.byteOffset, td.byteLength);
+	updateUniformBufferAt(buffer: GPUBuffer, td: NumberArrayDataType, index: number, offset = 0): void {
+		// console.log("buffer.segs[index].index + offset: ", buffer.segs[index].index + offset);
+		// console.log("	td: ", td);
+		this.mWGCtx.device.queue.writeBuffer(buffer, buffer.segs[index].index + offset, td.buffer, td.byteOffset, td.byteLength);
 	}
 	createUniformBindGroup(
 		groupIndex: number,
@@ -76,11 +93,11 @@ class WGRPipelineContext implements IWGRPipelineContext {
 	): GPUBindGroup {
 		const device = this.mWGCtx.device;
 
-		if (!this.mBindGroupLayouts[groupIndex]) {
-			this.mBindGroupLayouts[groupIndex] = this.pipeline.getBindGroupLayout(groupIndex);
+		if (!this.mBGLayouts[groupIndex]) {
+			this.mBGLayouts[groupIndex] = this.pipeline.getBindGroupLayout(groupIndex);
 		}
 		let desc = {
-			layout: this.mBindGroupLayouts[groupIndex],
+			layout: this.mBGLayouts[groupIndex],
 			entries: []
 		} as GPUBindGroupDescriptor;
 
@@ -182,4 +199,4 @@ class WGRPipelineContext implements IWGRPipelineContext {
 		return ls;
 	}
 }
-export { VtxPipelinDescParam, BufDataParamType, WGRPipelineContext };
+export { VtxPipelinDescParam, BufDataParamType, WGRUniformParam, WGRPipelineContext };

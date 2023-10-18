@@ -20,6 +20,8 @@ interface GPUBuffer {
 	elementCount?: number;
 	label?: string;
 	mapState: string;
+
+	segs?: {index: number, size: number}[];
 	/**
 	 * buffer size bytes total
 	 */

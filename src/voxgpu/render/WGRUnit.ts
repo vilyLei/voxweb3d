@@ -52,6 +52,7 @@ class WGRUnit {
 					for (let i = 0, ln = ufs.length; i < ln; i++) {
 						const uf = ufs[i];
 						if (uf.isEnabled()) {
+							// console.log("uf.groupIndex: ", uf.groupIndex, uf.bindGroup);
 							rc.setBindGroup(uf.groupIndex, uf.bindGroup);
 						} else {
 							this.mFlag = false;
@@ -60,6 +61,7 @@ class WGRUnit {
 					if (this.mFlag) {
 						const uvs = this.mUniformValues;
 						if (uvs) {
+							// console.log("uvs.length: ", uvs.length);
 							for (let i = 0, ln = uvs.length; i < ln; i++) {
 								ufs[uvs[i].index].setValue(uvs[i]);
 							}
@@ -80,6 +82,7 @@ class WGRUnit {
 					st.ibuf = gt.ibuf;
 					rc.setIndexBuffer(gt.ibuf, gt.ibuf.dataFormat);
 				}
+				// console.log(gt.indexCount, ", gt.instanceCount: ", gt.instanceCount);
 				rc.drawIndexed(gt.indexCount, gt.instanceCount);
 			} else {
 				rc.draw(gt.vertexCount, gt.instanceCount);

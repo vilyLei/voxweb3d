@@ -12,7 +12,7 @@ interface IWGRPipelineContext {
 
 	pipeline: GPURenderPipeline | null;
 
-	updateUniformBufferAt(buffer: GPUBuffer, td: NumberArrayDataType, index: number): void;
+	updateUniformBufferAt(buffer: GPUBuffer, td: NumberArrayDataType, index: number, byteOffset?: number): void;
 	createUniformBindGroup(
 		groupIndex: number,
 		dataParams?: { index: number; buffer: GPUBuffer; bufferSize: number }[],

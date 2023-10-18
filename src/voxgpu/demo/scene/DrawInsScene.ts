@@ -1,5 +1,5 @@
 import { GPUTexture } from "../../gpu/GPUTexture";
-import { WGRPipelineContext } from "../../render/pipeline/WGRPipelineContext";
+import { WGRUniformParam, WGRPipelineContext } from "../../render/pipeline/WGRPipelineContext";
 import { WRORUnit } from "../entity/WRORUnit";
 
 import { GeomRDataType, GeomDataBase } from "../geometry/GeomDataBase";
@@ -8,6 +8,7 @@ import Vector3D from "../../../vox/math/Vector3D";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { WGRPipelineCtxParams } from "../../render/pipeline/WGRPipelineCtxParams";
 
+import InstancedVertWGSL from "../shaders/instanced.vert.wgsl";
 import basicVertWGSL from "../shaders/vs3uvs2.vert.wgsl";
 import sampleTextureMixColorWGSL from "../shaders/sampleTextureMixColor.frag.wgsl";
 import sampleTextureMixColorBrnWGSL from "../shaders/sampleTextureMixColorBrn.frag.wgsl";
@@ -20,6 +21,7 @@ import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WGRUniformValue } from "../../render/uniform/WGRUniformValue";
 import { WGRenderer } from "../../rscene/WGRenderer";
 import { WGRGeometry } from "../../render/WGRGeometry";
+import { WGRUniform } from "../../render/uniform/WGRUniform";
 
 class DrawInsScene {
 	private mGeomDatas: GeomRDataType[] = [];
@@ -39,10 +41,9 @@ class DrawInsScene {
 	msaaRenderEnabled = true;
 	mEnabled = false;
 
-	constructor() { }
+	constructor() {}
 
 	private initCamera(width: number, height: number): void {
-
 		const cam = this.camera;
 		cam.inversePerspectiveZ = true;
 
@@ -65,6 +66,8 @@ class DrawInsScene {
 	// format: "depth32float"
 	// format: "depth24plus"
 	// private mDepthFormat = "depth32float";
+
+	private mPosV = new Vector3D();
 	initialize(canvas: HTMLCanvasElement): void {
 		this.initCamera(canvas.width, canvas.height);
 
@@ -81,11 +84,13 @@ class DrawInsScene {
 
 		this.createRenderGeometry();
 
-		let shapePipeline = this.createRenderPipeline();
-		// let shapeBrnPipeline = this.createRenderPipeline(false, true);
-		// let texPipeline = this.createRenderPipeline(true, false);
-		// let texTransparentPipeline = this.createRenderPipeline(true, false, true, true);
-		// let texBrnPipeline = this.createRenderPipeline(true, true);
+		// let shapePipeline = this.createRenderPipeline();
+		let instancedShapePipeline = this.createRenderPipeline(2);
+		let instancedShapePipeline2 = this.createRenderPipeline(2);
+		// let shapeBrnPipeline = this.createRenderPipeline(1, false, true);
+		let texPipeline = this.createRenderPipeline(2, true, false);
+		// let texTransparentPipeline = this.createRenderPipeline(1, true, false, true, true);
+		// let texBrnPipeline = this.createRenderPipeline(1, true, true);
 
 		let urls: string[] = [
 			"static/assets/box.jpg",
@@ -93,12 +98,14 @@ class DrawInsScene {
 			"static/assets/decorativePattern_01.jpg",
 			"static/assets/letterA.png",
 			"static/assets/xulie_08_61.png",
-			"static/assets/blueTransparent.png",
+			"static/assets/blueTransparent.png"
 		];
-
 		this.buildTextures(urls, (texs: GPUTexture[]): void => {
-
-			this.createEntities("shapeUniform", shapePipeline, 1);
+			// this.createEntities(1, "shapeUniform", shapePipeline, 1);
+			this.createEntities(16, "instancedShapeUniform", instancedShapePipeline, 1);
+			this.mPosV.x += 25;
+			this.mPosV.y += 25;
+			this.createEntities(16, "instancedShapeUniform2", instancedShapePipeline, 1);
 
 			console.log("this.mPngTexList: ", this.mPngTexList);
 			console.log("this.mJpgTexList: ", this.mJpgTexList);
@@ -113,11 +120,11 @@ class DrawInsScene {
 				}
 			}
 
-			// this.createEntities("texTransparentUniform", texTransparentPipeline, 1, pngViews[Math.round(Math.random() * (pngViews.length - 1))]);
+			// this.createEntities(1, "texTransparentUniform", texTransparentPipeline, 1, pngViews[Math.round(Math.random() * (pngViews.length - 1))]);
 
 			// /*
-			// this.createEntities("shapeUniform", shapePipeline, 2);
-			// this.createEntities("shapeBrnUniform", shapeBrnPipeline, 2, null, true);
+			// this.createEntities(1, "shapeUniform", shapePipeline, 2);
+			// this.createEntities(1, "shapeBrnUniform", shapeBrnPipeline, 2, null, true);
 
 			let texViews: GPUTextureView[] = [];
 			for (let i = 0; i < this.mJpgTexList.length; ++i) {
@@ -128,16 +135,17 @@ class DrawInsScene {
 					texViews.push(texView);
 				}
 			}
+			// this.createEntities(2, "texUniform", texPipeline, 2, texViews[Math.round(Math.random() * (texViews.length - 1))]);
 
 			// for (let i = 0; i < 1; ++i) {
-			// 	this.createEntities("texBrnUniform", texBrnPipeline, 2, texViews[Math.round(Math.random() * (texViews.length - 1))], true);
+			// 	this.createEntities(1, "texBrnUniform", texBrnPipeline, 2, texViews[Math.round(Math.random() * (texViews.length - 1))], true);
 			// }
 			// for (let i = 0; i < 1; ++i) {
-			// 	this.createEntities("texUniform", texPipeline, 1, texViews[Math.round(Math.random() * (texViews.length - 1))]);
+			// 	this.createEntities(1, "texUniform", texPipeline, 1, texViews[Math.round(Math.random() * (texViews.length - 1))]);
 			// }
-			// this.createEntities("shapeUniform", shapePipeline, 2);
+			// this.createEntities(1, "shapeUniform", shapePipeline, 2);
 
-			// this.createEntities("texTransparentUniform", texTransparentPipeline, 2, pngViews[Math.round(Math.random() * (pngViews.length - 1))]);
+			// this.createEntities(1, "texTransparentUniform", texTransparentPipeline, 2, pngViews[Math.round(Math.random() * (pngViews.length - 1))]);
 			//*/
 
 			console.log("runitsTotal: ", this.runits.length);
@@ -145,17 +153,17 @@ class DrawInsScene {
 		});
 	}
 	private createRenderPipeline(
+		instanceCount = 0,
 		texEnabled = false,
 		brnEnabled: boolean = false,
 		transparent = false,
 		depthWriteEnabled = false
 	): WGRPipelineContext {
-
 		let fragCodeSrc = this.getFragShdCode(texEnabled, brnEnabled);
 		const pipeParams = new WGRPipelineCtxParams({
-			vertShaderSrc: { code: basicVertWGSL, uuid: "vtxShdCode" },
+			vertShaderSrc: { code: instanceCount < 2 ? basicVertWGSL : InstancedVertWGSL, uuid: "vtxShdCode" },
 			fragShaderSrc: { code: fragCodeSrc.code, uuid: fragCodeSrc.uuid },
-			depthStencilEnabled: true,
+			depthStencilEnabled: true
 		});
 		if (transparent) {
 			pipeParams.setTransparentBlendParam(0);
@@ -167,19 +175,8 @@ class DrawInsScene {
 		const pipelineCtx = this.renderer.getRPBlockAt(0).createRenderPipeline(pipeParams, rgd.vtxDescParam);
 		return pipelineCtx;
 	}
-	private createRenderGeometry(): void {
-		this.mGeomDatas.push(this.geomData.createPlaneRData(-150, -150, 300, 300, 0));
-		console.log("this.this.mGeomDatas: ", this.mGeomDatas);
-		for (let i = 0; i < this.mGeomDatas.length; ++i) {
-			const rgd = this.mGeomDatas[i];
-			let rgeom = new WGRGeometry();
-			rgeom.ibuf = rgd.ibuf;
-			rgeom.vbufs = rgd.vbufs;
-			rgeom.indexCount = rgd.ibuf.elementCount;
-			rgd.rgeom = rgeom;
-		}
-	}
 	private createEntities(
+		instanceCount: number,
 		uniformLayoutName: string,
 		pipelineCtx: WGRPipelineContext,
 		total: number,
@@ -191,43 +188,96 @@ class DrawInsScene {
 
 		const rgd = this.mGeomDatas[0];
 
-		const rgeom = rgd.rgeom;
-		const uniformCtx = pipelineCtx.uniform;
+		let insTotal = instanceCount;
+		for (let j = 0; j < total; ++j) {
+			const rgeom = rgd.rgeom.clone();
+			rgeom.instanceCount = insTotal;
+			const uniformCtx = pipelineCtx.uniform;
 
-		for (let i = 0; i < total; ++i) {
-			const unit = new WRORUnit();
-			const k = this.runits.length;
-			unit.trans.scaleFactor = 1.0;
-			unit.trans.posV.setXYZ(-100 + k * 80, -100 + k * 80, 0.1 * k);
-			unit.trans.scaleAndRotBoo = false;
-			unit.trans.intialize(this.camera);
+			let runit = rblock.createRUnit(rgeom);
+			runit.pipeline = pipelineCtx.pipeline;
+			let ruvalue = new WGRUniformValue(new Float32Array(16), 0);
+			ruvalue.arrayStride = matrixSize * insTotal;
 
-			unit.trans.run(this.camera);
-			unit.trans.running = false;
+			let uniformParams: WGRUniformParam[] = [];
+			let layoutName = uniformLayoutName;
+			let groupIndex = 0;
 
-			unit.trans.uniformValue = new WGRUniformValue(unit.trans.transData, 0);
-			unit.trans.uniformValue.arrayStride = matrixSize;
-			unit.runit = rblock.createRUnit(rgeom);
-			const ru = unit.runit;
-			ru.pipeline = pipelineCtx.pipeline;
-			let uvalues: WGRUniformValue[] = [unit.trans.uniformValue];
-			if (brnEnabled) {
-				unit.brnUValue = new WGRUniformValue(new Float32Array([1, 1, 1, 1]), 1);
-				uvalues.push(unit.brnUValue);
-			}
+			let uvalues: WGRUniformValue[] = [];
 			let utexes = [{ texView: texView }];
-			ru.setUniformValues(uvalues);
-			ru.uniforms = uniformCtx.createUniformsWithValues([{
-				layoutName: uniformLayoutName, groupIndex: 0,
-				values: uvalues, texParams: utexes
-			}]
-			)
-			this.runits.push(unit);
+
+			uvalues.push(ruvalue);
+			let insUValues: WGRUniformValue[] = [];
+			if(j == 0 && total == 2) {
+				runit.enabled = false;
+			}
+			for (let i = 0; i < insTotal; ++i) {
+				const unit = new WRORUnit();
+
+				const k = this.runits.length;
+				unit.trans.scaleFactor = 1.0;
+				unit.trans.posV.setXYZ(-300 + i * 20 + this.mPosV.x, -300 + j * 20 + this.mPosV.y, this.mPosV.z);
+				unit.trans.scaleAndRotBoo = false;
+
+				// unit.trans.posV.scaleBy(0.5);
+				unit.trans.intialize(this.camera);
+
+				unit.trans.scaleV.setXYZ(0.02,0.02,0.02);
+				unit.trans.trans.setScaleV3(unit.trans.scaleV);
+
+				const pruv = ruvalue.clone(unit.trans.transData);
+				pruv.index = i;
+				pruv.uid = 1000 + i;
+				unit.trans.uniformValue = pruv;
+				pruv.byteOffset = matrixSize * i;
+				insUValues.push(pruv);
+
+				unit.trans.run(this.camera);
+				unit.trans.running = false;
+
+				this.runits.push(unit);
+			}
+
+			// runit.setUniformValues(uvalues);
+			runit.setUniformValues(insUValues);
+
+			uniformParams.push({
+				layoutName,
+				groupIndex,
+				values: uvalues,
+				texParams: utexes
+			});
+			let runiforms = uniformCtx.createUniformsWithValues(uniformParams);
+
+			// rblock.runBegin();
+			let subruniforms: WGRUniform[] = runiforms[0].cloneMany(insTotal);
+			// for (let i = 0; i < insTotal; ++i) {
+			// 	let subruniform = runiforms[0].clone();
+			// }
+			// console.log("subruniform: ", subruniform);
+			// runit.uniforms = runiforms;
+			runit.uniforms = subruniforms;
 		}
 		// if (total == 1) {
 		// 	this.runits[0].trans.scaleFactor = 1.0;
 		// 	this.runits[0].trans.posV.setXYZ(-200, -250, 0);
 		// }
+	}
+	private createRenderGeometry(): void {
+		this.mGeomDatas.push(this.geomData.createPlaneRData(-150, -150, 300, 300, 0));
+		let minV = new Vector3D(-50, -50, -50);
+		let maxV = minV.clone().scaleBy(-1);
+		this.mGeomDatas.push(this.geomData.createBoxRData(minV, maxV));
+		this.mGeomDatas.push(this.geomData.createSphereRData(60.0));
+		console.log("this.mGeomDatas: ", this.mGeomDatas);
+		for (let i = 0; i < this.mGeomDatas.length; ++i) {
+			const rgd = this.mGeomDatas[i];
+			let rgeom = new WGRGeometry();
+			rgeom.ibuf = rgd.ibuf;
+			rgeom.vbufs = rgd.vbufs;
+			rgeom.indexCount = rgd.ibuf.elementCount;
+			rgd.rgeom = rgeom;
+		}
 	}
 	private delayTimes = 500000000;
 	update(): void {
@@ -238,7 +288,9 @@ class DrawInsScene {
 			if (this.delayTimes > 0) {
 				this.delayTimes--;
 				for (let i = 0; i < unitsTotal; ++i) {
+					// console.log("sdfs");
 					units[i].trans.run(this.camera);
+					units[i].trans.uniformValue.upate();
 				}
 			}
 			// console.log("loss time: ", Date.now() - time);
