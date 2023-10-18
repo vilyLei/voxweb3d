@@ -1,6 +1,6 @@
 import { GPUTexture } from "../../gpu/GPUTexture";
 import { WGRPipelineContext } from "../../render/pipeline/WGRPipelineContext";
-import { WRORUnit } from "./WRORUnit";
+import { WRORUnit } from "../entity/WRORUnit";
 
 import { GeomRDataType, GeomDataBase } from "../geometry/GeomDataBase";
 import CameraBase from "../../../vox/view/CameraBase";

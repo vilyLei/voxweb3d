@@ -1,6 +1,6 @@
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
-import { WRORPrimitiveScene } from "./entity/WRORPrimitiveScene";
+import { WRORPrimitiveScene } from "./scene/WRORPrimitiveScene";
 
 export class DemoWROPrimitive {
 	private mRenderingFlag = 0;

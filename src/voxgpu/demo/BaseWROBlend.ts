@@ -1,6 +1,6 @@
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
-import { WRORBlendScene } from "./entity/WRORBlendScene";
+import { WRORBlendScene } from "./scene/WRORBlendScene";
 
 export class BaseWROBlend {
 	private mRenderingFlag = 0;
