@@ -27,6 +27,7 @@ class WGRObjBuilder {
 	createRPass(entity: Entity3D, block: WGRenderPassBlock, primitive: WGRPrimitive, materialIndex = 0): IWGRUnit {
 
 		const material = entity.materials[materialIndex];
+		material.pipelineVtxParam = { vertex: { buffers: primitive.vbufs, attributeIndicesArray: [[0], [0]] } };
 		const pctx = block.createRenderPipelineCtxWithMaterial(material);
 		material.initialize(pctx);
 
@@ -51,21 +52,25 @@ class WGRObjBuilder {
 		let ru = new WGRUnit();
 
 		ru.geometry = primitive;
-
 		ru.pipelinectx = pctx;
 
-		let uvalues: WGRUniformValue[] = [entity.uniformTransform];
-
-		ru.setUniformValues(uvalues);
-
-		ru.uniforms = uniformCtx.createUniformsWithValues([
-			{
-				layoutName: material.shadinguuid,
-				groupIndex: groupIndex,
-				values: uvalues,
-				texParams: utexes
-			}
-		]);
+		let uvalues: WGRUniformValue[] = [];
+		if(entity.uniformTransform) {
+			uvalues.push(entity.uniformTransform);
+		}
+		if(uvalues.length > 0) {
+			ru.setUniformValues(uvalues);
+		}
+		if((uvalues && uvalues.length > 0) || (utexes && utexes.length > 0)) {
+			ru.uniforms = uniformCtx.createUniformsWithValues([
+				{
+					layoutName: material.shadinguuid,
+					groupIndex: groupIndex,
+					values: uvalues,
+					texParams: utexes
+				}
+			]);
+		}
 
 		return ru;
 	}

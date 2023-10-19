@@ -7,7 +7,6 @@ import { WGMaterial } from "../material/WGMaterial";
 import { WGRUniformValue } from "../render/uniform/WGRUniformValue";
 
 class Entity3D {
-
 	private mMat = new Matrix4();
 	private mCamera: IRenderCamera;
 
@@ -19,22 +18,25 @@ class Entity3D {
 	transform: ROTransform;
 	uniformTransform: WGRUniformValue;
 
-	constructor() {
-		this.init();
+	constructor(transformEnabled = true) {
+		this.init( transformEnabled );
 	}
-	protected init(): void {
-		this.transform = ROTransform.Create();
-		this.transform.update();
-		this.uniformTransform = new WGRUniformValue(this.mMat.getLocalFS32());
-		this.uniformTransform.arrayStride = 64;
+	protected init(transformEnabled: boolean): void {
+		
+		if(transformEnabled) {
+			this.transform = ROTransform.Create();
+			this.transform.update();
+			this.uniformTransform = new WGRUniformValue(this.mMat.getLocalFS32());
+			this.uniformTransform.arrayStride = 64;
+		}
 		// console.log("this.uniformTransform: ", this.uniformTransform);
 	}
 	initialize(): void {}
 	applyCamera(cam?: IRenderCamera): void {
 
 		this.mCamera = cam? cam : this.mCamera;
-		if(this.mCamera) {
-			const trans = this.transform;
+		const trans = this.transform
+		if(this.mCamera && trans) {;
 			const mat = this.mMat;
 
 			trans.update();

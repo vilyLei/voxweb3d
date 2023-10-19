@@ -79,10 +79,9 @@ class WGRenderer {
 			const rbs = this.mRPBlocks;
 			if (ctx && ctx.enabled && rbs.length > 0) {
 				const rb = rbs[0];
+				
 				rb.runBegin();
-
 				rb.run();
-
 				rb.runEnd();
 				const cmds = rb.rcommands;
 				ctx.queue.submit(cmds);

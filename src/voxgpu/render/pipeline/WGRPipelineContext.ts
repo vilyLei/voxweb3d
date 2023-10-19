@@ -133,7 +133,7 @@ class WGRPipelineContext implements IWGRPipelineContext {
 				}
 			}
 		}
-
+		
 		if (texParams && texParams.length > 0) {
 			let sampler = device.createSampler({
 				magFilter: "linear",
@@ -155,7 +155,7 @@ class WGRPipelineContext implements IWGRPipelineContext {
 				}
 			}
 		}
-
+		console.log("XXXXXXXXXXXXX desc: ", desc);
 		return device.createBindGroup(desc);
 	}
 	createRenderPipeline(pipelineParams: WGRPipelineCtxParams, descParams: VtxDescParam[]): GPURenderPipeline {

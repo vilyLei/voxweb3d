@@ -42,9 +42,12 @@ class WebGPUBufferContext {
 		mappedAtCreation = true,
 		vectorLengths?: number[]
 	): GPUBuffer {
-
+		let size = data.byteLength%4;
+		console.log("XXXXXXXXXXX A size: ", size, ", data.byteLength: ", data.byteLength);
+		size = data.byteLength + (size > 0 ? (4 - size) : 0);
+		console.log("XXXXXXXXXXX B size: ", size, ", data.byteLength: ", data.byteLength);
 		const buf = this.mWGCtx.device.createBuffer({
-			size: data.byteLength,
+			size: size,
 			usage: usage,
 			mappedAtCreation
 		});

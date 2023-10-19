@@ -21,7 +21,6 @@ class WGMaterial implements WGMaterialDescripter {
 	// textures: { [key: string]: WGTextureWrapper } = {};
 	textures: WGTextureWrapper[];
 
-
 	constructor(descriptor?: WGMaterialDescripter) {
 		this.setDescriptor(descriptor);
 	}

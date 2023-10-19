@@ -83,6 +83,9 @@ class UCtxInstance {
 		bufDataParams?: BufDataParamType[],
 		texParams?: { texView: GPUTextureView; sampler?: GPUSampler }[]
 	): WGRUniform {
+		if(!((bufDataParams && bufDataParams.length) || (texParams && texParams.length))) {
+			throw Error("Illegal operation !!!");
+		}
 		const index = this.getFreeIndex();
 		const u = new WGRUniform(this.mPipelineCtx, this);
 		u.groupIndex = groupIndex;

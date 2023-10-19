@@ -33,9 +33,6 @@ class CubeScene {
 	}
 	private createMaterial(): WGMaterial {
 
-		const rgd = this.mGeomDatas[0];
-		let pipelineVtxParam = rgd.vtxDescParam;
-
 		const shdSrc = {
 			vertShaderSrc: { code: vertWGSL, uuid: "vtxShdCode" },
 			fragShaderSrc: { code: fragWGSL, uuid: "fragShdCode" }
@@ -43,8 +40,7 @@ class CubeScene {
 
 		let material = new WGMaterial({
 			shadinguuid: "shapeMaterial",
-			shaderCodeSrc: shdSrc,
-			pipelineVtxParam
+			shaderCodeSrc: shdSrc
 		});
 		return material;
 	}
