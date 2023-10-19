@@ -23,7 +23,7 @@ export class DemoCube {
 
 		this.mWGCtx.initialize(canvas, { alphaMode: "premultiplied" }).then(() => {
 			console.log("webgpu initialization success ...");
-			this.mRScene.initialize(canvas, this.mWGCtx);
+			this.mRScene.initialize(this.mWGCtx);
 
 			document.onmousedown = evt => {
 				// this.mRenderingFlag = 1;

@@ -19,17 +19,8 @@ class CubeScene {
 	enabled = false;
 	constructor() { }
 
-	private initCamera(width: number, height: number): void {
+	initialize(wgCtx: WebGPUContext): void {
 
-		const cam = this.renderer.camera;
-		const camUpDirect = new Vector3D(0.0, 1.0, 0.0);
-		cam.perspectiveRH((Math.PI * 45) / 180.0, width / height, 0.1, 5000);
-		cam.lookAtRH(new Vector3D(800.0, 800.0, 800.0), new Vector3D(0.0, 0.0, 0.0), camUpDirect);
-		cam.update();
-	}
-	initialize(canvas: HTMLCanvasElement, wgCtx: WebGPUContext): void {
-
-		this.initCamera(canvas.width, canvas.height);
 		this.geomData.initialize(wgCtx);
 
 		this.renderer.initialize(wgCtx);
@@ -57,12 +48,11 @@ class CubeScene {
 		});
 		return material;
 	}
-	private createEntity(materials: WGMaterial[], geomIndex = -1): void {
+	private createEntity(materials: WGMaterial[]): void {
 
 		const renderer = this.renderer;
 		const gds = this.mGeomDatas;
-		geomIndex = geomIndex < 0 ? Math.round(Math.random() * (gds.length - 1)) : geomIndex;
-		const rgd = gds[geomIndex];
+		const rgd = gds[0];
 
 		let geometry = new WGGeometry();
 		geometry.addAttribute({ shdVarName: "position", data: rgd.vs, strides: [3] });

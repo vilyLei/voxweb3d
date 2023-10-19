@@ -110,6 +110,12 @@ class GeomDataBase {
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
+	createCubeWithSize(size: number): GeomRDataType {
+		size *= 0.5;
+		let minV = new Vector3D(-size, -size, -size);
+		let maxV = minV.clone().scaleBy(-1);
+		return this.createBoxRData(minV, maxV);
+	}
 	createBoxRData(minV: Vector3D, maxV: Vector3D): GeomRDataType {
 		let mesh = new Box3DMesh();
 		mesh.setBufSortFormat(0xfffffff);

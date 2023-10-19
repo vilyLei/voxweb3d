@@ -4,6 +4,7 @@ import { WebGPUContext } from "../gpu/WebGPUContext";
 import { WGMaterial } from "../material/WGMaterial";
 import { WGRObjBuilder } from "../render/WGRObjBuilder";
 import { WGRPipelineContextDefParam, WGRPassParams, WGRenderPassBlock } from "../render/WGRenderPassBlock";
+import Vector3D from "../../vox/math/Vector3D";
 class WGRenderer {
 
 	private mRPBlocks: WGRenderPassBlock[] = [];
@@ -16,28 +17,40 @@ class WGRenderer {
 	constructor(wgCtx?: WebGPUContext) {
 		this.initialize(wgCtx);
 	}
+	private initCamera(width: number, height: number): void {
+
+		console.log("width, height: ", width, height);
+		const cam = this.camera;
+		const camUpDirect = new Vector3D(0, 1, 0);
+		cam.perspectiveRH((Math.PI * 45) / 180.0, width / height, 0.1, 5000);
+		cam.lookAtRH(new Vector3D(800.0, 800.0, 800.0), new Vector3D(), camUpDirect);
+		cam.update();
+	}
 	initialize(wgCtx: WebGPUContext): void {
+
 		if (!this.mWGCtx && wgCtx) {
 			this.mWGCtx = wgCtx;
+			const canvas = wgCtx.canvas;
+			this.initCamera(canvas.width, canvas.height);
 		}
 	}
 	getWGCtx(): WebGPUContext {
 		return this.mWGCtx;
 	}
 	addEntity(entity: Entity3D, processIndex = 0, deferred = true): void {
-        if (entity) {
-			if(processIndex == 0 && this.mRPBlocks.length < 1) {
+		if (entity) {
+			if (processIndex == 0 && this.mRPBlocks.length < 1) {
 				this.createRenderBlock({
 					sampleCount: 4,
 					multisampleEnabled: true,
 					depthFormat: "depth24plus"
 				});
 			}
-			if(processIndex >= 0 && processIndex < this.mRPBlocks.length) {
-				const rb = this.mRPBlocks[ processIndex ];
-				const runit = this.mROBuilder.createRUnit( entity, rb );
-				rb.addRUnit( runit );
-			}else {
+			if (processIndex >= 0 && processIndex < this.mRPBlocks.length) {
+				const rb = this.mRPBlocks[processIndex];
+				const runit = this.mROBuilder.createRUnit(entity, rb);
+				rb.addRUnit(runit);
+			} else {
 				throw Error("Illegal operation !!!");
 			}
 		}

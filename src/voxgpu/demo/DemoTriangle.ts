@@ -18,7 +18,7 @@ export class DemoTriangle {
 
 		this.mWGCtx.initialize(canvas, { alphaMode: "premultiplied" }).then(() => {
 			console.log("webgpu initialization success ...");
-			this.mRScene.initialize(canvas, this.mWGCtx);
+			this.mRScene.initialize(this.mWGCtx);
 		});
 	}
 
