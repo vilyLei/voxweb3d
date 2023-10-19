@@ -1,10 +1,12 @@
 import { Entity3D } from "../entity/Entity3D";
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import { WGMaterial } from "../material/WGMaterial";
+import { WGRObjBuilder } from "../render/WGRObjBuilder";
 import { WGRPipelineContextDefParam, WGRPassParams, WGRenderPassBlock } from "../render/WGRenderPassBlock";
 class WGRenderer {
 	private mRPBlocks: WGRenderPassBlock[] = [];
 	private mWGCtx: WebGPUContext;
+	private mROBuilder = new WGRObjBuilder();
 
 	enabled = true;
 	constructor(wgCtx?: WebGPUContext) {
@@ -18,6 +20,8 @@ class WGRenderer {
 	addEntity(entity: Entity3D, processIndex: number = 0, deferred: boolean = true): void {
         if (entity) {
 			const rb = this.mRPBlocks[ processIndex ];
+			const runit = this.mROBuilder.createRUnit( entity, rb );
+			rb.addRUnit( runit );
 		}
 	}
 	getRPBlockAt(i: number): WGRenderPassBlock {

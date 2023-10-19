@@ -8,8 +8,8 @@ struct VertexOutput {
   @location(0) fragUV : vec2<f32>,
   @location(1) fragPosition: vec4<f32>,
 }
-fn invertedColor( color : vec4f ) -> vec4f {
-   return vec4f( 1 - color.rgb, color.a );
+fn invertedColor( color : vec4<f32>) -> vec4<f32> {
+   return vec4( 1.0 - color.rgb, color.a );
 }
 @vertex
 fn main(
@@ -17,10 +17,10 @@ fn main(
   @location(1) uv : vec2<f32>
 ) -> VertexOutput {
   var output : VertexOutput;
-  output.Position = uniforms.modelViewProjectionMatrix * vec4(position.xyz, 1);
+  output.Position = uniforms.modelViewProjectionMatrix * vec4(position.xyz, 1.0);
   output.fragUV = uv;
   var pv: vec4<f32>;
-  pv = 0.5 * (vec4(normalize(position.xyz) * 2.0, 1) + vec4(1.0, 1.0, 1.0, 1.0));
+  pv = 0.5 * (vec4<f32>(normalize(position.xyz) * 2.0, 1.0) + vec4<f32>(1.0, 1.0, 1.0, 1.0));
   output.fragPosition = pv;
   return output;
 }

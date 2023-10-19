@@ -39,7 +39,6 @@ class UCtxInstance {
 			let ls = this.mList;
 			if (ls.length > 0) {
 				this.mBuffers = [];
-
 				let wp = ls[0];
 
 				if (wp.bufDataParams) {
@@ -53,7 +52,6 @@ class UCtxInstance {
 						this.mBuffers.push(buffer);
 					}
 				}
-
 				for (let i = 0; i < ls.length; ++i) {
 					const uf = this.mList[i].uniform;
 					if (uf) {
@@ -62,6 +60,7 @@ class UCtxInstance {
 						uf.versions = new Array(uf.buffers.length);
 						uf.versions.fill(-1);
 						if (wp.bufDataParams) {
+
 							const dataParams = [];
 							for (let j = 0; j < wp.bufDataParams.length; ++j) {
 								dataParams.push({ index: i, buffer: uf.buffers[j], bufferSize: wp.bufDataParams[j].size });

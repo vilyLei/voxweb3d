@@ -1,23 +1,25 @@
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { VtxPipelinDescParam } from "../render/pipeline/IWGRPipelineContext";
 interface WGGeomAttributeParam {
-
 	shdVarName: string;
 	data: NumberArrayViewType;
+	strides?: number[];
+	offset?: number;
 }
 class WGGeomAttribute {
-
 	shdVarName = "";
 	bindIndex = 0;
+	strides = [3];
+	offset = 0;
 	data: NumberArrayViewType;
-
 }
 class WGGeomIndexBuffer {
-
 	name? = "";
-	bindIndex = 0;
 	data: IndexArrayViewType;
-
+	constructor(param: { name?: string; data: IndexArrayViewType }) {
+		this.name = param.name;
+		this.data = param.data;
+	}
 }
 
 class WGGeometry {
@@ -27,17 +29,24 @@ class WGGeometry {
 	attributes: WGGeomAttribute[];
 	indexBuffer: WGGeomIndexBuffer;
 
+	setIndexBuffer(param: { name?: string; data: IndexArrayViewType }): void {
+		this.indexBuffer = new WGGeomIndexBuffer(param);
+	}
 	addAttribute(param: WGGeomAttributeParam): void {
-		if(param) {
+		if (param) {
 			const p = new WGGeomAttribute();
-			p.shdVarName = param.shdVarName;
-			p.data = param.data;
-			if(this.attributes) {
+			const ab = p as any;
+			for (var k in param) {
+				ab[k] = (param as any)[k];
+			}
+
+			if (this.attributes) {
 				this.attributes.push(p);
-			}else {
+			} else {
 				this.attributes = [p];
 			}
 		}
 	}
+	destroy(): void {}
 }
-export { WGGeomAttributeParam, WGGeomAttribute, WGGeometry }
+export { WGGeomAttributeParam, WGGeomIndexBuffer, WGGeomAttribute, WGGeometry };

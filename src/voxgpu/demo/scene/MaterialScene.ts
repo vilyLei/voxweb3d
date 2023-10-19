@@ -18,6 +18,7 @@ import { WGRenderer } from "../../rscene/WGRenderer";
 import { WGRPrimitive } from "../../render/WGRPrimitive";
 import { WGMaterial } from "../../material/WGMaterial";
 import { Entity3D } from "../../entity/Entity3D";
+import { WGGeometry } from "../../geometry/WGGeometry";
 
 class MaterialScene {
 	private mGeomDatas: GeomRDataType[] = [];
@@ -115,8 +116,18 @@ class MaterialScene {
 		});
 	}
 	private initEntityScene(): void {
-		let entity = new Entity3D();
+		const rgd = this.mGeomDatas[0];
+		let pipelineVtxParam = rgd.vtxDescParam;
+		let material = new WGMaterial({shadinguuid: "base-material-0",shaderCodeSrc: this.getShaderSrc(1), pipelineVtxParam});
 
+		let geometry = new WGGeometry();
+		geometry.addAttribute({shdVarName:"position", data: rgd.vs});
+		geometry.addAttribute({shdVarName:"uv", data: rgd.uvs});
+		geometry.setIndexBuffer({name: "geom-index", data: rgd.ivs});
+
+		let entity = new Entity3D();
+		entity.materials = [material];
+		entity.geometry = geometry;
 	}
 	private createRenderGeometry(): void {
 		this.mGeomDatas.push(this.geomData.createPlaneRData(-150, -150, 300, 300, 0));

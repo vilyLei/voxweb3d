@@ -18,11 +18,11 @@ class WGRendererPass {
 
     private mWGCtx: WebGPUContext;
     private mParams: WGRPassParams;
-    colorView: GPUTextureView | null = null;
     private mDepthTexture: GPUTexture;
 
-    passEncoder: GPURenderPassEncoder | null = null;
-    commandEncoder: GPUCommandEncoder | null = null;
+    colorView: GPUTextureView;
+    passEncoder: GPURenderPassEncoder;
+    commandEncoder: GPUCommandEncoder;
     clearColor = new Color4(0.0,0.0,0.0,1.0);
     constructor(wgCtx?: WebGPUContext) {
         if (wgCtx) {

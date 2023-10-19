@@ -13,6 +13,7 @@ interface IWGRUnit {
 	geometry: WGRPrimitive;
 
 	enabled: boolean;
+	passes?: IWGRUnit[];
 	setUniformValues(values: WGRUniformValue[]): void;
 	runBegin(rc: GPURenderPassEncoder): void;
 	run(rc: GPURenderPassEncoder): void;

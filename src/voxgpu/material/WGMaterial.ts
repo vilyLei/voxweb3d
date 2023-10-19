@@ -1,9 +1,9 @@
-import { WGTextureWrapper, WGTexture } from "../texture/WGTexture";
+import { WGTextureWrapper } from "../texture/WGTexture";
 
-import { WGRPipelineContextDefParam, WGRShderSrcType, WGRPipelineCtxParams } from "../render/pipeline/WGRPipelineCtxParams";
+import { WGRPipelineContextDefParam, WGRShderSrcType } from "../render/pipeline/WGRPipelineCtxParams";
 import { VtxPipelinDescParam, IWGRPipelineContext } from "../render/pipeline/IWGRPipelineContext";
 import { WGMaterialDescripter } from "./WGMaterialDescripter";
-import { WGRUniform } from "../render/uniform/WGRUniform";
+import { WGRUniformValue } from "../render/uniform/WGRUniformValue";
 
 class WGMaterial implements WGMaterialDescripter {
 
@@ -17,10 +17,10 @@ class WGMaterial implements WGMaterialDescripter {
 	pipelineVtxParam?: VtxPipelinDescParam;
 	pipelineDefParam?: WGRPipelineContextDefParam;
 
-	uniforms: WGRUniform[];
+	uniformValues: WGRUniformValue[];
+	// textures: { [key: string]: WGTextureWrapper } = {};
+	textures: WGTextureWrapper[];
 
-	// readonly textures: { [key: string]: WGTextureWrapper } = {};
-	readonly textures: WGTextureWrapper[];
 
 	constructor(descriptor?: WGMaterialDescripter) {
 		this.setDescriptor(descriptor);
@@ -47,6 +47,9 @@ class WGMaterial implements WGMaterialDescripter {
 	}
 	copyfrom(src: WGMaterial): WGMaterial {
 		return this;
+	}
+	destroy(): void {
+
 	}
 }
 export { WGMaterial };

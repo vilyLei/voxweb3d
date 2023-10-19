@@ -20,6 +20,9 @@ class WGRenderPassBlock {
 	constructor(wgCtx?: WebGPUContext, param?: WGRPassParams) {
 		this.initialize(wgCtx, param);
 	}
+	getWGCtx(): WebGPUContext {
+		return this.mWGCtx;
+	}
 	initialize(wgCtx: WebGPUContext, param?: WGRPassParams): void {
 		if (!this.mWGCtx && wgCtx) {
 			this.mWGCtx = wgCtx;
@@ -35,13 +38,16 @@ class WGRenderPassBlock {
 			this.mUnits.push(unit);
 		}
 	}
+	/**
+	 * for test
+	 */
 	createRUnit(
-		geom?: WGRPrimitive,
+		p?: WGRPrimitive,
 		geomParam?: { indexBuffer?: GPUBuffer; vertexBuffers: GPUBuffer[]; indexCount?: number; vertexCount?: number },
 		addIntoRendering = true
 	): WGRUnit {
 		const u = new WGRUnit();
-		u.geometry = geom;
+		u.geometry = p;
 		if (geomParam) {
 			u.geometry = new WGRPrimitive();
 			const g = u.geometry;
@@ -119,14 +125,22 @@ class WGRenderPassBlock {
 	}
 	run(): void {
 		if (this.enabled) {
-			const passEncoder = this.rendererPass.passEncoder;
+			const rc = this.rendererPass.passEncoder;
 			const uts = this.mUnits;
 			const utsLen = uts.length;
 			for (let i = 0; i < utsLen; ++i) {
 				const ru = uts[i];
 				if (ru.enabled) {
-					ru.runBegin(passEncoder);
-					ru.run(passEncoder);
+					if(ru.passes) {
+						const ls = ru.passes;
+						for(let i = 0, ln = ls.length;i < ln; ++i) {
+							ls[i].runBegin(rc);
+							ls[i].run(rc);
+						}
+					}else {
+						ru.runBegin(rc);
+						ru.run(rc);
+					}
 				}
 			}
 		}

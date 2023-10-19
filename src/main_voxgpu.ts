@@ -20,7 +20,10 @@
 // import { BaseWROBlend as Demo } from "./voxgpu/demo/BaseWROBlend";
 // import { DemoDrawInstance as Demo } from "./voxgpu/demo/DemoDrawInstance";
 // import { DemoMultiTexture as Demo } from "./voxgpu/demo/DemoMultiTexture";
-import { DemoMaterial as Demo } from "./voxgpu/demo/DemoMaterial";
+// import { DemoMaterial as Demo } from "./voxgpu/demo/DemoMaterial";
+
+// import { DemoEntityTestScene as Demo } from "./voxgpu/demo/DemoEntityTestScene";
+import { DemoEntityAnimate as Demo } from "./voxgpu/demo/DemoEntityAnimate";
 
 let demoIns = new Demo();
 function main(): void {

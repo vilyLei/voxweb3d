@@ -89,8 +89,8 @@ class WGRPipelineContext implements IWGRPipelineContext {
 			};
 			const buf = this.mWGCtx.device.createBuffer(desc);
 			buf.segs = segs;
-			// console.log("createUniformsBuffer(), segs: ", segs);
-			// console.log("createUniformsBuffer(), bufSize: ", bufSize, ", usage: ", params.usage);
+			console.log("createUniformsBuffer(), segs: ", segs);
+			console.log("createUniformsBuffer(), bufSize: ", bufSize, ", usage: ", params.usage);
 			return buf;
 		}
 		return null;
@@ -134,7 +134,7 @@ class WGRPipelineContext implements IWGRPipelineContext {
 			}
 		}
 
-		if (texParams) {
+		if (texParams && texParams.length > 0) {
 			let sampler = device.createSampler({
 				magFilter: "linear",
 				minFilter: "linear",

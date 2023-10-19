@@ -25,6 +25,16 @@ class WGRUnit implements IWGRUnit {
 	geometry: WGRPrimitive;
 
 	enabled = true;
+	passes: WGRUnit[];
+	clone(): WGRUnit {
+		let r = new WGRUnit();
+		r.mUniformValues = this.mUniformValues;
+		r.uniforms = this.uniforms;
+		r.pipeline = this.pipeline;
+		r.pipelinectx = this.pipelinectx;
+		r.geometry = this.geometry;
+		return r;
+	}
 	setUniformValues(values: WGRUniformValue[]): void {
 		this.mUniformValues = values;
 	}
