@@ -1,18 +1,18 @@
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
-import { EntityAnimatedScene } from "./scene/EntityAnimatedScene";
+import { TriangleScene } from "./scene/TriangleScene";
 
-export class DemoEntityAnimate {
+export class DemoTriangle {
 
 	private mRenderingFlag = 0;
 	private mWGCtx = new WebGPUContext();
 	private mFPS = new RenderStatusDisplay();
-	private mRScene = new EntityAnimatedScene();
+	private mRScene = new TriangleScene();
 
 	constructor() {}
 
 	initialize(): void {
-		console.log("DemoEntityAnimate::initialize() ...");
+		console.log("DemoTriangle::initialize() ...");
 
 		const canvas = document.createElement("canvas");
 		canvas.width = 512;
@@ -20,11 +20,11 @@ export class DemoEntityAnimate {
 		document.body.appendChild(canvas);
 
 		this.mFPS.initialize(null, false);
-		this.mRScene.wgCtx = this.mWGCtx;
+		// this.mRScene.wgCtx = this.mWGCtx;
 
 		this.mWGCtx.initialize(canvas, { alphaMode: "premultiplied" }).then(() => {
 			console.log("webgpu initialization success ...");
-			this.mRScene.initialize(canvas);
+			this.mRScene.initialize(canvas, this.mWGCtx);
 
 			document.onmousedown = evt => {
 				// this.mRenderingFlag = 1;

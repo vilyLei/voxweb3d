@@ -193,7 +193,7 @@ class MultiTextureScene {
 			let texs: GPUTexture[] = [];
 			let total = urls.length;
 			for (let i = 0; i < urls.length; ++i) {
-				this.wgCtx.texture.createTexByUrl(urls[i], mipmap, true).then((tex: GPUTexture) => {
+				this.wgCtx.texture.createTex2DByUrl(urls[i], mipmap, true).then((tex: GPUTexture) => {
 					const view = tex.createView();
 					view.label = "(view)" + tex.url;
 					if (tex.url.indexOf(".png") > 0) {
@@ -213,7 +213,7 @@ class MultiTextureScene {
 				});
 			}
 		} else {
-			this.wgCtx.texture.createTexByUrl("static/assets/box.jpg", true).then((tex: GPUTexture) => {
+			this.wgCtx.texture.createTex2DByUrl("static/assets/box.jpg", true).then((tex: GPUTexture) => {
 				if (callback) {
 					callback([tex]);
 				}

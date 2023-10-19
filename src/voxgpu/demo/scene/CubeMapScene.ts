@@ -9,6 +9,7 @@ import basicVertWGSL from "../shaders/vs3uvs2.vert.wgsl";
 import vertexPositionColorWGSL from "../shaders/vertexPositionColor.frag.wgsl";
 import sampleTextureMixColorWGSL from "../shaders/sampleTextureMixColor.frag.wgsl";
 import sampleTwoTextureWGSL from "../shaders/sampleTwoTexture.frag.wgsl";
+import cubeTextureWGSL from "../shaders/sampleCubemap.frag.wgsl";
 
 import { WGRenderer } from "../../rscene/WGRenderer";
 import { WGMaterial } from "../../material/WGMaterial";
@@ -21,9 +22,10 @@ class EntityParam {
 	rv = new Vector3D();
 	sv = new Vector3D();
 	pv = new Vector3D();
+	running = true;
 	constructor(){}
 }
-class EntityAnimatedScene {
+class CubeMapScene {
 
 	private mGeomDatas: GeomRDataType[] = [];
 	private mEntities: Entity3D[] = [];
@@ -75,21 +77,51 @@ class EntityAnimatedScene {
 
 		this.texRes.buildDefault2DTextures((texs: GPUTexture[]): void => {
 
-			this.initEntityScene();
-			console.log("entitiesTotal: ", this.mEntities.length);
-			this.enabled = true;
+			// this.initEntityScene();
+			// console.log("entitiesTotal: ", this.mEntities.length);
+			// this.enabled = true;
+			this.createCubeMapEntity();
 		});
 		console.log("msaaRenderEnabled: ", this.msaaRenderEnabled);
 	}
+	private mCubeTex: GPUTexture;
+	private createCubeMapEntity(): void {
+		let urls = [
+            "static/assets/hw_morning/morning_ft.jpg",
+            "static/assets/hw_morning/morning_bk.jpg",
+            "static/assets/hw_morning/morning_dn.jpg",
+            "static/assets/hw_morning/morning_up.jpg",
+            "static/assets/hw_morning/morning_rt.jpg",
+            "static/assets/hw_morning/morning_lf.jpg"
+        ];
+		this.texRes.buildCubeTexture(urls, (tex: GPUTexture): void => {
+			this.mCubeTex = tex;
+			this.initEntityScene();
+			console.log("entitiesTotal: ", this.mEntities.length, ", cubeTex: ", this.mCubeTex);
+
+			let et = this.mEntities[0];
+			et.transform.setXYZ(0,0,0);
+			et.transform.setRotationXYZ(0,0,0);
+			et.transform.setScaleXYZ(30,-30,30);
+			et.applyCamera();
+			let ep = this.mEParams[0];
+			ep.running = false;
+			this.enabled = true;
+		});
+	}
 	private initEntityScene(): void {
 
-		console.log("EntityAnimatedScene::initEntityScene() ...");
+		console.log("CubeMapScene::initEntityScene() ...");
 		let jpgTexs = this.texRes.jpgTexList;
 		let pngTexs = this.texRes.pngTexList;
 
 		let baseDefParam = {
 			faceCullMode: "back"
 		};
+
+
+		this.createEntity([this.createTexMaterial(baseDefParam, [this.mCubeTex], "cube")], 0);
+
 		// this.createEntity([this.createShapeMaterial(baseDefParam)]);
 		// this.createEntity([this.createShapeMaterial(baseDefParam)]);
 		// this.createEntity([this.createTexMaterial(baseDefParam, [jpgTexs[0]])]);
@@ -128,21 +160,22 @@ class EntityAnimatedScene {
 		let material1 = this.createTexMaterial(transparentDefParam, [pngTexs[texIndex]]);
 		this.createEntity([material0, material1], -1);
 	}
-	private createMaterial(pipelineDefParam?: WGRPipelineContextDefParam, texs?: GPUTexture[]): WGMaterial {
+	private createMaterial(pipelineDefParam?: WGRPipelineContextDefParam, texs?: GPUTexture[], dimension = '2d'): WGMaterial {
+
 		const rgd = this.mGeomDatas[0];
 		let texTotal = texs ? texs.length : 0;
 		let pipelineVtxParam = rgd.vtxDescParam;
 
 		let material = new WGMaterial({
 			shadinguuid: "base-material-tex" + texTotal,
-			shaderCodeSrc: this.getShaderSrc(texTotal),
+			shaderCodeSrc: this.getShaderSrc(texTotal, dimension),
 			pipelineVtxParam,
 			pipelineDefParam
 		});
 		if (texTotal > 0) {
 			let texWrappers: WGTextureWrapper[] = new Array(texTotal);
 			for (let i = 0; i < texTotal; ++i) {
-				texWrappers[i] = new WGTextureWrapper({ texture: { texture: texs[i], shdVarName: "texture" + i } });
+				texWrappers[i] = new WGTextureWrapper({ texture: { texture: texs[i], shdVarName: "texture" + i, dimension } });
 			}
 			material.textures = texWrappers;
 		}
@@ -151,8 +184,8 @@ class EntityAnimatedScene {
 	private createShapeMaterial(pipelineDefParam?: WGRPipelineContextDefParam): WGMaterial {
 		return this.createMaterial(pipelineDefParam);
 	}
-	private createTexMaterial(pipelineDefParam?: WGRPipelineContextDefParam, texs?: GPUTexture[]): WGMaterial {
-		return this.createMaterial(pipelineDefParam, texs);
+	private createTexMaterial(pipelineDefParam?: WGRPipelineContextDefParam, texs?: GPUTexture[], dimension = '2d'): WGMaterial {
+		return this.createMaterial(pipelineDefParam, texs, dimension);
 	}
 	private createEntity(materials: WGMaterial[], geomIndex = -1): void {
 
@@ -173,7 +206,7 @@ class EntityAnimatedScene {
 		let trans = entity.transform;
 		// trans.setXYZ(-150 + k * 180, -150 + k * 280, 0.1 * k);
 		trans.setXYZ(Math.random() * 1000 - 500, Math.random() * 1000 - 500, Math.random() * 1000 - 500);
-		// trans.setScaleXYZ(0.5, 0.5, 0.5);
+		// trans.setScaleXYZ(2.5, 2.5, 2.5);
 		// trans.setRotationXYZ(0,0,0);
 		trans.setRotationXYZ(Math.random() * 500, Math.random() * 500, Math.random() * 500);
 		entity.applyCamera(this.renderer.camera);
@@ -205,19 +238,24 @@ class EntityAnimatedScene {
 			for(let i = 0 ; i < etsTotal; i++) {
 				let et = ets[i];
 				let ep = eps[i];
-				et.transform.getRotationXYZ(ep.rv);
-				ep.rv.x += 0.2;
-				ep.rv.y += 0.3;
-				et.transform.setRotationV3( ep.rv );
-				et.update();
+				if(ep.running) {
+					et.transform.getRotationXYZ(ep.rv);
+					ep.rv.x += 0.2;
+					ep.rv.y += 0.3;
+					et.transform.setRotationV3( ep.rv );
+					et.update();
+				}
 			}
 		}
 	}
-	private getShaderSrc(texTotal = 0): WGRShderSrcType {
+	private getShaderSrc(texTotal = 0, dimension = '2d'): WGRShderSrcType {
 		// console.log("XXXXXXXXX getShaderSrc() texTotal: ", texTotal);
 		let code = texTotal > 1 ? sampleTwoTextureWGSL : sampleTextureMixColorWGSL;
 		if (texTotal < 1) {
 			code = vertexPositionColorWGSL;
+		}
+		if(dimension == "cube") {
+			code = cubeTextureWGSL;
 		}
 		const params: WGRShderSrcType = {
 			vertShaderSrc: { code: basicVertWGSL, uuid: "vtxShdCode" },
@@ -226,4 +264,4 @@ class EntityAnimatedScene {
 		return params;
 	}
 }
-export { EntityAnimatedScene };
+export { CubeMapScene };

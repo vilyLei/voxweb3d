@@ -246,7 +246,7 @@ class WRORBlendScene {
 			let texs: GPUTexture[] = [];
 			let total = urls.length;
 			for (let i = 0; i < urls.length; ++i) {
-				this.wgCtx.texture.createTexByUrl(urls[i], mipmap, true).then((tex: GPUTexture) => {
+				this.wgCtx.texture.createTex2DByUrl(urls[i], mipmap, true).then((tex: GPUTexture) => {
 					if (tex.url.indexOf(".png") > 0) {
 						this.mPngTexList.push(tex);
 					} else {
@@ -262,7 +262,7 @@ class WRORBlendScene {
 				});
 			}
 		} else {
-			this.wgCtx.texture.createTexByUrl("static/assets/box.jpg", true).then((tex: GPUTexture) => {
+			this.wgCtx.texture.createTex2DByUrl("static/assets/box.jpg", true).then((tex: GPUTexture) => {
 				if (callback) {
 					callback([tex]);
 				}

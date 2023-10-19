@@ -1,18 +1,18 @@
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
-import { EntityAnimatedScene } from "./scene/EntityAnimatedScene";
+import { CubeMapScene } from "./scene/CubeMapScene";
 
-export class DemoEntityAnimate {
+export class DemoCubeMap {
 
 	private mRenderingFlag = 0;
 	private mWGCtx = new WebGPUContext();
 	private mFPS = new RenderStatusDisplay();
-	private mRScene = new EntityAnimatedScene();
+	private mRScene = new CubeMapScene();
 
 	constructor() {}
 
 	initialize(): void {
-		console.log("DemoEntityAnimate::initialize() ...");
+		console.log("DemoCubeMap::initialize() ...");
 
 		const canvas = document.createElement("canvas");
 		canvas.width = 512;

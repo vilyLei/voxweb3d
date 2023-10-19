@@ -108,7 +108,7 @@ class WRORPrimitiveScene {
 			let texs: GPUTexture[] = [];
 			let total = urls.length;
 			for (let i = 0; i < urls.length; ++i) {
-				this.wgCtx.texture.createTexByUrl(urls[i], mipmap).then((tex: GPUTexture) => {
+				this.wgCtx.texture.createTex2DByUrl(urls[i], mipmap).then((tex: GPUTexture) => {
 					tex.label = urls[i];
 					texs.push(tex);
 					total--;
@@ -120,7 +120,7 @@ class WRORPrimitiveScene {
 				});
 			}
 		} else {
-			this.wgCtx.texture.createTexByUrl("static/assets/box.jpg", true).then((tex: GPUTexture) => {
+			this.wgCtx.texture.createTex2DByUrl("static/assets/box.jpg", true).then((tex: GPUTexture) => {
 				if (callback) {
 					callback([tex]);
 				}

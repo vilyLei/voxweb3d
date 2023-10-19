@@ -18,10 +18,10 @@ fn main(
 ) -> VertexOutput {
 
   var output : VertexOutput;
-  output.Position = uniforms.modelViewProjectionMatrix[instanceIdx] * vec4(position.xyz, 1);
+  output.Position = uniforms.modelViewProjectionMatrix[instanceIdx] * vec4(position.xyz, 1.0);
   output.fragUV = uv;
   var pv: vec4<f32>;
-  pv = 0.5 * (vec4(normalize(position.xyz) * 2.0, 1) + vec4(1.0, 1.0, 1.0, 1.0));
+  pv = 0.5 * (vec4(normalize(position.xyz) * 2.0, 1.0) + vec4(1.0, 1.0, 1.0, 1.0));
   output.fragPosition = pv;
 
 //   var output : VertexOutput;

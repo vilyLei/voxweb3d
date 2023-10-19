@@ -9,8 +9,13 @@ import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { WGRPrimitive } from "../../render/WGRPrimitive";
 import { cubeVertexArray } from "../mesh/cubeData";
 import { VtxPipelinDescParam } from "../../render/pipeline/IWGRPipelineContext";
+import AABB from "../../../vox/geom/AABB";
 
-type GeomRDataType = {vs?: Float32Array, uvs?: Float32Array, nvs?: Float32Array, ivs?: Uint16Array | Uint32Array, vbufs: GPUBuffer[], ibuf: GPUBuffer, vtxDescParam: VtxPipelinDescParam, rgeom?: WGRPrimitive};
+type GeomRDataType = {
+	vs?: Float32Array, uvs?: Float32Array, nvs?: Float32Array, ivs?: Uint16Array | Uint32Array,
+	vbufs: GPUBuffer[], ibuf: GPUBuffer, vtxDescParam: VtxPipelinDescParam, rgeom?: WGRPrimitive,
+	bounds?: AABB
+};
 class GeomDataBase {
 	private mWGCtx: WebGPUContext;
 	constructor(wgCtx?: WebGPUContext) {
@@ -59,7 +64,7 @@ class GeomDataBase {
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } } as VtxPipelinDescParam;
-		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
+		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createCylinderRData(radius: number, height = 200, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {
 		let mesh = new Cylinder3DMesh();
@@ -81,7 +86,7 @@ class GeomDataBase {
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
-		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
+		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createSphereRData(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {
 		let mesh = new Sphere3DMesh();
@@ -103,7 +108,7 @@ class GeomDataBase {
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
-		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
+		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createBoxRData(minV: Vector3D, maxV: Vector3D): GeomRDataType {
 		let mesh = new Box3DMesh();
@@ -125,7 +130,7 @@ class GeomDataBase {
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
-		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
+		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createPlaneRData(px: number, py: number, pw: number, ph: number, axisFlag = 0, expand = false): GeomRDataType {
 
@@ -154,7 +159,7 @@ class GeomDataBase {
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
 		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
-		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
+		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createCubeRData(combined: boolean, scale = 100.0): GeomRDataType {
 

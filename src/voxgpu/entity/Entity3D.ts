@@ -1,4 +1,5 @@
 import ROTransform from "../../vox/display/ROTransform";
+import AABB from "../../vox/geom/AABB";
 import Matrix4 from "../../vox/math/Matrix4";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import { WGGeometry } from "../geometry/WGGeometry";
@@ -14,8 +15,10 @@ class Entity3D {
 	materials: WGMaterial[];
 	geometry: WGGeometry;
 
+	bounds: AABB;
 	transform: ROTransform;
 	uniformTransform: WGRUniformValue;
+
 	constructor() {
 		this.init();
 	}
@@ -36,7 +39,7 @@ class Entity3D {
 
 			trans.update();
 			mat.copyFrom(trans.getMatrix());
-			mat.append((cam as any).getVPMatrix());
+			mat.append((this.mCamera as any).getVPMatrix());
 			this.uniformTransform.upate();
 		}
 	}

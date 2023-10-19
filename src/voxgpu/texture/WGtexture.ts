@@ -7,6 +7,7 @@ interface WGTextureType {
 	texture: GPUTexture;
 	flipY?: boolean;
 	name?:string;
+	dimension?:string;
 }
 interface WGTexSamplerType {
 	shdVarName: string;
@@ -18,6 +19,7 @@ class WGTexture implements WGTextureType {
 
 	shdVarName = "";
 	flipY = true;
+	dimension = "2d";
 	texture: GPUTexture;
 
 	view?: GPUTextureView;
@@ -43,11 +45,6 @@ class WGTextureWrapper {
 		for (var k in tp) {
 			tex[k] = (tp as any)[k];
 		}
-
-		// const tex = this.texture;
-		// tex.shdVarName = tp.shdVarName;
-		// tex.texture = tp.texture;
-		// tex.flipY = tp.flipY === true;
 
 		const sp = param.sampler;
 		if(sp) {

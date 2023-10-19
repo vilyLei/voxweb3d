@@ -1,8 +1,6 @@
 import { GPUTexture } from "../../gpu/GPUTexture";
 import { TestTexResource } from "./TestTexResource";
-
 import { GeomRDataType, GeomDataBase } from "../geometry/GeomDataBase";
-import CameraBase from "../../../vox/view/CameraBase";
 import Vector3D from "../../../vox/math/Vector3D";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { WGRShderSrcType } from "../../render/pipeline/WGRPipelineCtxParams";
@@ -11,6 +9,7 @@ import basicVertWGSL from "../shaders/vs3uvs2.vert.wgsl";
 import vertexPositionColorWGSL from "../shaders/vertexPositionColor.frag.wgsl";
 import sampleTextureMixColorWGSL from "../shaders/sampleTextureMixColor.frag.wgsl";
 import sampleTwoTextureWGSL from "../shaders/sampleTwoTexture.frag.wgsl";
+import cubeTextureWGSL from "../shaders/sampleCubemap.frag.wgsl";
 
 import { WGRenderer } from "../../rscene/WGRenderer";
 import { WGMaterial } from "../../material/WGMaterial";
@@ -19,29 +18,26 @@ import { WGGeometry } from "../../geometry/WGGeometry";
 import { WGTextureWrapper } from "../../texture/WGTexture";
 import { WGRPipelineContextDefParam } from "../../material/WGMaterialDescripter";
 
-class EntityTestScene {
+class TriangleScene {
 
 	private mGeomDatas: GeomRDataType[] = [];
 	private mEntities: Entity3D[] = [];
-	readonly geomData = new GeomDataBase();
 
-	texRes = new TestTexResource();
-	wgCtx: WebGPUContext = null;
-
+	geomData = new GeomDataBase();
 	renderer = new WGRenderer();
-	enabled = false;
-	camera = new CameraBase();
 
+	// wgCtx: WebGPUContext;
+	enabled = false;
 	msaaRenderEnabled = true;
 
 	constructor() {}
 
 	private initCamera(width: number, height: number): void {
 
-		const cam = this.camera;
+		const cam = this.renderer.camera;
 		cam.inversePerspectiveZ = true;
 
-		let perspective = false;
+		let perspective = true;
 
 		const camUpDirect = new Vector3D(0.0, 1.0, 0.0);
 		if (perspective) {
@@ -49,19 +45,19 @@ class EntityTestScene {
 		} else {
 			cam.orthoRH(0.1, 5000, -0.5 * height, 0.5 * height, -0.5 * width, 0.5 * width);
 		}
-		cam.lookAtRH(new Vector3D(0.0, 0.0, 1000.0), new Vector3D(0.0, 0.0, 0.0), camUpDirect);
+		cam.lookAtRH(new Vector3D(1200.0, 1200.0, 1200.0), new Vector3D(0.0, 0.0, 0.0), camUpDirect);
 		cam.setViewXY(0, 0);
 		cam.setViewSize(width, height);
 
 		cam.update();
 	}
-	initialize(canvas: HTMLCanvasElement): void {
+	initialize(canvas: HTMLCanvasElement, wgCtx: WebGPUContext): void {
 
 		let sampleCount = 4;
 		this.initCamera(canvas.width, canvas.height);
-		this.geomData.initialize(this.wgCtx);
-		this.texRes.wgCtx = this.wgCtx;
-		this.renderer.initialize(this.wgCtx);
+		this.geomData.initialize(wgCtx);
+
+		this.renderer.initialize(wgCtx);
 
 		this.renderer.createRenderBlock({
 			sampleCount: sampleCount,
@@ -70,49 +66,36 @@ class EntityTestScene {
 		});
 		this.createRenderGeometry();
 
-		this.texRes.buildDefault2DTextures((texs: GPUTexture[]): void => {
-
-			this.initEntityScene();
-			console.log("entitiesTotal: ", this.mEntities.length);
-			this.enabled = true;
-		});
+		this.initEntityScene();
+		this.enabled = true;
 		console.log("msaaRenderEnabled: ", this.msaaRenderEnabled);
 	}
 	private initEntityScene(): void {
 
-		let jpgTexs = this.texRes.jpgTexList;
-		let pngTexs = this.texRes.pngTexList;
+		console.log("TriangleScene::initEntityScene() ...");
 
-		let baseDefParam = {
-			faceCullMode: "back"
-		};
-		this.createEntity(this.createShapeMaterial(baseDefParam));
-		this.createEntity(this.createShapeMaterial(baseDefParam));
-		this.createEntity(this.createTexMaterial(baseDefParam, [jpgTexs[0]]));
-		this.createEntity(this.createTexMaterial(baseDefParam, [jpgTexs[0], jpgTexs[1]]));
+		// let baseDefParam = {
+		// 	faceCullMode: "back"
+		// };
 
-		let transparentDefParam = {
-			blendMode: "transparent",
-			depthWriteEnabled: false,
-			faceCullMode: "back"
-		};
-		this.createEntity(this.createTexMaterial(transparentDefParam, [pngTexs[0]]));
+		this.createEntity([this.createShapeMaterial()]);
 	}
-	private createMaterial(pipelineDefParam?: WGRPipelineContextDefParam, texs?: GPUTexture[]): WGMaterial {
+	private createMaterial(pipelineDefParam?: WGRPipelineContextDefParam, texs?: GPUTexture[], dimension = '2d'): WGMaterial {
+
 		const rgd = this.mGeomDatas[0];
 		let texTotal = texs ? texs.length : 0;
 		let pipelineVtxParam = rgd.vtxDescParam;
 
 		let material = new WGMaterial({
 			shadinguuid: "base-material-tex" + texTotal,
-			shaderCodeSrc: this.getShaderSrc(texTotal),
+			shaderCodeSrc: this.getShaderSrc(texTotal, dimension),
 			pipelineVtxParam,
 			pipelineDefParam
 		});
 		if (texTotal > 0) {
 			let texWrappers: WGTextureWrapper[] = new Array(texTotal);
 			for (let i = 0; i < texTotal; ++i) {
-				texWrappers[i] = new WGTextureWrapper({ texture: { texture: texs[i], shdVarName: "texture" + i } });
+				texWrappers[i] = new WGTextureWrapper({ texture: { texture: texs[i], shdVarName: "texture" + i, dimension } });
 			}
 			material.textures = texWrappers;
 		}
@@ -121,49 +104,55 @@ class EntityTestScene {
 	private createShapeMaterial(pipelineDefParam?: WGRPipelineContextDefParam): WGMaterial {
 		return this.createMaterial(pipelineDefParam);
 	}
-	private createTexMaterial(pipelineDefParam?: WGRPipelineContextDefParam, texs?: GPUTexture[]): WGMaterial {
-		return this.createMaterial(pipelineDefParam, texs);
-	}
-	private createEntity(material: WGMaterial): void {
+	private createEntity(materials: WGMaterial[], geomIndex = -1): void {
+
 		const renderer = this.renderer;
-		const rgd = this.mGeomDatas[0];
+		const gds = this.mGeomDatas;
+		geomIndex = geomIndex < 0 ? Math.round(Math.random() * (gds.length - 1)) : geomIndex;
+		const rgd = gds[ geomIndex ];
 
 		let geometry = new WGGeometry();
 		geometry.addAttribute({ shdVarName: "position", data: rgd.vs, strides: [3] });
 		geometry.addAttribute({ shdVarName: "uv", data: rgd.uvs, strides: [2] });
 		geometry.setIndexBuffer({ name: "geom-index", data: rgd.ivs });
 
-		let k = this.mEntities.length;
+		// let k = this.mEntities.length;
 		let entity = new Entity3D();
-		entity.materials = [material];
+		entity.materials = materials;
 		entity.geometry = geometry;
-		let trans = entity.transform;
-		trans.setXYZ(-150 + k * 80, -150 + k * 80, 0.1 * k);
-		trans.setScaleXYZ(0.5, 0.5, 0.5);
-		entity.applyCamera(this.camera);
+		entity.applyCamera(this.renderer.camera);
 
 		this.mEntities.push(entity);
 		renderer.addEntity(entity);
 	}
+
 	private createRenderGeometry(): void {
-		this.mGeomDatas.push(this.geomData.createPlaneRData(-150, -150, 300, 300, 0));
+		// this.mGeomDatas.push(this.geomData.createPlaneRData(-150, -150, 300, 300, 0));
+		let minV = new Vector3D(-50, -50, -50);
+		let maxV = minV.clone().scaleBy(-1);
+		this.mGeomDatas.push(this.geomData.createBoxRData(minV, maxV));
+		console.log("this.this.mGeomDatas: ", this.mGeomDatas);
 	}
 	update(): void {
-		const ctx = this.wgCtx;
-		if (ctx.enabled) {}
+
+		const ctx = this.renderer.getWGCtx();
+		if (ctx.enabled && this.enabled) {
+		}
 	}
-	private getShaderSrc(texTotal: number = 0): WGRShderSrcType {
+	private getShaderSrc(texTotal = 0, dimension = '2d'): WGRShderSrcType {
 		// console.log("XXXXXXXXX getShaderSrc() texTotal: ", texTotal);
 		let code = texTotal > 1 ? sampleTwoTextureWGSL : sampleTextureMixColorWGSL;
 		if (texTotal < 1) {
 			code = vertexPositionColorWGSL;
 		}
-		const uuid = "fragShdTex" + texTotal;
+		if(dimension == "cube") {
+			code = cubeTextureWGSL;
+		}
 		const params: WGRShderSrcType = {
 			vertShaderSrc: { code: basicVertWGSL, uuid: "vtxShdCode" },
-			fragShaderSrc: { code: code, uuid: uuid }
+			fragShaderSrc: { code: code, uuid: "fragShdTex" + texTotal }
 		};
 		return params;
 	}
 }
-export { EntityTestScene };
+export { TriangleScene };

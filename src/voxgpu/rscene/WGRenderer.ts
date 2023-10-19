@@ -1,12 +1,16 @@
+import CameraBase from "../../vox/view/CameraBase";
 import { Entity3D } from "../entity/Entity3D";
 import { WebGPUContext } from "../gpu/WebGPUContext";
 import { WGMaterial } from "../material/WGMaterial";
 import { WGRObjBuilder } from "../render/WGRObjBuilder";
 import { WGRPipelineContextDefParam, WGRPassParams, WGRenderPassBlock } from "../render/WGRenderPassBlock";
 class WGRenderer {
+
 	private mRPBlocks: WGRenderPassBlock[] = [];
 	private mWGCtx: WebGPUContext;
 	private mROBuilder = new WGRObjBuilder();
+
+	readonly camera = new CameraBase();
 
 	enabled = true;
 	constructor(wgCtx?: WebGPUContext) {
@@ -16,6 +20,9 @@ class WGRenderer {
 		if (!this.mWGCtx && wgCtx) {
 			this.mWGCtx = wgCtx;
 		}
+	}
+	getWGCtx(): WebGPUContext {
+		return this.mWGCtx;
 	}
 	addEntity(entity: Entity3D, processIndex: number = 0, deferred: boolean = true): void {
         if (entity) {

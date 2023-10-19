@@ -11,8 +11,8 @@ type GeomType = { indexBuffer?: GPUBuffer; vertexBuffers: GPUBuffer[]; indexCoun
 
 class WGRObjBuilder {
 	constructor() {}
-
 	createPrimitive(geomParam?: GeomType): WGRPrimitive {
+
 		const g = new WGRPrimitive();
 		g.ibuf = geomParam.indexBuffer;
 		g.vbufs = geomParam.vertexBuffers;
@@ -25,6 +25,7 @@ class WGRObjBuilder {
 		return g;
 	}
 	createRPass(entity: Entity3D, block: WGRenderPassBlock, primitive: WGRPrimitive, materialIndex = 0): IWGRUnit {
+
 		const material = entity.materials[materialIndex];
 		const pctx = block.createRenderPipelineCtxWithMaterial(material);
 		material.initialize(pctx);
@@ -37,7 +38,7 @@ class WGRObjBuilder {
 			for (let i = 0; i < texList.length; i++) {
 				const tex = texList[i].texture;
 				if (!tex.view) {
-					tex.view = tex.texture.createView();
+					tex.view = tex.texture.createView({dimension:tex.dimension});
 				}
 				utexes[i] = { texView: tex.view };
 			}
@@ -73,29 +74,33 @@ class WGRObjBuilder {
 
 		const geometry = entity.geometry;
 		const gts = geometry.attributes;
-		// console.log("gts: ", gts);
+
 		const vertexBuffers: GPUBuffer[] = new Array(gts.length);
-		for(let i = 0; i < gts.length; ++i) {
+		for (let i = 0; i < gts.length; ++i) {
 			const gt = gts[i];
-			vertexBuffers[i] = wgctx.buffer.createVertexBuffer(gt.data, gt.offset, gt.strides);;
+			vertexBuffers[i] = wgctx.buffer.createVertexBuffer(gt.data, gt.offset, gt.strides);
 		}
-		const indexBuffer = wgctx.buffer.createIndexBuffer(geometry.indexBuffer.data);
+		const indexBuffer = geometry.indexBuffer ? wgctx.buffer.createIndexBuffer(geometry.indexBuffer.data) : null;
 		const indexCount = indexBuffer.elementCount;
-		const vertexCount = 0;
+		const vertexCount = vertexBuffers[0].vectorCount;
 		const primitive = this.createPrimitive({ vertexBuffers, indexBuffer, indexCount, vertexCount });
 
+		let ru: IWGRUnit;
 		const mts = entity.materials;
 		if (mts.length > 1) {
+
 			const passes: IWGRUnit[] = new Array(mts.length);
 			for (let i = 0; i < mts.length; ++i) {
 				passes[i] = this.createRPass(entity, block, primitive, i);
 			}
-			let ru: IWGRUnit = new WGRUnit();
+			ru = new WGRUnit();
 			ru.passes = passes;
 			return ru;
 		} else {
-			return this.createRPass(entity, block, primitive);
+			ru = this.createRPass(entity, block, primitive);
 		}
+		ru.bounds = geometry.bounds;
+		return ru;
 	}
 }
 export { WGRObjBuilder };

@@ -1,3 +1,4 @@
+import AABB from "../../vox/geom/AABB";
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { VtxPipelinDescParam } from "../render/pipeline/IWGRPipelineContext";
 interface WGGeomAttributeParam {
@@ -28,7 +29,7 @@ class WGGeometry {
 	readonly descParam: VtxPipelinDescParam = { vertex: { buffers: [] as GPUBuffer[], attributeIndicesArray: [] as number[][] } };
 	attributes: WGGeomAttribute[];
 	indexBuffer: WGGeomIndexBuffer;
-
+	bounds: AABB;
 	setIndexBuffer(param: { name?: string; data: IndexArrayViewType }): void {
 		this.indexBuffer = new WGGeomIndexBuffer(param);
 	}
@@ -39,7 +40,6 @@ class WGGeometry {
 			for (var k in param) {
 				ab[k] = (param as any)[k];
 			}
-
 			if (this.attributes) {
 				this.attributes.push(p);
 			} else {

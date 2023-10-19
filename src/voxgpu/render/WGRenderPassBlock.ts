@@ -133,11 +133,13 @@ class WGRenderPassBlock {
 				if (ru.enabled) {
 					if(ru.passes) {
 						const ls = ru.passes;
+						// console.log("multi passes total", ls.length);
 						for(let i = 0, ln = ls.length;i < ln; ++i) {
 							ls[i].runBegin(rc);
 							ls[i].run(rc);
 						}
 					}else {
+						// console.log("single passes ...");
 						ru.runBegin(rc);
 						ru.run(rc);
 					}

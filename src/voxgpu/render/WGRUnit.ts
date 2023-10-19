@@ -6,6 +6,7 @@ import { WGRPrimitive } from "./WGRPrimitive";
 import { WGRUniformValue } from "./uniform/WGRUniformValue";
 import { IWGRPipelineContext } from "./pipeline/IWGRPipelineContext";
 import { IWGRUnit } from "./IWGRUnit";
+import IAABB from "../../vox/geom/IAABB";
 
 class WGRUnitRunSt {
 	pipeline: GPURenderPipeline;
@@ -24,10 +25,14 @@ class WGRUnit implements IWGRUnit {
 	pipelinectx: IWGRPipelineContext;
 	geometry: WGRPrimitive;
 
+	bounds: IAABB;
+
 	enabled = true;
 	passes: WGRUnit[];
+
 	clone(): WGRUnit {
-		let r = new WGRUnit();
+
+		const r = new WGRUnit();
 		r.mUniformValues = this.mUniformValues;
 		r.uniforms = this.uniforms;
 		r.pipeline = this.pipeline;
@@ -39,6 +44,7 @@ class WGRUnit implements IWGRUnit {
 		this.mUniformValues = values;
 	}
 	runBegin(rc: GPURenderPassEncoder): void {
+
 		this.mFlag = this.enabled;
 		if (this.mFlag) {
 			const gt = this.geometry;
@@ -77,11 +83,11 @@ class WGRUnit implements IWGRUnit {
 						}
 					}
 					if (this.mFlag) {
-						const uvs = this.mUniformValues;
-						if (uvs) {
-							// console.log("uvs.length: ", uvs.length);
-							for (let i = 0, ln = uvs.length; i < ln; i++) {
-								ufs[uvs[i].index].setValue(uvs[i]);
+						const ufvs = this.mUniformValues;
+						if (ufvs) {
+							// console.log("ufvs.length: ", ufvs.length);
+							for (let i = 0, ln = ufvs.length; i < ln; i++) {
+								ufs[ufvs[i].index].setValue(ufvs[i]);
 							}
 						}
 					}
