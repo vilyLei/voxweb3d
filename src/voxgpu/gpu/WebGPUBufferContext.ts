@@ -43,9 +43,8 @@ class WebGPUBufferContext {
 		vectorLengths?: number[]
 	): GPUBuffer {
 		let size = data.byteLength%4;
-		console.log("XXXXXXXXXXX A size: ", size, ", data.byteLength: ", data.byteLength);
+		// 如果不是4的倍数会报错
 		size = data.byteLength + (size > 0 ? (4 - size) : 0);
-		console.log("XXXXXXXXXXX B size: ", size, ", data.byteLength: ", data.byteLength);
 		const buf = this.mWGCtx.device.createBuffer({
 			size: size,
 			usage: usage,

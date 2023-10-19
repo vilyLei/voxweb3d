@@ -155,7 +155,9 @@ class WGRPipelineContext implements IWGRPipelineContext {
 				}
 			}
 		}
-		console.log("XXXXXXXXXXXXX desc: ", desc);
+		if(desc.entries.length < 1) {
+			throw Error("Illegal operation !!!");
+		}
 		return device.createBindGroup(desc);
 	}
 	createRenderPipeline(pipelineParams: WGRPipelineCtxParams, descParams: VtxDescParam[]): GPURenderPipeline {
