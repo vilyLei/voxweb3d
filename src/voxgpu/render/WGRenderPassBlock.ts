@@ -6,7 +6,7 @@ import { GPUCommandBuffer } from "../gpu/GPUCommandBuffer";
 import { IWGRUnit } from "./IWGRUnit";
 import { WGRUnit } from "./WGRUnit";
 import { GPUBuffer } from "../gpu/GPUBuffer";
-import { WGRGeometry } from "./WGRGeometry";
+import { WGRPrimitive } from "./WGRPrimitive";
 import { WGMaterialDescripter } from "../material/WGMaterialDescripter";
 
 class WGRenderPassBlock {
@@ -36,14 +36,14 @@ class WGRenderPassBlock {
 		}
 	}
 	createRUnit(
-		geom?: WGRGeometry,
+		geom?: WGRPrimitive,
 		geomParam?: { indexBuffer?: GPUBuffer; vertexBuffers: GPUBuffer[]; indexCount?: number; vertexCount?: number },
 		addIntoRendering = true
 	): WGRUnit {
 		const u = new WGRUnit();
 		u.geometry = geom;
 		if (geomParam) {
-			u.geometry = new WGRGeometry();
+			u.geometry = new WGRPrimitive();
 			const g = u.geometry;
 			g.ibuf = geomParam.indexBuffer;
 			g.vbufs = geomParam.vertexBuffers;

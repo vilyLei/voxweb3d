@@ -1,7 +1,7 @@
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { GPURenderPassEncoder } from "../gpu/GPURenderPassEncoder";
 
-class WGRGeometry {
+class WGRPrimitive {
 
 	layoutUid = 0;
 	vbufs: GPUBuffer[];
@@ -26,8 +26,8 @@ class WGRGeometry {
 			this.vertexCount = this.vertexCount > 0 ? this.vertexCount : this.vbufs[0].vectorCount;
 		}
 	}
-	clone(): WGRGeometry {
-		const g = new WGRGeometry();
+	clone(): WGRPrimitive {
+		const g = new WGRPrimitive();
 		g.layoutUid = this.layoutUid;
 		g.vbufs = this.vbufs;
 		g.ibuf = this.ibuf;
@@ -37,4 +37,4 @@ class WGRGeometry {
 		return g;
 	}
 }
-export { WGRGeometry }
+export { WGRPrimitive }

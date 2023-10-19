@@ -2,7 +2,7 @@ import { WGRUniform } from "./uniform/WGRUniform";
 import { GPUBuffer } from "../gpu/GPUBuffer";
 import { GPURenderPassEncoder } from "../gpu/GPURenderPassEncoder";
 import { GPURenderPipeline } from "../gpu/GPURenderPipeline";
-import { WGRGeometry } from "./WGRGeometry";
+import { WGRPrimitive } from "./WGRPrimitive";
 import { WGRUniformValue } from "./uniform/WGRUniformValue";
 import { IWGRPipelineContext } from "./pipeline/IWGRPipelineContext";
 import { IWGRUnit } from "./IWGRUnit";
@@ -10,7 +10,7 @@ import { IWGRUnit } from "./IWGRUnit";
 class WGRUnitRunSt {
 	pipeline: GPURenderPipeline;
 	rc: GPURenderPassEncoder;
-	gt: WGRGeometry;
+	gt: WGRPrimitive;
 	ibuf: GPUBuffer;
 }
 const __$urst = new WGRUnitRunSt();
@@ -22,7 +22,7 @@ class WGRUnit implements IWGRUnit {
 	uniforms?: WGRUniform[];
 	pipeline: GPURenderPipeline;
 	pipelinectx: IWGRPipelineContext;
-	geometry: WGRGeometry;
+	geometry: WGRPrimitive;
 
 	enabled = true;
 	setUniformValues(values: WGRUniformValue[]): void {

@@ -1,5 +1,5 @@
 import { Entity3D } from "../entity/Entity3D";
-import { WGRGeometry } from "./WGRGeometry";
+import { WGRPrimitive } from "./WGRPrimitive";
 import { IWGRUnit } from "./IWGRUnit";
 import { WGRUnit } from "./WGRUnit";
 import { GPUBuffer } from "../gpu/GPUBuffer";
@@ -9,9 +9,9 @@ class WGRObjBuilder {
 
     createRGeometry(
         geomParam?: { indexBuffer?: GPUBuffer; vertexBuffers: GPUBuffer[]; indexCount?: number; vertexCount?: number }
-    ): WGRGeometry | null {
+    ): WGRPrimitive | null {
         if (geomParam) {
-            const g = new WGRGeometry();
+            const g = new WGRPrimitive();
             g.ibuf = geomParam.indexBuffer;
             g.vbufs = geomParam.vertexBuffers;
             if (geomParam.indexCount) {

@@ -6,16 +6,12 @@ import Sphere3DMesh from "../../../vox/mesh/Sphere3DMesh";
 import Torus3DMesh from "../../../vox/mesh/Torus3DMesh";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
-import { WGRGeometry } from "../../render/WGRGeometry";
+import { WGRPrimitive } from "../../render/WGRPrimitive";
 import { cubeVertexArray } from "../mesh/cubeData";
-import { WROBufferContext } from "../pipeline/WROBufferContext";
-import { VtxPipelinDescParam } from "../pipeline/WROPipelineContext";
+import { VtxPipelinDescParam } from "../../render/pipeline/IWGRPipelineContext";
 
-type GeomRDataType = {vbufs: GPUBuffer[], ibuf: GPUBuffer, vtxDescParam: VtxPipelinDescParam, rgeom?: WGRGeometry};
+type GeomRDataType = {vbufs: GPUBuffer[], ibuf: GPUBuffer, vtxDescParam: VtxPipelinDescParam, rgeom?: WGRPrimitive};
 class GeomDataBase {
-
-	// readonly vtxCtx = new WROBufferContext();
-
 	private mWGCtx: WebGPUContext;
 	constructor(wgCtx?: WebGPUContext) {
 		if (wgCtx) {
@@ -24,7 +20,6 @@ class GeomDataBase {
 	}
 	initialize(wgCtx: WebGPUContext): void {
 		this.mWGCtx = wgCtx;
-		// this.mWGCtx.buffer.initialize(wgCtx);
 	}
 	expandFS32Data(vs: Float32Array, srcStride: number, dstStride: number, value = 1.0): Float32Array {
 
@@ -63,7 +58,7 @@ class GeomDataBase {
 
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
-		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } } as VtxPipelinDescParam;
 		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
 	}
 	createCylinderRData(radius: number, height = 200, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {

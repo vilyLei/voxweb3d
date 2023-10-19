@@ -17,7 +17,7 @@ import vertexPositionColorBrnWGSL from "../shaders/vertexPositionColorBrn.frag.w
 import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WGRUniformValue } from "../../render/uniform/WGRUniformValue";
 import { WGRenderer } from "../../rscene/WGRenderer";
-import { WGRGeometry } from "../../render/WGRGeometry";
+import { WGRPrimitive } from "../../render/WGRPrimitive";
 
 class WRORBlendScene {
 	private mGeomDatas: GeomRDataType[] = [];
@@ -169,7 +169,7 @@ class WRORBlendScene {
 		console.log("this.this.mGeomDatas: ", this.mGeomDatas);
 		for (let i = 0; i < this.mGeomDatas.length; ++i) {
 			const rgd = this.mGeomDatas[i];
-			let rgeom = new WGRGeometry();
+			let rgeom = new WGRPrimitive();
 			rgeom.ibuf = rgd.ibuf;
 			rgeom.vbufs = rgd.vbufs;
 			rgeom.indexCount = rgd.ibuf.elementCount;
