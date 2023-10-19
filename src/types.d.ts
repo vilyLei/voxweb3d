@@ -110,6 +110,7 @@ declare type IndexArrayViewType = Uint32Array | Uint16Array;
 declare type NumberArrayViewType = Float32Array | Int32Array | Int16Array | Uint8Array | Int8Array | IndexArrayViewType;
 declare type NumberArrayType = number[] | Float32Array | Uint32Array | Uint16Array | Int32Array | Int16Array | Uint8Array | Int8Array;
 declare type NumberArrayDataType = DataView | Float32Array | Uint32Array | Uint16Array | Int32Array | Int16Array | Uint8Array | Int8Array;
+declare type WebImageType = HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap;
 declare module "*.wgsl" {
 	const shader: string;
 	export default shader;

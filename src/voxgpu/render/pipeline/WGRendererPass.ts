@@ -12,6 +12,9 @@ import { WebGPUContext } from "../../gpu/WebGPUContext";
 interface WGRPassParams {
     multisampleEnabled: boolean;
     sampleCount: number;
+    /**
+     * 'depth24plus','depth32float'
+     */
 	depthFormat?: string;
 }
 class WGRendererPass {

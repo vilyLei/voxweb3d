@@ -24,11 +24,22 @@ class WGRenderer {
 	getWGCtx(): WebGPUContext {
 		return this.mWGCtx;
 	}
-	addEntity(entity: Entity3D, processIndex: number = 0, deferred: boolean = true): void {
+	addEntity(entity: Entity3D, processIndex = 0, deferred = true): void {
         if (entity) {
-			const rb = this.mRPBlocks[ processIndex ];
-			const runit = this.mROBuilder.createRUnit( entity, rb );
-			rb.addRUnit( runit );
+			if(processIndex == 0 && this.mRPBlocks.length < 1) {
+				this.createRenderBlock({
+					sampleCount: 4,
+					multisampleEnabled: true,
+					depthFormat: "depth24plus"
+				});
+			}
+			if(processIndex >= 0 && processIndex < this.mRPBlocks.length) {
+				const rb = this.mRPBlocks[ processIndex ];
+				const runit = this.mROBuilder.createRUnit( entity, rb );
+				rb.addRUnit( runit );
+			}else {
+				throw Error("Illegal operation !!!");
+			}
 		}
 	}
 	getRPBlockAt(i: number): WGRenderPassBlock {

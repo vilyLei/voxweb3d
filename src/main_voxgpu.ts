@@ -26,7 +26,9 @@
 // import { DemoEntityAnimate as Demo } from "./voxgpu/demo/DemoEntityAnimate";
 
 // import { DemoCubeMap as Demo } from "./voxgpu/demo/DemoCubeMap";
+
 import { DemoTriangle as Demo } from "./voxgpu/demo/DemoTriangle";
+// import { DemoCube as Demo } from "./voxgpu/demo/DemoCube";
 
 let demoIns = new Demo();
 function main(): void {
