@@ -22,13 +22,13 @@
 // import { DemoMultiTexture as Demo } from "./voxgpu/demo/DemoMultiTexture";
 // import { DemoMaterial as Demo } from "./voxgpu/demo/DemoMaterial";
 
-import { DemoEntityTestScene as Demo } from "./voxgpu/demo/DemoEntityTestScene";
+// import { DemoEntityTestScene as Demo } from "./voxgpu/demo/DemoEntityTestScene";
 // import { DemoEntityAnimate as Demo } from "./voxgpu/demo/DemoEntityAnimate";
 
 // import { DemoCubeMap as Demo } from "./voxgpu/demo/DemoCubeMap";
 
 // import { DemoTriangle as Demo } from "./voxgpu/demo/DemoTriangle";
-// import { DemoCube as Demo } from "./voxgpu/demo/DemoCube";
+import { DemoCube as Demo } from "./voxgpu/demo/DemoCube";
 
 let demoIns = new Demo();
 function main(): void {

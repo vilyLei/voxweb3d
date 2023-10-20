@@ -1,4 +1,4 @@
-import { WGTextureWrapper } from "../texture/WGtexture";
+import { WGTextureWrapper } from "../texture/WGTextureWrapper";
 
 import { WGRPipelineContextDefParam, WGRShderSrcType } from "../render/pipeline/WGRPipelineCtxParams";
 import { VtxPipelinDescParam, IWGRPipelineContext } from "../render/pipeline/IWGRPipelineContext";

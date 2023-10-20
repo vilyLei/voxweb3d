@@ -16,7 +16,7 @@ import { WGRenderer } from "../../rscene/WGRenderer";
 import { WGMaterial } from "../../material/WGMaterial";
 import { Entity3D } from "../../entity/Entity3D";
 import { WGGeometry } from "../../geometry/WGGeometry";
-import { WGTextureWrapper } from "../../texture/WGtexture";
+import { WGTextureWrapper } from "../../texture/WGTextureWrapper";
 import { WGRPipelineContextDefParam } from "../../material/WGMaterialDescripter";
 
 class EntityTestScene {
