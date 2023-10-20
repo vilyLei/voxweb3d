@@ -63,7 +63,7 @@ class GeomDataBase {
 
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
-		const vtxDescParam = { vertex: { attributeIndicesArray: [[0], [0]] } } as VtxPipelinDescParam;
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } } as VtxPipelinDescParam;
 		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createCylinderRData(radius: number, height = 200, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {
@@ -85,7 +85,7 @@ class GeomDataBase {
 
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
-		const vtxDescParam = { vertex: { attributeIndicesArray: [[0], [0]] } };
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createSphereRData(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20): GeomRDataType {
@@ -107,7 +107,7 @@ class GeomDataBase {
 
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
-		const vtxDescParam = { vertex: { attributeIndicesArray: [[0], [0]] } };
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createCubeWithSize(size: number): GeomRDataType {
@@ -135,7 +135,7 @@ class GeomDataBase {
 
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
-		const vtxDescParam = { vertex: { attributeIndicesArray: [[0], [0]] } };
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createPlaneRData(px: number, py: number, pw: number, ph: number, axisFlag = 0, expand = false): GeomRDataType {
@@ -164,7 +164,7 @@ class GeomDataBase {
 
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(ivs);
 
-		const vtxDescParam = { vertex: { attributeIndicesArray: [[0], [0]] } };
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: [[0], [0]] } };
 		return {ivs, vs, uvs, nvs, vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam, bounds: mesh.bounds};
 	}
 	createCubeRData(combined: boolean, scale = 100.0): GeomRDataType {
@@ -182,7 +182,7 @@ class GeomDataBase {
 		}
 		ibuf = this.mWGCtx.buffer.createIndexBuffer(data.ivs);
 
-		const vtxDescParam = { vertex: { attributeIndicesArray: combined ? [[0, 2]] : [[0], [0]] } };
+		const vtxDescParam = { vertex: { buffers: vbufs, attributeIndicesArray: combined ? [[0, 2]] : [[0], [0]] } };
 		return {vbufs: vbufs, ibuf: ibuf, vtxDescParam: vtxDescParam};
 	}
 	createRawCubeGeometry(combined: boolean, scale = 100.0): {vs?: Float32Array, uvs?: Float32Array, ivs?: Uint16Array | Uint32Array} {

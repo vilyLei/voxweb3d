@@ -18,7 +18,7 @@
 // import { DemoWROPrimitive as Demo } from "./voxgpu/demo/DemoWROPrimitive";
 
 // import { BaseWROBlend as Demo } from "./voxgpu/demo/BaseWROBlend";
-// import { DemoDrawInstance as Demo } from "./voxgpu/demo/DemoDrawInstance";
+import { DemoDrawInstance as Demo } from "./voxgpu/demo/DemoDrawInstance";
 // import { DemoMultiTexture as Demo } from "./voxgpu/demo/DemoMultiTexture";
 // import { DemoMaterial as Demo } from "./voxgpu/demo/DemoMaterial";
 
@@ -28,7 +28,7 @@
 // import { DemoCubeMap as Demo } from "./voxgpu/demo/DemoCubeMap";
 
 // import { DemoTriangle as Demo } from "./voxgpu/demo/DemoTriangle";
-import { DemoCube as Demo } from "./voxgpu/demo/DemoCube";
+// import { DemoCube as Demo } from "./voxgpu/demo/DemoCube";
 
 let demoIns = new Demo();
 function main(): void {

@@ -90,7 +90,7 @@ class WGRObjBuilder {
 			vertexBuffers[i] = wgctx.buffer.createVertexBuffer(gt.data, gt.bufferOffset, gt.strides);
 		}
 		const indexBuffer = geometry.indexBuffer ? wgctx.buffer.createIndexBuffer(geometry.indexBuffer.data) : null;
-		const indexCount = indexBuffer.elementCount;
+		const indexCount = indexBuffer ? indexBuffer.elementCount : 0;
 		const vertexCount = vertexBuffers[0].vectorCount;
 		const primitive = this.createPrimitive({ vertexBuffers, indexBuffer, indexCount, vertexCount });
 

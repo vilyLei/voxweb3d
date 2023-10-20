@@ -54,7 +54,7 @@ class TriangleScene {
 		const geometry = new WGGeometry();
 		geometry.addAttribute({ shdVarName: "position",		data: positions,	strides: [3] });
 		geometry.addAttribute({ shdVarName: "color",		data: colors,		strides: [3] });
-		geometry.setIndexBuffer({ name: "geomIndex",		data: indices					 });
+		// geometry.setIndexBuffer({ name: "geomIndex",		data: indices					 });
 
 		const entity = new Entity3D(false);
 		entity.materials = materials;
