@@ -1,4 +1,4 @@
-import { WGTextureWrapper } from "../texture/WGTexture";
+import { WGTextureWrapper } from "../texture/WGtexture";
 
 import { WGRPipelineContextDefParam, WGRShderSrcType } from "../render/pipeline/WGRPipelineCtxParams";
 import { VtxPipelinDescParam, IWGRPipelineContext } from "../render/pipeline/IWGRPipelineContext";
@@ -20,7 +20,7 @@ class WGMaterial implements WGMaterialDescripter {
 	uniformValues: WGRUniformValue[];
 	// textures: { [key: string]: WGTextureWrapper } = {};
 	textures: WGTextureWrapper[];
-
+	// attributeIndices?: number[][];
 	constructor(descriptor?: WGMaterialDescripter) {
 		this.setDescriptor(descriptor);
 	}

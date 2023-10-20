@@ -27,7 +27,11 @@ class WGRObjBuilder {
 	createRPass(entity: Entity3D, block: WGRenderPassBlock, primitive: WGRPrimitive, materialIndex = 0): IWGRUnit {
 
 		const material = entity.materials[materialIndex];
-		material.pipelineVtxParam = { vertex: { buffers: primitive.vbufs, attributeIndicesArray: [[0], [0]] } };
+		if(material.pipelineVtxParam) {
+			material.pipelineVtxParam.vertex.buffers = primitive.vbufs;
+		}else{
+			material.pipelineVtxParam = { vertex: { buffers: primitive.vbufs, attributeIndicesArray: [[0], [0]] } };
+		}
 		const pctx = block.createRenderPipelineCtxWithMaterial(material);
 		material.initialize(pctx);
 
@@ -83,7 +87,7 @@ class WGRObjBuilder {
 		const vertexBuffers: GPUBuffer[] = new Array(gts.length);
 		for (let i = 0; i < gts.length; ++i) {
 			const gt = gts[i];
-			vertexBuffers[i] = wgctx.buffer.createVertexBuffer(gt.data, gt.offset, gt.strides);
+			vertexBuffers[i] = wgctx.buffer.createVertexBuffer(gt.data, gt.bufferOffset, gt.strides);
 		}
 		const indexBuffer = geometry.indexBuffer ? wgctx.buffer.createIndexBuffer(geometry.indexBuffer.data) : null;
 		const indexCount = indexBuffer.elementCount;
