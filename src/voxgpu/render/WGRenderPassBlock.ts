@@ -85,7 +85,7 @@ class WGRenderPassBlock {
 				pipeParams.setTransparentBlendParam(0);
 			}
 			pipeParams.setDepthWriteEnabled(pipelineParam.depthWriteEnabled === true);
-			pipeParams.setCullMode(pipelineParam.faceCullMode);
+			pipeParams.setFaceMode(pipelineParam.faceCullMode);
 		}
 
 		return this.createRenderPipeline(pipeParams, pipelineVtxParam);

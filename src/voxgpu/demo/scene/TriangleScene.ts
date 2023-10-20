@@ -37,13 +37,9 @@ class TriangleScene {
 			vertShaderSrc: { code: vertWGSL, uuid: "vtxShdCode" },
 			fragShaderSrc: { code: fragWGSL, uuid: "fragShdCode" }
 		};
-		let pipelineDefParam = {
-			faceCullMode: "front"
-		};
 		const material = new WGMaterial({
 			shadinguuid: "shapeMaterial",
-			shaderCodeSrc: shdSrc,
-			pipelineDefParam
+			shaderCodeSrc: shdSrc
 		});
 		return material;
 	}

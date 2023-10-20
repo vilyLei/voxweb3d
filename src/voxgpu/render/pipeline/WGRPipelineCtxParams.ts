@@ -82,6 +82,7 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 				};
 			}
 			this.primitive = {
+				frontFace: 'cw',
 				topology: "triangle-list",
 				cullMode: "back"
 			};
@@ -118,15 +119,36 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 		}
 	}
 	/**
-	 * Possible values are: "back", "front", "none", the default value is "none"
+	 *
+	 * @param faceCullMode Possible values are: "back", "front", "none", the default value is "none".
+	 * @param frontFace Possible values are: "cw", "ccw", the default value is "cw".
+	 * @param topology Possible values are: "triangle-strip", "triangle-list", "point-list", "line-list", "line-strip",
+	 * 			the default value is "triangle-list"
 	 */
-	setCullMode(mode: string): void {
-		switch (mode) {
-			case "back":
-			case "front":
-			case "none":
-				this.primitive.cullMode = mode;
-				break;
+	setFaceMode(faceCullMode: string, frontFace =  'cw', topology = 'triangle-list'): void {
+		if(this.primitive) {
+			switch (faceCullMode) {
+				case "back":
+				case "front":
+				case "none":
+					this.primitive.cullMode = faceCullMode;
+					break;
+			}
+			switch (frontFace) {
+				case "cw":
+				case "ccw":
+					this.primitive.frontFace = frontFace;
+					break;
+			}
+			switch (topology) {
+				case "triangle-strip":
+				case "triangle-list":
+				case "point-list":
+				case "line-list":
+				case "line-strip":
+					this.primitive.topology = topology;
+					break;
+			}
 		}
 	}
 	setTransparentBlendParam(targetIndex = 0): void {
