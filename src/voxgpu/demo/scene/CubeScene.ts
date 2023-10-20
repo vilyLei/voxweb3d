@@ -64,9 +64,7 @@ class CubeScene {
 	}
 
 	private createRenderGeometry(): void {
-		let minV = new Vector3D(-100, -100, -100);
-		let maxV = minV.clone().scaleBy(-1);
-		this.mGeomDatas.push(this.geomData.createBoxRData(minV, maxV));
+		this.mGeomDatas.push(this.geomData.createCubeWithSize(200));
 	}
 	update(): void {
 	}

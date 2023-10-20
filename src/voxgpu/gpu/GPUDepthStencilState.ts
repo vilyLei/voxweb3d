@@ -11,13 +11,13 @@ interface GPUDepthStencilState {
 	 * A value of true specifies that the GPURenderPipeline can modify depthStencilAttachment depth values after creation.
 	 * Setting it to false means it cannot.
 	 */
-	depthWriteEnabled: boolean;
+	depthWriteEnabled?: boolean;
 	/**
 	 * An enumerated value specifying the comparison operation used to test fragment depths against depthStencilAttachment depth values.
 	 * Possible flag values are(in GPUCompareFunction: https://gpuweb.github.io/gpuweb/#enumdef-gpucomparefunction):
 	 * 		"never","less","equal","less-equal","greater","not-equal","greater-equal","always",	 *
 	 */
-	depthCompare: string;
+	depthCompare?: string;
 	/**
 	 * An enumerated value specifying the depthStencilAttachment format that the GPURenderPipeline will be compatible with.
 	 * Possible flag values are:
@@ -25,7 +25,7 @@ interface GPUDepthStencilState {
 	 * See the specification's Texture Formats section for all the available format values(in GPUTextureFormat):
 	 * https://gpuweb.github.io/gpuweb/#enumdef-gputextureformat
 	 */
-	format: string;
+	format?: string;
 
 	depthBia?: number;
 	depthBiasClamp?: number;

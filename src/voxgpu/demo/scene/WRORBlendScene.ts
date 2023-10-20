@@ -158,7 +158,7 @@ class WRORBlendScene {
 			pipeParams.setTransparentBlendParam(0);
 		}
 		pipeParams.setDepthWriteEnabled(depthWriteEnabled);
-		pipeParams.setFaceMode("none");
+		pipeParams.setPrimitiveState({cullMode: "none"});
 		const rgd = this.mGeomDatas[0];
 		console.log("rgd.vtxDescParam: ", rgd.vtxDescParam);
 		const pipelineCtx = this.renderer.getRPBlockAt(0).createRenderPipeline(pipeParams, rgd.vtxDescParam);

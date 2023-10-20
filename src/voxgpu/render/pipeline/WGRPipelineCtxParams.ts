@@ -10,7 +10,35 @@ import { GPUVertexAttribute } from "../../gpu/GPUVertexAttribute";
 import { GPUVertexBufferLayout } from "../../gpu/GPUVertexBufferLayout";
 import { GPUVertexState } from "../../gpu/GPUVertexState";
 
-type WGRPipelineContextDefParam = {blendMode?: string, depthWriteEnabled?: boolean, faceCullMode?: string, depthStencilEnabled?:boolean};
+// /**
+// 	 *
+// 	 * @param modeParam faceCullMode, Possible values are: "back", "front", "none", the default value is "none".
+// 	 * 					frontFace, Possible values are: "cw", "ccw", the default value is "ccw".
+// 	 * 					topology, Possible values are: "triangle-strip", "triangle-list", "point-list", "line-list", "line-strip",
+// 	 * 						the default value is "triangle-list"
+// 	 */
+// interface WPRFaceMode{
+// 	/**
+// 	 * Possible values are: "back", "front", "none", the default value is "none".
+// 	 */
+// 	faceCullMode?: string;
+// 	/**
+// 	 * Possible values are: "cw", "ccw", the default value is "ccw".
+// 	 */
+// 	frontFace?: string;
+// 	/**
+// 	 * topology, Possible values are: "triangle-strip", "triangle-list", "point-list", "line-list", "line-strip",
+// 	 * the default value is "triangle-list".
+// 	 */
+// 	topology?: string
+// }
+interface WGRPipelineContextDefParam {
+	blendMode?: string;
+	depthWriteEnabled?: boolean;
+	primitiveState?: GPUPrimitiveState;
+	faceCullMode?: string;
+	depthStencilEnabled?: boolean;
+}
 interface WGRShderSrcType {
 	vertShaderSrc: { code: string; uuid: string };
 	fragShaderSrc: { code: string; uuid: string };
@@ -82,7 +110,7 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 				};
 			}
 			this.primitive = {
-				frontFace: 'cw',
+				frontFace: "ccw",
 				topology: "triangle-list",
 				cullMode: "back"
 			};
@@ -96,6 +124,18 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 	setDepthStencilParam(state: GPUDepthStencilState): void {
 		if (this.depthStencilEnabled) {
 			this.depthStencil = state;
+		}
+	}
+	setDepthStencil(state: GPUDepthStencilState): void {
+		if (state) {
+			if (!this.depthStencil) {
+				this.depthStencil = state;
+			}
+			let src = state as any;
+			let dst = this.depthStencil as any;
+			for(var k in src) {
+				dst[k] = src[k];
+			}
 		}
 	}
 	setDepthWriteEnabled(enabled: boolean): void {
@@ -120,33 +160,36 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 	}
 	/**
 	 *
-	 * @param faceCullMode Possible values are: "back", "front", "none", the default value is "none".
-	 * @param frontFace Possible values are: "cw", "ccw", the default value is "cw".
-	 * @param topology Possible values are: "triangle-strip", "triangle-list", "point-list", "line-list", "line-strip",
-	 * 			the default value is "triangle-list"
+	 * @param primitiveState cullMode, Possible values are: "back", "front", "none", the default value is "none".
+	 * 						 frontFace, Possible values are: "cw", "ccw", the default value is "ccw".
+	 * 						 topology, Possible values are: "triangle-strip", "triangle-list", "point-list", "line-list", "line-strip",
+	 * 						 the default value is "triangle-list"
 	 */
-	setFaceMode(faceCullMode: string, frontFace =  'cw', topology = 'triangle-list'): void {
-		if(this.primitive) {
-			switch (faceCullMode) {
+	setPrimitiveState(state: GPUPrimitiveState): void {
+		if (state) {
+			if (!this.primitive) {
+				this.primitive = state;
+			}
+			switch (state.cullMode) {
 				case "back":
 				case "front":
 				case "none":
-					this.primitive.cullMode = faceCullMode;
+					this.primitive.cullMode = state.cullMode;
 					break;
 			}
-			switch (frontFace) {
+			switch (state.frontFace) {
 				case "cw":
 				case "ccw":
-					this.primitive.frontFace = frontFace;
+					this.primitive.frontFace = state.frontFace;
 					break;
 			}
-			switch (topology) {
+			switch (state.topology) {
 				case "triangle-strip":
 				case "triangle-list":
 				case "point-list":
 				case "line-list":
 				case "line-strip":
-					this.primitive.topology = topology;
+					this.primitive.topology = state.topology;
 					break;
 			}
 		}

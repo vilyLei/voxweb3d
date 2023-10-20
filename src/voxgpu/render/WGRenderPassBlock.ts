@@ -75,17 +75,18 @@ class WGRenderPassBlock {
 		pipelineVtxParam: VtxPipelinDescParam,
 		pipelineParam?: WGRPipelineContextDefParam
 	): WGRPipelineContext {
+		const plp = pipelineParam;
 		const pipeParams = new WGRPipelineCtxParams({
 			vertShaderSrc: shdSrc.vertShaderSrc,
 			fragShaderSrc: shdSrc.fragShaderSrc,
-			depthStencilEnabled: pipelineParam ? (pipelineParam.depthStencilEnabled === false ? false : true) : true
+			depthStencilEnabled: plp ? (plp.depthStencilEnabled === false ? false : true) : true
 		});
-		if (pipelineParam) {
-			if (pipelineParam.blendMode === "transparent") {
+		if (plp) {
+			if (plp.blendMode === "transparent") {
 				pipeParams.setTransparentBlendParam(0);
 			}
-			pipeParams.setDepthWriteEnabled(pipelineParam.depthWriteEnabled === true);
-			pipeParams.setFaceMode(pipelineParam.faceCullMode);
+			pipeParams.setDepthWriteEnabled(plp.depthWriteEnabled === true);
+			pipeParams.setPrimitiveState(plp.primitiveState ? plp.primitiveState : {cullMode: plp.faceCullMode});
 		}
 
 		return this.createRenderPipeline(pipeParams, pipelineVtxParam);

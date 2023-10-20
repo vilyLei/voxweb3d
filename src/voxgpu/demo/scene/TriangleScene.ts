@@ -9,8 +9,8 @@ import fragWGSL from '../shaders/colorTriangle.frag.wgsl';
 
 // Position Vertex Buffer Data
 const positions = new Float32Array([
-     1.0,	-1.0,	0.0,
     -1.0,	-1.0,	0.0,
+     1.0,	-1.0,	0.0,
      0.0,	 1.0,	0.0
 ]);
 // Color Vertex Buffer Data
