@@ -10,32 +10,11 @@ import { GPUVertexAttribute } from "../../gpu/GPUVertexAttribute";
 import { GPUVertexBufferLayout } from "../../gpu/GPUVertexBufferLayout";
 import { GPUVertexState } from "../../gpu/GPUVertexState";
 
-// /**
-// 	 *
-// 	 * @param modeParam faceCullMode, Possible values are: "back", "front", "none", the default value is "none".
-// 	 * 					frontFace, Possible values are: "cw", "ccw", the default value is "ccw".
-// 	 * 					topology, Possible values are: "triangle-strip", "triangle-list", "point-list", "line-list", "line-strip",
-// 	 * 						the default value is "triangle-list"
-// 	 */
-// interface WPRFaceMode{
-// 	/**
-// 	 * Possible values are: "back", "front", "none", the default value is "none".
-// 	 */
-// 	faceCullMode?: string;
-// 	/**
-// 	 * Possible values are: "cw", "ccw", the default value is "ccw".
-// 	 */
-// 	frontFace?: string;
-// 	/**
-// 	 * topology, Possible values are: "triangle-strip", "triangle-list", "point-list", "line-list", "line-strip",
-// 	 * the default value is "triangle-list".
-// 	 */
-// 	topology?: string
-// }
 interface WGRPipelineContextDefParam {
 	blendMode?: string;
 	depthWriteEnabled?: boolean;
 	primitiveState?: GPUPrimitiveState;
+	depthStencil?: GPUDepthStencilState;
 	faceCullMode?: string;
 	depthStencilEnabled?: boolean;
 }
@@ -131,8 +110,8 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 			if (!this.depthStencil) {
 				this.depthStencil = state;
 			}
-			let src = state as any;
-			let dst = this.depthStencil as any;
+			const src = state as any;
+			const dst = this.depthStencil as any;
 			for(var k in src) {
 				dst[k] = src[k];
 			}

@@ -85,7 +85,11 @@ class WGRenderPassBlock {
 			if (plp.blendMode === "transparent") {
 				pipeParams.setTransparentBlendParam(0);
 			}
-			pipeParams.setDepthWriteEnabled(plp.depthWriteEnabled === true);
+			if(plp.depthStencil) {
+				pipeParams.setDepthStencil( plp.depthStencil );
+			}else {
+				pipeParams.setDepthWriteEnabled(plp.depthWriteEnabled === true);
+			}
 			pipeParams.setPrimitiveState(plp.primitiveState ? plp.primitiveState : {cullMode: plp.faceCullMode});
 		}
 
