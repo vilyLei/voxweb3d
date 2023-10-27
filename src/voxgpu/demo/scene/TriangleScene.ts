@@ -28,7 +28,7 @@ class TriangleScene {
 
 	initialize(wgCtx: WebGPUContext): void {
 
-		this.renderer.initialize(wgCtx);
+		this.renderer.initialize({ ctx: wgCtx });
 		this.createEntity([this.createMaterial()]);
 	}
 	private createMaterial(): WGMaterial {
@@ -48,8 +48,13 @@ class TriangleScene {
 		const renderer = this.renderer;
 
 		const geometry = new WGGeometry();
-		geometry.addAttribute({ shdVarName: "position",		data: positions,	strides: [3] });
-		geometry.addAttribute({ shdVarName: "color",		data: colors,		strides: [3] });
+		// geometry.addAttribute({ shdVarName: "position",		data: positions,	strides: [3] });
+		// geometry.addAttribute({ shdVarName: "color",		data: colors,		strides: [3] });
+		// geometry.setIndexBuffer({ name: "geomIndex",		data: indices					 });
+		geometry.addAttributes([
+			{ shdVarName: "position",		data: positions,	strides: [3] }
+			, { shdVarName: "color",		data: colors,		strides: [3] }
+		]);
 		// geometry.setIndexBuffer({ name: "geomIndex",		data: indices					 });
 
 		const entity = new Entity3D(false);

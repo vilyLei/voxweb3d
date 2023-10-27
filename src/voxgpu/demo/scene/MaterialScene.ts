@@ -66,7 +66,7 @@ class MaterialScene {
 
 		this.geomData.initialize(this.wgCtx);
 
-		this.renderer.initialize(this.wgCtx);
+		this.renderer.initialize({ ctx: this.wgCtx });
 		let rblock = this.renderer.createRenderBlock({ sampleCount: sampleCount, multisampleEnabled: this.msaaRenderEnabled, depthFormat: "depth32float" });
 
 		this.createRenderGeometry();

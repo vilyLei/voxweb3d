@@ -63,7 +63,7 @@ class MultiTextureScene {
 
 		this.geomData.initialize(this.wgCtx);
 
-		this.renderer.initialize(this.wgCtx);
+		this.renderer.initialize({ ctx: this.wgCtx });
 		this.renderer.createRenderBlock({ sampleCount: sampleCount, multisampleEnabled: this.msaaRenderEnabled, depthFormat: "depth32float" });
 
 		this.createRenderGeometry();

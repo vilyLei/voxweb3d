@@ -19,11 +19,10 @@ class Entity3D {
 	uniformTransform: WGRUniformValue;
 
 	constructor(transformEnabled = true) {
-		this.init( transformEnabled );
+		this.init(transformEnabled);
 	}
 	protected init(transformEnabled: boolean): void {
-		
-		if(transformEnabled) {
+		if (transformEnabled) {
 			this.transform = ROTransform.Create();
 			this.transform.update();
 			this.uniformTransform = new WGRUniformValue(this.mMat.getLocalFS32());
@@ -32,11 +31,35 @@ class Entity3D {
 		// console.log("this.uniformTransform: ", this.uniformTransform);
 	}
 	initialize(): void {}
+
+	isREnabled(): boolean {
+		const ms = this.materials;
+		if (ms) {
+			for (let i = 0; i < ms.length; ++i) {
+				if (!ms[i].isREnabled()) {
+					return false;
+				}
+			}
+		} else {
+			return false;
+		}
+		const g = this.geometry;
+		if (g) {
+			if(!g.isREnabled()) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+		return true;
+	}
+	// for test
 	applyCamera(cam?: IRenderCamera): void {
 
-		this.mCamera = cam? cam : this.mCamera;
-		const trans = this.transform
-		if(this.mCamera && trans) {;
+		this.mCamera = cam ? cam : this.mCamera;
+
+		const trans = this.transform;
+		if (this.mCamera && trans) {
 			const mat = this.mMat;
 
 			trans.update();
@@ -48,8 +71,6 @@ class Entity3D {
 	update(): void {
 		this.applyCamera();
 	}
-	destroy(): void {
-
-	}
+	destroy(): void {}
 }
 export { Entity3D };

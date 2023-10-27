@@ -66,7 +66,7 @@ class CubeMapScene {
 		this.initCamera(canvas.width, canvas.height);
 		this.geomData.initialize(this.wgCtx);
 		this.texRes.wgCtx = this.wgCtx;
-		this.renderer.initialize(this.wgCtx);
+		this.renderer.initialize({ ctx: this.wgCtx });
 
 		this.renderer.createRenderBlock({
 			sampleCount: sampleCount,
@@ -121,24 +121,9 @@ class CubeMapScene {
 
 
 		this.createEntity([this.createTexMaterial(baseDefParam, [this.mCubeTex], "cube")], 0);
-
-		// this.createEntity([this.createShapeMaterial(baseDefParam)]);
-		// this.createEntity([this.createShapeMaterial(baseDefParam)]);
-		// this.createEntity([this.createTexMaterial(baseDefParam, [jpgTexs[0]])]);
-		// this.createEntity([this.createTexMaterial(baseDefParam, [jpgTexs[0], jpgTexs[1]])]);
-
-		// let transparentDefParam = {
-		// 	blendMode: "transparent",
-		// 	depthWriteEnabled: false,
-		// 	faceCullMode: "back"
-		// };
-		// this.createEntity([this.createTexMaterial(transparentDefParam, [pngTexs[0]])]);
 		for(let i = 0; i < 40; ++i) {
 			this.createTransarentEntity();
 		}
-		// this.createTransarentEntity();
-		// this.createTransarentEntity();
-		// this.createTransarentEntity();
 	}
 	// matrial multi-passes
 	private createTransarentEntity():void {

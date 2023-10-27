@@ -72,8 +72,9 @@ class WRORBlendScene {
 
 		this.geomData.initialize(this.wgCtx);
 
-		this.renderer.initialize(this.wgCtx);
-		this.renderer.createRenderBlock({ sampleCount: sampleCount, multisampleEnabled: this.msaaRenderEnabled, depthFormat: "depth32float" });
+		this.renderer.initialize({ ctx: this.wgCtx });
+		// this.renderer.createRenderBlock({ sampleCount: sampleCount, depthFormat: "depth32float" });
+		this.renderer.createRenderBlock({ sampleCount: sampleCount });
 
 		this.createRenderGeometry();
 

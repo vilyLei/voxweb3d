@@ -57,6 +57,27 @@ class WGGeometry {
 			}
 		}
 	}
+	addAttributes(params: WGGeomAttributeParam[]): void {
+		if(params) {
+			for(let i = 0; i < params.length; ++i) {
+				this.addAttribute(params[i]);
+			}
+		}
+	}
+
+	isREnabled(): boolean {
+		let flag = true;
+		const ats = this.attributes;
+		if(ats) {
+			for(let i = 0; i < ats.length; ++i) {
+				if(!ats[i].data) {
+					flag = false;
+					break;
+				}
+			}
+		}
+		return flag;
+	}
 	destroy(): void {}
 }
 export { WGGeomAttributeParam, WGGeomIndexBuffer, WGGeomAttributeBlock, WGGeometry };

@@ -6,7 +6,6 @@ import { WGMaterialDescripter } from "./WGMaterialDescripter";
 import { WGRUniformValue } from "../render/uniform/WGRUniformValue";
 
 class WGMaterial implements WGMaterialDescripter {
-
 	private mRCtx: IWGRPipelineContext;
 	/**
 	 * unique shading process uuid
@@ -18,13 +17,25 @@ class WGMaterial implements WGMaterialDescripter {
 	pipelineDefParam?: WGRPipelineContextDefParam;
 
 	uniformValues: WGRUniformValue[];
+
 	// textures: { [key: string]: WGTextureWrapper } = {};
+
 	textures: WGTextureWrapper[];
-	// attributeIndices?: number[][];
 	constructor(descriptor?: WGMaterialDescripter) {
 		this.setDescriptor(descriptor);
 	}
-
+	isREnabled(): boolean {
+		const texs = this.textures;
+		if (texs) {
+			for (let i = 0; i < texs.length; ++i) {
+				const tex = texs[i];
+				if (!tex.texture || !tex.texture.texture) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	getRCtx(): IWGRPipelineContext {
 		return this.mRCtx;
 	}
@@ -47,8 +58,6 @@ class WGMaterial implements WGMaterialDescripter {
 	copyfrom(src: WGMaterial): WGMaterial {
 		return this;
 	}
-	destroy(): void {
-
-	}
+	destroy(): void {}
 }
 export { WGMaterial };

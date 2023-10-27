@@ -81,7 +81,7 @@ class DrawInsScene2 {
 		this.vtxCtx.initialize(this.wgCtx);
 		this.texCtx.initialize(this.wgCtx);
 
-		this.renderer.initialize(this.wgCtx);
+		this.renderer.initialize({ ctx: this.wgCtx });
 		this.renderer.createRenderBlock({ sampleCount: sampleCount, multisampleEnabled: this.msaaRenderEnabled, depthFormat: "depth32float" });
 
 		this.createRenderGeometry();

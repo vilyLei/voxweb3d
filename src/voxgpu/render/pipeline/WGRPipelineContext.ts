@@ -52,6 +52,10 @@ class WGRPipelineContext implements IWGRPipelineContext {
 		this.mWGCtx = wgCtx;
 		this.uniform.initialize(this);
 	}
+
+	getWGCtx(): WebGPUContext {
+		return this.mWGCtx;
+	}
 	createUniformBuffer(desc: GPUBufferDescriptor): GPUBuffer {
 		const buf = this.mWGCtx.device.createBuffer(desc);
 		return buf;
@@ -133,7 +137,7 @@ class WGRPipelineContext implements IWGRPipelineContext {
 				}
 			}
 		}
-		
+
 		if (texParams && texParams.length > 0) {
 			let sampler = device.createSampler({
 				magFilter: "linear",

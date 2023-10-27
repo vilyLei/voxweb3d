@@ -1,4 +1,5 @@
 import { GPUBindGroup } from "../../gpu/GPUBindGroup";
+import { WebGPUContext } from "../../gpu/WebGPUContext";
 import { GPUBuffer } from "../../gpu/GPUBuffer";
 import { GPURenderPipeline } from "../../gpu/GPURenderPipeline";
 import { GPUSampler } from "../../gpu/GPUSampler";
@@ -13,7 +14,7 @@ interface IWGRPipelineContext {
 
 	pipeline: GPURenderPipeline;
 	uniform: IWGRUniformContext;
-
+	getWGCtx(): WebGPUContext;
 	updateUniformBufferAt(buffer: GPUBuffer, td: NumberArrayDataType, index: number, byteOffset?: number): void;
 	createUniformBindGroup(
 		groupIndex: number,

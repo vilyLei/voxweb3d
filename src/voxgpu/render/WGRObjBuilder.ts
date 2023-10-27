@@ -30,7 +30,11 @@ class WGRObjBuilder {
 		if(material.pipelineVtxParam) {
 			material.pipelineVtxParam.vertex.buffers = primitive.vbufs;
 		}else{
-			material.pipelineVtxParam = { vertex: { buffers: primitive.vbufs, attributeIndicesArray: [[0], [0]] } };
+			material.pipelineVtxParam = { vertex: { buffers: primitive.vbufs, attributeIndicesArray: [] } };
+			const ls = material.pipelineVtxParam.vertex.attributeIndicesArray;
+			for(let i = 0; i < primitive.vbufs.length; ++i) {
+				ls.push([0]);
+			}
 		}
 		const pctx = block.createRenderPipelineCtxWithMaterial(material);
 		material.initialize(pctx);
@@ -104,11 +108,12 @@ class WGRObjBuilder {
 			}
 			ru = new WGRUnit();
 			ru.passes = passes;
-			return ru;
+			// return ru;
 		} else {
 			ru = this.createRPass(entity, block, primitive);
 		}
 		ru.bounds = geometry.bounds;
+		block.addRUnit(ru);
 		return ru;
 	}
 }

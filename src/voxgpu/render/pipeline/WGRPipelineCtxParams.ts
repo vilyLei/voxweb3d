@@ -12,6 +12,7 @@ import { GPUVertexState } from "../../gpu/GPUVertexState";
 
 interface WGRPipelineContextDefParam {
 	blendMode?: string;
+	blendModes?: string[];
 	depthWriteEnabled?: boolean;
 	primitiveState?: GPUPrimitiveState;
 	depthStencil?: GPUDepthStencilState;
@@ -112,7 +113,7 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 			}
 			const src = state as any;
 			const dst = this.depthStencil as any;
-			for(var k in src) {
+			for (var k in src) {
 				dst[k] = src[k];
 			}
 		}
@@ -182,6 +183,60 @@ class WGRPipelineCtxParams implements GPURenderPipelineDescriptor {
 			srcFactor: "zero",
 			dstFactor: "one"
 		};
+		this.setBlendParam(color, alpha, targetIndex);
+	}
+	setBlendModes(modes: string[]): void {
+		for (let i = 0; i < modes.length; ++i) {
+			this.setBlendMode(modes[i], i);
+		}
+	}
+	setBlendMode(mode: string, targetIndex = 0): void {
+
+		let color = {
+			srcFactor: "one",
+			dstFactor: "zero"
+		} as GPUBlendComponent;
+		let alpha = {
+			srcFactor: "one",
+			dstFactor: "zero"
+		} as GPUBlendComponent;
+
+		switch (mode) {
+			case "transparent":
+				color = {
+					srcFactor: "src-alpha",
+					dstFactor: "one-minus-src-alpha"
+				};
+				alpha = {
+					srcFactor: "zero",
+					dstFactor: "one"
+				};
+				break;
+			case "add":
+				color = {
+					srcFactor: "src-alpha",
+					dstFactor: "one"
+				};
+				alpha = {
+					srcFactor: "zero",
+					dstFactor: "one"
+				};
+				break;
+			case "alpha_add":
+				color = {
+					srcFactor: "one",
+					dstFactor: "one-minus-src-alpha"
+				};
+				alpha = {
+					srcFactor: "one",
+					dstFactor: "one-minus-src-alpha"
+				};
+				break;
+
+			// the default mode value is "solid":
+			default:
+				break;
+		}
 		this.setBlendParam(color, alpha, targetIndex);
 	}
 	setBlendParam(color: GPUBlendComponent, alpha: GPUBlendComponent, targetIndex = 0): void {

@@ -34,7 +34,7 @@ class WGRenderPassBlock {
 		/**
 		 * 正式加入渲染器之前，对shader等的分析已经做好了
 		 */
-		if(unit) {
+		if (unit) {
 			this.mUnits.push(unit);
 		}
 	}
@@ -82,15 +82,18 @@ class WGRenderPassBlock {
 			depthStencilEnabled: plp ? (plp.depthStencilEnabled === false ? false : true) : true
 		});
 		if (plp) {
-			if (plp.blendMode === "transparent") {
+			if (plp.blendModes) {
+				pipeParams.setBlendModes(plp.blendModes);
+			} else if (plp.blendMode === "transparent") {
+				// for test
 				pipeParams.setTransparentBlendParam(0);
 			}
-			if(plp.depthStencil) {
-				pipeParams.setDepthStencil( plp.depthStencil );
-			}else {
+			if (plp.depthStencil) {
+				pipeParams.setDepthStencil(plp.depthStencil);
+			} else {
 				pipeParams.setDepthWriteEnabled(plp.depthWriteEnabled === true);
 			}
-			pipeParams.setPrimitiveState(plp.primitiveState ? plp.primitiveState : {cullMode: plp.faceCullMode});
+			pipeParams.setPrimitiveState(plp.primitiveState ? plp.primitiveState : { cullMode: plp.faceCullMode });
 		}
 
 		return this.createRenderPipeline(pipeParams, pipelineVtxParam);
@@ -136,14 +139,14 @@ class WGRenderPassBlock {
 			for (let i = 0; i < utsLen; ++i) {
 				const ru = uts[i];
 				if (ru.enabled) {
-					if(ru.passes) {
+					if (ru.passes) {
 						const ls = ru.passes;
 						// console.log("multi passes total", ls.length);
-						for(let i = 0, ln = ls.length;i < ln; ++i) {
+						for (let i = 0, ln = ls.length; i < ln; ++i) {
 							ls[i].runBegin(rc);
 							ls[i].run(rc);
 						}
-					}else {
+					} else {
 						// console.log("single passes ...");
 						ru.runBegin(rc);
 						ru.run(rc);

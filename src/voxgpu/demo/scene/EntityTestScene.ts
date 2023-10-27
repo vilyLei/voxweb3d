@@ -61,7 +61,7 @@ class EntityTestScene {
 		this.initCamera(canvas.width, canvas.height);
 		this.geomData.initialize(this.wgCtx);
 		this.texRes.wgCtx = this.wgCtx;
-		this.renderer.initialize(this.wgCtx);
+		this.renderer.initialize({ ctx: this.wgCtx });
 
 		this.renderer.createRenderBlock({
 			sampleCount: sampleCount,

@@ -1,5 +1,4 @@
 import { GeomRDataType, GeomDataBase } from "../geometry/GeomDataBase";
-import Vector3D from "../../../vox/math/Vector3D";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 
 import vertWGSL from "../shaders/vs3uvs2.vert.wgsl";
@@ -23,7 +22,7 @@ class CubeScene {
 
 		this.geomData.initialize(wgCtx);
 
-		this.renderer.initialize(wgCtx);
+		this.renderer.initialize({ ctx: wgCtx });
 
 		this.createRenderGeometry();
 

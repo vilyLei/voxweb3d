@@ -10,8 +10,8 @@ import { GPUTextureView } from "../../gpu/GPUTextureView";
 import { WebGPUContext } from "../../gpu/WebGPUContext";
 
 interface WGRPassParams {
-    multisampleEnabled: boolean;
-    sampleCount: number;
+    multisampleEnabled?: boolean;
+    sampleCount?: number;
     /**
      * 'depth24plus','depth32float'
      */
@@ -42,6 +42,11 @@ class WGRendererPass {
 		return this.mParams;
 	}
     build(params: WGRPassParams): void {
+		if(params.sampleCount && params.sampleCount > 1) {
+			params.multisampleEnabled = true;
+		}else {
+			params.multisampleEnabled = false;
+		}
         this.mParams = params;
         this.createRenderPassTexture(params);
     }

@@ -80,7 +80,7 @@ class DrawInsScene3 {
 		this.vtxCtx.initialize(this.wgCtx);
 		this.texCtx.initialize(this.wgCtx);
 
-		this.renderer.initialize(this.wgCtx);
+		this.renderer.initialize({ ctx: this.wgCtx });
 		this.renderer.createRenderBlock({ sampleCount: sampleCount, multisampleEnabled: this.msaaRenderEnabled, depthFormat: "depth32float" });
 
 		this.createRenderGeometry();
@@ -108,7 +108,7 @@ class DrawInsScene3 {
 			// this.createEntities(16, "instancedShapeUniform", instancedShapePipeline, 2);
 			let batchTotal = 2 * 3;
 			for (let i = 0; i < batchTotal; ++i) {
-			this.createEntities(insTotal, "instancedShapeUniform"+i, instancedShapePipeline, 1);
+				this.createEntities(insTotal, "instancedShapeUniform" + i, instancedShapePipeline, 1);
 			}
 			console.log("entities total: batchTotal * insTotal: ", batchTotal * insTotal);
 			// this.createEntities(16, "instancedShapeUniform2", instancedShapePipeline, 1);
@@ -209,13 +209,11 @@ class DrawInsScene3 {
 				// unit.trans.scaleV.setXYZ(0.02,0.02,0.02);
 				// unit.trans.trans.setScaleV3(unit.trans.scaleV);
 
-
 				unit.trans.run(this.camera);
 				unit.trans.running = false;
 
 				// this.runits.push(unit);
 			}
-
 
 			runit.setUniformValues([ruvalue]);
 			uniformParams.push({
@@ -238,16 +236,15 @@ class DrawInsScene3 {
 		transparent = false,
 		depthWriteEnabled = false
 	): WGRPipelineContext {
-
-		let vertUUID = "vtxShdCode_ins"+instanceCount;
+		let vertUUID = "vtxShdCode_ins" + instanceCount;
 		let fragCodeSrc = this.getFragShdCode(texEnabled, brnEnabled);
 		let vertCode: string;
 
-		if(instanceCount < 2) {
+		if (instanceCount < 2) {
 			vertCode = basicVertWGSL;
-		}else {
+		} else {
 			vertCode = InstancedVertWGSL;
-			if(vertCode.indexOf('INS_SIZE') > 0) {
+			if (vertCode.indexOf("INS_SIZE") > 0) {
 				vertCode = vertCode.replace(/INS_SIZE/i, instanceCount + "");
 				console.log("vertCode: ", vertCode);
 			}

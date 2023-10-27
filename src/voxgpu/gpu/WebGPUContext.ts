@@ -1,4 +1,3 @@
-
 import { GPU } from "./GPU";
 import { GPUDevice } from "./GPUDevice";
 import { GPUAdapter } from "./GPUAdapter";
@@ -7,7 +6,7 @@ import { GPUCanvasContext } from "./GPUCanvasContext";
 import { GPUCanvasConfiguration } from "./GPUCanvasConfiguration";
 import { GPUDeviceDescriptor } from "./GPUDeviceDescriptor";
 import { GPUTextureView } from "./GPUTextureView";
-import { checkGPUTextureFormat, GPUTextureFormat } from "./GPUTextureFormat";
+import { checkGPUTextureFormat } from "./GPUTextureFormat";
 import { calculateMipLevels, GPUMipmapGenerator } from "../texture/GPUMipmapGenerator";
 import { WebGPUContextImpl } from "./WebGPUContextImpl";
 import { WebGPUTextureContext } from "./WebGPUTextureContext";
