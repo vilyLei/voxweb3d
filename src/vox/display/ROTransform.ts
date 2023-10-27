@@ -343,7 +343,6 @@ export default class ROTransform implements IROTransform, IEntityUpdate {
 		this.updateStatus = ROTransform.UPDATE_TRANSFORM;
 		this.m_fs32 = null;
 		this.wrapper = null;
-		this.wrapper = null;
 	}
 
 	copyFrom(src: ROTransform): void {
