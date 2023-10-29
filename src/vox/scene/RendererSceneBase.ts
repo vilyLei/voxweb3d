@@ -743,7 +743,7 @@ export default class RendererSceneBase {
 	update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
 
 		const st = this.m_currStage3D;
-		if (st != null) {
+		if (st) {
 			st.enterFrame();
 			this.updateCamera();
 		}

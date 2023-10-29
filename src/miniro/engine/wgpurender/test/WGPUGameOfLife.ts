@@ -388,7 +388,7 @@ export class WGPUGameOfLife {
 		const pass = encoder.beginRenderPass( rpassParam );
 
 		const computeEncoder = device.createCommandEncoder();
-		const computePass = computeEncoder.beginComputePass()
+		const computePass = computeEncoder.beginComputePass();
 
 		this.renderpass(device, pass, computePass);
 

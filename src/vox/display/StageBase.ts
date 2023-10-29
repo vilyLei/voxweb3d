@@ -7,12 +7,8 @@
 
 import EventBase from "../../vox/event/EventBase";
 import MouseEvent from "../../vox/event/MouseEvent";
-import KeyboardEvent from "../../vox/event/KeyboardEvent";
-import Keyboard from "../../vox/ui/Keyboard";
-// import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
-import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
 export default class StageBase {
     protected m_rcuid = 0;

@@ -11,7 +11,6 @@ import TextureProxy from "../vox/texture/TextureProxy";
 
 import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import RendererSubScene from "../vox/scene/RendererSubScene";
 
@@ -41,7 +40,6 @@ export class DemoOutline2 {
     private m_rscene: RendererScene = null;
     private m_editScene: RendererSubScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_camTrack: CameraTrack = null;
     
 	private m_outline: PostOutline;
 
@@ -77,10 +75,6 @@ export class DemoOutline2 {
             this.m_editScene.addEntity(axis0);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-
 
             // this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             // this.m_editScene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.editMouseDown);            
