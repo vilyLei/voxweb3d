@@ -78,17 +78,17 @@ Engine code under the path: "src\vox\"
 
 installation and running:
 
-   第一步，全局安装git(https://git-scm.com/downloads)。
-   step 1, install global git(https://git-scm.com/downloads).
+   第一步，全局安装git( https://git-scm.com/downloads )。
+   step 1, install global git( https://git-scm.com/downloads ).
 
-   第二步，全局安装nodejs(建议大版本为16)(https://nodejs.org/download/release/v16.20.2/), 默认自动安装npm。
-   step 2, install global nodejs(The recommended major version is 16)(https://nodejs.org/download/release/v16.20.2/), auto include npm already.
+   第二步，全局安装nodejs(建议大版本为16)( https://nodejs.org/download/release/v16.20.2/ ), 默认自动安装npm。
+   step 2, install global nodejs(The recommended major version is 16)( https://nodejs.org/download/release/v16.20.2/ ), auto include npm already.
 
    第三步，全局安装yarn，在你的系统命令终端执行 npm install -g yarn 命令即可。
    step 3, install global yarn(run the "npm install -g yarn" command in your os terminal)
 
-   第四步，下载 Visual Studio Code(https://code.visualstudio.com/Download)，安装。
-   step 4, download Visual Studio Code(https://code.visualstudio.com/Download), install it.
+   第四步，下载 Visual Studio Code( https://code.visualstudio.com/Download )，安装。
+   step 4, download Visual Studio Code( https://code.visualstudio.com/Download ), install it.
 
    第五步，打开Visual Studio Code程序，然后点击 File 菜单。接着点击 Add Folder to Workerspace 选项, 选择并打开 voxweb3d 文件夹
    step 5, run the Visual Studio Code, then click the File menu. Next, click "Add Folder to Workerspace" item, select and open the voxweb3d folder.

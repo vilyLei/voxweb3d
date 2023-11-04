@@ -58,14 +58,14 @@ export class ModelsLoading {
     private initModels1(): void {
         //let vsUrl = "static/private/bake/oldIndexUnwrap/vertex.bin";
         let url0 = "static/assets/fbx/base4.fbx";
-        let url1 = "static/private/bake/oldIndexUnwrap/6.ctm";
-        // let url2 = "static/private/bake/ios01/ios01_unwrap.fbx";
-        // let url2 = "static/private/bake/cyl01/cly01.ctm";
-        let url2 = "static/private/bake/hat_a_01/model.ctm";
-        let url3 = "static/private/bake/hat_a_02/model.ctm";
+        // let url1 = "static/private/bake/oldIndexUnwrap/6.ctm";
+        // // let url2 = "static/private/bake/ios01/ios01_unwrap.fbx";
+        // // let url2 = "static/private/bake/cyl01/cly01.ctm";
+        // let url2 = "static/private/bake/hat_a_01/model.ctm";
+        // let url3 = "static/private/bake/hat_a_02/model.ctm";
         let loader = this.m_teamLoader;
-		url2 = "static/private/bake/box1/e8cfa2ddcccd955327d8e7f24f0f0438.ctm";
-        loader.load([url2], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+		// url2 = "static/private/bake/box1/e8cfa2ddcccd955327d8e7f24f0f0438.ctm";
+        loader.load([url0], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 
             this.m_layouter.layoutReset();
             for (let i = 0; i < models.length; ++i) {
