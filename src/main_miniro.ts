@@ -18,13 +18,14 @@
 // import { WGPURColorGrid as Demo } from "./miniro/engine/wgpurender/test/WGPURColorGrid";
 // import { WGPURStorage as Demo } from "./miniro/engine/wgpurender/test/WGPURStorage";
 // import { WGPURStorage2 as Demo } from "./miniro/engine/wgpurender/test/WGPURStorage2";
+import { WGPUComputing as Demo } from "./miniro/engine/wgpurender/test/WGPUComputing";
 // import { WGPUSimulation as Demo } from "./miniro/engine/wgpurender/test/WGPUSimulation";
 // import { WGPUGameOfLife as Demo } from "./miniro/engine/wgpurender/test/WGPUGameOfLife";
 // import { WGPUGameOfLife2 as Demo } from "./miniro/engine/wgpurender/test/WGPUGameOfLife2";
 
 // import { WGPUApiTest as Demo } from "./miniro/engine/wgpurender/test/WGPUApiTest";
 
-import { ColorTriangle as Demo } from "./miniro/engine/wgpurender/test/ColorTriangle";
+// import { ColorTriangle as Demo } from "./miniro/engine/wgpurender/test/ColorTriangle";
 
 // import { WGPURSampler as Demo } from "./miniro/engine/wgpurender/test/WGPURSampler";
 
