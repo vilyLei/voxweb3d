@@ -338,6 +338,11 @@ pwin["VoxVerify"] = new VVF();
 //  import {DemoOBB as Demo} from "./demo/DemoOBB";
 
 //  import {DemoOBBUICtrl as Demo} from "./demo/DemoOBBUICtrl";
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////   voxol    //////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+ import {DemoVoxol as Demo} from "./demo/DemoVoxol";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   renderer    ////////////////////////////////////
@@ -454,7 +459,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
- import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
+//  import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
 
 //  import {ModelDataDownload as Demo} from "./renderingtoy/effectTest/ModelDataDownload";
 
