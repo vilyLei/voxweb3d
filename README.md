@@ -108,4 +108,12 @@ installation and running:
 
 other infomation:
 
-    1. You can find some demos in the src/main.ts file.
+    1. You can find some demos in the src/main.ts file.1. You can find some demos in the src/main.ts file.
+    2. nodejs compatibility:
+      step 1, yarn add cross-env --dev
+      step 2, {
+                  "scripts": {
+                           "dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve --type=dev ./src/main.ts",
+                           "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build"
+               }
+      }
