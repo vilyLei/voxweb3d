@@ -11,6 +11,8 @@ import IRendererParam from "./IRendererParam";
 class RendererParam implements IRendererParam {
 	private m_matrix4AllocateSize = 8192;
 	private m_mainDiv: HTMLDivElement = null;
+	private m_injectedCanvas: any = null;
+	private m_injectedDpr: number = 1.0;
 	private m_renderContextAttri: any = {
 		depth: true,
 		premultipliedAlpha: false,
@@ -110,6 +112,20 @@ class RendererParam implements IRendererParam {
 	}
 	getDiv(): HTMLDivElement {
 		return this.m_mainDiv;
+	}
+	/**
+	 * inject an external canvas for non-browser platforms (e.g. Douyin Mini-Game)
+	 * call this before scene.initialize()
+	 */
+	injectCanvas(canvas: any, dpr: number = 1.0): void {
+		this.m_injectedCanvas = canvas;
+		this.m_injectedDpr = dpr;
+	}
+	getInjectedCanvas(): any {
+		return this.m_injectedCanvas;
+	}
+	getInjectedDpr(): number {
+		return this.m_injectedDpr;
 	}
 	getRenderContextAttri(): any {
 		return this.m_renderContextAttri;

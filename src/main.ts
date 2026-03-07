@@ -24,7 +24,9 @@
 
 //  import {DemoDepthTex as Demo} from "./demo/DemoDepthTex";
 
-import {DemoThread as Demo} from "./demo/DemoThread";
+//  import {DemoThread as Demo} from "./demo/DemoThread";
+
+import {DemoContextMock as Demo} from "./demo/DemoContextMock";
 
 //  import {DemoDeepTransparent as Demo} from "./demo/DemoDeepTransparent";
 

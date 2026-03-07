@@ -328,7 +328,9 @@ export default class RendererSceneBase {
 			this.m_rparam = rparam;
 
 			let selfT: any = this;
-			selfT.stage3D = new Stage3D(this.getUid(), document);
+			let _doc: any = null;
+			try { _doc = document; } catch(e) {}
+			selfT.stage3D = new Stage3D(this.getUid(), _doc);
 			selfT.runnableQueue = new RunnableQueue();
 			selfT.textureBlock = new TextureBlock();
 

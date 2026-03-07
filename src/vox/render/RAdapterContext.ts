@@ -139,6 +139,11 @@ class RAdapterContext implements IRAdapterContext {
 			console.log("RAdapterContext::initialize(), document is undefined.");
 		}
 		this.m_param = param;
+		// 注入 canvas 优先（小游戏平台 / 浏览器模拟测试均走此路径）
+		if (param.getInjectedCanvas() != null) {
+			// 强制走 else（注入路径），通过置空 pdocument 实现
+			pdocument = null;
+		}
 		if (pdocument) {
 			if (param.hideWindowFrame) {
 				document.body.style.overflow = "hidden";
@@ -281,7 +286,108 @@ class RAdapterContext implements IRAdapterContext {
 			this.initEvt();
 			this.updateRenderBufferSize();
 		} else {
-			console.log("initialize WebGL failure!");
+			// 非浏览器平台路径（如抖音小游戏），使用外部注入的 canvas
+			const injectedCanvas = param.getInjectedCanvas();
+			if (injectedCanvas != null) {
+				const canvas = injectedCanvas;
+				this.m_canvas = canvas;
+				const injDpr = (param as any).getInjectedDpr ? (param as any).getInjectedDpr() : 1.0;
+				this.m_dpr = injDpr;
+				this.m_rcanvasWidth = canvas.width;
+				this.m_rcanvasHeight = canvas.height;
+				this.m_displayWidth = canvas.width;
+				this.m_displayHeight = canvas.height;
+
+				RendererDevice.SetDevicePixelRatio(this.m_dpr);
+
+				const rattr = param.getRenderContextAttri();
+				const attr = rattr != null ? rattr : {
+					depth: this.m_depthTestEnabled,
+					premultipliedAlpha: false,
+					alpha: true,
+					antialias: false,
+					stencil: this.m_stencilTestEnabled,
+					preserveDrawingBuffer: true
+				};
+				if (rattr != null) {
+					this.m_depthTestEnabled = attr.depth;
+					this.m_stencilTestEnabled = attr.stencil;
+				}
+				this.m_ctxAttri = attr;
+
+				this.buildGLCtx(canvas, attr);
+
+				const gl: any = this.m_gl;
+				gl.rcuid = rcuid;
+
+				// GL 常量绑定
+				let glStencilFunc: any = GLStencilFunc;
+				glStencilFunc.NEVER = gl.NEVER;
+				glStencilFunc.LESS = gl.LESS;
+				glStencilFunc.EQUAL = gl.EQUAL;
+				glStencilFunc.GREATER = gl.GREATER;
+				glStencilFunc.NOTEQUAL = gl.NOTEQUAL;
+				glStencilFunc.GEQUAL = gl.GEQUAL;
+				glStencilFunc.ALWAYS = gl.ALWAYS;
+
+				let stendilOp: any = GLStencilOp;
+				stendilOp.KEEP = gl.KEEP;
+				stendilOp.ZERO = gl.ZERO;
+				stendilOp.REPLACE = gl.REPLACE;
+				stendilOp.INCR = gl.INCR;
+				stendilOp.INCR_WRAP = gl.INCR_WRAP;
+				stendilOp.DECR = gl.DECR;
+				stendilOp.DECR_WRAP = gl.DECR_WRAP;
+				stendilOp.INVERT = gl.INVERT;
+
+				let glBlendMode: any = GLBlendMode;
+				glBlendMode.ZERO = gl.ZERO;
+				glBlendMode.ONE = gl.ONE;
+				glBlendMode.SRC_COLOR = gl.SRC_COLOR;
+				glBlendMode.DST_COLOR = gl.DST_COLOR;
+				glBlendMode.SRC_ALPHA = gl.SRC_ALPHA;
+				glBlendMode.DST_ALPHA = gl.DST_ALPHA;
+				glBlendMode.ONE_MINUS_SRC_ALPHA = gl.ONE_MINUS_SRC_ALPHA;
+
+				let glBlendEq: any = GLBlendEquation;
+				glBlendEq.FUNC_ADD = gl.FUNC_ADD;
+				glBlendEq.FUNC_SUBTRACT = gl.FUNC_SUBTRACT;
+				glBlendEq.FUNC_REVERSE_SUBTRACT = gl.FUNC_REVERSE_SUBTRACT;
+				glBlendEq.MIN_EXT = gl.MIN_EXT;
+				glBlendEq.MAX_EXT = gl.MAX_EXT;
+				glBlendEq.MIN = gl.MIN;
+				glBlendEq.MAX = gl.MAX;
+
+				let glFaceCull: any = CullFaceMode;
+				glFaceCull.BACK = gl.BACK;
+				glFaceCull.FRONT = gl.FRONT;
+				glFaceCull.FRONT_AND_BACK = gl.FRONT_AND_BACK;
+
+				let device: any = RendererDevice;
+				device.MAX_TEXTURE_SIZE = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+				device.MAX_RENDERBUFFER_SIZE = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
+				const viewPortIMS: any = gl.getParameter(gl.MAX_VIEWPORT_DIMS);
+				device.MAX_VIEWPORT_WIDTH = viewPortIMS[0];
+				device.MAX_VIEWPORT_HEIGHT = viewPortIMS[1];
+				RendererDevice.Initialize([this.m_webGLVersion]);
+
+				// 更新 stage 尺寸
+				if (stage) {
+					stage.stageWidth = this.m_rcanvasWidth;
+					stage.stageHeight = this.m_rcanvasHeight;
+					stage.viewWidth = this.m_displayWidth;
+					stage.viewHeight = this.m_displayHeight;
+					stage.pixelRatio = this.m_dpr;
+					stage.update();
+				}
+				// 更新 viewport rect
+				this.m_viewPortRect.setTo(0, 0, this.m_rcanvasWidth, this.m_rcanvasHeight);
+
+				console.log("[RAdapterContext] mini-game canvas path initialized, size:", this.m_rcanvasWidth, "x", this.m_rcanvasHeight);
+				// initEvt() 跳过 — 事件后续单独适配
+			} else {
+				console.log("initialize WebGL failure! No canvas and no document.");
+			}
 		}
 	}
 	private m_resizeFlag = true;
@@ -388,10 +494,13 @@ class RAdapterContext implements IRAdapterContext {
 		pw = params[0];
 		ph = params[1];
 
-		let k = sync ? window.devicePixelRatio : 1.0;
+		let k = 1.0;
+		if (sync) {
+			try { k = window.devicePixelRatio; } catch(e) { k = this.m_dpr; }
+		}
 		let dprChanged = Math.abs(k - this.m_dpr) > 0.01 || this.m_resizeFlag;
 		this.m_dpr = k;
-		this.m_sysEvt.dpr = k;
+		if (this.m_sysEvt) this.m_sysEvt.dpr = k;
 		RendererDevice.SetDevicePixelRatio(this.m_dpr);
 		console.log("window.devicePixelRatio: ", this.m_dpr, ", sync: ", sync, ", this.m_dpr: ", this.m_dpr);
 		this.m_resizeFlag = false;

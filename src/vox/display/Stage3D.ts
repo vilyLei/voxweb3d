@@ -29,7 +29,7 @@ export default class Stage3D extends StageBase implements IRenderStage3D {
 
         super(rcuid);
 
-        if (Stage3D.s_document == null) {
+        if (pdocument != null && Stage3D.s_document == null) {
             Stage3D.s_document = pdocument;
 
             pdocument.onkeydown = function (evt: any): void {

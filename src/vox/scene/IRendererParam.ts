@@ -69,6 +69,11 @@ interface IRendererParam {
     setDitherEanbled(ditherEnabled: boolean): void;
     getDitherEanbled(): boolean;
     getDiv(): HTMLDivElement;
+    /**
+     * get injected canvas for non-browser platforms (e.g. Douyin Mini-Game)
+     * returns null in normal Web mode
+     */
+    getInjectedCanvas(): any;
     getRenderContextAttri(): any;
     setAttriDepth(boo: boolean): void;
     setAttriStencil(boo: boolean): void;
