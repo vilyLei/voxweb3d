@@ -58,5 +58,12 @@ module.exports = {
             .use('raw')
             .loader('raw-loader')
             .end();
+
+        // build:ttgame* 系列命令时去掉 Vue CLI 注入的 setPublicPath polyfill
+        // 该 polyfill 直接访问 document，在抖音小游戏（无 DOM）环境下会崩溃
+        const lifecycleEvent = process.env.npm_lifecycle_event || '';
+        if (lifecycleEvent.startsWith('build:ttgame')) {
+            config.plugins.delete('set-public-path');
+        }
     }
 };
