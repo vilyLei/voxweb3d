@@ -344,7 +344,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoVoxol as Demo} from "./demo/DemoVoxol";
 
- import {DemoContextMock as Demo} from "./demo/DemoContextMock";
+//  import {DemoContextMock as Demo} from "./demo/DemoContextMock";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   renderer    ////////////////////////////////////
@@ -495,7 +495,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoTextureCubeUV as Demo} from "./pbr/DemoTextureCubeUV";
 
-//  import {DemoLighting as Demo} from "./pbr/DemoLighting";
+ import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
