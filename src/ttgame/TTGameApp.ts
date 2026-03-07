@@ -124,13 +124,20 @@ export class TTGameApp {
         gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
         // ⑥ 启动帧循环
+        // 抖音小游戏：requestAnimationFrame 是全局函数，不在 tt 上
+        // 浏览器 mock：tt.requestAnimationFrame 代理 window.requestAnimationFrame
+        const raf: (cb: FrameRequestCallback) => void =
+            typeof (globalThis as any).requestAnimationFrame === 'function'
+                ? (cb) => (globalThis as any).requestAnimationFrame(cb)
+                : (cb) => tt.requestAnimationFrame(cb);
+
         this.m_running = true;
         const loop = (): void => {
             if (!this.m_running) return;
             this.render();
-            tt.requestAnimationFrame(loop);
+            raf(loop);
         };
-        tt.requestAnimationFrame(loop);
+        raf(loop);
 
         console.log("[TTGameApp] initialize() done, render loop started");
     }
@@ -213,3 +220,11 @@ export class TTGameApp {
 }
 
 export default TTGameApp;
+
+// 自动启动 — 直接内联到小游戏 game.js 时无需额外调用
+// 浏览器 dev 模式下由 main.ts 调用 initialize()，此处不重复执行
+if (typeof (globalThis as any).tt !== "undefined") {
+    // 真机：tt 已存在，直接启动
+    const _app = new TTGameApp();
+    _app.initialize();
+}

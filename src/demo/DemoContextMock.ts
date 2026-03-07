@@ -34,7 +34,8 @@ export class DemoContextMock {
         console.log("DemoContextMock::initialize() ......");
 
         // 绕过域名白名单验证（本地开发/小游戏平台均需要）
-        (window as any).VoxVerify = { isEnabled: () => true };
+        // 用 globalThis 而非 window，兼容小游戏沙箱（无 window 对象）
+        (globalThis as any).VoxVerify = { isEnabled: () => true };
 
         // ① 安装 tt mock（浏览器中生效，真机上自动跳过）
         TTMock.install();
@@ -90,14 +91,21 @@ export class DemoContextMock {
         rscene.addEntity(box);
         this.m_box = box;
 
-        // ⑧ 启动渲染循环（使用 tt.requestAnimationFrame）
+        // ⑧ 启动渲染循环
+        // 抖音小游戏：requestAnimationFrame 是全局函数，不在 tt 上
+        // 浏览器 mock：window.requestAnimationFrame 也在 globalThis 上
+        const raf: (cb: FrameRequestCallback) => void =
+            typeof (globalThis as any).requestAnimationFrame === 'function'
+                ? (cb) => (globalThis as any).requestAnimationFrame(cb)
+                : (cb) => tt.requestAnimationFrame(cb);
+
         this.m_running = true;
         const loop = (): void => {
             if (!this.m_running) return;
             this.tick();
-            tt.requestAnimationFrame(loop);
+            raf(loop);
         };
-        tt.requestAnimationFrame(loop);
+        raf(loop);
 
         console.log("[DemoContextMock] initialize() done.");
     }
@@ -127,3 +135,9 @@ export class DemoContextMock {
 }
 
 export default DemoContextMock;
+
+// 自动启动 — 直接内联到小游戏 game_contextMock.js 时无需额外调用
+if (typeof (globalThis as any).tt !== "undefined") {
+    const _app = new DemoContextMock();
+    _app.initialize();
+}
