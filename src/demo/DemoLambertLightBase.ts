@@ -69,7 +69,6 @@ export class DemoLambertLightBase {
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
-            // this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             let mcParam: MaterialContextParam = new MaterialContextParam();
             mcParam.pointLightsTotal = 2;
@@ -81,9 +80,6 @@ export class DemoLambertLightBase {
             if (!RendererDevice.IsWinExternalVideoCard() && RendererDevice.IsWindowsPCOS()) {
                 alert("当前浏览器3D渲染没有使用独立显卡");
             }
-            let posV: Vector3D = new Vector3D();
-            let axis: Axis3DEntity;
-
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
             if (pointLight != null) {
                 pointLight.position.setXYZ(-200.0, 56.0, 0.0);
@@ -122,26 +118,10 @@ export class DemoLambertLightBase {
             let vertUniform: VertUniformComp;
             material = new LambertLightMaterial();
             vertUniform = new VertUniformComp()
-            // material.vertUniform = vertUniform;
             vertUniform.uvTransformEnabled = true;
-            ///*
-            //material.setMaterialPipeline( this.m_materialCtx.pipeline );            
-            //material.diffuseMap =             this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
-            //material.diffuseMap =             this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg");
-            //material.normalMap =              this.m_materialCtx.getTextureByUrl("static/assets/brickwall_normal.jpg");
-            //material.specularMap =            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
-            //material.specularMap =            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_spec.jpg");
-            //material.aoMap =                  this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
-            //material.aoMap =                  this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
-            //material.parallaxMap =            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
-            //material.parallaxMap =            this.m_materialCtx.getTextureByUrl("static/assets/moss_01.jpg");
-            //material.parallaxMap =            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
-            //*/
-            //material.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
             this.useMaps(material, "lava_03", true, false, false, true, true);
             //*/
             material.shadowReceiveEnabled = false;
-            //material.specularMap = null;
             material.fogEnabled = false;
             material.lightEnabled = true;
             material.specularMode = SpecularMode.FragColor;
@@ -156,16 +136,8 @@ export class DemoLambertLightBase {
             material.setSpecularColor(new Color4(2.0, 2.0, 2.0));
             material.setColor(new Color4(1.0, 1.0, 1.0, 1.0), new Color4(0.4, 0.4, 0.4));
             
-            // let sphMaterial = material;
-            ///*
             let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
-            // // //sphMaterial.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/default.jpg");
             sphMaterial.copyFrom(material);
-            // vertUniform = sphMaterial.vertUniform.clone() as VertUniformComp;
-            // sphMaterial.vertUniform = vertUniform;
-            // vertUniform.uvTransformEnabled = true;
-            // sphMaterial.vertUniform.initialize();
-            // vertUniform.setUVScale(4.0, 4.0);
             
             let sph = new Sphere3DEntity();
             sph.setMaterial(sphMaterial);
@@ -205,7 +177,7 @@ export class DemoLambertLightBase {
         if (parallaxMapEnabled) {
             material.parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
         }
-        material.shadowReceiveEnabled = shadowReceiveEnabled;
+        // material.shadowReceiveEnabled = shadowReceiveEnabled;
         console.log("useMaps() end() ...\n");
     }
     
