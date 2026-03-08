@@ -9,7 +9,12 @@ color.xyz += u_fragLocalParams[1].xyz;
 #endif
 
 vec3 ao = vec3(1.0);
+#ifdef VOX_USE_2D_MAP
 vec2 texUV = v_uv.xy;
+#else
+vec2 texUV;
+#endif
+
 #ifdef VOX_LIGHT_LOCAL_PARAMS_INDEX
     vec4 param;
     vec3 viewDir = normalize(u_cameraPosition.xyz - worldPosition.xyz);

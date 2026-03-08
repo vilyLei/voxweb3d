@@ -22,7 +22,7 @@ void initLocalVtx() {
     #ifdef VOX_VTX_TRANSFORM_PARAM_INDEX
         paramIndex = VOX_VTX_TRANSFORM_PARAM_INDEX;
         v_uv = a_uvs.xy * u_vertLocalParams[paramIndex].xy + u_vertLocalParams[paramIndex].zw;
-    #elif VOX_USE_2D_MAP
+    #elif defined(VOX_USE_2D_MAP) && (VOX_USE_2D_MAP == 1)
         v_uv = a_uvs.xy;
     #endif
 

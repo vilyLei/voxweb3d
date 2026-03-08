@@ -1,7 +1,16 @@
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import TextureConst from "../vox/texture/TextureConst";
+import TextureProxy from "../vox/texture/TextureProxy";
+
+import MouseEvent from "../vox/event/MouseEvent";
 import RendererScene from "../vox/scene/RendererScene";
+import DataMesh from "../vox/mesh/DataMesh";
+import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 import Vector3D from "../vox/math/Vector3D";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
@@ -9,16 +18,20 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import Color4 from "../vox/material/Color4";
 
+import Box3DEntity from "../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
 import { SpecularMode, LambertLightMaterial } from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
+import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
+import RendererState from "../vox/render/RendererState";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 
-export class DemoLambertLightBase {
+export class DemoLambertLightWithoutTex {
 
     constructor() { }
 
@@ -31,7 +44,7 @@ export class DemoLambertLightBase {
 
     initialize(): void {
 
-        console.log("DemoLambertLightBase::initialize()......");
+        console.log("DemoLambertLightWithoutTex::initialize()......");
 
         if (this.m_rscene == null) {
 
@@ -103,6 +116,7 @@ export class DemoLambertLightBase {
             let vertUniform: VertUniformComp;
             vertUniform = new VertUniformComp()
             vertUniform.uvTransformEnabled = true;
+
             
             let material = new LambertLightMaterial();
             this.useMaps(material, "lava_03", true, false, false, true, true);
@@ -113,6 +127,7 @@ export class DemoLambertLightBase {
             material.specularMode = SpecularMode.FragColor;
             material.initializeLocalData();
             vertUniform.setUVScale(2.0, 2.0);
+            //material.setSpecularColor(new Color4(0.5,0.5,0.5,1.0));
             material.setSpecularIntensity(64.0);
             material.setLightBlendFactor(0.7, 0.3);
             material.setBlendFactor(0.2, 0.8);
@@ -121,11 +136,11 @@ export class DemoLambertLightBase {
             material.setSpecularColor(new Color4(2.0, 2.0, 2.0));
             material.setColor(new Color4(1.0, 1.0, 1.0, 1.0), new Color4(0.4, 0.4, 0.4));
             
-            let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
-            sphMaterial.copyFrom(material);
+            // let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
+            // sphMaterial.copyFrom(material);
             
             let sph = new Sphere3DEntity();
-            sph.setMaterial(sphMaterial);
+            sph.setMaterial(material);
             sph.initialize(100, 20, 20)
             sph.setXYZ(0, -110, 0);
             this.m_rscene.addEntity(sph);
@@ -136,7 +151,7 @@ export class DemoLambertLightBase {
     private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false, parallaxMapEnabled: boolean = false): void {
 
         material.setMaterialPipeline(this.m_materialCtx.pipeline);
-
+        return;
         console.log("useMaps() begin() ...\n");
 
         console.log("displacementMap: ", displacementMap);
@@ -154,15 +169,15 @@ export class DemoLambertLightBase {
         if (aoMapEnabled) {
             material.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
         }
-        if (displacementMap) {
-            if (material.vertUniform != null) {
-                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
-            }
-        }
+        // if (displacementMap) {
+        //     if (material.vertUniform != null) {
+        //         (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+        //     }
+        // }
         if (parallaxMapEnabled) {
             material.parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
         }
-        material.shadowReceiveEnabled = shadowReceiveEnabled;
+        // material.shadowReceiveEnabled = shadowReceiveEnabled;
         console.log("useMaps() end() ...\n");
     }
     
@@ -175,4 +190,4 @@ export class DemoLambertLightBase {
 
     }
 }
-export default DemoLambertLightBase;
+export default DemoLambertLightWithoutTex;
