@@ -119,7 +119,8 @@ export class DemoLambertLightWithoutTex {
 
             
             let material = new LambertLightMaterial();
-            this.useMaps(material, "lava_03", true, false, false, true, true);
+            material.setMaterialPipeline(this.m_materialCtx.pipeline);
+            // this.useMaps(material, "lava_03", true, false, false, true, true);
 
             material.shadowReceiveEnabled = false;
             material.fogEnabled = false;
@@ -136,57 +137,26 @@ export class DemoLambertLightWithoutTex {
             material.setSpecularColor(new Color4(2.0, 2.0, 2.0));
             material.setColor(new Color4(1.0, 1.0, 1.0, 1.0), new Color4(0.4, 0.4, 0.4));
             
-            // let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
-            // sphMaterial.copyFrom(material);
+            let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
+            sphMaterial.copyFrom(material);
             
             let sph = new Sphere3DEntity();
-            sph.setMaterial(material);
+            sph.setMaterial(sphMaterial);
             sph.initialize(100, 20, 20)
             sph.setXYZ(0, -110, 0);
-            // this.m_rscene.addEntity(sph);
+            this.m_rscene.addEntity(sph);
 
+            let boxMaterial: LambertLightMaterial = new LambertLightMaterial();
+            boxMaterial.copyFrom(material);
+            boxMaterial.setColor(new Color4(1.0, 0.7, 0.5));
             let box = new Box3DEntity();
-            box.setMaterial(material);
+            box.setMaterial(boxMaterial);
             box.initializeCube(150);
-            box.setXYZ(0, -110, 0);
+            box.setXYZ(190, -110, -90);
             this.m_rscene.addEntity(box);
-            
 
         }
     }
-    private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false, parallaxMapEnabled: boolean = false): void {
-
-        material.setMaterialPipeline(this.m_materialCtx.pipeline);
-        return;
-        console.log("useMaps() begin() ...\n");
-
-        console.log("displacementMap: ", displacementMap);
-        console.log("normalMapEnabled: ", normalMapEnabled);
-        console.log("aoMapEnabled: ", aoMapEnabled);
-        console.log("parallaxMapEnabled: ", parallaxMapEnabled);
-
-        if (material.diffuseMap == null) {
-            material.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
-        }
-        material.specularMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
-        if (normalMapEnabled) {
-            material.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_NRM.png");
-        }
-        if (aoMapEnabled) {
-            material.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
-        }
-        // if (displacementMap) {
-        //     if (material.vertUniform != null) {
-        //         (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
-        //     }
-        // }
-        if (parallaxMapEnabled) {
-            material.parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
-        }
-        // material.shadowReceiveEnabled = shadowReceiveEnabled;
-        console.log("useMaps() end() ...\n");
-    }
-    
     run(): void {
 
         this.m_stageDragSwinger.runWithYAxis();
