@@ -27,6 +27,7 @@ import { SpecularMode, LambertLightMaterial } from "../vox/material/mcase/Lamber
 import { MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
+import MouseEvent from "../vox/event/MouseEvent";
 
 export class DemoContextMock {
 
@@ -40,7 +41,7 @@ export class DemoContextMock {
     constructor() {}
 
     initialize(): void {
-        console.log("DemoContextMock::initialize() ......");
+        console.log("DemoContextMock::initialize() for tt .....");
 
         // 绕过域名白名单验证（本地开发/小游戏平台均需要）
         // 用 globalThis 而非 window，兼容小游戏沙箱（无 window 对象）
@@ -60,7 +61,7 @@ export class DemoContextMock {
         console.log("[DemoContextMock] canvas size:", canvas.width, "x", canvas.height);
 
         // ④ 引擎全局配置
-        RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+        RendererDevice.SHADERCODE_TRACE_ENABLED = false;
         RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
         // ⑤ 创建渲染参数（小游戏路径，无 div，注入 canvas）
@@ -83,8 +84,52 @@ export class DemoContextMock {
         const rscene = new RendererScene();
         rscene.initialize(rparam).setAutoRunning(false);
         rscene.updateCamera();
+        rscene.enableMouseEvent(false);   // 启用引擎事件管线（false = 用 CPU ray picking，无需 GPU）
         this.m_rscene = rscene;
 
+        // ⑦ 注册触摸事件
+        // 抖音小游戏模拟器需要在 onShow 之后才能收到 touch 事件
+        // 浏览器 mock 下 onShow 不存在，直接注册
+        const stage = rscene.getStage3D() as any;
+        const dpr = sysInfo.pixelRatio;
+        const stageH = sysInfo.screenHeight;
+
+        const registerTouch = () => {
+            tt.onTouchStart((res: any) => {
+                const t = res.touches[0];
+                if (!t) return;
+                const px = 0 | (dpr * t.clientX);
+                const py = 0 | (dpr * t.clientY);
+                stage.mouseX = px;
+                stage.mouseY = stageH - py;
+                stage.mouseViewX = px;
+                stage.mouseViewY = py;
+                stage.mouseDown(1);
+            });
+
+            tt.onTouchMove((res: any) => {
+                const t = res.touches[0];
+                if (!t) return;
+                const px = 0 | (dpr * t.clientX);
+                const py = 0 | (dpr * t.clientY);
+                stage.mouseX = px;
+                stage.mouseY = stageH - py;
+                stage.mouseViewX = px;
+                stage.mouseViewY = py;
+                stage.mouseMove();
+            });
+
+            tt.onTouchEnd((res: any) => {
+                stage.mouseUp(1);
+                stage.mouseClick();
+            });
+        };
+
+        if (typeof tt.onShow === 'function') {
+            tt.onShow(() => { registerTouch(); });
+        }
+        // 立即注册（模拟器/真机 onShow 可能已过）
+        registerTouch();
         // ⑦ 初始化 Lambert 光照材质上下文
         const mcParam = new MaterialContextParam();
         mcParam.pointLightsTotal = 2;
@@ -150,6 +195,11 @@ export class DemoContextMock {
         box.initializeCube(150);
         box.setXYZ(190, -110, -90);
         rscene.addEntity(box);
+
+        // 场景级别事件监听：点击改变球体颜色
+        rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, (evt: any) => {
+            sphMaterial.setColor(new Color4(Math.random(), Math.random(), Math.random(), 1.0));
+        });
         this.m_box = box;
 
         // ⑩ 启动渲染循环
