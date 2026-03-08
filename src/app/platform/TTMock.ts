@@ -168,8 +168,11 @@ class TTMockImpl implements TTEnv {
  */
 export class TTMock {
     static install(): void {
-        if (typeof (window as any).tt === "undefined") {
-            (window as any).tt = new TTMockImpl();
+        // Only install mock in browser environments (window exists).
+        // On real Douyin device, tt is already defined globally; skip entirely.
+        if (typeof window === "undefined") return;
+        if (typeof (globalThis as any).tt === "undefined") {
+            (globalThis as any).tt = new TTMockImpl();
             console.log("[TTMock] Douyin tt API mock installed for browser testing.");
         } else {
             console.log("[TTMock] tt already exists, skip mock installation.");

@@ -57,7 +57,7 @@ class SysEvtMana {
 		}
 		var pdocument: any = null;
         var pwindow: any = null;
-        if (document) {
+        if (typeof document !== "undefined" && document) {
 			pdocument = document;
 			pwindow = window;
 			pdocument.onmouseup = (evt: any): void => {

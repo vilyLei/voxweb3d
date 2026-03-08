@@ -2633,7 +2633,7 @@ class SysEvtMana {
     var pdocument = null;
     var pwindow = null;
 
-    if (document) {
+    if (typeof document !== "undefined" && document) {
       pdocument = document;
       pwindow = window;
 
@@ -27907,10 +27907,12 @@ exports.RPStatus = RPStatus;
 "use strict";
 
 /**
- * VoxTTGame — Match-3 Mini Game MVP
+ * VoxTTGame — Match-3 Mini Game
  *
  * 4x4 grid of Box/Sphere entities with 3 colors.
  * Click a cell to flood-fill eliminate connected same-color group (>=2).
+ * When no more moves remain, a full refill animation plays (scale 0->1).
+ * If still no moves after refill, the game is over.
  */
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -27951,7 +27953,15 @@ const MouseEvt3DDispatcher_1 = __importDefault(__webpack_require__("badb")); // 
 const COLS = 4;
 const ROWS = 4;
 const CELL_SPACING = 120;
-const COLORS = [new Color4_1.default(1.0, 0.2, 0.2, 1.0), new Color4_1.default(0.2, 1.0, 0.2, 1.0), new Color4_1.default(0.2, 0.4, 1.0, 1.0)]; // ---------------------------------------------------------------------------
+const COLORS = [new Color4_1.default(1.0, 0.2, 0.2, 1.0), new Color4_1.default(0.2, 1.0, 0.2, 1.0), new Color4_1.default(0.2, 0.4, 1.0, 1.0)];
+var GamePhase;
+
+(function (GamePhase) {
+  GamePhase[GamePhase["Playing"] = 0] = "Playing";
+  GamePhase[GamePhase["Refilling"] = 1] = "Refilling";
+  GamePhase[GamePhase["GameOver"] = 2] = "GameOver";
+})(GamePhase || (GamePhase = {})); // ---------------------------------------------------------------------------
+
 
 class VoxTTGame {
   constructor() {
@@ -27960,7 +27970,10 @@ class VoxTTGame {
     this.m_materialCtx = new DebugMaterialContext_1.DebugMaterialContext();
     this.m_grid = [];
     this.m_score = 0;
-    this.m_flash = null; // active flash animation
+    this.m_flash = null;
+    this.m_refill = null;
+    this.m_phase = GamePhase.Playing;
+    this.m_baseMat = null;
   }
 
   initialize() {
@@ -28075,7 +28088,8 @@ class VoxTTGame {
     baseMat.setLightBlendFactor(0.6, 0.4);
     baseMat.setBlendFactor(0.2, 0.8);
     baseMat.setSpecularColor(new Color4_1.default(1.5, 1.5, 1.5));
-    baseMat.setColor(new Color4_1.default(1.0, 1.0, 1.0, 1.0), new Color4_1.default(0.3, 0.3, 0.3)); // Build 4x4 grid
+    baseMat.setColor(new Color4_1.default(1.0, 1.0, 1.0, 1.0), new Color4_1.default(0.3, 0.3, 0.3));
+    this.m_baseMat = baseMat; // Build 4x4 grid
 
     const totalW = (COLS - 1) * CELL_SPACING;
     const totalH = (ROWS - 1) * CELL_SPACING;
@@ -28144,14 +28158,12 @@ class VoxTTGame {
 
 
   onCellClick(idx) {
-    // Ignore clicks during an active flash
-    if (this.m_flash) return;
+    if (this.m_flash || this.m_refill || this.m_phase !== GamePhase.Playing) return;
     const cell = this.m_grid[idx];
     if (!cell || !cell.alive) return;
     const connected = this.floodFill(idx, cell.colorIdx);
 
     if (connected.length < 2) {
-      // Single cell: flash briefly then restore (no elimination)
       this.m_flash = {
         cells: connected,
         timer: 0,
@@ -28159,8 +28171,7 @@ class VoxTTGame {
         eliminate: false
       };
       return;
-    } // Group found: flash then eliminate
-
+    }
 
     this.m_flash = {
       cells: connected,
@@ -28197,14 +28208,12 @@ class VoxTTGame {
     }
 
     return result;
-  } // -----------------------------------------------------------------------
-
-
-  run() {}
+  }
 
   tick() {
     if (!this.m_rscene) return;
     this.tickFlash();
+    this.tickRefill();
     this.m_rscene.run();
   }
 
@@ -28212,16 +28221,13 @@ class VoxTTGame {
     const f = this.m_flash;
     if (!f) return;
     f.timer++;
-    const t = f.timer / f.duration; // 0..1
-    // Slow flash: 2 cycles over the duration, smooth brightness wave
-
+    const t = f.timer / f.duration;
     const brightness = 0.5 + 0.5 * Math.sin(t * Math.PI * 3);
     const flashColor = new Color4_1.default(brightness, brightness, brightness, 1.0);
 
     for (const i of f.cells) {
       const cell = this.m_grid[i];
-      const base = COLORS[cell.colorIdx]; // Lerp between base color and white
-
+      const base = COLORS[cell.colorIdx];
       const r = base.r + (flashColor.r - base.r) * brightness;
       const g = base.g + (flashColor.g - base.g) * brightness;
       const b = base.b + (flashColor.b - base.b) * brightness;
@@ -28230,25 +28236,123 @@ class VoxTTGame {
 
     if (f.timer >= f.duration) {
       if (f.eliminate) {
-        // Eliminate all flashing cells
         for (const i of f.cells) {
           this.m_grid[i].alive = false;
           this.m_grid[i].entity.setVisible(false);
+          this.m_grid[i].entity.setScaleXYZ(1, 1, 1); // reset scale
         }
 
         this.m_score += f.cells.length;
-        console.log("[VoxTTGame] eliminated:", f.cells.length, "score:", this.m_score);
+        console.log("[VoxTTGame] eliminated:", f.cells.length, "score:", this.m_score); // After every elimination, check if moves remain
+
+        this.checkMovesOrRefill();
       } else {
-        // Restore original colors
         for (const i of f.cells) {
           const cell = this.m_grid[i];
+          cell.entity.setScaleXYZ(1, 1, 1);
           cell.material.setColor(COLORS[cell.colorIdx], new Color4_1.default(0.3, 0.3, 0.3));
         }
       }
 
       this.m_flash = null;
     }
+  } // After each elimination: if no moves left, start refill animation.
+
+
+  checkMovesOrRefill() {
+    if (this.hasAnyMove()) return; // still playable, do nothing
+    // No moves left — refill entire grid with scale-in animation
+
+    this.startRefill(true);
   }
+
+  hasAnyMove() {
+    const total = COLS * ROWS;
+
+    for (let i = 0; i < total; i++) {
+      const cell = this.m_grid[i];
+      if (!cell.alive) continue;
+      if (this.floodFill(i, cell.colorIdx).length >= 2) return true;
+    }
+
+    return false;
+  } // -----------------------------------------------------------------------
+  // Refill: assign new random colors to ALL cells, animate scale 0->1.
+  // -----------------------------------------------------------------------
+
+
+  startRefill(afterGameOverCheck) {
+    this.m_phase = GamePhase.Refilling;
+    const newCells = [];
+
+    for (let i = 0; i < COLS * ROWS; i++) {
+      const colorIdx = Math.floor(Math.random() * COLORS.length);
+      newCells.push({
+        idx: i,
+        colorIdx
+      });
+    } // Apply new colors immediately but start invisible (scale=0)
+
+
+    for (const c of newCells) {
+      const cell = this.m_grid[c.idx];
+      cell.colorIdx = c.colorIdx;
+      cell.alive = true;
+      cell.entity.setVisible(true);
+      cell.entity.setScaleXYZ(0, 0, 0);
+      cell.material.setColor(COLORS[c.colorIdx], new Color4_1.default(0.3, 0.3, 0.3));
+    }
+
+    this.m_refill = {
+      cells: newCells,
+      timer: 0,
+      duration: 40,
+      afterGameOverCheck
+    };
+    console.log("[VoxTTGame] refill started.");
+  }
+
+  tickRefill() {
+    const r = this.m_refill;
+    if (!r) return;
+    r.timer++; // Ease-out: scale goes from 0 to 1 with overshoot
+
+    const t = r.timer / r.duration;
+    const s = t < 1 ? 1.1 * Math.sin(t * Math.PI * 0.5) : 1.0; // slight overshoot at t=0.9
+
+    const scale = Math.min(s, 1.0);
+
+    for (const c of r.cells) {
+      this.m_grid[c.idx].entity.setScaleXYZ(scale, scale, scale);
+    }
+
+    if (r.timer >= r.duration) {
+      // Ensure final scale = 1
+      for (const c of r.cells) {
+        this.m_grid[c.idx].entity.setScaleXYZ(1, 1, 1);
+      }
+
+      this.m_refill = null;
+      this.m_phase = GamePhase.Playing;
+      console.log("[VoxTTGame] refill done.");
+
+      if (r.afterGameOverCheck && !this.hasAnyMove()) {
+        // Still no moves after refill — truly game over
+        this.m_phase = GamePhase.GameOver;
+        console.log("[VoxTTGame] GAME OVER! Final score:", this.m_score); // Flash all cells as game-over signal
+
+        const all = this.m_grid.map((_, i) => i).filter(i => this.m_grid[i].alive);
+        this.m_flash = {
+          cells: all,
+          timer: 0,
+          duration: 90,
+          eliminate: false
+        };
+      }
+    }
+  }
+
+  run() {}
 
   destroy() {
     this.m_running = false;
@@ -34189,8 +34293,12 @@ class TTMockImpl {
 
 class TTMock {
   static install() {
-    if (typeof window.tt === "undefined") {
-      window.tt = new TTMockImpl();
+    // Only install mock in browser environments (window exists).
+    // On real Douyin device, tt is already defined globally; skip entirely.
+    if (typeof window === "undefined") return;
+
+    if (typeof globalThis.tt === "undefined") {
+      globalThis.tt = new TTMockImpl();
       console.log("[TTMock] Douyin tt API mock installed for browser testing.");
     } else {
       console.log("[TTMock] tt already exists, skip mock installation.");
