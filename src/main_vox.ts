@@ -485,6 +485,8 @@ pwin["VoxVerify"] = new VVF();
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+ import {DemoLambertLightBase as Demo} from "./demo/DemoLambertLightBase";
+
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
 // import {DemoMaterialCtx as Demo} from "./demo/DemoMaterialCtx";
@@ -495,7 +497,7 @@ pwin["VoxVerify"] = new VVF();
 
 //  import {DemoTextureCubeUV as Demo} from "./pbr/DemoTextureCubeUV";
 
- import {DemoLighting as Demo} from "./pbr/DemoLighting";
+//  import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 

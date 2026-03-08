@@ -77,7 +77,7 @@ export default class LambertLightMaterial extends MaterialBase {
         this.diffuseMap2Matrix = src.diffuseMap2Matrix;
 
         if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
-        if(this.diffuseMap2 == null) this.diffuseMap = src.diffuseMap2;
+        if(this.diffuseMap2 == null) this.diffuseMap2 = src.diffuseMap2;
         if(this.normalMap == null) this.normalMap = src.normalMap;
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.aoMap == null) this.aoMap = src.aoMap;
