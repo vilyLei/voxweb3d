@@ -44,8 +44,8 @@ interface GridCell {
 
 interface FlashState {
     cells: number[];
-    timer: number;
-    duration: number;
+    startTime: number;   // ms timestamp
+    duration: number;    // ms
     eliminate: boolean;
 }
 
@@ -56,8 +56,8 @@ interface RefillCell {
 
 interface RefillState {
     cells: RefillCell[]; // new cells to pop in
-    timer: number;
-    duration: number;    // frames for scale 0->1
+    startTime: number;   // ms timestamp
+    duration: number;    // ms
     afterGameOverCheck: boolean;
 }
 
@@ -77,6 +77,7 @@ export class VoxTTGame {
     private m_score = 0;
     private m_flash: FlashState | null = null;
     private m_refill: RefillState | null = null;
+    private m_now: number = 0;  // current frame timestamp (ms)
     private m_phase: GamePhase = GamePhase.Playing;
     private m_baseMat: LambertLightMaterial = null;
 
@@ -255,9 +256,9 @@ export class VoxTTGame {
                 : (cb) => tt.requestAnimationFrame(cb);
 
         this.m_running = true;
-        const loop = (): void => {
+        const loop = (timestamp?: number): void => {
             if (!this.m_running) return;
-            this.tick();
+            this.tick(timestamp);
             raf(loop);
         };
         raf(loop);
@@ -277,10 +278,10 @@ export class VoxTTGame {
 
         const connected = this.floodFill(idx, cell.colorIdx);
         if (connected.length < 2) {
-            this.m_flash = { cells: connected, timer: 0, duration: 45, eliminate: false };
+            this.m_flash = { cells: connected, startTime: this.m_now, duration: 750, eliminate: false };
             return;
         }
-        this.m_flash = { cells: connected, timer: 0, duration: 75, eliminate: true };
+        this.m_flash = { cells: connected, startTime: this.m_now, duration: 1250, eliminate: true };
     }
 
     private floodFill(startIdx: number, colorIdx: number): number[] {
@@ -316,8 +317,9 @@ export class VoxTTGame {
         return result;
     }
 
-    private tick(): void {
+    private tick(timestamp?: number): void {
         if (!this.m_rscene) return;
+        this.m_now = timestamp !== undefined ? timestamp : (typeof performance !== 'undefined' ? performance.now() : Date.now());
         this.tickFlash();
         this.tickRefill();
         this.m_rscene.run();
@@ -327,8 +329,7 @@ export class VoxTTGame {
         const f = this.m_flash;
         if (!f) return;
 
-        f.timer++;
-        const t = f.timer / f.duration;
+        const t = Math.min((this.m_now - f.startTime) / f.duration, 1.0);
         const brightness = 0.5 + 0.5 * Math.sin(t * Math.PI * 3);
         const flashColor = new Color4(brightness, brightness, brightness, 1.0);
 
@@ -341,7 +342,7 @@ export class VoxTTGame {
             cell.material.setColor(new Color4(r, g, b, 1.0), new Color4(0.3, 0.3, 0.3));
         }
 
-        if (f.timer >= f.duration) {
+        if (t >= 1.0) {
             if (f.eliminate) {
                 for (const i of f.cells) {
                     this.m_grid[i].alive = false;
@@ -399,7 +400,7 @@ export class VoxTTGame {
             cell.entity.setScaleXYZ(0, 0, 0);
             cell.material.setColor(COLORS[c.colorIdx], new Color4(0.3, 0.3, 0.3));
         }
-        this.m_refill = { cells: newCells, timer: 0, duration: 40, afterGameOverCheck };
+        this.m_refill = { cells: newCells, startTime: this.m_now, duration: 667, afterGameOverCheck };
         console.log("[VoxTTGame] refill started.");
     }
 
@@ -407,17 +408,16 @@ export class VoxTTGame {
         const r = this.m_refill;
         if (!r) return;
 
-        r.timer++;
-        // Ease-out: scale goes from 0 to 1 with overshoot
-        const t = r.timer / r.duration;
-        const s = t < 1 ? (1.1 * Math.sin(t * Math.PI * 0.5)) : 1.0; // slight overshoot at t=0.9
+        const t = Math.min((this.m_now - r.startTime) / r.duration, 1.0);
+        // Ease-out: scale goes from 0 to 1 with slight overshoot
+        const s = t < 1 ? (1.1 * Math.sin(t * Math.PI * 0.5)) : 1.0;
         const scale = Math.min(s, 1.0);
 
         for (const c of r.cells) {
             this.m_grid[c.idx].entity.setScaleXYZ(scale, scale, scale);
         }
 
-        if (r.timer >= r.duration) {
+        if (t >= 1.0) {
             // Ensure final scale = 1
             for (const c of r.cells) {
                 this.m_grid[c.idx].entity.setScaleXYZ(1, 1, 1);
@@ -432,7 +432,7 @@ export class VoxTTGame {
                 console.log("[VoxTTGame] GAME OVER! Final score:", this.m_score);
                 // Flash all cells as game-over signal
                 const all = this.m_grid.map((_, i) => i).filter(i => this.m_grid[i].alive);
-                this.m_flash = { cells: all, timer: 0, duration: 90, eliminate: false };
+                this.m_flash = { cells: all, startTime: this.m_now, duration: 1500, eliminate: false };
             }
         }
     }
