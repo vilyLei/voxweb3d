@@ -1,16 +1,7 @@
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
-import DisplayEntity from "../vox/entity/DisplayEntity";
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import TextureConst from "../vox/texture/TextureConst";
-import TextureProxy from "../vox/texture/TextureProxy";
-
-import MouseEvent from "../vox/event/MouseEvent";
 import RendererScene from "../vox/scene/RendererScene";
-import DataMesh from "../vox/mesh/DataMesh";
-import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 import Vector3D from "../vox/math/Vector3D";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
@@ -18,14 +9,10 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import Color4 from "../vox/material/Color4";
 
-import Box3DEntity from "../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
-import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
 import { SpecularMode, LambertLightMaterial } from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
-import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
-import RendererState from "../vox/render/RendererState";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
@@ -169,15 +156,15 @@ export class DemoLambertLightBase {
         if (aoMapEnabled) {
             material.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
         }
-        // if (displacementMap) {
-        //     if (material.vertUniform != null) {
-        //         (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
-        //     }
-        // }
+        if (displacementMap) {
+            if (material.vertUniform != null) {
+                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            }
+        }
         if (parallaxMapEnabled) {
             material.parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
         }
-        // material.shadowReceiveEnabled = shadowReceiveEnabled;
+        material.shadowReceiveEnabled = shadowReceiveEnabled;
         console.log("useMaps() end() ...\n");
     }
     

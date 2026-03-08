@@ -485,6 +485,8 @@ pwin["VoxVerify"] = new VVF();
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+//  import {DemoLambertLightWithoutTex as Demo} from "./demo/DemoLambertLightWithoutTex";
+
  import {DemoLambertLightBase as Demo} from "./demo/DemoLambertLightBase";
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
