@@ -26,7 +26,9 @@
 
 //  import {DemoThread as Demo} from "./demo/DemoThread";
 
- import {DemoContextMock as Demo} from "./demo/DemoContextMock";
+//  import {DemoContextMock as Demo} from "./demo/DemoContextMock";
+
+ import {VoxTTGame as Demo} from "./demo/VoxTTGame";
 
 // 抖音小游戏原生 WebGL1 最小化验证（不依赖引擎）
 // import {TTGameApp as Demo} from "./ttgame/TTGameApp";

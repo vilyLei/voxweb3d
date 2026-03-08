@@ -18,6 +18,7 @@
     "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
     "build:ttgame": "vue-cli-service build --target lib --name TTGameApp --dest dist/ttgame ./src/ttgame/TTGameApp.ts && copy dist\\ttgame\\TTGameApp.umd.js ttproj\\game.js",
     "build:ttgame:engine": "vue-cli-service build --target lib --name DemoContextMock --dest dist/ttgame/engine ./src/demo/DemoContextMock.ts && copy dist\\ttgame\\engine\\DemoContextMock.umd.js ttproj\\game_contextMock.js",
+    "build:ttgame:vox": "vue-cli-service build --target lib --name VoxTTGame --dest dist/ttgame/vox ./src/demo/VoxTTGame.ts && copy dist\\ttgame\\vox\\VoxTTGame.umd.js ttproj\\game_vox.js",
     "build:vox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_vox.ts",
     "build:advanced": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_advanced.ts",
     "build:animation": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_animation.ts",

@@ -1,4 +1,5 @@
 // game.js — 抖音小游戏入口
-// 轻量加载器，实际逻辑在 game_contextMock.js 中
-// 构建方式：yarn build:ttgame:engine
-require('./game_contextMock.js');
+// 切换加载目标：
+//   game_contextMock.js  — DemoContextMock（Lambert 验证版，build:ttgame:engine）
+//   game_vox.js          — VoxTTGame（正式游戏 demo，build:ttgame:vox）
+require('./game_vox.js');

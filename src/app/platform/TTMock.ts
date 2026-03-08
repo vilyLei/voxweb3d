@@ -40,6 +40,7 @@ interface TTEnv {
 class TTMockImpl implements TTEnv {
 
     private m_mainCanvas: HTMLCanvasElement = null;
+    readonly _isMock = true;
 
     /**
      * createCanvas() — simulates tt.createCanvas()

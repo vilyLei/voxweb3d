@@ -436,7 +436,7 @@ pwin["VoxVerify"] = new VVF();
 /////////////////////////////     event    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
+ import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
 //  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 
@@ -485,7 +485,7 @@ pwin["VoxVerify"] = new VVF();
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
- import {DemoLambertLightWithoutTex as Demo} from "./demo/DemoLambertLightWithoutTex";
+//  import {DemoLambertLightWithoutTex as Demo} from "./demo/DemoLambertLightWithoutTex";
 
 //  import {DemoLambertLightBase as Demo} from "./demo/DemoLambertLightBase";
 
