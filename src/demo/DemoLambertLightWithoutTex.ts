@@ -143,7 +143,13 @@ export class DemoLambertLightWithoutTex {
             sph.setMaterial(material);
             sph.initialize(100, 20, 20)
             sph.setXYZ(0, -110, 0);
-            this.m_rscene.addEntity(sph);
+            // this.m_rscene.addEntity(sph);
+
+            let box = new Box3DEntity();
+            box.setMaterial(material);
+            box.initializeCube(150);
+            box.setXYZ(0, -110, 0);
+            this.m_rscene.addEntity(box);
             
 
         }
