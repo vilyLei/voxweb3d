@@ -58,7 +58,7 @@ class RendererDevice {
         if (RendererDevice.s_language != "") {
             return RendererDevice.s_language;
         }
-        RendererDevice.s_language = navigator.language;
+        RendererDevice.s_language = typeof navigator !== "undefined" ? navigator.language : "zh-CN";
         return RendererDevice.s_language;
     }
     static SetThreadEnabled(boo: boolean): void {
@@ -85,7 +85,7 @@ class RendererDevice {
 
             RendererDevice.s_WEBGL_VER = infoArr[0];
             RendererDevice.TestMobileWeb();
-            RendererDevice.s_language = navigator.language + "";
+            RendererDevice.s_language = typeof navigator !== "undefined" ? navigator.language + "" : "zh-CN";
         }
     }
     /**
@@ -115,6 +115,7 @@ class RendererDevice {
         return RendererDevice.s_winExternalVideoCardFlag == 2;
     }
     static TestSafariWeb(): boolean {
+        if (typeof navigator === "undefined") return false;
         //return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
         return /Safari/.test(navigator.userAgent) && /Mac OS/.test(navigator.userAgent);
     }
@@ -137,6 +138,7 @@ class RendererDevice {
         if (RendererDevice.s_IOS_Flag > 0) {
             return RendererDevice.s_IOS_Flag == 2;
         }
+        if (typeof navigator === "undefined") { RendererDevice.s_IOS_Flag = 1; return false; }
         let boo: boolean = false;
         if (/iPad|iPhone|iPod/.test(navigator.platform)) {
             boo = true;
@@ -153,6 +155,7 @@ class RendererDevice {
         if (RendererDevice.s_IPad_Flag > 0) {
             return RendererDevice.s_IPad_Flag == 2;
         }
+        if (typeof navigator === "undefined") { RendererDevice.s_IPad_Flag = 1; return false; }
         let boo: boolean = navigator.maxTouchPoints > 0 &&
             navigator.maxTouchPoints > 2 &&
             /MacIntel/.test(navigator.platform);
@@ -168,8 +171,7 @@ class RendererDevice {
             return RendererDevice.s_Android_Flag == 2;
         }
         let boo: boolean = RendererDevice.TestMobileWeb();
-
-        if (boo && (/Android|Linux/i.test(navigator.userAgent))) {
+        if (typeof navigator !== "undefined" && boo && (/Android|Linux/i.test(navigator.userAgent))) {
             boo = true;
         }
         else {
@@ -181,6 +183,11 @@ class RendererDevice {
     private static TestMobileWeb(): boolean {
         if (RendererDevice.s_mobileFlag > 0) {
             return RendererDevice.s_mobileFlag == 2;
+        }
+        // Mini-game runtime: no location/navigator — treat as mobile device
+        if (typeof location === "undefined" || typeof navigator === "undefined") {
+            RendererDevice.s_mobileFlag = 2;
+            return true;
         }
         if (/mobile/.test(location.href)) {
             RendererDevice.s_mobileFlag = 2;

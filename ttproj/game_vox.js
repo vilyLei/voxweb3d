@@ -12766,7 +12766,7 @@ class RendererDevice {
       return RendererDevice.s_language;
     }
 
-    RendererDevice.s_language = navigator.language;
+    RendererDevice.s_language = typeof navigator !== "undefined" ? navigator.language : "zh-CN";
     return RendererDevice.s_language;
   }
 
@@ -12799,7 +12799,7 @@ class RendererDevice {
       RendererDevice.s_inited = false;
       RendererDevice.s_WEBGL_VER = infoArr[0];
       RendererDevice.TestMobileWeb();
-      RendererDevice.s_language = navigator.language + "";
+      RendererDevice.s_language = typeof navigator !== "undefined" ? navigator.language + "" : "zh-CN";
     }
   }
   /**
@@ -12837,7 +12837,8 @@ class RendererDevice {
   }
 
   static TestSafariWeb() {
-    //return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+    if (typeof navigator === "undefined") return false; //return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+
     return /Safari/.test(navigator.userAgent) && /Mac OS/.test(navigator.userAgent);
   }
 
@@ -12871,6 +12872,11 @@ class RendererDevice {
       return RendererDevice.s_IOS_Flag == 2;
     }
 
+    if (typeof navigator === "undefined") {
+      RendererDevice.s_IOS_Flag = 1;
+      return false;
+    }
+
     let boo = false;
 
     if (/iPad|iPhone|iPod/.test(navigator.platform)) {
@@ -12886,6 +12892,11 @@ class RendererDevice {
   static IsIpadOS() {
     if (RendererDevice.s_IPad_Flag > 0) {
       return RendererDevice.s_IPad_Flag == 2;
+    }
+
+    if (typeof navigator === "undefined") {
+      RendererDevice.s_IPad_Flag = 1;
+      return false;
     }
 
     let boo = navigator.maxTouchPoints > 0 && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform);
@@ -12905,7 +12916,7 @@ class RendererDevice {
 
     let boo = RendererDevice.TestMobileWeb();
 
-    if (boo && /Android|Linux/i.test(navigator.userAgent)) {
+    if (typeof navigator !== "undefined" && boo && /Android|Linux/i.test(navigator.userAgent)) {
       boo = true;
     } else {
       boo = false;
@@ -12918,6 +12929,12 @@ class RendererDevice {
   static TestMobileWeb() {
     if (RendererDevice.s_mobileFlag > 0) {
       return RendererDevice.s_mobileFlag == 2;
+    } // Mini-game runtime: no location/navigator — treat as mobile device
+
+
+    if (typeof location === "undefined" || typeof navigator === "undefined") {
+      RendererDevice.s_mobileFlag = 2;
+      return true;
     }
 
     if (/mobile/.test(location.href)) {
